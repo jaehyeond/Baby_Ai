@@ -395,6 +395,11 @@ export default function SensePage() {
       const data = await response.json()
       debugLog(`API response: ${JSON.stringify(data).substring(0, 200)}`)
 
+      // Log TTS debug info from backend
+      if (data.tts_debug) {
+        debugLog(`TTS debug: ${data.tts_debug}`)
+      }
+
       // Add AI response
       const aiMessage: ConversationMessage = {
         id: `ai-${Date.now()}`,
