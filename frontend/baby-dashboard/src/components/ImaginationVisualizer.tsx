@@ -27,12 +27,12 @@ function ThoughtBubble({ content, type, delay }: ThoughtBubbleProps) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: -20 }}
       transition={{ delay, type: 'spring', stiffness: 200 }}
-      className={`${config.bg} rounded-2xl p-4 border border-slate-700/50 relative`}
+      className={`${config.bg} rounded-2xl p-4 pl-10 border border-slate-700/50 relative`}
     >
-      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center text-xs font-bold text-white`}>
+      <div className={`absolute top-3 left-2 w-6 h-6 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center text-xs font-bold text-white`}>
         {config.icon}
       </div>
-      <p className="text-sm text-slate-300 pl-2">{content}</p>
+      <p className="text-sm text-slate-300">{content}</p>
     </motion.div>
   )
 }
