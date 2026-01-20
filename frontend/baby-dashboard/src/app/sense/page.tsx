@@ -362,6 +362,7 @@ export default function SensePage() {
   const handleSendText = useCallback(async (text: string) => {
     // Unlock audio on user interaction (critical for autoplay)
     unlockAudio()
+    debugLog(`Sending text: ${text.substring(0, 30)}...`)
 
     setConversationLoading(true)
     setConversationError(null)
@@ -376,6 +377,7 @@ export default function SensePage() {
     setMessages(prev => [...prev, userMessage])
 
     try {
+      debugLog('Calling /api/conversation...')
       const response = await fetch('/api/conversation', {
         method: 'POST',
         headers: {
@@ -391,6 +393,7 @@ export default function SensePage() {
       }
 
       const data = await response.json()
+      debugLog(`API response: ${JSON.stringify(data).substring(0, 200)}`)
 
       // Add AI response
       const aiMessage: ConversationMessage = {
@@ -406,10 +409,12 @@ export default function SensePage() {
 
       // Play audio immediately after receiving response (within user gesture context)
       if (data.audio_url) {
-        console.log('[SensePage] Attempting to play TTS audio:', data.audio_url.substring(0, 50))
+        debugLog(`TTS audio URL received: ${data.audio_url.substring(0, 80)}`)
         playAudioUrl(data.audio_url).catch((err) => {
-          console.warn('[SensePage] TTS autoplay failed:', err)
+          debugLog(`TTS playback failed: ${err.message || err}`)
         })
+      } else {
+        debugLog('No audio_url in response!')
       }
 
     } catch (err) {
