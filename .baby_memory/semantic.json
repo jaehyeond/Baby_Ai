@@ -1,0 +1,1273 @@
+{
+  "knowledge": {
+    "알고리즘": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "구현해줘": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "병합정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "버블정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "퀵소트": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "이진검색": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "힙소트": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "삽입정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "클래스로": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "자료구조를": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "소수인지": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "판별하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "만들어줘": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "선택정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "카운팅정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "클래스": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "이진트리": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "구하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "교집합을": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "리스트의": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "회문인지": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "확인하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열이": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "최소값을": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "최대값과": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "동시에": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "배열에서": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "우선순위": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "셸정렬": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "팀소트": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "bfs": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "deque": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "사용해서.": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "너비우선탐색": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "구현해줘.": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "해시맵": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "set,": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "포함.": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "delete": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "메서드": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "get,": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "함수와": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "케이스를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "테스트하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "이진탐색": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "테스트": {
+      "category": "test",
+      "description": null,
+      "stage": 0
+    },
+    "개수를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열에서": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "정렬된": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "리스트를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "병합하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "뒤집는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열을": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "단위로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "인덱스": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "target이": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "링크드리스트를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "순열을": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "배열의": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "최대공약수": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "최소공배수": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "접두사": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "만들어줘.": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "a2b1c5a3으로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "aabcccccaaa를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "회전하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "배열을": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "사이클": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "연결리스트에서": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "중위순회": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "과반수": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열인지": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "유효한": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "연속된": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "숫자의": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "끝으로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "원소를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "이동시키는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "아나그램인지": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "k번째로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "변환하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "정수를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "숫자로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "만드는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "문자열로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "연결해서": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "누적합": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "dfs": {
+      "category": "test",
+      "description": null,
+      "stage": 0
+    },
+    "최단경로": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "다익스트라": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "사용.": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "heapq": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "사용해서": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "cache": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "lru": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "ordereddict": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "put": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "search,": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "trie(트라이)": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "insert,": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "startswith": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "자료구조": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "출력.": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "나선형": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "시계방향으로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "나선형으로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "iv=4,": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "정수로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "로마숫자를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "ix=9": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "재귀로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "구현.": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "이진탐색트리(bst)에서": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "삽입하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "그래프에서.": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "그래프에서": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "검출하는": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "kahn": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "위상정렬(topological": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "알고리즘으로.": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "sort)": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "알고리즘으로": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "크루스칼": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "union-find": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "경로.": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "플로이드-워셜": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "가중치": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "벨만-포드": {
+      "category": "algorithm",
+      "description": null,
+      "stage": 0
+    },
+    "log": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "방식으로.": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "o(n": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "수열(lis)": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "dp로": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "수열(lcs)": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "n-queens": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "백트래킹으로": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "3가지": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "방법으로": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "뒤집기": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "데코레이터로": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "싱글톤": {
+      "category": "class",
+      "description": null,
+      "stage": 0
+    },
+    "팩토리": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "옵저버": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "strategy": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "pattern": {
+      "category": "general",
+      "description": null,
+      "stage": 0
+    },
+    "간단한": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    },
+    "함수를": {
+      "category": "function",
+      "description": null,
+      "stage": 0
+    }
+  },
+  "patterns": {
+    "algorithm": [
+      "```python\ndef heapsort(arr):\n    def heapify(arr, n, i):\n        largest = i\n        left = 2 * i + ",
+      "```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r",
+      "```python\ndef quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2",
+      "```python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-",
+      "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = mer",
+      "def merge_sort(arr):\n    \"\"\"병합 정렬 알고리즘 구현\"\"\"\n    # 기저 조건: 배열의 길이가 1 이하면 정렬된 것으로 간주\n    if len(arr) <",
+      "def binary_search(arr, target): ...",
+      "```python\ndef selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_index = i\n   ",
+      "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n   ",
+      "```python\ndef shell_sort(arr):\n    n = len(arr)\n    gap = n // 2\n\n    while gap > 0:\n        for i i",
+      "```python\ndef counting_sort(arr):\n    if not arr:\n        return arr\n    \n    max_val = max(arr)\n   ",
+      "```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = set()\n    queue = dequ",
+      "```python\ndef insertion_sort(arr, left, right):\n    for i in range(left + 1, right + 1):\n        key",
+      "```python\nfrom collections import deque\n\ndef topological_sort_kahn(graph):\n    in_degree = {u: 0 for",
+      "```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 테이블 초기화\n    distances = {node: float",
+      "```python\nclass Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.grap",
+      "```python\ndef floyd_warshall(graph):\n    num_vertices = len(graph)\n    dist = [[float('inf')] * num_",
+      "```python\nclass UnionFind:\n    def __init__(self, size):\n        self.parent = list(range(size))\n   ",
+      "```python\nimport heapq\n\ndef prim(graph, start):\n    mst = []\n    visited = set()\n    min_heap = [(0,"
+    ],
+    "function": [
+      "```python\ndef is_valid_parentheses(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{'",
+      "```python\ndef majority_element(arr):\n    count = 0\n    candidate = None\n    \n    for num in arr:\n   ",
+      "class TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n ",
+      "```python\ndef rotate_array(arr, k):\n    n = len(arr)\n    k = k % n  # Handle cases where k is greate",
+      "```python\ndef compress_string(s):\n    if not s:\n        return \"\"\n    \n    compressed = []\n    count",
+      "```python\ndef longest_common_prefix(strs):\n    if not strs:\n        return \"\"\n    \n    prefix = strs",
+      "```python\ndef cumulative_sum(arr):\n    result = []\n    total = 0\n    for num in arr:\n        total +",
+      "```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    if not nums:\n        retur",
+      "```python\ndef max_subarray_sum(arr):\n    max_sum = current_sum = arr[0]\n    for num in arr[1:]:\n    ",
+      "```python\ndef int_to_roman(num):\n    val = [\n        1000, 900, 500, 400,\n        100, 90, 50, 40,\n ",
+      "```python\ndef kth_largest(arr, k):\n    if k <= 0 or k > len(arr):\n        return None\n    sorted_arr",
+      "```python\ndef are_anagrams(str1, str2):\n    return sorted(str1) == sorted(str2)\n\n# 테스트\nprint(are_ana",
+      "```python\ndef move_zeros(arr):\n    non_zeroes = [x for x in arr if x != 0]\n    zeroes = [0] * (len(a",
+      "```python\ndef has_cycle(graph):\n    visited = set()\n    visiting = set()\n\n    def dfs(node):\n       ",
+      "```python\nclass TreeNode:\n    def __init__(self, key):\n        self.left = None\n        self.right =",
+      "```python\nclass TreeNode:\n    def __init__(self, value=0, left=None, right=None):\n        self.value",
+      "```python\ndef roman_to_integer(s: str) -> int:\n    roman_map = {\n        'I': 1,\n        'V': 5,\n   ",
+      "```python\ndef spiral_matrix(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    t",
+      "def add(a, b):\n    return a + b",
+      "```python\nimport time\n\ndef time_measure(func):\n    def wrapper(*args, **kwargs):\n        start_time "
+    ],
+    "coding": [
+      "def bubble_sort(arr): ..."
+    ],
+    "class": [
+      "```python\nclass Queue:\n    def __init__(self):\n        self.items = []\n\n    def is_empty(self):\n    ",
+      "```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ",
+      "```python\nimport heapq\n\nclass PriorityQueue:\n    def __init__(self):\n        self.elements = []\n\n   ",
+      "```python\nclass TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.lef",
+      "```python\nclass HashMap:\n    def __init__(self):\n        self.size = 10\n        self.map = [[] for _",
+      "```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int)",
+      "```python\nclass Singleton:\n    _instance = None\n\n    def __new__(cls, *args, **kwargs):\n        if n"
+    ],
+    "test": [
+      "```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v"
+    ],
+    "general": [
+      "```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_",
+      "```python\ndef longest_common_subsequence(X, Y):\n    m = len(X)\n    n = len(Y)\n    \n    # Create a 2D",
+      "```python\ndef length_of_LIS(nums):\n    if not nums:\n        return 0\n\n    from bisect import bisect_",
+      "```python\nfrom abc import ABC, abstractmethod\n\n# Strategy Interface\nclass SortStrategy(ABC):\n    @ab",
+      "```python\nclass Observer:\n    def update(self, message):\n        pass\n\nclass Subject:\n    def __init",
+      "```python\nclass Product:\n    def operation(self):\n        pass\n\nclass ConcreteProductA(Product):\n   ",
+      "def reverse_string_slicing(s):\n    return s[::-1]\n\ndef reverse_string_reversed(s):\n    return ''.joi",
+      "```python\nfrom collections import Counter\n\ndef most_common_character(s):\n    if not s:\n        retur",
+      "```python\ndef solve_n_queens(n):\n    def backtrack(row, queens, diagonals, anti_diagonals):\n        "
+    ]
+  },
+  "rules": [
+    {
+      "condition": "힙소트 알고리즘 구현해줘",
+      "action": "```python\ndef heapsort(arr):\n    def heapify(arr, n, i):\n        largest = i\n        left = 2 * i + ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "이진검색 알고리즘 구현해줘",
+      "action": "```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "퀵소트 알고리즘 구현해줘",
+      "action": "```python\ndef quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "버블정렬 알고리즘 구현해줘",
+      "action": "```python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "병합정렬 알고리즘 구현해줘",
+      "action": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = mer",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "팩토리얼 함수 만들어줘",
+      "action": "def factorial(n): return 1 if n <= 1 else n * factorial(n-1)",
+      "confidence": 0.7,
+      "uses": 0
+    },
+    {
+      "condition": "이진탐색 알고리즘 구현해줘",
+      "action": "def binary_search(arr, target): ...",
+      "confidence": 0.7,
+      "uses": 0
+    },
+    {
+      "condition": "버블소트 알고리즘 구현",
+      "action": "def bubble_sort(arr): ...",
+      "confidence": 0.8999999999999999,
+      "uses": 0
+    },
+    {
+      "condition": "퀵소트 알고리즘 구현",
+      "action": "def quicksort(arr): return arr if len(arr) <= 1 else quicksort([x for x in arr[1:] if x < arr[0]]) +",
+      "confidence": 1.0,
+      "uses": 0
+    },
+    {
+      "condition": "피보나치 함수 구현",
+      "action": "def fibonacci(n): return n if n < 2 else fibonacci(n-1) + fibonacci(n-2)",
+      "confidence": 0.8999999999999999,
+      "uses": 0
+    },
+    {
+      "condition": "선택정렬 알고리즘 구현해줘",
+      "action": "```python\ndef selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_index = i\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "큐 자료구조를 클래스로 구현해줘",
+      "action": "```python\nclass Queue:\n    def __init__(self):\n        self.items = []\n\n    def is_empty(self):\n    ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "소수인지 판별하는 함수 만들어줘",
+      "action": "```python\ndef is_prime(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "스택 자료구조를 클래스로 구현해줘",
+      "action": "```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "삽입정렬 알고리즘 구현해줘",
+      "action": "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "셸정렬 알고리즘 구현해줘",
+      "action": "```python\ndef shell_sort(arr):\n    n = len(arr)\n    gap = n // 2\n\n    while gap > 0:\n        for i i",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "우선순위 큐 클래스 구현해줘",
+      "action": "```python\nimport heapq\n\nclass PriorityQueue:\n    def __init__(self):\n        self.elements = []\n\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 최대값과 최소값을 동시에 찾는 함수 만들어줘",
+      "action": "def find_max_min(arr):\n    if not arr:\n        return None, None\n    max_val = max(arr)\n    min_val ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열이 회문인지 확인하는 함수 만들어줘",
+      "action": "```python\ndef is_palindrome(s):\n    # 알파벳과 숫자만 추출하고 소문자로 변환\n    filtered_str = ''.join(char.lower() ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "두 리스트의 교집합을 구하는 함수 만들어줘",
+      "action": "```python\ndef intersection(list1, list2):\n    return list(set(list1) & set(list2))\n```",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "이진트리 노드 클래스 구현해줘",
+      "action": "```python\nclass TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.lef",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "카운팅정렬 알고리즘 구현해줘",
+      "action": "```python\ndef counting_sort(arr):\n    if not arr:\n        return arr\n    \n    max_val = max(arr)\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열에서 모음 개수를 세는 함수 만들어줘",
+      "action": "```python\ndef count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    return sum(1 for char in s if char in v",
+      "confidence": 0.891,
+      "uses": 0
+    },
+    {
+      "condition": "이진탐색 함수와 이를 테스트하는 테스트 케이스를 함께 만들어줘",
+      "action": "```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "해시맵 클래스 구현해줘. get, set, delete 메서드 포함.",
+      "action": "```python\nclass HashMap:\n    def __init__(self):\n        self.size = 10\n        self.map = [[] for _",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "BFS 너비우선탐색 알고리즘 구현해줘. deque 사용해서.",
+      "action": "```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = set()\n    queue = dequ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "팀소트 알고리즘 구현해줘",
+      "action": "```python\ndef insertion_sort(arr, left, right):\n    for i in range(left + 1, right + 1):\n        key",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "최소공배수 구하는 함수 만들어줘",
+      "action": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    retur",
+      "confidence": 0.891,
+      "uses": 0
+    },
+    {
+      "condition": "최대공약수 구하는 함수 만들어줘",
+      "action": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n```",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "행렬 전치 함수 만들어줘",
+      "action": "```python\ndef transpose(matrix):\n    return [[matrix[j][i] for j in range(len(matrix))] for i in ran",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열의 모든 순열을 구하는 함수 만들어줘",
+      "action": "```python\nfrom itertools import permutations\n\ndef generate_permutations(arr):\n    return list(permut",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "링크드리스트를 뒤집는 함수 구현해줘",
+      "action": "```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 두 수의 합이 target이 되는 인덱스 찾는 함수 만들어줘",
+      "action": "```python\ndef two_sum(nums, target):\n    num_to_index = {}\n    for index, num in enumerate(nums):\n  ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열을 단어 단위로 뒤집는 함수 만들어줘",
+      "action": "```python\ndef reverse_words(s):\n    return ' '.join(s.split()[::-1])\n```",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "두 정렬된 리스트를 병합하는 함수 만들어줘",
+      "action": "def merge_sorted_lists(list1, list2):\n    merged_list = []\n    i, j = 0, 0\n\n    while i < len(list1)",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "숫자 배열에서 연속된 숫자의 최대 길이 구하는 함수",
+      "action": "```python\ndef max_consecutive_length(arr):\n    if not arr:\n        return 0\n    \n    arr = sorted(se",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열에서 가장 긴 부분 문자열 찾는 함수 만들어줘",
+      "action": "```python\ndef longest_unique_substring(s):\n    char_index = {}\n    longest = 0\n    start = 0\n\n    fo",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "유효한 괄호 문자열인지 확인하는 함수 만들어줘",
+      "action": "```python\ndef is_valid_parentheses(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{'",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 과반수 요소 찾는 함수 만들어줘",
+      "action": "```python\ndef majority_element(arr):\n    count = 0\n    candidate = None\n    \n    for num in arr:\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "이진트리 중위순회 함수 만들어줘",
+      "action": "class TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "단일 연결리스트에서 사이클 존재 여부 확인하는 함수 만들어줘",
+      "action": "```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열을 k칸 회전하는 함수 만들어줘",
+      "action": "```python\ndef rotate_array(arr, k):\n    n = len(arr)\n    k = k % n  # Handle cases where k is greate",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열 압축 함수 만들어줘. aabcccccaaa를 a2b1c5a3으로",
+      "action": "```python\ndef compress_string(s):\n    if not s:\n        return \"\"\n    \n    compressed = []\n    count",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열에서 가장 긴 공통 접두사 찾는 함수 만들어줘",
+      "action": "```python\ndef longest_common_prefix(strs):\n    if not strs:\n        return \"\"\n    \n    prefix = strs",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "DFS 테스트",
+      "action": "```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 누적합 구하는 함수",
+      "action": "```python\ndef cumulative_sum(arr):\n    result = []\n    total = 0\n    for num in arr:\n        total +",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "숫자 리스트를 문자열로 연결해서 가장 큰 수 만드는 함수",
+      "action": "```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    if not nums:\n        retur",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 연속 부분 배열의 최대 합 구하는 함수",
+      "action": "```python\ndef max_subarray_sum(arr):\n    max_sum = current_sum = arr[0]\n    for num in arr[1:]:\n    ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "정수를 로마 숫자로 변환하는 함수",
+      "action": "```python\ndef int_to_roman(num):\n    val = [\n        1000, 900, 500, 400,\n        100, 90, 50, 40,\n ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "배열에서 k번째로 큰 요소 찾는 함수",
+      "action": "```python\ndef kth_largest(arr, k):\n    if k <= 0 or k > len(arr):\n        return None\n    sorted_arr",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열이 아나그램인지 확인하는 함수",
+      "action": "```python\ndef are_anagrams(str1, str2):\n    return sorted(str1) == sorted(str2)\n\n# 테스트\nprint(are_ana",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "정수 배열에서 0인 원소를 배열 끝으로 이동시키는 함수",
+      "action": "```python\ndef move_zeros(arr):\n    non_zeroes = [x for x in arr if x != 0]\n    zeroes = [0] * (len(a",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "위상정렬(Topological Sort) 알고리즘 구현해줘. Kahn 알고리즘으로.",
+      "action": "```python\nfrom collections import deque\n\ndef topological_sort_kahn(graph):\n    in_degree = {u: 0 for",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "그래프에서 사이클 검출하는 함수 구현해줘. 방향 그래프에서.",
+      "action": "```python\ndef has_cycle(graph):\n    visited = set()\n    visiting = set()\n\n    def dfs(node):\n       ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "이진탐색트리(BST)에서 노드 삽입하는 함수 구현해줘.",
+      "action": "```python\nclass TreeNode:\n    def __init__(self, key):\n        self.left = None\n        self.right =",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "이진트리 최대 깊이 구하는 함수 만들어줘. 재귀로 구현.",
+      "action": "```python\nclass TreeNode:\n    def __init__(self, value=0, left=None, right=None):\n        self.value",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "로마숫자를 정수로 변환하는 함수 구현해줘. IV=4, IX=9 등 뺄셈 규칙 포함.",
+      "action": "```python\ndef roman_to_integer(s: str) -> int:\n    roman_map = {\n        'I': 1,\n        'V': 5,\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "나선형 행렬 출력 함수 구현해줘. 2D 배열을 시계방향으로 나선형으로 출력.",
+      "action": "```python\ndef spiral_matrix(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    t",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "Trie(트라이) 자료구조 구현해줘. insert, search, startsWith 메서",
+      "action": "```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "LRU Cache 클래스 구현해줘. OrderedDict 사용해서 get, put 메서드 ",
+      "action": "```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int)",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "다익스트라 최단경로 알고리즘 구현해줘. heapq 사용.",
+      "action": "```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 테이블 초기화\n    distances = {node: float",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "최장 공통 부분 수열(LCS) DP로 구현해줘.",
+      "action": "```python\ndef longest_common_subsequence(X, Y):\n    m = len(X)\n    n = len(Y)\n    \n    # Create a 2D",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "최장 증가 부분 수열(LIS) 구현해줘. O(n log n) 이진탐색 방식으로.",
+      "action": "```python\ndef length_of_LIS(nums):\n    if not nums:\n        return 0\n\n    from bisect import bisect_",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "벨만-포드 알고리즘 구현해줘. 음수 가중치 처리 포함.",
+      "action": "```python\nclass Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.grap",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "플로이드-워셜 알고리즘 구현해줘. 모든 쌍 최단 경로.",
+      "action": "```python\ndef floyd_warshall(graph):\n    num_vertices = len(graph)\n    dist = [[float('inf')] * num_",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "크루스칼 알고리즘으로 최소 신장 트리 구현해줘. Union-Find 사용.",
+      "action": "```python\nclass UnionFind:\n    def __init__(self, size):\n        self.parent = list(range(size))\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "프림 알고리즘으로 최소 신장 트리 구현해줘.",
+      "action": "```python\nimport heapq\n\ndef prim(graph, start):\n    mst = []\n    visited = set()\n    min_heap = [(0,",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "간단한 덧셈 함수를 만들어줘",
+      "action": "def add(a, b):\n    return a + b",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "전략 패턴 Strategy Pattern 구현",
+      "action": "```python\nfrom abc import ABC, abstractmethod\n\n# Strategy Interface\nclass SortStrategy(ABC):\n    @ab",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "옵저버 패턴 구현",
+      "action": "```python\nclass Observer:\n    def update(self, message):\n        pass\n\nclass Subject:\n    def __init",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "팩토리 패턴 구현",
+      "action": "```python\nclass Product:\n    def operation(self):\n        pass\n\nclass ConcreteProductA(Product):\n   ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "싱글톤 패턴 클래스 구현",
+      "action": "```python\nclass Singleton:\n    _instance = None\n\n    def __new__(cls, *args, **kwargs):\n        if n",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "데코레이터로 실행 시간 측정 함수",
+      "action": "```python\nimport time\n\ndef time_measure(func):\n    def wrapper(*args, **kwargs):\n        start_time ",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열 뒤집기 3가지 방법으로",
+      "action": "def reverse_string_slicing(s):\n    return s[::-1]\n\ndef reverse_string_reversed(s):\n    return ''.joi",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "문자열에서 가장 많이 나온 문자 찾기",
+      "action": "```python\nfrom collections import Counter\n\ndef most_common_character(s):\n    if not s:\n        retur",
+      "confidence": 0.815,
+      "uses": 0
+    },
+    {
+      "condition": "백트래킹으로 N-Queens 문제 구현해줘.",
+      "action": "```python\ndef solve_n_queens(n):\n    def backtrack(row, queens, diagonals, anti_diagonals):\n        ",
+      "confidence": 0.815,
+      "uses": 0
+    }
+  ]
+}

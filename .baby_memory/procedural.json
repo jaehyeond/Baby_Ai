@@ -1,0 +1,857 @@
+{
+  "procedures": {
+    "algorithm:def merge_sort(arr):\n    \"\"\"병합 정렬 알고리즘 구현\"\"\"\n    # 기저 조건: 배열의 길이가 1 이하면 정렬된 것으로 간주\n    if len(arr) <": {
+      "task_type": "algorithm",
+      "approach": "def merge_sort(arr):\n    \"\"\"병합 정렬 알고리즘 구현\"\"\"\n    # 기저 조건: 배열의 길이가 1 이하면 정렬된 것으로 간주\n    if len(arr) <",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef fib(n):\n    return n if n < 2 else fib(n-1) + fib(n-2)\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef fib(n):\n    return n if n < 2 else fib(n-1) + fib(n-2)\n```",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n```",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\ndef quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef heapsort(arr):\n    def heapify(arr, n, i):\n        largest = i\n        left = 2 * i + ": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef heapsort(arr):\n    def heapify(arr, n, i):\n        largest = i\n        left = 2 * i + ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return abs(a)\n\n# 테스트 케이스 실행\nprint(": {
+      "task_type": "function",
+      "approach": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return abs(a)\n\n# 테스트 케이스 실행\nprint(",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef reverse_string(s):\n    return s[::-1]\n\n# 테스트 케이스\nprint(reverse_string(\"hello\"))  # \"ol": {
+      "task_type": "function",
+      "approach": "```python\ndef reverse_string(s):\n    return s[::-1]\n\n# 테스트 케이스\nprint(reverse_string(\"hello\"))  # \"ol",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function_pattern": {
+      "task_type": "function",
+      "approach": "def quicksort(arr): return arr if len(arr) <= 1 else quicksort([x for x in arr[1:] if x < arr[0]]) + [arr[0]] + quicksort([x for x in arr[1:] if x >= arr[0]])",
+      "success_count": 3,
+      "failure_count": 0,
+      "uses": 3
+    },
+    "coding_pattern": {
+      "task_type": "coding",
+      "approach": "def bubble_sort(arr): ...",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm_pattern": {
+      "task_type": "algorithm",
+      "approach": "heapsort pattern",
+      "success_count": 6,
+      "failure_count": 0,
+      "uses": 6
+    },
+    "class:```python\nclass Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age": {
+      "task_type": "class",
+      "approach": "```python\nclass Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef remove_duplicates(lst):\n    seen = set()\n    unique_lst = []\n    for item in lst:\n    ": {
+      "task_type": "function",
+      "approach": "```python\ndef remove_duplicates(lst):\n    seen = set()\n    unique_lst = []\n    for item in lst:\n    ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n   ": {
+      "task_type": "algorithm",
+      "approach": "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ": {
+      "task_type": "class",
+      "approach": "```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef is_prime(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1": {
+      "task_type": "function",
+      "approach": "```python\ndef is_prime(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass Queue:\n    def __init__(self):\n        self.items = []\n\n    def is_empty(self):\n    ": {
+      "task_type": "class",
+      "approach": "```python\nclass Queue:\n    def __init__(self):\n        self.items = []\n\n    def is_empty(self):\n    ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_index = i\n   ": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_index = i\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef factorial(n):\n    if n < 0:\n        raise ValueError(\"Negative values are not allowed.": {
+      "task_type": "function",
+      "approach": "```python\ndef factorial(n):\n    if n < 0:\n        raise ValueError(\"Negative values are not allowed.",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "class:```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ": {
+      "task_type": "class",
+      "approach": "```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function_summary": {
+      "task_type": "function",
+      "approach": "def quicksort pattern",
+      "success_count": 3,
+      "failure_count": 0,
+      "uses": 3
+    },
+    "coding_summary": {
+      "task_type": "coding",
+      "approach": "def bubble_sort pattern",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm_summary": {
+      "task_type": "algorithm",
+      "approach": "selection_sort pattern",
+      "success_count": 5,
+      "failure_count": 0,
+      "uses": 5
+    },
+    "class_summary": {
+      "task_type": "class",
+      "approach": "Queue pattern",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = []\n    queue = deque([": {
+      "task_type": "algorithm",
+      "approach": "```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = []\n    queue = deque([",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\ndef counting_sort(arr):\n    if not arr:\n        return arr\n    \n    max_val = max(arr)\n   ": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef counting_sort(arr):\n    if not arr:\n        return arr\n    \n    max_val = max(arr)\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.lef": {
+      "task_type": "class",
+      "approach": "```python\nclass TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.lef",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef intersection(list1, list2):\n    return list(set(list1) & set(list2))\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef intersection(list1, list2):\n    return list(set(list1) & set(list2))\n```",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef is_palindrome(s):\n    # 알파벳과 숫자만 추출하고 소문자로 변환\n    filtered_str = ''.join(char.lower() ": {
+      "task_type": "function",
+      "approach": "```python\ndef is_palindrome(s):\n    # 알파벳과 숫자만 추출하고 소문자로 변환\n    filtered_str = ''.join(char.lower() ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass HashMap:\n    def __init__(self, size=16):\n        self.size = size\n        self.map ": {
+      "task_type": "class",
+      "approach": "```python\nclass HashMap:\n    def __init__(self, size=16):\n        self.size = size\n        self.map ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\ndef counting_sort(arr, exp):\n    n = len(arr)\n    output = [0] * n\n    count = [0] * 10\n\n ": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef counting_sort(arr, exp):\n    n = len(arr)\n    output = [0] * n\n    count = [0] * 10\n\n ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:def find_max_min(arr):\n    if not arr:\n        return None, None\n    max_val = max(arr)\n    min_val ": {
+      "task_type": "function",
+      "approach": "def find_max_min(arr):\n    if not arr:\n        return None, None\n    max_val = max(arr)\n    min_val ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nimport heapq\n\nclass PriorityQueue:\n    def __init__(self):\n        self.elements = []\n\n   ": {
+      "task_type": "class",
+      "approach": "```python\nimport heapq\n\nclass PriorityQueue:\n    def __init__(self):\n        self.elements = []\n\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef shell_sort(arr):\n    n = len(arr)\n    gap = n // 2\n\n    while gap > 0:\n        for i i": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef shell_sort(arr):\n    n = len(arr)\n    gap = n // 2\n\n    while gap > 0:\n        for i i",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function_learned": {
+      "task_type": "function",
+      "approach": "def quicksort(arr): return arr if len(arr) <= 1 else quicksort([x for x in arr[1:] if x < arr[0]]) + [arr[0]] + quicksort([x for x in arr[1:] if x >= arr[0]])",
+      "success_count": 16,
+      "failure_count": 0,
+      "uses": 16
+    },
+    "coding_learned": {
+      "task_type": "coding",
+      "approach": "def bubble_sort(arr): ...",
+      "success_count": 8,
+      "failure_count": 0,
+      "uses": 8
+    },
+    "algorithm_learned": {
+      "task_type": "algorithm",
+      "approach": "def merge_sort(arr):\n    \"\"\"병합 정렬 알고리즘 구현\"\"\"\n    # 기저 조건: 배열의 길이가 1 이하면 정렬된 것으로 간주\n    if len(arr) <= 1:\n        return arr\n    \n    # 배열을 중간점을 기준으로 두 부분으로 나눔\n    mid = len(arr) // 2\n    left = arr[:mid]\n    right = arr[mid:]\n    \n    # 재귀적으로 왼쪽과 오른쪽 부분을 정렬\n    left_sorted = merge_sort(left)\n    right_sorted = merge_sort(right)\n    \n    # 정렬된 두 부분을 병합\n    return merge(left_sorted, right_sorted)\n\ndef merge(left, right):\n    \"\"\"두 개의 정렬된 배열을 병합하는 함수\"\"\"\n    result = []\n    i = j = 0\n    \n    # 두 배열을",
+      "success_count": 56,
+      "failure_count": 0,
+      "uses": 56
+    },
+    "algorithm:```python\ndef insertion_sort(arr, left, right):\n    for i in range(left + 1, right + 1):\n        key": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef insertion_sort(arr, left, right):\n    for i in range(left + 1, right + 1):\n        key",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:": {
+      "task_type": "algorithm",
+      "approach": "",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\ndef dfs(graph, node, visited=None):\n    if visited is None:\n        visited = set()\n    vi": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef dfs(graph, node, visited=None):\n    if visited is None:\n        visited = set()\n    vi",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "algorithm:```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = set()\n    queue = dequ": {
+      "task_type": "algorithm",
+      "approach": "```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    visited = set()\n    queue = dequ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass HashMap:\n    def __init__(self):\n        self.size = 10\n        self.map = [[] for _": {
+      "task_type": "class",
+      "approach": "```python\nclass HashMap:\n    def __init__(self):\n        self.size = 10\n        self.map = [[] for _",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ": {
+      "task_type": "function",
+      "approach": "```python\nclass Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n  ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r": {
+      "task_type": "function",
+      "approach": "```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= r",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 초기화\n    distances = {node: float('in": {
+      "task_type": "algorithm",
+      "approach": "```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 초기화\n    distances = {node: float('in",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "general:def fibonacci(n, memo={}):\n    if n in memo:\n        return memo[n]\n    if n < 2:\n        return n\n ": {
+      "task_type": "general",
+      "approach": "def fibonacci(n, memo={}):\n    if n in memo:\n        return memo[n]\n    if n < 2:\n        return n\n ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    return sum(1 for char in s if char in v": {
+      "task_type": "function",
+      "approach": "```python\ndef count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    return sum(1 for char in s if char in v",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:def merge_sorted_lists(list1, list2):\n    merged_list = []\n    i, j = 0, 0\n\n    while i < len(list1)": {
+      "task_type": "function",
+      "approach": "def merge_sorted_lists(list1, list2):\n    merged_list = []\n    i, j = 0, 0\n\n    while i < len(list1)",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef reverse_words(s):\n    return ' '.join(s.split()[::-1])\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef reverse_words(s):\n    return ' '.join(s.split()[::-1])\n```",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef two_sum(nums, target):\n    num_to_index = {}\n    for index, num in enumerate(nums):\n  ": {
+      "task_type": "function",
+      "approach": "```python\ndef two_sum(nums, target):\n    num_to_index = {}\n    for index, num in enumerate(nums):\n  ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ": {
+      "task_type": "function",
+      "approach": "```python\nclass ListNode:\n    def __init__(self, value=0, next=None):\n        self.value = value\n   ",
+      "success_count": 2,
+      "failure_count": 0,
+      "uses": 2
+    },
+    "class:```python\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n  ": {
+      "task_type": "class",
+      "approach": "```python\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n  ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\nfrom itertools import permutations\n\ndef generate_permutations(arr):\n    return list(permut": {
+      "task_type": "function",
+      "approach": "```python\nfrom itertools import permutations\n\ndef generate_permutations(arr):\n    return list(permut",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef transpose(matrix):\n    return [[matrix[j][i] for j in range(len(matrix))] for i in ran": {
+      "task_type": "function",
+      "approach": "```python\ndef transpose(matrix):\n    return [[matrix[j][i] for j in range(len(matrix))] for i in ran",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef remove_duplicates(s):\n    seen = set()\n    result = []\n    for char in s:\n        if c": {
+      "task_type": "function",
+      "approach": "```python\ndef remove_duplicates(s):\n    seen = set()\n    result = []\n    for char in s:\n        if c",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n```",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    retur": {
+      "task_type": "function",
+      "approach": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    retur",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef longest_common_prefix(strs):\n    if not strs:\n        return \"\"\n    \n    prefix = strs": {
+      "task_type": "function",
+      "approach": "```python\ndef longest_common_prefix(strs):\n    if not strs:\n        return \"\"\n    \n    prefix = strs",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef compress_string(s):\n    if not s:\n        return \"\"\n    \n    compressed = []\n    count": {
+      "task_type": "function",
+      "approach": "```python\ndef compress_string(s):\n    if not s:\n        return \"\"\n    \n    compressed = []\n    count",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef rotate_array(arr, k):\n    n = len(arr)\n    k = k % n  # Handle cases where k is greate": {
+      "task_type": "function",
+      "approach": "```python\ndef rotate_array(arr, k):\n    n = len(arr)\n    k = k % n  # Handle cases where k is greate",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:class TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n ": {
+      "task_type": "function",
+      "approach": "class TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\nclass TreeNode:\n    def __init__(self, value=0, left=None, right=None):\n        self.value": {
+      "task_type": "function",
+      "approach": "```python\nclass TreeNode:\n    def __init__(self, value=0, left=None, right=None):\n        self.value",
+      "success_count": 1,
+      "failure_count": 1,
+      "uses": 2
+    },
+    "function:```python\ndef majority_element(arr):\n    count = 0\n    candidate = None\n    \n    for num in arr:\n   ": {
+      "task_type": "function",
+      "approach": "```python\ndef majority_element(arr):\n    count = 0\n    candidate = None\n    \n    for num in arr:\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef is_valid_parentheses(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{'": {
+      "task_type": "function",
+      "approach": "```python\ndef is_valid_parentheses(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{'",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef longest_unique_substring(s):\n    char_index = {}\n    longest = 0\n    start = 0\n\n    fo": {
+      "task_type": "function",
+      "approach": "```python\ndef longest_unique_substring(s):\n    char_index = {}\n    longest = 0\n    start = 0\n\n    fo",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef max_consecutive_length(arr):\n    if not arr:\n        return 0\n    \n    arr = sorted(se": {
+      "task_type": "function",
+      "approach": "```python\ndef max_consecutive_length(arr):\n    if not arr:\n        return 0\n    \n    arr = sorted(se",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef move_zeros(arr):\n    non_zeroes = [x for x in arr if x != 0]\n    zeroes = [0] * (len(a": {
+      "task_type": "function",
+      "approach": "```python\ndef move_zeros(arr):\n    non_zeroes = [x for x in arr if x != 0]\n    zeroes = [0] * (len(a",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef are_anagrams(str1, str2):\n    return sorted(str1) == sorted(str2)\n\n# 테스트\nprint(are_ana": {
+      "task_type": "function",
+      "approach": "```python\ndef are_anagrams(str1, str2):\n    return sorted(str1) == sorted(str2)\n\n# 테스트\nprint(are_ana",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef kth_largest(arr, k):\n    if k <= 0 or k > len(arr):\n        return None\n    sorted_arr": {
+      "task_type": "function",
+      "approach": "```python\ndef kth_largest(arr, k):\n    if k <= 0 or k > len(arr):\n        return None\n    sorted_arr",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef int_to_roman(num):\n    val = [\n        1000, 900, 500, 400,\n        100, 90, 50, 40,\n ": {
+      "task_type": "function",
+      "approach": "```python\ndef int_to_roman(num):\n    val = [\n        1000, 900, 500, 400,\n        100, 90, 50, 40,\n ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef roman_to_integer(s: str) -> int:\n    roman_numerals = {\n        'I': 1,\n        'V': 5": {
+      "task_type": "function",
+      "approach": "```python\ndef roman_to_integer(s: str) -> int:\n    roman_numerals = {\n        'I': 1,\n        'V': 5",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef max_subarray_sum(arr):\n    max_sum = current_sum = arr[0]\n    for num in arr[1:]:\n    ": {
+      "task_type": "function",
+      "approach": "```python\ndef max_subarray_sum(arr):\n    max_sum = current_sum = arr[0]\n    for num in arr[1:]:\n    ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    if not nums:\n        retur": {
+      "task_type": "function",
+      "approach": "```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    if not nums:\n        retur",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    to": {
+      "task_type": "function",
+      "approach": "```python\ndef spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    to",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef cumulative_sum(arr):\n    result = []\n    total = 0\n    for num in arr:\n        total +": {
+      "task_type": "function",
+      "approach": "```python\ndef cumulative_sum(arr):\n    result = []\n    total = 0\n    for num in arr:\n        total +",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "test:```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v": {
+      "task_type": "test",
+      "approach": "```python\ndef dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    v",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 테이블 초기화\n    distances = {node: float": {
+      "task_type": "algorithm",
+      "approach": "```python\nimport heapq\n\ndef dijkstra(graph, start):\n    # 최단 거리 테이블 초기화\n    distances = {node: float",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int)": {
+      "task_type": "class",
+      "approach": "```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int)",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_": {
+      "task_type": "general",
+      "approach": "```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef spiral_matrix(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    t": {
+      "task_type": "function",
+      "approach": "```python\ndef spiral_matrix(matrix):\n    result = []\n    if not matrix:\n        return result\n\n    t",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef roman_to_integer(s: str) -> int:\n    roman_map = {\n        'I': 1,\n        'V': 5,\n   ": {
+      "task_type": "function",
+      "approach": "```python\ndef roman_to_integer(s: str) -> int:\n    roman_map = {\n        'I': 1,\n        'V': 5,\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\ndef fibonacci(n):\n    if n < 0:\n        raise ValueError(\"Input should be a non-negative i": {
+      "task_type": "general",
+      "approach": "```python\ndef fibonacci(n):\n    if n < 0:\n        raise ValueError(\"Input should be a non-negative i",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\nclass TreeNode:\n    def __init__(self, key):\n        self.left = None\n        self.right =": {
+      "task_type": "function",
+      "approach": "```python\nclass TreeNode:\n    def __init__(self, key):\n        self.left = None\n        self.right =",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef has_cycle(graph):\n    visited = set()\n    visiting = set()\n\n    def dfs(node):\n       ": {
+      "task_type": "function",
+      "approach": "```python\ndef has_cycle(graph):\n    visited = set()\n    visiting = set()\n\n    def dfs(node):\n       ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nfrom collections import deque\n\ndef topological_sort_kahn(graph):\n    in_degree = {u: 0 for": {
+      "task_type": "algorithm",
+      "approach": "```python\nfrom collections import deque\n\ndef topological_sort_kahn(graph):\n    in_degree = {u: 0 for",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nimport heapq\n\ndef prim(graph, start):\n    mst = []\n    visited = set()\n    min_heap = [(0,": {
+      "task_type": "algorithm",
+      "approach": "```python\nimport heapq\n\ndef prim(graph, start):\n    mst = []\n    visited = set()\n    min_heap = [(0,",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nclass UnionFind:\n    def __init__(self, size):\n        self.parent = list(range(size))\n   ": {
+      "task_type": "algorithm",
+      "approach": "```python\nclass UnionFind:\n    def __init__(self, size):\n        self.parent = list(range(size))\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef floyd_warshall(graph):\n    num_vertices = len(graph)\n    dist = [[float('inf')] * num_": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef floyd_warshall(graph):\n    num_vertices = len(graph)\n    dist = [[float('inf')] * num_",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\nclass Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.grap": {
+      "task_type": "algorithm",
+      "approach": "```python\nclass Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.grap",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\ndef knapsack(weights, values, capacity):\n    n = len(values)\n    dp = [[0 for _ in range(c": {
+      "task_type": "general",
+      "approach": "```python\ndef knapsack(weights, values, capacity):\n    n = len(values)\n    dp = [[0 for _ in range(c",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "general:```python\ndef length_of_LIS(nums):\n    if not nums:\n        return 0\n\n    from bisect import bisect_": {
+      "task_type": "general",
+      "approach": "```python\ndef length_of_LIS(nums):\n    if not nums:\n        return 0\n\n    from bisect import bisect_",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\ndef longest_common_subsequence(X, Y):\n    m = len(X)\n    n = len(Y)\n    \n    # Create a 2D": {
+      "task_type": "general",
+      "approach": "```python\ndef longest_common_subsequence(X, Y):\n    m = len(X)\n    n = len(Y)\n    \n    # Create a 2D",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "algorithm:```python\ndef edit_distance(s1, s2):\n    len_s1, len_s2 = len(s1), len(s2)\n    dp = [[0] * (len_s2 +": {
+      "task_type": "algorithm",
+      "approach": "```python\ndef edit_distance(s1, s2):\n    len_s1, len_s2 = len(s1), len(s2)\n    dp = [[0] * (len_s2 +",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\nimport heapq\n\nclass Node:\n    def __init__(self, position, g, h):\n        self.position = ": {
+      "task_type": "function",
+      "approach": "```python\nimport heapq\n\nclass Node:\n    def __init__(self, position, g, h):\n        self.position = ",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef binary_search_sqrt(x, epsilon=1e-10):\n    if x < 0:\n        raise ValueError(\"Cannot c": {
+      "task_type": "function",
+      "approach": "```python\ndef binary_search_sqrt(x, epsilon=1e-10):\n    if x < 0:\n        raise ValueError(\"Cannot c",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "general:```python\ndef solve_n_queens(n):\n    def backtrack(row, queens, diagonals, anti_diagonals):\n        ": {
+      "task_type": "general",
+      "approach": "```python\ndef solve_n_queens(n):\n    def backtrack(row, queens, diagonals, anti_diagonals):\n        ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\ndef subset_sum(arr, target):\n    if target == 0:\n        return True\n    if len(arr) == 0:": {
+      "task_type": "general",
+      "approach": "```python\ndef subset_sum(arr, target):\n    if target == 0:\n        return True\n    if len(arr) == 0:",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "general:```python\nfrom collections import Counter\n\ndef most_common_character(s):\n    if not s:\n        retur": {
+      "task_type": "general",
+      "approach": "```python\nfrom collections import Counter\n\ndef most_common_character(s):\n    if not s:\n        retur",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:def reverse_string_slicing(s):\n    return s[::-1]\n\ndef reverse_string_reversed(s):\n    return ''.joi": {
+      "task_type": "general",
+      "approach": "def reverse_string_slicing(s):\n    return s[::-1]\n\ndef reverse_string_reversed(s):\n    return ''.joi",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\nimport time\n\ndef time_measure(func):\n    def wrapper(*args, **kwargs):\n        start_time ": {
+      "task_type": "function",
+      "approach": "```python\nimport time\n\ndef time_measure(func):\n    def wrapper(*args, **kwargs):\n        start_time ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "class:```python\nclass Singleton:\n    _instance = None\n\n    def __new__(cls, *args, **kwargs):\n        if n": {
+      "task_type": "class",
+      "approach": "```python\nclass Singleton:\n    _instance = None\n\n    def __new__(cls, *args, **kwargs):\n        if n",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\nclass Product:\n    def operation(self):\n        pass\n\nclass ConcreteProductA(Product):\n   ": {
+      "task_type": "general",
+      "approach": "```python\nclass Product:\n    def operation(self):\n        pass\n\nclass ConcreteProductA(Product):\n   ",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\nclass Observer:\n    def update(self, message):\n        pass\n\nclass Subject:\n    def __init": {
+      "task_type": "general",
+      "approach": "```python\nclass Observer:\n    def update(self, message):\n        pass\n\nclass Subject:\n    def __init",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "general:```python\nfrom abc import ABC, abstractmethod\n\n# Strategy Interface\nclass SortStrategy(ABC):\n    @ab": {
+      "task_type": "general",
+      "approach": "```python\nfrom abc import ABC, abstractmethod\n\n# Strategy Interface\nclass SortStrategy(ABC):\n    @ab",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:def add(a, b):\n    return a + b": {
+      "task_type": "function",
+      "approach": "def add(a, b):\n    return a + b",
+      "success_count": 1,
+      "failure_count": 0,
+      "uses": 1
+    },
+    "function:```python\ndef multiply(a, b):\n    return a * b\n```": {
+      "task_type": "function",
+      "approach": "```python\ndef multiply(a, b):\n    return a * b\n```",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    },
+    "function:```python\ndef fibonacci(n):\n    if n < 0:\n        raise ValueError(\"Input should be a non-negative i": {
+      "task_type": "function",
+      "approach": "```python\ndef fibonacci(n):\n    if n < 0:\n        raise ValueError(\"Input should be a non-negative i",
+      "success_count": 0,
+      "failure_count": 1,
+      "uses": 1
+    }
+  },
+  "habits": {
+    "def merge_sort(arr):\n    \"\"\"병합 정렬 알고리즘 구현\"\"\"\n    #": 1,
+    "```python\ndef bubble_sort(arr):\n    n = len(arr)\n ": 1,
+    "```python\ndef fib(n):\n    return n if n < 2 else f": 1,
+    "```python\ndef factorial(n):\n    if n == 0:\n       ": 1,
+    "```python\ndef quicksort(arr):\n    if len(arr) <= 1": 1,
+    "```python\ndef binary_search(arr, target):\n    left": 2,
+    "```python\ndef heapsort(arr):\n    def heapify(arr, ": 1,
+    "```python\ndef gcd(a, b):\n    while b:\n        a, b": 3,
+    "```python\ndef reverse_string(s):\n    return s[::-1": 1,
+    "```python\nclass Person:\n    def __init__(self, nam": 1,
+    "```python\ndef remove_duplicates(lst):\n    seen = s": 1,
+    "def insertion_sort(arr):\n    for i in range(1, len": 1,
+    "```python\nclass Stack:\n    def __init__(self):\n   ": 2,
+    "```python\ndef is_prime(n):\n    if n <= 1:\n        ": 1,
+    "```python\nclass Queue:\n    def __init__(self):\n   ": 1,
+    "```python\ndef selection_sort(arr):\n    n = len(arr": 1,
+    "```python\ndef factorial(n):\n    if n < 0:\n        ": 1,
+    "```python\nclass ListNode:\n    def __init__(self, v": 3,
+    "```python\ndef dfs(graph, start, visited=None):\n   ": 2,
+    "```python\nfrom collections import deque\n\ndef bfs(g": 2,
+    "```python\ndef counting_sort(arr):\n    if not arr:\n": 1,
+    "```python\nclass TreeNode:\n    def __init__(self, v": 3,
+    "```python\ndef intersection(list1, list2):\n    retu": 1,
+    "```python\ndef is_palindrome(s):\n    # 알파벳과 숫자만 추출하": 1,
+    "```python\nclass HashMap:\n    def __init__(self, si": 1,
+    "```python\ndef counting_sort(arr, exp):\n    n = len": 1,
+    "def find_max_min(arr):\n    if not arr:\n        ret": 1,
+    "```python\nimport heapq\n\nclass PriorityQueue:\n    d": 1,
+    "```python\ndef shell_sort(arr):\n    n = len(arr)\n  ": 1,
+    "```python\ndef insertion_sort(arr, left, right):\n  ": 1,
+    "": 1,
+    "```python\ndef dfs(graph, node, visited=None):\n    ": 1,
+    "```python\nclass HashMap:\n    def __init__(self):\n ": 1,
+    "```python\nimport heapq\n\ndef dijkstra(graph, start)": 2,
+    "def fibonacci(n, memo={}):\n    if n in memo:\n     ": 1,
+    "```python\ndef count_vowels(s):\n    vowels = 'aeiou": 1,
+    "def merge_sorted_lists(list1, list2):\n    merged_l": 1,
+    "```python\ndef reverse_words(s):\n    return ' '.joi": 1,
+    "```python\ndef two_sum(nums, target):\n    num_to_in": 1,
+    "```python\nclass LRUCache:\n    def __init__(self, c": 1,
+    "```python\nfrom itertools import permutations\n\ndef ": 1,
+    "```python\ndef transpose(matrix):\n    return [[matr": 1,
+    "```python\ndef remove_duplicates(s):\n    seen = set": 1,
+    "```python\ndef longest_common_prefix(strs):\n    if ": 1,
+    "```python\ndef compress_string(s):\n    if not s:\n  ": 1,
+    "```python\ndef rotate_array(arr, k):\n    n = len(ar": 1,
+    "class TreeNode:\n    def __init__(self, value):\n   ": 1,
+    "```python\ndef majority_element(arr):\n    count = 0": 1,
+    "```python\ndef is_valid_parentheses(s: str) -> bool": 1,
+    "```python\ndef longest_unique_substring(s):\n    cha": 1,
+    "```python\ndef max_consecutive_length(arr):\n    if ": 1,
+    "```python\ndef move_zeros(arr):\n    non_zeroes = [x": 1,
+    "```python\ndef are_anagrams(str1, str2):\n    return": 1,
+    "```python\ndef kth_largest(arr, k):\n    if k <= 0 o": 1,
+    "```python\ndef int_to_roman(num):\n    val = [\n     ": 1,
+    "```python\ndef roman_to_integer(s: str) -> int:\n   ": 2,
+    "```python\ndef max_subarray_sum(arr):\n    max_sum =": 1,
+    "```python\nfrom functools import cmp_to_key\n\ndef la": 1,
+    "```python\ndef spiral_order(matrix):\n    result = [": 1,
+    "```python\ndef cumulative_sum(arr):\n    result = []": 1,
+    "```python\nfrom collections import OrderedDict\n\ncla": 1,
+    "```python\nclass TrieNode:\n    def __init__(self):\n": 1,
+    "```python\ndef spiral_matrix(matrix):\n    result = ": 1,
+    "```python\ndef fibonacci(n):\n    if n < 0:\n        ": 2,
+    "```python\nclass TreeNode:\n    def __init__(self, k": 1,
+    "```python\ndef has_cycle(graph):\n    visited = set(": 1,
+    "```python\nfrom collections import deque\n\ndef topol": 1,
+    "```python\nimport heapq\n\ndef prim(graph, start):\n  ": 1,
+    "```python\nclass UnionFind:\n    def __init__(self, ": 1,
+    "```python\ndef floyd_warshall(graph):\n    num_verti": 1,
+    "```python\nclass Graph:\n    def __init__(self, vert": 1,
+    "```python\ndef knapsack(weights, values, capacity):": 1,
+    "```python\ndef length_of_LIS(nums):\n    if not nums": 1,
+    "```python\ndef longest_common_subsequence(X, Y):\n  ": 1,
+    "```python\ndef edit_distance(s1, s2):\n    len_s1, l": 1,
+    "```python\nimport heapq\n\nclass Node:\n    def __init": 1,
+    "```python\ndef binary_search_sqrt(x, epsilon=1e-10)": 1,
+    "```python\ndef solve_n_queens(n):\n    def backtrack": 1,
+    "```python\ndef subset_sum(arr, target):\n    if targ": 1,
+    "```python\nfrom collections import Counter\n\ndef mos": 1,
+    "def reverse_string_slicing(s):\n    return s[::-1]\n": 1,
+    "```python\nimport time\n\ndef time_measure(func):\n   ": 1,
+    "```python\nclass Singleton:\n    _instance = None\n\n ": 1,
+    "```python\nclass Product:\n    def operation(self):\n": 1,
+    "```python\nclass Observer:\n    def update(self, mes": 1,
+    "```python\nfrom abc import ABC, abstractmethod\n\n# S": 1,
+    "def add(a, b):\n    return a + b": 1,
+    "```python\ndef multiply(a, b):\n    return a * b\n```": 1
+  }
+}
