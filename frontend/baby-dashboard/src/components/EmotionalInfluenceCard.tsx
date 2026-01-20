@@ -39,6 +39,18 @@ interface BabyStateWithInfluence {
   dominant_emotion: string
 }
 
+// Transform nullable Supabase data to required types
+function transformBabyState(data: Record<string, unknown>): BabyStateWithInfluence {
+  return {
+    curiosity: (data.curiosity as number) ?? 0.5,
+    joy: (data.joy as number) ?? 0.5,
+    fear: (data.fear as number) ?? 0,
+    frustration: (data.frustration as number) ?? 0,
+    boredom: (data.boredom as number) ?? 0,
+    dominant_emotion: (data.dominant_emotion as string) ?? 'neutral',
+  }
+}
+
 interface EmotionalInfluenceCardProps {
   className?: string
 }
@@ -214,8 +226,9 @@ export function EmotionalInfluenceCard({ className = '' }: EmotionalInfluenceCar
         .single()
 
       if (data) {
-        setBabyState(data)
-        setInfluence(calculateInfluence(data))
+        const transformed = transformBabyState(data as Record<string, unknown>)
+        setBabyState(transformed)
+        setInfluence(calculateInfluence(transformed))
       }
     } catch (error) {
       console.error('Failed to fetch baby state:', error)

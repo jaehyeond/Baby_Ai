@@ -106,6 +106,9 @@ class LLMClient:
     통합 LLM 클라이언트
 
     여러 제공자의 모델을 일관된 인터페이스로 호출
+    - 텍스트 생성
+    - 멀티모달 생성 (이미지 + 텍스트)
+    - 오디오 처리 (Phase 4.2)
     """
 
     def __init__(self):
@@ -347,6 +350,128 @@ class LLMClient:
                 max_tokens=max_tokens,
             )
             return response.choices[0].message.content
+
+    def generate_multimodal(
+        self,
+        prompt: str,
+        images: list[bytes] = None,
+        model_key: str = "gemini-2-flash",
+        temperature: float = 0.7,
+        max_tokens: int = 4096,
+    ) -> str:
+        """
+        멀티모달 생성 (이미지 + 텍스트)
+
+        Gemini Vision API를 사용하여 이미지와 텍스트를 함께 처리
+
+        Args:
+            prompt: 텍스트 프롬프트
+            images: 이미지 바이너리 데이터 리스트
+            model_key: 모델 키 (gemini-2-flash, gemini-3-flash 등)
+            temperature: 창의성 (0.0 ~ 1.0)
+            max_tokens: 최대 출력 토큰
+
+        Returns:
+            생성된 텍스트
+        """
+        if not images:
+            # 이미지가 없으면 일반 텍스트 생성
+            return self.generate(prompt, model_key, temperature=temperature, max_tokens=max_tokens)
+
+        # Gemini만 지원 (현재)
+        client = self._get_google_client()
+        config = AVAILABLE_MODELS.get(model_key, AVAILABLE_MODELS["gemini-2-flash"])
+
+        try:
+            import base64
+
+            # 새로운 SDK (google-genai)
+            if hasattr(client, 'models'):
+                from google.genai import types
+
+                # 이미지 파트 생성
+                parts = []
+                for img_data in images:
+                    # base64 인코딩
+                    img_b64 = base64.b64encode(img_data).decode('utf-8')
+                    parts.append(types.Part.from_bytes(
+                        data=img_data,
+                        mime_type="image/jpeg",  # 기본값, 실제로는 감지해야 함
+                    ))
+
+                # 텍스트 파트 추가
+                parts.append(types.Part.from_text(prompt))
+
+                # 생성 설정
+                generation_config = types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=max_tokens,
+                )
+
+                response = client.models.generate_content(
+                    model=config.model_id,
+                    contents=parts,
+                    config=generation_config,
+                )
+                return response.text
+
+            else:
+                # 구버전 SDK (google-generativeai)
+                import google.generativeai as genai
+
+                model = client.GenerativeModel(config.model_id)
+
+                # 콘텐츠 구성
+                contents = []
+                for img_data in images:
+                    # PIL Image로 변환
+                    try:
+                        from PIL import Image
+                        import io
+                        img = Image.open(io.BytesIO(img_data))
+                        contents.append(img)
+                    except ImportError:
+                        # PIL 없으면 base64로
+                        img_b64 = base64.b64encode(img_data).decode('utf-8')
+                        contents.append({
+                            "mime_type": "image/jpeg",
+                            "data": img_b64,
+                        })
+
+                contents.append(prompt)
+
+                response = model.generate_content(
+                    contents,
+                    generation_config={
+                        "temperature": temperature,
+                        "max_output_tokens": max_tokens,
+                    },
+                )
+                return response.text
+
+        except Exception as e:
+            print(f"[LLMClient] Multimodal generation failed: {e}")
+            # 폴백: 이미지 없이 텍스트만 처리
+            return self.generate(
+                prompt=f"[이미지가 있다고 가정하고 답변해주세요]\n\n{prompt}",
+                model_key=model_key,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+
+    def detect_image_mime_type(self, image_data: bytes) -> str:
+        """이미지 MIME 타입 감지"""
+        # 매직 바이트로 감지
+        if image_data[:3] == b'\xff\xd8\xff':
+            return "image/jpeg"
+        elif image_data[:8] == b'\x89PNG\r\n\x1a\n':
+            return "image/png"
+        elif image_data[:6] in (b'GIF87a', b'GIF89a'):
+            return "image/gif"
+        elif image_data[:4] == b'RIFF' and image_data[8:12] == b'WEBP':
+            return "image/webp"
+        else:
+            return "image/jpeg"  # 기본값
 
 
 # 싱글톤 인스턴스

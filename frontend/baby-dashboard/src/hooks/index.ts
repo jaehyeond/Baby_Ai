@@ -6,3 +6,6 @@ export { useMilestones, MILESTONE_DEFINITIONS } from './useMilestones'
 export type { MilestoneInfo, Milestone, MilestoneData } from './useMilestones'
 export { useWorldModel, useRecentPredictions, useActiveImagination } from './useWorldModel'
 export type { WorldModelData } from './useWorldModel'
+// Phase 4: Camera
+export { useCamera } from './useCamera'
+export type { UseCameraReturn, UseCameraOptions, CameraFacing } from './useCamera'

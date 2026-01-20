@@ -63,6 +63,11 @@ class Experience:
     db_id: str = None           # Supabase UUID
     embedding: list = None      # 벡터 임베딩
 
+    # Phase 4: 멀티모달 필드
+    media_type: str = "text"    # text, image, audio, video
+    media_url: str = None       # Storage URL
+    visual_description: str = None  # 시각적 설명 (이미지인 경우)
+
     def __post_init__(self):
         if not self.id:
             # 고유 ID 생성
@@ -86,7 +91,7 @@ class Experience:
         return min(1.0, base)
 
     def to_dict(self) -> dict:
-        return {
+        result = {
             "id": self.id,
             "request": self.request,
             "action": self.action,
@@ -96,7 +101,14 @@ class Experience:
             "emotional_weight": self.emotional_weight,
             "importance": self.importance,
             "timestamp": self.timestamp.isoformat(),
+            "media_type": self.media_type,
         }
+        # 멀티모달 필드 (있는 경우만)
+        if self.media_url:
+            result["media_url"] = self.media_url
+        if self.visual_description:
+            result["visual_description"] = self.visual_description
+        return result
 
     @classmethod
     def from_dict(cls, data: dict) -> "Experience":
@@ -110,6 +122,9 @@ class Experience:
             emotional_weight=data.get("emotional_weight", 0.5),
             curiosity_signal=data.get("curiosity_signal", 0.0),
             timestamp=datetime.fromisoformat(data["timestamp"]),
+            media_type=data.get("media_type", "text"),
+            media_url=data.get("media_url"),
+            visual_description=data.get("visual_description"),
         )
 
     @classmethod
@@ -126,6 +141,9 @@ class Experience:
             emotional_weight=data.get("emotional_salience", 0.5),
             curiosity_signal=0.0,
             timestamp=datetime.fromisoformat(data["created_at"].replace("Z", "+00:00")) if data.get("created_at") else datetime.now(),
+            media_type=data.get("media_type", "text"),
+            media_url=data.get("media_url"),
+            visual_description=data.get("visual_description"),
         )
 
 

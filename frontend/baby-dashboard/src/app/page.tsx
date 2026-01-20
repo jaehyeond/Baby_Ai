@@ -16,7 +16,7 @@ import {
   EmotionalInfluenceCard,
 } from '@/components'
 import type { BabyState, Experience, EmotionLog } from '@/lib/database.types'
-import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart } from 'lucide-react'
+import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye } from 'lucide-react'
 import { usePullToRefresh, useSettings, useNotifications } from '@/hooks'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -216,6 +216,12 @@ export default function Home() {
                   {lastUpdated}
                 </span>
               )}
+              <Link
+                href="/sense"
+                className="p-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 active:scale-95 transition-all touch-manipulation"
+              >
+                <Eye className="w-5 h-5 text-white" />
+              </Link>
               <Link
                 href="/settings"
                 className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all touch-manipulation"

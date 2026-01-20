@@ -32,6 +32,7 @@ from .db import get_brain_db, BrainDatabase
 from .world_model import WorldModel, PredictionType, SimulationType
 from .llm_client import get_llm_client, LLMClient
 from .emotional_modulator import EmotionalLearningModulator, Strategy, StrategyDecision
+from .vision import VisionProcessor, VisualInput, VisualExperience, VisualSource
 
 
 @dataclass
@@ -63,6 +64,11 @@ class BabyConfig:
     enable_emotional_modulation: bool = True  # 감정 기반 학습/행동 조절
     base_learning_rate: float = 0.1  # 기본 학습률
 
+    # Phase 4: 멀티모달 설정
+    enable_vision: bool = True       # 시각 처리 활성화
+    enable_audio: bool = False       # 오디오 처리 활성화 (Phase 4.2)
+    enable_speech: bool = False      # 음성 합성 활성화 (Phase 4.3)
+
 
 @dataclass
 class BabyResult:
@@ -93,6 +99,10 @@ class BabyResult:
     # World Model 정보
     world_model_stats: dict = field(default_factory=dict)
     prediction_made: dict = field(default_factory=dict)
+
+    # Phase 4: 멀티모달 정보
+    visual_experience: dict = field(default_factory=dict)  # 시각적 경험
+    media_type: str = "text"  # text, image, audio
 
 
 class BabySubstrate:
@@ -159,6 +169,17 @@ class BabySubstrate:
                 if self.config.verbose:
                     print(f"[BABY] World Model initialization failed: {e}")
                 self._world_model = None
+
+        # Phase 4: Vision Processor 초기화
+        self._vision_processor: Optional[VisionProcessor] = None
+        if self.config.enable_vision:
+            try:
+                self._vision_processor = VisionProcessor(verbose=self.config.verbose)
+                if self.config.verbose:
+                    print("[BABY] Vision Processor initialized")
+            except Exception as e:
+                if self.config.verbose:
+                    print(f"[BABY] Vision Processor initialization failed: {e}")
 
         # 에이전트 (lazy loading)
         self._agents: dict[str, Any] = {}
@@ -888,8 +909,168 @@ class BabySubstrate:
             f"emotions={self._emotions})"
         )
 
+    # ==================== Phase 4: 멀티모달 처리 ====================
+
+    async def process_multimodal(
+        self,
+        text: str = None,
+        images: list[bytes] = None,
+        audio: bytes = None,
+    ) -> BabyResult:
+        """
+        멀티모달 입력 처리
+
+        Phase 4: 텍스트 + 이미지 + 오디오를 통합 처리
+
+        Args:
+            text: 텍스트 입력 (질문, 명령 등)
+            images: 이미지 바이너리 리스트
+            audio: 오디오 바이너리 (Phase 4.2)
+
+        Returns:
+            BabyResult: 처리 결과
+        """
+        import time
+        start_time = time.time()
+
+        # 미디어 타입 결정
+        media_type = "text"
+        visual_experience_dict = {}
+
+        if self.config.verbose:
+            print("\n[BABY] Processing multimodal input...")
+            if text:
+                print(f"  - Text: {text[:50]}...")
+            if images:
+                print(f"  - Images: {len(images)} files")
+            if audio:
+                print(f"  - Audio: {len(audio)} bytes")
+
+        # 1. 이미지 처리 (Phase 4.1)
+        if images and self._vision_processor:
+            media_type = "image"
+            for i, img_data in enumerate(images):
+                if self.config.verbose:
+                    print(f"\n[VISION] Processing image {i+1}/{len(images)}...")
+
+                # VisualInput 생성
+                visual_input = VisualInput(
+                    image_data=img_data,
+                    mime_type=self._llm_client.detect_image_mime_type(img_data) if self._llm_client else "image/jpeg",
+                    source=VisualSource.UPLOAD,
+                )
+
+                # 시각 처리
+                try:
+                    visual_exp = await self._vision_processor.process_image(
+                        visual_input=visual_input,
+                        development_stage=self._development.stage.value,
+                        emotional_state=self._emotions.get_state().to_dict(),
+                    )
+
+                    # 감정 업데이트 (시각적 자극에 반응)
+                    self._apply_visual_emotional_response(visual_exp.emotional_response)
+
+                    # 시각적 경험 저장
+                    visual_experience_dict = visual_exp.to_dict()
+
+                    if self.config.verbose:
+                        print(f"  Scene: {visual_exp.scene_type}")
+                        print(f"  Objects: {[obj.name for obj in visual_exp.objects_detected]}")
+                        print(f"  Description: {visual_exp.description[:100]}...")
+
+                except Exception as e:
+                    if self.config.verbose:
+                        print(f"[VISION] Error processing image: {e}")
+
+        # 2. 텍스트와 이미지 결합 처리
+        combined_prompt = text or ""
+        if images and visual_experience_dict:
+            # 시각적 설명을 컨텍스트로 추가
+            visual_context = f"\n[시각적 컨텍스트]\n{visual_experience_dict.get('description', '')}"
+            if visual_experience_dict.get('objects_detected'):
+                objects = [obj['name'] for obj in visual_experience_dict['objects_detected']]
+                visual_context += f"\n감지된 객체: {', '.join(objects)}"
+            combined_prompt = visual_context + "\n\n" + (text or "이 이미지에 대해 설명해주세요.")
+
+        # 3. 기존 process() 로직과 통합
+        if combined_prompt:
+            # 텍스트 처리는 기존 process() 활용
+            result = await self.process(combined_prompt)
+
+            # 멀티모달 정보 추가
+            result.visual_experience = visual_experience_dict
+            result.media_type = media_type
+
+            return result
+
+        # 이미지만 있는 경우
+        execution_time = (time.time() - start_time) * 1000
+
+        return BabyResult(
+            success=bool(visual_experience_dict),
+            output=visual_experience_dict.get('description', '입력이 없습니다.'),
+            iterations=1,
+            execution_time_ms=execution_time,
+            emotional_state=self._emotions.get_state().to_dict(),
+            curiosity_signal=self._curiosity.get_stats(),
+            development_progress=self._development.get_progress(),
+            memory_stats=self._memory.get_stats(),
+            visual_experience=visual_experience_dict,
+            media_type=media_type,
+        )
+
+    def _apply_visual_emotional_response(self, emotional_response: dict) -> None:
+        """시각적 자극에 대한 감정 반응 적용"""
+        if not emotional_response:
+            return
+
+        # 호기심 변화
+        if emotional_response.get("curiosity_change", 0) > 0:
+            self._emotions.on_novelty(emotional_response["curiosity_change"])
+
+        # 기쁨 변화 (사회적 자극)
+        if emotional_response.get("joy_change", 0) > 0:
+            self._emotions.on_success()
+
+        # 두려움 변화
+        if emotional_response.get("fear_change", 0) > 0:
+            self._emotions.on_uncertainty()
+
+        # 놀람 변화
+        if emotional_response.get("surprise_change", 0) > 0:
+            self._emotions.on_novelty(emotional_response["surprise_change"])
+
+    async def process_image(self, image_data: bytes, prompt: str = None) -> BabyResult:
+        """
+        이미지 단일 처리 헬퍼
+
+        Args:
+            image_data: 이미지 바이너리
+            prompt: 선택적 텍스트 프롬프트
+
+        Returns:
+            BabyResult
+        """
+        return await self.process_multimodal(
+            text=prompt,
+            images=[image_data],
+        )
+
 
 async def run_baby(user_request: str, config: BabyConfig = None) -> BabyResult:
     """Baby Substrate 실행 헬퍼"""
     baby = BabySubstrate(config or BabyConfig())
     return await baby.process(user_request)
+
+
+# Singleton instance
+_substrate: Optional[BabySubstrate] = None
+
+
+def get_substrate(config: BabyConfig = None) -> BabySubstrate:
+    """Get or create singleton BabySubstrate instance"""
+    global _substrate
+    if _substrate is None:
+        _substrate = BabySubstrate(config or BabyConfig())
+    return _substrate

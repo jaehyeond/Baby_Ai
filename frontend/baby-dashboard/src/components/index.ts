@@ -19,3 +19,5 @@ export { CausalGraph } from './CausalGraph'
 export { WorldModelCard } from './WorldModelCard'
 // Phase 3: Emotional Influence
 export { EmotionalInfluenceCard } from './EmotionalInfluenceCard'
+// Phase 4: Camera & Multimodal
+export { CameraCapture, CameraCaptureCompact } from './CameraCapture'

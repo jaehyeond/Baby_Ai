@@ -69,6 +69,15 @@ from .emotional_modulator import (
     LearningAdjustment,
     PatternEvaluation,
 )
+# Phase 4: Vision
+from .vision import (
+    VisionProcessor,
+    VisualInput,
+    VisualExperience,
+    VisualSource,
+    DetectedObject,
+    get_vision_processor,
+)
 
 __all__ = [
     # Emotions
@@ -112,4 +121,11 @@ __all__ = [
     "StrategyDecision",
     "LearningAdjustment",
     "PatternEvaluation",
+    # Phase 4: Vision
+    "VisionProcessor",
+    "VisualInput",
+    "VisualExperience",
+    "VisualSource",
+    "DetectedObject",
+    "get_vision_processor",
 ]
