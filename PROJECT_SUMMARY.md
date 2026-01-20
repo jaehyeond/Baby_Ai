@@ -1,8 +1,8 @@
 # Our A2A Project - 프로젝트 종합 정리
 
 **최종 업데이트**: 2025-01-20
-**버전**: 0.2.0 (Phase 2 Complete)
-**상태**: Dashboard Phase 2 완료 - Brain/World Model 시각화 구현
+**버전**: 0.2.5 (Phase 2.5 Complete)
+**상태**: World Model 백엔드 연동 완료 - 예측/시뮬레이션/상상 기능 구현
 
 ---
 
@@ -284,9 +284,23 @@ python --version  # 3.10 이상인지 확인
 - [x] 알림 시스템
 - [x] Hydration 에러 수정
 
+### ✅ Phase 2.5: World Model 백엔드 연동 (완료)
+- [x] **world_model.py**: World Model 핵심 모듈
+  - [x] Prediction: 예측 생성 및 검증
+  - [x] Simulation: 시뮬레이션 실행
+  - [x] Imagination: 상상 세션 관리
+  - [x] Causal Reasoning: 인과 관계 추론
+- [x] **db.py**: World Model CRUD 함수 추가
+  - [x] predictions 테이블 CRUD
+  - [x] simulations 테이블 CRUD
+  - [x] causal_models 테이블 CRUD
+  - [x] imagination_sessions 테이블 CRUD
+- [x] **BabySubstrate 통합**: 경험에서 자동 World Model 데이터 생성
+- [x] **테스트 검증**: Supabase에 데이터 저장 확인
+
 ### 🔄 Phase 3: 에이전트 확장 (예정)
-- [ ] Tester Agent: 생성된 코드 테스트
-- [ ] Reviewer Agent: 코드 리뷰
+- [x] Tester Agent: 생성된 코드 테스트 (구현됨)
+- [x] Reviewer Agent: 코드 리뷰 (구현됨)
 
 ### 🔄 Phase 4: 오케스트레이션 (예정)
 - [ ] Orchestrator: 여러 에이전트 조율
@@ -294,7 +308,7 @@ python --version  # 3.10 이상인지 확인
 
 ### 🔄 Phase 5: 통합 (예정)
 - [ ] MCP 서버 연동 (파일 시스템, DB 등)
-- [ ] Baby AI 백엔드 연동
+- [x] Baby AI 백엔드 연동 (Phase 2.5에서 완료)
 
 ---
 

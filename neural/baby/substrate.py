@@ -29,6 +29,8 @@ from .cognitive_router import (
     Urgency,
 )
 from .db import get_brain_db, BrainDatabase
+from .world_model import WorldModel, PredictionType, SimulationType
+from .llm_client import get_llm_client, LLMClient
 
 
 @dataclass
@@ -52,6 +54,10 @@ class BabyConfig:
     # Supabase 연동 설정
     enable_supabase: bool = True  # Supabase에 데이터 저장 여부
 
+    # World Model 설정
+    enable_world_model: bool = True  # World Model 활성화
+    auto_generate_predictions: bool = True  # 자동 예측 생성
+
 
 @dataclass
 class BabyResult:
@@ -74,6 +80,10 @@ class BabyResult:
 
     # Cognitive Router 정보
     routing_info: dict = field(default_factory=dict)
+
+    # World Model 정보
+    world_model_stats: dict = field(default_factory=dict)
+    prediction_made: dict = field(default_factory=dict)
 
 
 class BabySubstrate:
@@ -111,6 +121,25 @@ class BabySubstrate:
                 if self.config.verbose:
                     print(f"[BABY] Supabase connection failed: {e}")
                 self._db = None
+
+        # World Model 초기화
+        self._world_model: Optional[WorldModel] = None
+        self._llm_client: Optional[LLMClient] = None
+        if self.config.enable_world_model:
+            try:
+                self._llm_client = get_llm_client()
+                self._world_model = WorldModel(
+                    db=self._db,
+                    llm_client=self._llm_client,
+                    development_stage=self._development.stage.value,
+                    verbose=self.config.verbose,
+                )
+                if self.config.verbose:
+                    print("[BABY] World Model initialized")
+            except Exception as e:
+                if self.config.verbose:
+                    print(f"[BABY] World Model initialization failed: {e}")
+                self._world_model = None
 
         # 에이전트 (lazy loading)
         self._agents: dict[str, Any] = {}
@@ -249,6 +278,45 @@ class BabySubstrate:
             if self.config.verbose:
                 print("\n[MEMORY] Consolidating memories...")
 
+        # 11. World Model 업데이트 및 예측 생성
+        prediction_made = {}
+        world_model_stats = {}
+        if self._world_model and self.config.auto_generate_predictions:
+            try:
+                # 발달 단계 동기화
+                self._world_model.set_development_stage(self._development.stage.value)
+
+                # 경험에서 World Model 데이터 자동 생성
+                emotional_state_dict = {
+                    "curiosity": self._emotions.get_state().curiosity,
+                    "joy": self._emotions.get_state().joy,
+                    "fear": self._emotions.get_state().fear,
+                    "frustration": self._emotions.get_state().frustration,
+                }
+                wm_results = self._world_model.auto_generate_from_experience(
+                    experience={
+                        "task": user_request,
+                        "success": result["success"],
+                        "task_type": self._categorize_task(user_request),
+                    },
+                    emotional_state=emotional_state_dict,
+                )
+
+                if wm_results.get("prediction"):
+                    prediction_made = {
+                        "id": wm_results["prediction"].prediction_id,
+                        "prediction": wm_results["prediction"].prediction,
+                        "confidence": wm_results["prediction"].confidence,
+                    }
+                    if self.config.verbose:
+                        print(f"\n[WORLD_MODEL] Prediction: {prediction_made['prediction'][:50]}...")
+
+                world_model_stats = self._world_model.get_stats()
+
+            except Exception as e:
+                if self.config.verbose:
+                    print(f"\n[WORLD_MODEL] Error: {e}")
+
         execution_time = (time.time() - start_time) * 1000
 
         # 결과 구성
@@ -263,6 +331,8 @@ class BabySubstrate:
             memory_stats=self._memory.get_stats(),
             experience_id=experience.id if experience else "",
             routing_info=self._cognitive_router.get_routing_stats(),
+            world_model_stats=world_model_stats,
+            prediction_made=prediction_made,
         )
 
         if self.config.verbose:

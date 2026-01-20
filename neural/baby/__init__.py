@@ -53,6 +53,15 @@ from .substrate import (
     BabySubstrate,
     BabyConfig,
 )
+from .world_model import (
+    WorldModel,
+    PredictionType,
+    SimulationType,
+    ImaginationType,
+    PredictionResult,
+    SimulationResult,
+    ImaginationResult,
+)
 
 __all__ = [
     # Emotions
@@ -82,4 +91,12 @@ __all__ = [
     # Substrate
     "BabySubstrate",
     "BabyConfig",
+    # World Model
+    "WorldModel",
+    "PredictionType",
+    "SimulationType",
+    "ImaginationType",
+    "PredictionResult",
+    "SimulationResult",
+    "ImaginationResult",
 ]
