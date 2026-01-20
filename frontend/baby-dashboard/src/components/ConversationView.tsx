@@ -135,7 +135,7 @@ export function ConversationView({
           </div>
         ) : (
           <>
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <SpeechBubble
                 key={message.id}
                 text={message.text}
@@ -143,6 +143,7 @@ export function ConversationView({
                 isUser={message.isUser}
                 timestamp={formatTime(message.timestamp)}
                 emotion={message.emotion}
+                autoPlay={!message.isUser && index === messages.length - 1 && !!message.audioUrl}
               />
             ))}
 

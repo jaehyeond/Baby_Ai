@@ -20,6 +20,16 @@ interface RawExperienceConcept {
   co_activation_count: number
 }
 
+// Type for direct concept relations (synapses stored in concept_relations table)
+interface RawConceptRelation {
+  id: string
+  from_concept_id: string
+  to_concept_id: string
+  relation_type: string
+  strength: number
+  evidence_count: number
+}
+
 // Category colors for neurons
 const CATEGORY_COLORS: Record<string, string> = {
   algorithm: '#f43f5e',
@@ -64,6 +74,18 @@ export function useBrainData() {
 
       if (conceptsError) throw conceptsError
 
+      // Fetch direct concept relations (synapses from concept_relations table)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: conceptRelations, error: crError } = await (supabase as any)
+        .from('concept_relations')
+        .select('id, from_concept_id, to_concept_id, relation_type, strength, evidence_count')
+        .order('evidence_count', { ascending: false })
+        .limit(200) as { data: RawConceptRelation[] | null; error: Error | null }
+
+      if (crError) {
+        console.warn('Failed to fetch concept_relations:', crError)
+      }
+
       // Fetch co-occurrence data using raw SQL via RPC or direct query
       // Since we can't use raw SQL directly, we'll compute synapses from experience_concepts
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,6 +101,30 @@ export function useBrainData() {
       const conceptMap = new Map<string, number>()
       concepts?.forEach((c, i) => conceptMap.set(c.id, i))
 
+      // Build synapse map from direct concept_relations first
+      const synapseMap = new Map<string, { count: number; totalRelevance: number; relationType?: string }>()
+
+      // Add synapses from concept_relations table (direct relations)
+      conceptRelations?.forEach((cr) => {
+        const [id1, id2] = [cr.from_concept_id, cr.to_concept_id].sort()
+        const key = `${id1}-${id2}`
+        const existing = synapseMap.get(key)
+        if (existing) {
+          // Merge with existing
+          synapseMap.set(key, {
+            count: existing.count + cr.evidence_count,
+            totalRelevance: existing.totalRelevance + cr.strength * cr.evidence_count,
+            relationType: cr.relation_type,
+          })
+        } else {
+          synapseMap.set(key, {
+            count: cr.evidence_count,
+            totalRelevance: cr.strength * cr.evidence_count,
+            relationType: cr.relation_type,
+          })
+        }
+      })
+
       // Group by experience to find co-occurrences
       const experienceGroups = new Map<string, { conceptId: string; relevance: number }[]>()
       experienceConcepts?.forEach((ec) => {
@@ -87,8 +133,7 @@ export function useBrainData() {
         experienceGroups.set(ec.experience_id, group)
       })
 
-      // Build synapse map (concept pairs that co-occur)
-      const synapseMap = new Map<string, { count: number; totalRelevance: number }>()
+      // Add synapses from experience co-occurrences (indirect relations)
       experienceGroups.forEach((group) => {
         for (let i = 0; i < group.length; i++) {
           for (let j = i + 1; j < group.length; j++) {
@@ -98,6 +143,7 @@ export function useBrainData() {
             synapseMap.set(key, {
               count: existing.count + 1,
               totalRelevance: existing.totalRelevance + group[i].relevance + group[j].relevance,
+              relationType: existing.relationType,
             })
           }
         }

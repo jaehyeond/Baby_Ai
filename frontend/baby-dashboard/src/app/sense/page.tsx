@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { CameraCapture, AudioRecorder, ConversationView } from '@/components'
@@ -19,6 +19,117 @@ import {
   Volume2,
 } from 'lucide-react'
 import Link from 'next/link'
+
+// Global audio context for unlocking audio playback
+let audioContextUnlocked = false
+let globalAudioElement: HTMLAudioElement | null = null
+
+// Debug log for mobile (visible in UI)
+const debugLogs: string[] = []
+function debugLog(msg: string) {
+  const timestamp = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  debugLogs.push(`[${timestamp}] ${msg}`)
+  if (debugLogs.length > 10) debugLogs.shift()
+  console.log('[DEBUG]', msg)
+}
+
+// Unlock audio on first user interaction
+function unlockAudio() {
+  if (audioContextUnlocked) {
+    debugLog('Audio already unlocked')
+    return
+  }
+
+  // Create a silent audio context to unlock audio
+  try {
+    const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext
+    if (AudioContext) {
+      const ctx = new AudioContext()
+      // Create a short silent buffer and play it
+      const buffer = ctx.createBuffer(1, 1, 22050)
+      const source = ctx.createBufferSource()
+      source.buffer = buffer
+      source.connect(ctx.destination)
+      source.start(0)
+      debugLog('AudioContext created & started')
+    }
+  } catch (e) {
+    debugLog(`AudioContext failed: ${e}`)
+  }
+
+  // Also try to play a silent audio element
+  try {
+    globalAudioElement = new Audio()
+    globalAudioElement.volume = 0.01
+    // Play silent data URI (valid MP3)
+    globalAudioElement.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAgAAAbAAqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAbD/ZAAAAAAAAAAAAAAAAAAAAP/jOMAAAM9JgB4AzACqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq'
+    globalAudioElement.play()
+      .then(() => debugLog('Silent audio played'))
+      .catch(e => debugLog(`Silent audio failed: ${e.message}`))
+  } catch (e) {
+    debugLog(`Audio element failed: ${e}`)
+  }
+
+  audioContextUnlocked = true
+  debugLog('Audio unlock complete')
+}
+
+// Audio playback helper - plays audio immediately when called
+async function playAudioUrl(url: string): Promise<void> {
+  debugLog(`playAudioUrl called: ${url.substring(0, 60)}...`)
+
+  return new Promise((resolve, reject) => {
+    const audio = new Audio()
+
+    // Set up timeout
+    const timeout = setTimeout(() => {
+      debugLog('Audio timeout after 10s')
+      cleanup()
+      reject(new Error('timeout'))
+    }, 10000)
+
+    const cleanup = () => {
+      clearTimeout(timeout)
+      audio.onended = null
+      audio.onerror = null
+      audio.oncanplaythrough = null
+      audio.onloadeddata = null
+    }
+
+    audio.onloadeddata = () => {
+      debugLog(`Audio loaded, duration: ${audio.duration}s`)
+    }
+
+    audio.onended = () => {
+      debugLog('Audio ended')
+      cleanup()
+      resolve()
+    }
+
+    audio.onerror = (e) => {
+      debugLog(`Audio error: ${JSON.stringify(e)}`)
+      cleanup()
+      reject(e)
+    }
+
+    audio.oncanplaythrough = () => {
+      debugLog('Audio canplaythrough, attempting play...')
+      audio.play()
+        .then(() => debugLog('Play promise resolved'))
+        .catch((err) => {
+          debugLog(`Play rejected: ${err.name} - ${err.message}`)
+          cleanup()
+          reject(err)
+        })
+    }
+
+    // Set source and load
+    audio.preload = 'auto'
+    audio.src = url
+    debugLog('Calling audio.load()')
+    audio.load()
+  })
+}
 
 type SenseTab = 'camera' | 'microphone' | 'conversation'
 
@@ -65,6 +176,8 @@ export default function SensePage() {
   const [result, setResult] = useState<VisualExperience | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [recentVisuals, setRecentVisuals] = useState<VisualExperience[]>([])
+  const [showDebug, setShowDebug] = useState(false)
+  const [debugRefresh, setDebugRefresh] = useState(0)
 
   // Conversation state
   const [messages, setMessages] = useState<ConversationMessage[]>([])
@@ -151,6 +264,9 @@ export default function SensePage() {
 
   // Handle audio recording submit
   const handleAudioSubmit = useCallback(async (audioBlob: Blob, duration: number) => {
+    // Unlock audio on user interaction (critical for autoplay)
+    unlockAudio()
+
     setConversationLoading(true)
     setConversationError(null)
 
@@ -219,6 +335,14 @@ export default function SensePage() {
       }
       setMessages(prev => [...prev, aiMessage])
 
+      // Play audio immediately after receiving response
+      if (conversationData.audio_url) {
+        console.log('[SensePage] Attempting to play TTS audio:', conversationData.audio_url.substring(0, 50))
+        playAudioUrl(conversationData.audio_url).catch((err) => {
+          console.warn('[SensePage] TTS autoplay failed:', err)
+        })
+      }
+
     } catch (err) {
       const message = err instanceof Error ? err.message : '처리 중 오류가 발생했습니다.'
       setConversationError(message)
@@ -236,6 +360,9 @@ export default function SensePage() {
 
   // Handle text message send
   const handleSendText = useCallback(async (text: string) => {
+    // Unlock audio on user interaction (critical for autoplay)
+    unlockAudio()
+
     setConversationLoading(true)
     setConversationError(null)
 
@@ -276,6 +403,14 @@ export default function SensePage() {
         isQuestion: data.is_question,
       }
       setMessages(prev => [...prev, aiMessage])
+
+      // Play audio immediately after receiving response (within user gesture context)
+      if (data.audio_url) {
+        console.log('[SensePage] Attempting to play TTS audio:', data.audio_url.substring(0, 50))
+        playAudioUrl(data.audio_url).catch((err) => {
+          console.warn('[SensePage] TTS autoplay failed:', err)
+        })
+      }
 
     } catch (err) {
       const message = err instanceof Error ? err.message : '처리 중 오류가 발생했습니다.'
@@ -329,7 +464,10 @@ export default function SensePage() {
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => !tab.disabled && setActiveTab(tab.key)}
+            onClick={() => {
+              unlockAudio() // Unlock audio on any tab click
+              if (!tab.disabled) setActiveTab(tab.key)
+            }}
             disabled={tab.disabled}
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
               activeTab === tab.key
@@ -596,6 +734,45 @@ export default function SensePage() {
           </div>
         </div>
       </div>
+
+      {/* Debug Panel - Toggle with triple tap on header */}
+      <button
+        onClick={() => {
+          setShowDebug(!showDebug)
+          setDebugRefresh(n => n + 1)
+        }}
+        className="fixed bottom-4 right-4 p-2 bg-slate-800 rounded-full text-xs text-slate-500 z-50"
+      >
+        🔧
+      </button>
+
+      {showDebug && (
+        <div className="fixed bottom-16 right-4 left-4 max-w-md ml-auto bg-slate-900 border border-slate-700 rounded-lg p-3 z-50 max-h-64 overflow-auto">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-bold text-slate-400">Debug Log (refresh: {debugRefresh})</span>
+            <button
+              onClick={() => setDebugRefresh(n => n + 1)}
+              className="text-xs text-cyan-400"
+            >
+              Refresh
+            </button>
+          </div>
+          <div className="space-y-1 font-mono text-[10px]">
+            {debugLogs.length === 0 ? (
+              <p className="text-slate-500">No logs yet</p>
+            ) : (
+              debugLogs.map((log, i) => (
+                <p key={i} className="text-slate-300 break-all">{log}</p>
+              ))
+            )}
+          </div>
+          <div className="mt-2 pt-2 border-t border-slate-700">
+            <p className="text-[10px] text-slate-500">
+              audioUnlocked: {audioContextUnlocked ? '✅' : '❌'}
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

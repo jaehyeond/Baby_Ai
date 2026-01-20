@@ -178,6 +178,7 @@ export interface SpeechBubbleProps {
   isUser?: boolean
   timestamp?: string
   emotion?: string
+  autoPlay?: boolean
   className?: string
 }
 
@@ -187,10 +188,12 @@ export function SpeechBubble({
   isUser = false,
   timestamp,
   emotion,
+  autoPlay = false,
   className = '',
 }: SpeechBubbleProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const hasAutoPlayed = useRef(false)
 
   const togglePlay = useCallback(() => {
     if (!audioRef.current || !audioUrl) return
@@ -208,15 +211,47 @@ export function SpeechBubble({
     const audio = new Audio(audioUrl)
     audioRef.current = audio
 
-    audio.onplay = () => setIsPlaying(true)
+    audio.onplay = () => {
+      console.log('[SpeechBubble] Audio playing:', audioUrl.substring(0, 50))
+      setIsPlaying(true)
+    }
     audio.onpause = () => setIsPlaying(false)
     audio.onended = () => setIsPlaying(false)
+    audio.onerror = (e) => {
+      console.error('[SpeechBubble] Audio error:', e)
+    }
+
+    // Auto-play for AI responses (only once)
+    if (autoPlay && !hasAutoPlayed.current) {
+      hasAutoPlayed.current = true
+      console.log('[SpeechBubble] Attempting autoplay for:', audioUrl.substring(0, 50))
+
+      // Wait for audio to be ready, then play
+      audio.addEventListener('canplaythrough', () => {
+        audio.play()
+          .then(() => console.log('[SpeechBubble] Autoplay succeeded'))
+          .catch((err) => {
+            console.warn('[SpeechBubble] Autoplay blocked by browser:', err.message)
+            // Show visual indicator that audio is ready to play
+          })
+      }, { once: true })
+
+      // Fallback: try playing after a delay
+      setTimeout(() => {
+        if (!audio.paused) return // Already playing
+        audio.play()
+          .then(() => console.log('[SpeechBubble] Delayed autoplay succeeded'))
+          .catch(() => {
+            // Silent fail - user can click play manually
+          })
+      }, 500)
+    }
 
     return () => {
       audio.pause()
       audio.src = ''
     }
-  }, [audioUrl])
+  }, [audioUrl, autoPlay])
 
   return (
     <motion.div

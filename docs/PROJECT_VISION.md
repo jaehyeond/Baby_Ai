@@ -1,7 +1,7 @@
 # Neural A2A: Developmental Cognitive Architecture
 
-**Version**: 1.0
-**Last Updated**: 2025-01-19
+**Version**: 1.1
+**Last Updated**: 2025-01-21
 **Authors**: Neural A2A Research Team
 
 ---
@@ -9,6 +9,44 @@
 ## Executive Summary
 
 Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architecture)**를 구현하는 AI 시스템입니다. 단순히 "아기처럼 무지한 상태에서 시작"하는 것이 아니라, **사전학습된 LLM의 지식 위에 인간 뇌의 발달적 메커니즘을 적용**하여 더 robust하고 적응적인 AI를 만드는 것이 목표입니다.
+
+---
+
+## Development Progress
+
+### Phase Status Overview (2025-01-21 기준)
+
+| Phase | 이름 | 상태 | 설명 |
+|-------|------|------|------|
+| Phase 1-3 | Core Architecture | ✅ 완료 | 기본 인지 시스템 |
+| Phase 4.1 | Camera Input | ✅ 완료 | 시각 처리 (이미지 캡처/분석) |
+| Phase 4.2 | Microphone Input | ✅ 완료 | 음성 입력 + STT |
+| Phase 4.3 | Speaker Output | ✅ 완료 | TTS + 대화 UI |
+| Phase 4.4 | Physical World | 🔜 예정 | 물리 세계 이해 |
+| Phase 5+ | Future | 🔜 예정 | 고급 기능 |
+
+### Phase 4: Multimodal Embodied AI (상세)
+
+#### 4.1 Camera Input ✅
+- 모바일/데스크톱 카메라 캡처
+- Gemini Vision API로 이미지 분석
+- `visual_experiences` 테이블에 저장
+
+#### 4.2 Microphone Input ✅
+- `useMicrophone` 훅 - 녹음, 일시정지, 오디오 레벨 모니터링
+- `WaveformVisualizer` - 실시간 파형 시각화
+- `AudioRecorder` - 전체 녹음 UI
+- Gemini 기반 STT (Speech-to-Text)
+
+#### 4.3 Speaker Output ✅
+- **Google Cloud TTS** 사용 (무료 월 4M 글자)
+- 발달 단계별 목소리 선택:
+  - Stage 0: `ko-KR-Neural2-A` (아기 목소리)
+  - Stage 1: `ko-KR-Neural2-B`
+  - Stage 2: `ko-KR-Neural2-C`
+  - Stage 3: `ko-KR-Neural2-D`
+- `SpeechOutput` - 오디오 재생 + 텍스트 하이라이팅
+- `ConversationView` - 채팅 형식 대화 UI
 
 ---
 
@@ -343,7 +381,8 @@ Neural A2A는 **"Baby vs 고등학생"** 논쟁을 초월합니다.
 
 | 항목 | 값 |
 |------|-----|
-| Version | 1.0 |
+| Version | 1.1 |
 | Created | 2025-01-19 |
+| Updated | 2025-01-21 |
 | Status | Active |
 | Next Review | After Phase 8 completion |
