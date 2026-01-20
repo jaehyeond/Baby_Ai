@@ -31,6 +31,7 @@ from .cognitive_router import (
 from .db import get_brain_db, BrainDatabase
 from .world_model import WorldModel, PredictionType, SimulationType
 from .llm_client import get_llm_client, LLMClient
+from .emotional_modulator import EmotionalLearningModulator, Strategy, StrategyDecision
 
 
 @dataclass
@@ -58,6 +59,10 @@ class BabyConfig:
     enable_world_model: bool = True  # World Model 활성화
     auto_generate_predictions: bool = True  # 자동 예측 생성
 
+    # Phase 3: 감정 기반 학습 설정
+    enable_emotional_modulation: bool = True  # 감정 기반 학습/행동 조절
+    base_learning_rate: float = 0.1  # 기본 학습률
+
 
 @dataclass
 class BabyResult:
@@ -80,6 +85,10 @@ class BabyResult:
 
     # Cognitive Router 정보
     routing_info: dict = field(default_factory=dict)
+
+    # Phase 3: 감정 영향 정보
+    emotional_influence: dict = field(default_factory=dict)
+    strategy_used: dict = field(default_factory=dict)
 
     # World Model 정보
     world_model_stats: dict = field(default_factory=dict)
@@ -109,6 +118,16 @@ class BabySubstrate:
         self._development = DevelopmentTracker()
         self._self = SelfModel()
         self._cognitive_router = CognitiveRouter()  # Cognitive Router 추가
+
+        # Phase 3: 감정 기반 학습 조절기
+        self._emotional_modulator: Optional[EmotionalLearningModulator] = None
+        if self.config.enable_emotional_modulation:
+            self._emotional_modulator = EmotionalLearningModulator(
+                emotional_core=self._emotions,
+                verbose=self.config.verbose,
+            )
+            if self.config.verbose:
+                print("[BABY] Emotional Learning Modulator initialized")
 
         # Supabase DB 연동 (선택적)
         self._db: Optional[BrainDatabase] = None
@@ -218,30 +237,61 @@ class BabySubstrate:
                   f"(valence: {emotional_state.valence:.2f})")
             print(f"[APPROACH] {approach}")
 
-        # 3. 호기심 확인
+        # 3. Phase 3: 감정 기반 전략 선택
+        strategy_decision = None
+        emotional_influence = {}
+        if self._emotional_modulator:
+            # 전략 선택
+            strategy_decision = self._emotional_modulator.select_strategy(
+                context={"previous_failures": 0}
+            )
+
+            # 학습률 조절
+            learning_adjustment = self._emotional_modulator.adjust_learning_rate(
+                base_rate=self.config.base_learning_rate
+            )
+
+            # 감정 영향 기록
+            emotional_influence = self._emotions.get_emotional_influence()
+
+            if self.config.verbose:
+                print(f"[STRATEGY] {strategy_decision.strategy.value} "
+                      f"(confidence: {strategy_decision.confidence:.2f})")
+                print(f"[LEARNING] Rate modifier: {learning_adjustment.modifier:.2f}")
+
+        # 4. 호기심 확인
         exploration_rate = self._emotions.get_exploration_rate()
 
-        # 4. 에이전트 실행
+        # 5. 에이전트 실행 (전략 기반)
         result = await self._execute_pipeline(
             user_request,
             memories,
             approach,
+            strategy_decision,
         )
 
-        # 5. 결과에서 학습
+        # 6. 결과에서 학습 (감정 조절된 학습률 적용)
         experience = self._learn_from_result(
             user_request,
             result,
         )
 
-        # 6. 호기심 신호 계산
+        # 7. Phase 3: 패턴 결과 기록
+        if self._emotional_modulator:
+            task_type = self._categorize_task(user_request)
+            self._emotional_modulator.record_pattern_outcome(
+                pattern_id=task_type,
+                success=result["success"],
+            )
+
+        # 8. 호기심 신호 계산
         curiosity_signal = self._curiosity.compute_simple_curiosity(
             success=result["success"],
             output=result.get("code", ""),
             task_type=self._categorize_task(user_request),
         )
 
-        # 7. 감정 업데이트
+        # 9. 감정 업데이트
         if result["success"]:
             self._emotions.on_success()
         else:
@@ -249,7 +299,7 @@ class BabySubstrate:
 
         self._emotions.on_novelty(curiosity_signal.novelty)
 
-        # 8. 발달 업데이트
+        # 10. 발달 업데이트
         dev_result = self._development.record_experience(
             success=result["success"],
             task_type=self._categorize_task(user_request),
@@ -261,7 +311,7 @@ class BabySubstrate:
                 print(f"\n[DEVELOPMENT] Level up! Now: {new_stage.name}")
                 print(f"  New capabilities: {new_stage.capabilities}")
 
-        # 9. 자아 모델 업데이트
+        # 11. 자아 모델 업데이트
         self._self.update_capability("code_generation", result["success"])
 
         if self._development.has_capability("self_awareness"):
@@ -271,14 +321,14 @@ class BabySubstrate:
                 learned=f"Task type: {self._categorize_task(user_request)}",
             )
 
-        # 10. 주기적 기억 통합
+        # 12. 주기적 기억 통합
         self._experience_counter += 1
         if self._experience_counter % self.config.consolidation_interval == 0:
             self._memory.consolidate()
             if self.config.verbose:
                 print("\n[MEMORY] Consolidating memories...")
 
-        # 11. World Model 업데이트 및 예측 생성
+        # 13. World Model 업데이트 및 예측 생성
         prediction_made = {}
         world_model_stats = {}
         if self._world_model and self.config.auto_generate_predictions:
@@ -333,6 +383,8 @@ class BabySubstrate:
             routing_info=self._cognitive_router.get_routing_stats(),
             world_model_stats=world_model_stats,
             prediction_made=prediction_made,
+            emotional_influence=emotional_influence,
+            strategy_used=strategy_decision.__dict__ if strategy_decision else {},
         )
 
         if self.config.verbose:
@@ -369,8 +421,9 @@ class BabySubstrate:
         user_request: str,
         memories: dict,
         approach: str,
+        strategy_decision: Optional[StrategyDecision] = None,
     ) -> dict:
-        """파이프라인 실행 (Cognitive Router 통합)"""
+        """파이프라인 실행 (Cognitive Router + 감정 기반 전략 통합)"""
         import time
 
         results: dict[str, Any] = {}
@@ -378,9 +431,46 @@ class BabySubstrate:
         success = False
         feedback_context = ""
 
-        # 유사 경험을 컨텍스트로 활용
+        # Phase 3: 전략에 따른 컨텍스트 설정
+        strategy = strategy_decision.strategy if strategy_decision else Strategy.EXPLOIT
+        strategy_params = strategy_decision.parameters if strategy_decision else {}
+
+        # 유사 경험을 컨텍스트로 활용 (전략에 따라 다르게)
         context = ""
-        if memories["successful_examples"]:
+
+        # EXPLOIT: 성공 경험 많이 활용
+        if strategy == Strategy.EXPLOIT and memories["successful_examples"]:
+            examples = memories["successful_examples"][:3]  # 더 많은 예시
+            context = "\n\n[Previous successful examples - USE THESE AS REFERENCE]\n"
+            for ex in examples:
+                context += f"- Request: {ex['request'][:50]}...\n"
+                context += f"  Solution: {ex['action'][:100]}...\n"
+
+        # EXPLORE: 최소한의 컨텍스트, 새로운 접근 장려
+        elif strategy == Strategy.EXPLORE:
+            context = "\n\n[Note: Try a NEW and DIFFERENT approach. Be creative!]\n"
+
+        # CAUTIOUS: 단계별 접근 강조
+        elif strategy == Strategy.CAUTIOUS:
+            context = "\n\n[IMPORTANT: Be CAREFUL and THOROUGH. Validate each step.]\n"
+            if memories["successful_examples"]:
+                examples = memories["successful_examples"][:1]
+                context += "[Safe reference]\n"
+                for ex in examples:
+                    context += f"- {ex['action'][:100]}...\n"
+
+        # ALTERNATIVE: 이전과 다른 방법 요청
+        elif strategy == Strategy.ALTERNATIVE:
+            context = "\n\n[IMPORTANT: The previous approach FAILED. Use a COMPLETELY DIFFERENT method!]\n"
+            if memories.get("recent_failures"):
+                context += "[Avoid these patterns]\n"
+
+        # CREATIVE: 조합/실험 허용
+        elif strategy == Strategy.CREATIVE:
+            context = "\n\n[CREATIVE MODE: Combine different techniques. Think outside the box!]\n"
+
+        # 기본 fallback (EXPLOIT)
+        elif memories["successful_examples"]:
             examples = memories["successful_examples"][:2]
             context = "\n\n[Previous successful examples]\n"
             for ex in examples:
@@ -394,6 +484,17 @@ class BabySubstrate:
         while iteration <= self.config.max_iterations and not success:
             if self.config.verbose:
                 print(f"\n[ITERATION {iteration}/{self.config.max_iterations}]")
+
+            # Phase 3: 반복 실패 시 전략 재평가
+            if iteration > 1 and self._emotional_modulator:
+                new_strategy = self._emotional_modulator.select_strategy(
+                    context={"previous_failures": iteration - 1}
+                )
+                strategy = new_strategy.strategy
+                strategy_params = new_strategy.parameters
+
+                if self.config.verbose:
+                    print(f"  [STRATEGY CHANGE] → {strategy.value} ({new_strategy.reasoning})")
 
             # Cognitive Router로 최적 모델 선택
             task_context = TaskContext(
@@ -760,7 +861,7 @@ class BabySubstrate:
 
     def get_state(self) -> dict:
         """전체 상태"""
-        return {
+        state = {
             "session_start": self._session_start.isoformat(),
             "experience_count": self._experience_counter,
             "emotional_state": self._emotions.get_state().to_dict(),
@@ -770,6 +871,13 @@ class BabySubstrate:
             "curiosity": self._curiosity.get_stats(),
             "cognitive_router": self._cognitive_router.get_routing_stats(),
         }
+
+        # Phase 3: 감정 영향 정보 추가
+        if self._emotional_modulator:
+            state["emotional_influence"] = self._emotions.get_emotional_influence()
+            state["emotional_modulator"] = self._emotional_modulator.get_stats()
+
+        return state
 
     def __repr__(self) -> str:
         stage = self._development.stage

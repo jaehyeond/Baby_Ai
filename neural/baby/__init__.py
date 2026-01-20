@@ -62,6 +62,13 @@ from .world_model import (
     SimulationResult,
     ImaginationResult,
 )
+from .emotional_modulator import (
+    EmotionalLearningModulator,
+    Strategy,
+    StrategyDecision,
+    LearningAdjustment,
+    PatternEvaluation,
+)
 
 __all__ = [
     # Emotions
@@ -99,4 +106,10 @@ __all__ = [
     "PredictionResult",
     "SimulationResult",
     "ImaginationResult",
+    # Phase 3: Emotional Modulator
+    "EmotionalLearningModulator",
+    "Strategy",
+    "StrategyDecision",
+    "LearningAdjustment",
+    "PatternEvaluation",
 ]

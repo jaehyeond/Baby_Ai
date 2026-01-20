@@ -295,6 +295,165 @@ class EmotionalCore:
         """최근 감정 이력"""
         return self._history[-n:]
 
+    # === Phase 3: 감정 기반 학습 조절 ===
+
+    def get_learning_rate_modifier(self) -> float:
+        """
+        감정 기반 학습률 조절자
+
+        - 기쁨(Joy) 높음 → 학습률 증가 (강화 학습)
+        - 호기심(Curiosity) 높음 → 학습률 약간 증가
+        - 두려움(Fear) 높음 → 학습률 감소 (보수적)
+        - 좌절(Frustration) 높음 → 학습률 약간 증가 (다른 방법 시도)
+        - 지루함(Boredom) 높음 → 학습률 감소 (주의력 저하)
+
+        Returns:
+            float: 0.5 ~ 1.5 범위의 학습률 조절자
+        """
+        state = self.get_state()
+
+        # 기본 학습률
+        modifier = 1.0
+
+        # 긍정적 감정 → 학습 촉진
+        if state.joy > 0.6:
+            modifier += (state.joy - 0.5) * 0.5  # 최대 +0.25
+
+        if state.curiosity > 0.6:
+            modifier += (state.curiosity - 0.5) * 0.3  # 최대 +0.15
+
+        # 부정적 감정 → 학습 억제 또는 전략 변경
+        if state.fear > 0.6:
+            modifier -= (state.fear - 0.5) * 0.4  # 최대 -0.2 (보수적)
+
+        if state.boredom > 0.5:
+            modifier -= (state.boredom - 0.5) * 0.3  # 최대 -0.15
+
+        # 좌절은 특별: 약간 증가 (다른 접근법 탐색)
+        if state.frustration > 0.5:
+            modifier += (state.frustration - 0.5) * 0.2  # 최대 +0.1
+
+        return max(0.5, min(1.5, modifier))
+
+    def get_strategy_change_probability(self) -> float:
+        """
+        전략 변경 확률
+
+        좌절이 높으면 현재 전략을 버리고 새로운 접근법 시도
+
+        Returns:
+            float: 0.0 ~ 1.0 전략 변경 확률
+        """
+        state = self.get_state()
+
+        # 기본 확률
+        prob = 0.1
+
+        # 좌절 → 전략 변경 촉진
+        if state.frustration > 0.5:
+            prob += (state.frustration - 0.5) * 0.8  # 최대 +0.4
+
+        # 지루함 → 변화 추구
+        if state.boredom > 0.5:
+            prob += (state.boredom - 0.5) * 0.6  # 최대 +0.3
+
+        # 호기심 → 새로운 것 시도
+        if state.curiosity > 0.7:
+            prob += (state.curiosity - 0.7) * 0.5  # 최대 +0.15
+
+        # 기쁨이 높으면 현재 전략 유지
+        if state.joy > 0.7:
+            prob -= 0.2
+
+        return max(0.0, min(1.0, prob))
+
+    def get_risk_tolerance(self) -> float:
+        """
+        위험 감수 수준
+
+        - 두려움 높음 → 보수적 (낮은 위험 감수)
+        - 호기심 높음 → 적극적 (높은 위험 감수)
+        - 기쁨 높음 → 약간 적극적
+
+        Returns:
+            float: 0.0 (매우 보수적) ~ 1.0 (매우 적극적)
+        """
+        state = self.get_state()
+
+        # 기본 위험 감수
+        tolerance = 0.5
+
+        # 두려움 → 위험 회피
+        if state.fear > 0.3:
+            tolerance -= (state.fear - 0.3) * 0.7  # 최대 -0.49
+
+        # 호기심 → 위험 감수
+        if state.curiosity > 0.5:
+            tolerance += (state.curiosity - 0.5) * 0.5  # 최대 +0.25
+
+        # 기쁨 → 약간 적극적
+        if state.joy > 0.6:
+            tolerance += (state.joy - 0.6) * 0.3  # 최대 +0.12
+
+        # 좌절 → 더 과감해짐 (절박함)
+        if state.frustration > 0.6:
+            tolerance += (state.frustration - 0.6) * 0.4  # 최대 +0.16
+
+        return max(0.0, min(1.0, tolerance))
+
+    def should_avoid_pattern(self, pattern_id: str, failure_count: int) -> bool:
+        """
+        특정 패턴 회피 여부
+
+        두려움이 높고 해당 패턴에서 실패가 많으면 회피
+
+        Args:
+            pattern_id: 패턴 식별자
+            failure_count: 해당 패턴 실패 횟수
+
+        Returns:
+            bool: 회피 여부
+        """
+        state = self.get_state()
+
+        # 두려움 기반 회피 임계값
+        fear_threshold = 0.5 - (failure_count * 0.1)  # 실패 많을수록 임계값 낮아짐
+
+        return state.fear > max(0.2, fear_threshold)
+
+    def get_attention_focus(self) -> dict:
+        """
+        감정 기반 주의 집중 영역
+
+        Returns:
+            dict: 주의 집중 가중치
+        """
+        state = self.get_state()
+
+        return {
+            "exploration": state.curiosity,  # 새로운 것 탐색
+            "exploitation": state.joy * 0.8,  # 알려진 성공 패턴 활용
+            "avoidance": state.fear,  # 위험 회피
+            "change": state.frustration + state.boredom * 0.5,  # 변화 추구
+            "detail": 1.0 - state.boredom,  # 세부사항 주의 (지루하면 감소)
+        }
+
+    def get_emotional_influence(self) -> dict:
+        """
+        현재 감정이 행동에 미치는 영향 요약
+
+        Returns:
+            dict: 각종 영향 지표
+        """
+        return {
+            "learning_rate_modifier": self.get_learning_rate_modifier(),
+            "exploration_rate": self.get_exploration_rate(),
+            "memory_weight": self.get_memory_weight(),
+            "strategy_change_prob": self.get_strategy_change_probability(),
+            "risk_tolerance": self.get_risk_tolerance(),
+            "attention_focus": self.get_attention_focus(),
+        }
+
     def __repr__(self) -> str:
         state = self.get_state()
         return (

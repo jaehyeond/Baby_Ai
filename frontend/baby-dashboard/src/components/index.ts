@@ -17,3 +17,5 @@ export { PredictionCard } from './PredictionCard'
 export { ImaginationVisualizer } from './ImaginationVisualizer'
 export { CausalGraph } from './CausalGraph'
 export { WorldModelCard } from './WorldModelCard'
+// Phase 3: Emotional Influence
+export { EmotionalInfluenceCard } from './EmotionalInfluenceCard'

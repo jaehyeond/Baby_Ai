@@ -13,14 +13,15 @@ import {
   BrainCard,
   MilestoneTimeline,
   WorldModelCard,
+  EmotionalInfluenceCard,
 } from '@/components'
 import type { BabyState, Experience, EmotionLog } from '@/lib/database.types'
-import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles } from 'lucide-react'
+import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart } from 'lucide-react'
 import { usePullToRefresh, useSettings, useNotifications } from '@/hooks'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world'
+type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence'
 
 export default function Home() {
   const [babyState, setBabyState] = useState<BabyState | null>(null)
@@ -180,6 +181,7 @@ export default function Home() {
     { key: 'brain', label: '뇌', icon: Brain },
     { key: 'milestones', label: '마일스톤', icon: Trophy },
     { key: 'world', label: '상상', icon: Sparkles },
+    { key: 'influence', label: '영향', icon: Heart },
   ]
 
   return (
@@ -333,6 +335,11 @@ export default function Home() {
             {activeTab === 'world' && (
               <div className="lg:col-span-2">
                 <WorldModelCard className="h-full" />
+              </div>
+            )}
+            {activeTab === 'influence' && (
+              <div className="lg:col-span-2">
+                <EmotionalInfluenceCard className="h-full" />
               </div>
             )}
           </div>
