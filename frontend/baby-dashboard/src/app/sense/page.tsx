@@ -3,19 +3,20 @@
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
-import { CameraCapture } from '@/components'
+import { CameraCapture, AudioRecorder, ConversationView } from '@/components'
+import type { ConversationMessage } from '@/components'
 import {
   Camera,
   Mic,
   MessageSquare,
   ArrowLeft,
-  Send,
   Image as ImageIcon,
   Eye,
   Sparkles,
   RefreshCw,
   AlertCircle,
   CheckCircle,
+  Volume2,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -32,6 +33,16 @@ interface VisualExperience {
   }>
   scene_type: string
   emotional_response: Record<string, number>
+  created_at: string
+}
+
+interface AudioConversation {
+  id: string
+  transcript: string
+  response_text: string
+  response_audio_url?: string
+  emotion?: string
+  is_question: boolean
   created_at: string
 }
 
@@ -54,6 +65,11 @@ export default function SensePage() {
   const [result, setResult] = useState<VisualExperience | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [recentVisuals, setRecentVisuals] = useState<VisualExperience[]>([])
+
+  // Conversation state
+  const [messages, setMessages] = useState<ConversationMessage[]>([])
+  const [conversationLoading, setConversationLoading] = useState(false)
+  const [conversationError, setConversationError] = useState<string | null>(null)
 
   // Fetch recent visual experiences
   useEffect(() => {
@@ -133,10 +149,157 @@ export default function SensePage() {
     }
   }, [])
 
+  // Handle audio recording submit
+  const handleAudioSubmit = useCallback(async (audioBlob: Blob, duration: number) => {
+    setConversationLoading(true)
+    setConversationError(null)
+
+    // Create user message placeholder
+    const userMessageId = `user-${Date.now()}`
+    const userMessage: ConversationMessage = {
+      id: userMessageId,
+      text: '음성 메시지 처리 중...',
+      isUser: true,
+      timestamp: new Date(),
+    }
+    setMessages(prev => [...prev, userMessage])
+
+    try {
+      // Create form data for audio upload
+      const formData = new FormData()
+      formData.append('audio', audioBlob)
+      formData.append('duration', duration.toString())
+
+      // First, transcribe the audio
+      const transcribeResponse = await fetch('/api/audio/transcribe', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!transcribeResponse.ok) {
+        throw new Error('음성 인식에 실패했습니다.')
+      }
+
+      const transcribeData = await transcribeResponse.json()
+      const transcript = transcribeData.transcript || '(음성 인식 실패)'
+
+      // Update user message with transcript
+      setMessages(prev => prev.map(msg =>
+        msg.id === userMessageId
+          ? { ...msg, text: transcript }
+          : msg
+      ))
+
+      // Now send the transcript to conversation API
+      const conversationResponse = await fetch('/api/conversation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: transcript,
+        }),
+      })
+
+      if (!conversationResponse.ok) {
+        throw new Error('대화 처리에 실패했습니다.')
+      }
+
+      const conversationData = await conversationResponse.json()
+
+      // Add AI response
+      const aiMessage: ConversationMessage = {
+        id: `ai-${Date.now()}`,
+        text: conversationData.response || '응답을 생성할 수 없습니다.',
+        audioUrl: conversationData.audio_url,
+        isUser: false,
+        timestamp: new Date(),
+        emotion: conversationData.emotion,
+        isQuestion: conversationData.is_question,
+      }
+      setMessages(prev => [...prev, aiMessage])
+
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '처리 중 오류가 발생했습니다.'
+      setConversationError(message)
+
+      // Update user message to show error
+      setMessages(prev => prev.map(msg =>
+        msg.id === userMessageId
+          ? { ...msg, text: '(음성 처리 실패)' }
+          : msg
+      ))
+    } finally {
+      setConversationLoading(false)
+    }
+  }, [])
+
+  // Handle text message send
+  const handleSendText = useCallback(async (text: string) => {
+    setConversationLoading(true)
+    setConversationError(null)
+
+    // Add user message
+    const userMessage: ConversationMessage = {
+      id: `user-${Date.now()}`,
+      text,
+      isUser: true,
+      timestamp: new Date(),
+    }
+    setMessages(prev => [...prev, userMessage])
+
+    try {
+      const response = await fetch('/api/conversation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: text,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('대화 처리에 실패했습니다.')
+      }
+
+      const data = await response.json()
+
+      // Add AI response
+      const aiMessage: ConversationMessage = {
+        id: `ai-${Date.now()}`,
+        text: data.response || '응답을 생성할 수 없습니다.',
+        audioUrl: data.audio_url,
+        isUser: false,
+        timestamp: new Date(),
+        emotion: data.emotion,
+        isQuestion: data.is_question,
+      }
+      setMessages(prev => [...prev, aiMessage])
+
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '처리 중 오류가 발생했습니다.'
+      setConversationError(message)
+    } finally {
+      setConversationLoading(false)
+    }
+  }, [])
+
+  // Handle audio send from conversation view
+  const handleSendAudio = useCallback(async (audioBlob: Blob, duration: number) => {
+    await handleAudioSubmit(audioBlob, duration)
+  }, [handleAudioSubmit])
+
+  // Clear conversation
+  const handleClearConversation = useCallback(() => {
+    setMessages([])
+    setConversationError(null)
+  }, [])
+
   const tabs: { key: SenseTab; label: string; icon: typeof Camera; disabled?: boolean }[] = [
     { key: 'camera', label: '카메라', icon: Camera },
-    { key: 'microphone', label: '마이크', icon: Mic, disabled: true },
-    { key: 'conversation', label: '대화', icon: MessageSquare, disabled: true },
+    { key: 'microphone', label: '마이크', icon: Mic },
+    { key: 'conversation', label: '대화', icon: MessageSquare },
   ]
 
   return (
@@ -283,7 +446,7 @@ export default function SensePage() {
                           {Object.entries(result.emotional_response).map(([key, value]) => (
                             <div key={key} className="text-center">
                               <div className="text-lg font-bold text-cyan-400">
-                                {value > 0 ? '+' : ''}{(value as number * 100).toFixed(0)}%
+                                {value > 0 ? '+' : ''}{((value as number) * 100).toFixed(0)}%
                               </div>
                               <div className="text-xs text-slate-500">{key.replace('_change', '')}</div>
                             </div>
@@ -302,11 +465,45 @@ export default function SensePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-8 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50 text-center"
               >
-                <Mic className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-300 mb-2">음성 입력</h3>
-                <p className="text-slate-500">Phase 4.2에서 구현 예정</p>
+                <AudioRecorder
+                  onSubmit={handleAudioSubmit}
+                  className="w-full"
+                  maxDuration={60}
+                />
+
+                {/* Recent Audio Conversations */}
+                {messages.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mt-4 p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50"
+                  >
+                    <h4 className="text-sm font-medium text-slate-400 mb-3 flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      최근 대화
+                    </h4>
+                    <div className="space-y-2">
+                      {messages.slice(-4).map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`p-3 rounded-lg ${
+                            msg.isUser
+                              ? 'bg-cyan-500/10 border-l-2 border-cyan-500'
+                              : 'bg-purple-500/10 border-l-2 border-purple-500'
+                          }`}
+                        >
+                          <p className="text-sm text-slate-200 line-clamp-2">{msg.text}</p>
+                          {msg.emotion && (
+                            <span className="text-xs text-purple-400 mt-1 inline-block">
+                              {msg.emotion}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             )}
 
@@ -316,11 +513,17 @@ export default function SensePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-8 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50 text-center"
+                className="h-[600px]"
               >
-                <MessageSquare className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-300 mb-2">대화</h3>
-                <p className="text-slate-500">Phase 4.3에서 구현 예정</p>
+                <ConversationView
+                  messages={messages}
+                  isLoading={conversationLoading}
+                  error={conversationError}
+                  onSendText={handleSendText}
+                  onSendAudio={handleSendAudio}
+                  onClearConversation={handleClearConversation}
+                  className="h-full"
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -387,8 +590,8 @@ export default function SensePage() {
               <h4 className="font-medium text-slate-200">Phase 4 정보</h4>
             </div>
             <p className="text-sm text-slate-400">
-              카메라로 이미지를 캡처하면 Baby AI가 분석하고 학습합니다.
-              감지된 객체와 장면 유형이 기억에 저장됩니다.
+              카메라로 이미지를 캡처하고, 마이크로 대화하세요.
+              Baby AI가 분석하고 학습하며, 질문과 반응을 생성합니다.
             </p>
           </div>
         </div>
