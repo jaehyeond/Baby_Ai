@@ -28,3 +28,5 @@ export { WaveformVisualizer, AudioLevelIndicator, RecordingTimer } from './Wavef
 export { SpeechOutput, SpeechBubble } from './SpeechOutput'
 export { ConversationView, RecentConversation } from './ConversationView'
 export type { ConversationMessage } from './ConversationView'
+// Phase 4.4: Physical World Understanding
+export { PhysicalWorldCard } from './PhysicalWorldCard'

@@ -22,7 +22,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.1 | Camera Input | ✅ 완료 | 시각 처리 (이미지 캡처/분석) |
 | Phase 4.2 | Microphone Input | ✅ 완료 | 음성 입력 + STT |
 | Phase 4.3 | Speaker Output | ✅ 완료 | TTS + 대화 UI |
-| Phase 4.4 | Physical World | 🔜 예정 | 물리 세계 이해 |
+| Phase 4.4 | Physical World | ✅ 완료 | 물리 세계 이해 |
 | Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
 | Phase 5+ | Future | 🔜 예정 | 고급 기능 |
 
@@ -49,10 +49,43 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 - `SpeechOutput` - 오디오 재생 + 텍스트 하이라이팅
 - `ConversationView` - 채팅 형식 대화 UI
 
-#### 4.4 Physical World Understanding 🔜
-- `physical_objects`, `spatial_relations` 테이블 마이그레이션
-- `world_understanding.py` 백엔드 로직 구현
-- `PhysicalWorldCard` 프론트엔드 컴포넌트
+#### 4.4 Physical World Understanding ✅ (2026-01-21 완료)
+**목적**: Baby AI가 물리 세계를 이해하고 추론하는 능력
+
+**핵심 개념**:
+1. **객체 영속성 (Object Permanence)**
+   - 객체가 시야에서 사라져도 존재한다는 것을 학습
+   - 피아제 발달 이론 기반
+   - `physical_objects.permanence_learned` 필드로 추적
+
+2. **공간 관계 이해 (Spatial Relations)**
+   - 객체들 간의 위치 관계 분석 (위, 아래, 안, 밖 등)
+   - 자기 중심적 참조 프레임 지원
+
+3. **물리 직관 (Intuitive Physics)**
+   - 중력, 지지, 연속성 등 기본 물리 원리 학습
+   - 선천적(Core Knowledge) vs 학습됨(Learned) 구분
+   - 발달 단계별 이해 수준 추적
+
+**DB 테이블**:
+- `physical_objects` - 인식된 물리적 객체
+- `spatial_relations` - 객체 간 공간 관계
+- `physics_intuitions` - 물리 직관 (8개 원리)
+- `object_tracking_events` - 객체 추적 이벤트
+
+**Edge Function**: `world-understanding` v1
+- 물리적 속성 분석 (크기, 색상, 질감, 무게 등)
+- 공간 관계 분석 (Gemini Vision)
+- 물리 원리 관찰 (gravity, support, containment 등)
+- 객체 추적 및 영속성 학습
+
+**Frontend**: `PhysicalWorldCard` 컴포넌트
+- Objects/Physics/Permanence 3개 탭
+- 실시간 Supabase 구독으로 업데이트
+
+**통합**:
+- `vision-process` → `world-understanding` 자동 호출
+- 이미지 분석 시 물리 세계 이해도 함께 처리
 
 #### 4.5 Tool Use & Agency ✅ (2025-01-21 완료)
 **목적**: Baby AI가 직접 정보를 검색하고 도구를 사용할 수 있는 능력
