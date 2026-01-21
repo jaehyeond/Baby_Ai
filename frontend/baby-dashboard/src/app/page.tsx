@@ -210,8 +210,8 @@ export default function Home() {
                 실시간 Baby AI 모니터링
               </p>
             </div>
-            <div className="flex items-center gap-2 sm:gap-4 ml-4">
-              {lastUpdated && (
+            <div className="flex items-center gap-2 sm:gap-4 ml-4" suppressHydrationWarning>
+              {mounted && lastUpdated && (
                 <span className="text-xs text-slate-500 hidden lg:block whitespace-nowrap">
                   {lastUpdated}
                 </span>

@@ -23,6 +23,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.2 | Microphone Input | ✅ 완료 | 음성 입력 + STT |
 | Phase 4.3 | Speaker Output | ✅ 완료 | TTS + 대화 UI |
 | Phase 4.4 | Physical World | 🔜 예정 | 물리 세계 이해 |
+| Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
 | Phase 5+ | Future | 🔜 예정 | 고급 기능 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
@@ -47,6 +48,106 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
   - Stage 3: `ko-KR-Neural2-D`
 - `SpeechOutput` - 오디오 재생 + 텍스트 하이라이팅
 - `ConversationView` - 채팅 형식 대화 UI
+
+#### 4.4 Physical World Understanding 🔜
+- `physical_objects`, `spatial_relations` 테이블 마이그레이션
+- `world_understanding.py` 백엔드 로직 구현
+- `PhysicalWorldCard` 프론트엔드 컴포넌트
+
+#### 4.5 Tool Use & Agency ✅ (2025-01-21 완료)
+**목적**: Baby AI가 직접 정보를 검색하고 도구를 사용할 수 있는 능력
+
+**배경 (발견된 문제)**:
+- Baby AI가 "검색해봐"라는 요청에 "인터넷이 뭐야?", "어떻게 하는데?" 반복
+- 의문만 던지고 직접 정보를 찾지 못함
+- 도구 사용(Tool Use) 능력 부재
+
+**구현 계획**:
+1. **Gemini Function Calling 통합**
+   - 사전 API (네이버/국립국어원)
+   - Wikipedia API
+   - 웹 검색 (Google Custom Search)
+
+2. **발달 단계별 도구 해금**
+   | 단계 | 해금 도구 |
+   |------|-----------|
+   | NEWBORN | 없음 (반사적 반응만) |
+   | INFANT | 없음 |
+   | TODDLER | 사전 검색 (단어 정의) |
+   | CHILD | Wikipedia, 간단한 계산 |
+   | TEEN | 웹 검색, 복잡한 도구 |
+
+3. **대화 컨텍스트 관리 개선**
+   - 이전 대화 컨텍스트 로드
+   - 대화별 기억 유지
+
+4. **감정 시스템 개선** ✅
+   - Edge Function에 감정 감쇠(decay) 로직 추가
+   - 시간 기반 감쇠로 100% 수렴 방지
+
+**구현 완료 (v9)**:
+- `conversation-process` Edge Function 업데이트
+- 감정 감쇠: 시간당 5% 중립값(0.5) 방향으로 감쇠
+- 대화 컨텍스트: 최근 5개 대화 로드하여 기억 유지
+- 도구 사용: Gemini Function Calling으로 Wikipedia/사전 검색 가능
+- 발달 단계별 도구 해금 (TODDLER: 사전, CHILD: Wikipedia+계산)
+
+---
+
+## Known Issues & Fixes (2025-01-21)
+
+### 해결된 문제점 ✅
+
+| 문제 | 상태 | 해결 방법 |
+|------|------|-----------|
+| 감정 100% 수렴 | ✅ 해결 | `applyEmotionDecay()` - 시간당 5% 중립값 방향 감쇠 |
+| 대화 기억 소실 | ✅ 해결 | `loadConversationContext()` - 최근 5개 대화 로드 |
+| 도구 사용 불가 | ✅ 해결 | Gemini Function Calling + 발달 단계별 도구 해금 |
+
+### 상세 분석
+
+#### 1. 감정 100% 수렴 문제
+**위치**: `supabase/functions/conversation-process/index.ts` → `updateBabyState()`
+
+```typescript
+// 현재 코드 (문제)
+const emotionChanges = {
+  "기쁨": { joy: 0.05, curiosity: 0.02, boredom: -0.03 },
+  // ... 증가만 있고 decay 없음
+};
+```
+
+**해결책**: 시간 기반 감쇠 로직 추가
+```typescript
+// 목표 코드
+function applyEmotionDecay(emotions: EmotionState, lastUpdate: Date): EmotionState {
+  const hoursSinceUpdate = (Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60);
+  const decayRate = 0.1; // 시간당 10% 감쇠
+  const neutralValue = 0.5;
+
+  return Object.fromEntries(
+    Object.entries(emotions).map(([key, value]) => [
+      key,
+      value + (neutralValue - value) * Math.min(decayRate * hoursSinceUpdate, 1)
+    ])
+  );
+}
+```
+
+#### 2. 대화 컨텍스트 로드 문제
+**현재**: `audio_conversations` 테이블에 저장되지만 로드하지 않음
+
+**해결책**:
+- 대화 시작 시 최근 N개 메시지 로드
+- Gemini 프롬프트에 대화 히스토리 포함
+
+#### 3. 도구 사용 문제
+**현재**: 단순 텍스트 응답만 생성
+
+**해결책**: Gemini Function Calling 통합
+- 발달 단계별 사용 가능한 도구 제한
+- TODDLER부터 사전 검색 가능
+- CHILD부터 Wikipedia 검색 가능
 
 ---
 
