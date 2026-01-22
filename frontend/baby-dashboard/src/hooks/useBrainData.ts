@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { NeuronNode, Synapse, BrainData } from '@/lib/database.types'
+import type { NeuronNode, Synapse, BrainData, Astrocyte, BrainDataWithAstrocytes } from '@/lib/database.types'
 
 // Type for raw concept data from Supabase
 interface RawConcept {
@@ -42,6 +42,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 // Generate 3D position using fibonacci sphere for even distribution
 function fibonacciSphere(index: number, total: number, radius: number): [number, number, number] {
+  if (total <= 0) return [0, 0, 0]
   const goldenRatio = (1 + Math.sqrt(5)) / 2
   const theta = 2 * Math.PI * index / goldenRatio
   const phi = Math.acos(1 - 2 * (index + 0.5) / total)
@@ -53,8 +54,204 @@ function fibonacciSphere(index: number, total: number, radius: number): [number,
   return [x, y, z]
 }
 
+// Simplified Louvain-style clustering algorithm (no external dependencies)
+function clusterNeurons(
+  neurons: NeuronNode[],
+  synapses: Synapse[]
+): { clusters: Map<string, string>; clusterMembers: Map<string, string[]> } {
+  // Build adjacency map with weights
+  const adjacency = new Map<string, Map<string, number>>()
+
+  neurons.forEach(n => {
+    adjacency.set(n.id, new Map())
+  })
+
+  synapses.forEach(s => {
+    if (adjacency.has(s.fromId) && adjacency.has(s.toId)) {
+      adjacency.get(s.fromId)!.set(s.toId, s.strength)
+      adjacency.get(s.toId)!.set(s.fromId, s.strength)
+    }
+  })
+
+  // Initialize: each neuron is its own cluster
+  const clusters = new Map<string, string>()
+  neurons.forEach(n => clusters.set(n.id, n.id))
+
+  // Iteratively optimize (simplified Louvain)
+  let changed = true
+  let iterations = 0
+  const maxIterations = 10 // Prevent infinite loops
+
+  while (changed && iterations < maxIterations) {
+    changed = false
+    iterations++
+
+    for (const neuron of neurons) {
+      const currentCluster = clusters.get(neuron.id)!
+      const neighbors = adjacency.get(neuron.id) || new Map()
+
+      if (neighbors.size === 0) continue
+
+      // Calculate strength to each neighboring cluster
+      const clusterStrengths = new Map<string, number>()
+      for (const [neighborId, strength] of neighbors) {
+        const neighborCluster = clusters.get(neighborId)!
+        clusterStrengths.set(
+          neighborCluster,
+          (clusterStrengths.get(neighborCluster) || 0) + strength
+        )
+      }
+
+      // Also consider staying in current cluster
+      if (!clusterStrengths.has(currentCluster)) {
+        clusterStrengths.set(currentCluster, 0)
+      }
+
+      // Find best cluster (highest total strength)
+      let bestCluster = currentCluster
+      let bestStrength = clusterStrengths.get(currentCluster) || 0
+
+      for (const [cluster, strength] of clusterStrengths) {
+        if (strength > bestStrength) {
+          bestStrength = strength
+          bestCluster = cluster
+        }
+      }
+
+      if (bestCluster !== currentCluster) {
+        clusters.set(neuron.id, bestCluster)
+        changed = true
+      }
+    }
+  }
+
+  // Build cluster members map
+  const clusterMembers = new Map<string, string[]>()
+  for (const [neuronId, clusterId] of clusters) {
+    if (!clusterMembers.has(clusterId)) {
+      clusterMembers.set(clusterId, [])
+    }
+    clusterMembers.get(clusterId)!.push(neuronId)
+  }
+
+  console.log('[useBrainData] Clustering completed:', clusterMembers.size, 'clusters after', iterations, 'iterations')
+
+  return { clusters, clusterMembers }
+}
+
+// Create Astrocyte meta-nodes from clusters
+function createAstrocytes(
+  neurons: NeuronNode[],
+  synapses: Synapse[],
+  clusterMembers: Map<string, string[]>
+): { astrocytes: Astrocyte[]; neuronToAstrocyte: Record<string, string> } {
+  const neuronMap = new Map(neurons.map(n => [n.id, n]))
+  const astrocytes: Astrocyte[] = []
+  const neuronToAstrocyte: Record<string, string> = {}
+
+  let astrocyteIndex = 0
+
+  for (const [clusterId, memberIds] of clusterMembers) {
+    // Skip very small clusters (merge into "misc")
+    if (memberIds.length < 2) continue
+
+    const members = memberIds.map(id => neuronMap.get(id)!).filter(Boolean)
+    if (members.length === 0) continue
+
+    // Calculate dominant category
+    const categoryCounts = new Map<string, number>()
+    members.forEach(m => {
+      categoryCounts.set(m.category, (categoryCounts.get(m.category) || 0) + 1)
+    })
+
+    let dominantCategory = 'default'
+    let maxCount = 0
+    for (const [cat, count] of categoryCounts) {
+      if (count > maxCount) {
+        maxCount = count
+        dominantCategory = cat
+      }
+    }
+
+    // Calculate average strength of intra-cluster synapses
+    const memberSet = new Set(memberIds)
+    let totalStrength = 0
+    let synapseCount = 0
+    synapses.forEach(s => {
+      if (memberSet.has(s.fromId) && memberSet.has(s.toId)) {
+        totalStrength += s.strength
+        synapseCount++
+      }
+    })
+    const avgStrength = synapseCount > 0 ? totalStrength / synapseCount : 0.5
+
+    // Create astrocyte
+    const astrocyteId = `astrocyte-${astrocyteIndex}`
+    const astrocyte: Astrocyte = {
+      id: astrocyteId,
+      name: `${dominantCategory} 클러스터`,
+      color: CATEGORY_COLORS[dominantCategory] || CATEGORY_COLORS.default,
+      position: fibonacciSphere(astrocyteIndex, clusterMembers.size, 6),
+      neuronIds: memberIds,
+      strength: avgStrength,
+      size: Math.min(0.5 + members.length * 0.1, 2), // Size based on member count
+    }
+
+    astrocytes.push(astrocyte)
+
+    // Map neurons to this astrocyte
+    memberIds.forEach(id => {
+      neuronToAstrocyte[id] = astrocyteId
+    })
+
+    astrocyteIndex++
+  }
+
+  console.log('[useBrainData] Created', astrocytes.length, 'astrocytes')
+
+  return { astrocytes, neuronToAstrocyte }
+}
+
+// Position neurons around their astrocyte
+function positionNeuronsWithAstrocytes(
+  neurons: NeuronNode[],
+  astrocytes: Astrocyte[],
+  neuronToAstrocyte: Record<string, string>
+): void {
+  const astrocyteMap = new Map(astrocytes.map(a => [a.id, a]))
+
+  // Neurons without astrocyte get placed in center
+  const orphanNeurons: NeuronNode[] = []
+
+  neurons.forEach(neuron => {
+    const astrocyteId = neuronToAstrocyte[neuron.id]
+    const astrocyte = astrocyteId ? astrocyteMap.get(astrocyteId) : null
+
+    if (astrocyte) {
+      // Find position within cluster
+      const memberIndex = astrocyte.neuronIds.indexOf(neuron.id)
+      const localRadius = 1 + astrocyte.neuronIds.length * 0.05 // Radius scales with cluster size
+      const localPos = fibonacciSphere(memberIndex, astrocyte.neuronIds.length, localRadius)
+
+      // Position around astrocyte center
+      neuron.position = [
+        astrocyte.position[0] + localPos[0],
+        astrocyte.position[1] + localPos[1],
+        astrocyte.position[2] + localPos[2],
+      ]
+    } else {
+      orphanNeurons.push(neuron)
+    }
+  })
+
+  // Position orphan neurons at center
+  orphanNeurons.forEach((neuron, index) => {
+    neuron.position = fibonacciSphere(index, orphanNeurons.length, 2)
+  })
+}
+
 export function useBrainData() {
-  const [brainData, setBrainData] = useState<BrainData | null>(null)
+  const [brainData, setBrainData] = useState<BrainDataWithAstrocytes | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -200,7 +397,16 @@ export function useBrainData() {
       // DEBUG: Log final counts
       console.log('[useBrainData] Final: neurons:', neurons.length, 'synapses:', synapses.length, 'synapseMap size:', synapseMap.size)
 
-      setBrainData({ neurons, synapses })
+      // Perform clustering to create astrocytes
+      const { clusterMembers } = clusterNeurons(neurons, synapses)
+      const { astrocytes, neuronToAstrocyte } = createAstrocytes(neurons, synapses, clusterMembers)
+
+      // Reposition neurons around their astrocytes
+      positionNeuronsWithAstrocytes(neurons, astrocytes, neuronToAstrocyte)
+
+      console.log('[useBrainData] Astrocytes:', astrocytes.length, 'clusters created')
+
+      setBrainData({ neurons, synapses, astrocytes, neuronToAstrocyte })
     } catch (err) {
       console.error('Error fetching brain data:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch brain data')

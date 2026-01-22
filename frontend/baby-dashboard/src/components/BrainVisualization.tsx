@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useBrainData } from '@/hooks/useBrainData'
-import type { NeuronNode, Synapse } from '@/lib/database.types'
+import type { NeuronNode, Synapse, Astrocyte } from '@/lib/database.types'
 import { Brain, Loader2, RefreshCw, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
 // Category colors
@@ -91,15 +91,91 @@ function Neuron({
   )
 }
 
+// Astrocyte meta-node component (glowing cluster sphere)
+function AstrocyteSphere({
+  astrocyte,
+  isSelected,
+  onSelect,
+}: {
+  astrocyte: Astrocyte
+  isSelected: boolean
+  onSelect: (a: Astrocyte | null) => void
+}) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const [hovered, setHovered] = useState(false)
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      // Slow pulse animation
+      const pulse = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+      meshRef.current.scale.setScalar(astrocyte.size + pulse)
+
+      // Rotation
+      meshRef.current.rotation.y += 0.002
+    }
+  })
+
+  return (
+    <group position={astrocyte.position}>
+      <mesh
+        ref={meshRef}
+        onClick={(e) => {
+          e.stopPropagation()
+          onSelect(isSelected ? null : astrocyte)
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation()
+          setHovered(true)
+        }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <sphereGeometry args={[1, 24, 24]} />
+        <meshStandardMaterial
+          color={astrocyte.color}
+          emissive={astrocyte.color}
+          emissiveIntensity={isSelected ? 0.6 : hovered ? 0.4 : 0.2}
+          transparent
+          opacity={isSelected ? 0.4 : hovered ? 0.3 : 0.15}
+          wireframe={false}
+        />
+      </mesh>
+
+      {/* Inner glow sphere */}
+      <mesh scale={0.8}>
+        <sphereGeometry args={[astrocyte.size, 16, 16]} />
+        <meshBasicMaterial
+          color={astrocyte.color}
+          transparent
+          opacity={0.1}
+        />
+      </mesh>
+
+      {/* Label on hover */}
+      {(hovered || isSelected) && (
+        <Html distanceFactor={15} style={{ pointerEvents: 'none' }}>
+          <div className="bg-slate-900/95 px-3 py-2 rounded-lg text-xs text-white whitespace-nowrap border border-slate-600 shadow-lg">
+            <div className="font-bold text-sm">{astrocyte.name}</div>
+            <div className="text-slate-400 mt-1">
+              {astrocyte.neuronIds.length}개 뉴런 · 강도 {(astrocyte.strength * 100).toFixed(0)}%
+            </div>
+          </div>
+        </Html>
+      )}
+    </group>
+  )
+}
+
 // Synapse connection line
 function SynapseConnection({
   synapse,
   neurons,
   isHighlighted,
+  isIntraCluster,
 }: {
   synapse: Synapse
   neurons: Map<string, NeuronNode>
   isHighlighted: boolean
+  isIntraCluster: boolean
 }) {
   const lineRef = useRef<THREE.Line>(null)
 
@@ -115,13 +191,15 @@ function SynapseConnection({
       new THREE.Vector3(...toNeuron.position),
     ]
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    // Intra-cluster synapses are brighter
+    const baseOpacity = isIntraCluster ? 0.3 : 0.1
     const material = new THREE.LineBasicMaterial({
-      color: isHighlighted ? '#22c55e' : '#475569',
+      color: isHighlighted ? '#22c55e' : isIntraCluster ? '#8b5cf6' : '#475569',
       transparent: true,
-      opacity: isHighlighted ? 0.8 : 0.15 + synapse.strength * 0.2,
+      opacity: isHighlighted ? 0.8 : baseOpacity + synapse.strength * 0.2,
     })
     return new THREE.Line(geometry, material)
-  }, [fromNeuron, toNeuron, isHighlighted, synapse.strength])
+  }, [fromNeuron, toNeuron, isHighlighted, synapse.strength, isIntraCluster])
 
   useFrame((state) => {
     if (lineRef.current && isHighlighted) {
@@ -140,13 +218,21 @@ function SynapseConnection({
 function BrainScene({
   neurons,
   synapses,
+  astrocytes,
+  neuronToAstrocyte,
   selectedNeuron,
   onSelectNeuron,
+  selectedAstrocyte,
+  onSelectAstrocyte,
 }: {
   neurons: NeuronNode[]
   synapses: Synapse[]
+  astrocytes: Astrocyte[]
+  neuronToAstrocyte: Record<string, string>
   selectedNeuron: NeuronNode | null
   onSelectNeuron: (node: NeuronNode | null) => void
+  selectedAstrocyte: Astrocyte | null
+  onSelectAstrocyte: (a: Astrocyte | null) => void
 }) {
   const neuronMap = useMemo(() => new Map(neurons.map((n) => [n.id, n])), [neurons])
 
@@ -161,6 +247,23 @@ function BrainScene({
     return connected
   }, [selectedNeuron, synapses])
 
+  // Determine if synapse is intra-cluster
+  const isIntraCluster = useMemo(() => {
+    const map = new Map<string, boolean>()
+    synapses.forEach(s => {
+      const fromCluster = neuronToAstrocyte[s.fromId]
+      const toCluster = neuronToAstrocyte[s.toId]
+      map.set(s.id, fromCluster !== undefined && fromCluster === toCluster)
+    })
+    return map
+  }, [synapses, neuronToAstrocyte])
+
+  // Neurons in selected astrocyte
+  const selectedAstrocyteNeuronIds = useMemo(() => {
+    if (!selectedAstrocyte) return new Set<string>()
+    return new Set(selectedAstrocyte.neuronIds)
+  }, [selectedAstrocyte])
+
   return (
     <>
       {/* Ambient light */}
@@ -168,7 +271,17 @@ function BrainScene({
       <pointLight position={[10, 10, 10]} intensity={1} />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
 
-      {/* Synapses (render first, behind neurons) */}
+      {/* Astrocytes (render first, as background) */}
+      {astrocytes.map((astrocyte) => (
+        <AstrocyteSphere
+          key={astrocyte.id}
+          astrocyte={astrocyte}
+          isSelected={selectedAstrocyte?.id === astrocyte.id}
+          onSelect={onSelectAstrocyte}
+        />
+      ))}
+
+      {/* Synapses (render behind neurons) */}
       {synapses.map((synapse) => (
         <SynapseConnection
           key={synapse.id}
@@ -178,6 +291,7 @@ function BrainScene({
             selectedNeuron !== null &&
             (synapse.fromId === selectedNeuron.id || synapse.toId === selectedNeuron.id)
           }
+          isIntraCluster={isIntraCluster.get(synapse.id) || false}
         />
       ))}
 
@@ -187,7 +301,7 @@ function BrainScene({
           key={neuron.id}
           node={neuron}
           isSelected={selectedNeuron?.id === neuron.id}
-          isHighlighted={connectedNeuronIds.has(neuron.id)}
+          isHighlighted={connectedNeuronIds.has(neuron.id) || selectedAstrocyteNeuronIds.has(neuron.id)}
           onSelect={onSelectNeuron}
         />
       ))}
@@ -197,10 +311,10 @@ function BrainScene({
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        autoRotate={!selectedNeuron}
+        autoRotate={!selectedNeuron && !selectedAstrocyte}
         autoRotateSpeed={0.5}
         minDistance={3}
-        maxDistance={15}
+        maxDistance={20}
       />
     </>
   )
@@ -291,6 +405,7 @@ function Legend() {
 export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolean }) {
   const { brainData, isLoading, error, refetch } = useBrainData()
   const [selectedNeuron, setSelectedNeuron] = useState<NeuronNode | null>(null)
+  const [selectedAstrocyte, setSelectedAstrocyte] = useState<Astrocyte | null>(null)
   const [zoomIn, setZoomIn] = useState(false)
   const [zoomOut, setZoomOut] = useState(false)
   const [reset, setReset] = useState(false)
@@ -357,7 +472,8 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
       <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
         <div className="bg-slate-800/80 backdrop-blur rounded-lg px-3 py-1.5 text-xs text-slate-300">
           <span className="text-violet-400 font-medium">{brainData.neurons.length}</span> 뉴런 ·{' '}
-          <span className="text-emerald-400 font-medium">{brainData.synapses.length}</span> 시냅스
+          <span className="text-emerald-400 font-medium">{brainData.synapses.length}</span> 시냅스 ·{' '}
+          <span className="text-amber-400 font-medium">{brainData.astrocytes?.length || 0}</span> 클러스터
         </div>
         <button
           onClick={refetch}
@@ -405,8 +521,12 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
             <BrainScene
               neurons={brainData.neurons}
               synapses={brainData.synapses}
+              astrocytes={brainData.astrocytes || []}
+              neuronToAstrocyte={brainData.neuronToAstrocyte || {}}
               selectedNeuron={selectedNeuron}
               onSelectNeuron={setSelectedNeuron}
+              selectedAstrocyte={selectedAstrocyte}
+              onSelectAstrocyte={setSelectedAstrocyte}
             />
             <CameraController zoomIn={zoomIn} zoomOut={zoomOut} reset={reset} />
           </Suspense>

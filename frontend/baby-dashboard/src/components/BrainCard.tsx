@@ -45,7 +45,7 @@ export function BrainCard() {
           ) : brainData ? (
             <>
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-2 mb-4">
                 <div className="bg-slate-900/50 rounded-xl p-3 text-center">
                   <p className="text-2xl font-bold text-violet-400">{brainData.neurons.length}</p>
                   <p className="text-xs text-slate-500">뉴런</p>
@@ -53,6 +53,10 @@ export function BrainCard() {
                 <div className="bg-slate-900/50 rounded-xl p-3 text-center">
                   <p className="text-2xl font-bold text-emerald-400">{brainData.synapses.length}</p>
                   <p className="text-xs text-slate-500">시냅스</p>
+                </div>
+                <div className="bg-slate-900/50 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-bold text-amber-400">{brainData.astrocytes?.length || 0}</p>
+                  <p className="text-xs text-slate-500">클러스터</p>
                 </div>
               </div>
 
