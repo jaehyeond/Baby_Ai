@@ -70,21 +70,24 @@ export function CuriosityCard({ className = '' }: CuriosityCardProps) {
 
     try {
       // Fetch queue
-      const { data: queueData } = await supabase
+      // Using 'as any' because these tables aren't in the generated TypeScript types
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: queueData } = await (supabase as any)
         .from('curiosity_queue')
         .select('*')
         .order('priority', { ascending: false })
         .order('created_at', { ascending: false })
-        .limit(20)
+        .limit(20) as { data: CuriosityItem[] | null }
 
       if (queueData) setQueue(queueData)
 
       // Fetch exploration logs
-      const { data: logsData } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: logsData } = await (supabase as any)
         .from('exploration_logs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(10)
+        .limit(10) as { data: ExplorationLog[] | null }
 
       if (logsData) setExplorationLogs(logsData)
 

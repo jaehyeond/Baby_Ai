@@ -86,6 +86,17 @@ export function useBrainData() {
         console.warn('Failed to fetch concept_relations:', crError)
       }
 
+      // DEBUG: Log fetched data
+      console.log('[useBrainData] concepts:', concepts?.length, 'conceptRelations:', conceptRelations?.length, 'crError:', crError)
+
+      // DEBUG: Log first 3 concept IDs and first 3 relation IDs
+      if (concepts && concepts.length > 0) {
+        console.log('[useBrainData] First 3 concept IDs:', concepts.slice(0, 3).map(c => c.id))
+      }
+      if (conceptRelations && conceptRelations.length > 0) {
+        console.log('[useBrainData] First 3 relation pairs:', conceptRelations.slice(0, 3).map(cr => `${cr.from_concept_id} -> ${cr.to_concept_id}`))
+      }
+
       // Fetch co-occurrence data using raw SQL via RPC or direct query
       // Since we can't use raw SQL directly, we'll compute synapses from experience_concepts
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +118,7 @@ export function useBrainData() {
       // Add synapses from concept_relations table (direct relations)
       conceptRelations?.forEach((cr) => {
         const [id1, id2] = [cr.from_concept_id, cr.to_concept_id].sort()
-        const key = `${id1}-${id2}`
+        const key = `${id1}|${id2}`
         const existing = synapseMap.get(key)
         if (existing) {
           // Merge with existing
@@ -138,7 +149,7 @@ export function useBrainData() {
         for (let i = 0; i < group.length; i++) {
           for (let j = i + 1; j < group.length; j++) {
             const [id1, id2] = [group[i].conceptId, group[j].conceptId].sort()
-            const key = `${id1}-${id2}`
+            const key = `${id1}|${id2}`
             const existing = synapseMap.get(key) || { count: 0, totalRelevance: 0 }
             synapseMap.set(key, {
               count: existing.count + 1,
@@ -163,8 +174,15 @@ export function useBrainData() {
       const synapses: Synapse[] = []
       const conceptIdToName = new Map(concepts?.map((c) => [c.id, c.name]) || [])
 
+      // DEBUG: Check first few synapseMap keys against conceptMap
+      let debugCount = 0
       synapseMap.forEach((data, key) => {
-        const [fromId, toId] = key.split('-')
+        const [fromId, toId] = key.split('|')
+        if (debugCount < 3) {
+          console.log('[useBrainData] synapse key:', key, 'fromId:', fromId, 'toId:', toId,
+            'fromInMap:', conceptMap.has(fromId), 'toInMap:', conceptMap.has(toId))
+          debugCount++
+        }
         // Only include synapses where both concepts exist in our neuron list
         if (conceptMap.has(fromId) && conceptMap.has(toId)) {
           synapses.push({
@@ -178,6 +196,9 @@ export function useBrainData() {
           })
         }
       })
+
+      // DEBUG: Log final counts
+      console.log('[useBrainData] Final: neurons:', neurons.length, 'synapses:', synapses.length, 'synapseMap size:', synapseMap.size)
 
       setBrainData({ neurons, synapses })
     } catch (err) {
