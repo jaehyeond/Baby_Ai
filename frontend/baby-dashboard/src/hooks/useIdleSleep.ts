@@ -22,6 +22,10 @@ interface SleepStats {
   patterns_promoted: number
   concepts_consolidated: number
   semantic_links_created: number
+  // Phase 8: Curiosity stats
+  curiosities_generated?: number
+  explorations_completed?: number
+  new_knowledge_acquired?: number
 }
 
 interface UseIdleSleepReturn {
@@ -74,7 +78,7 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
   const lastActivityRef = useRef<number>(Date.now())
   const hasSleeptRef = useRef(false)
 
-  // Trigger sleep (memory consolidation)
+  // Trigger sleep (memory consolidation + curiosity exploration)
   const triggerSleep = useCallback(async () => {
     if (isSleeping || hasSleeptRef.current) return
 
@@ -82,10 +86,24 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
     hasSleeptRef.current = true
     onSleepStart?.()
 
-    try {
-      console.log('[IdleSleep] Starting memory consolidation (idle trigger)...')
+    const combinedStats: SleepStats = {
+      experiences_processed: 0,
+      memories_strengthened: 0,
+      memories_decayed: 0,
+      patterns_promoted: 0,
+      concepts_consolidated: 0,
+      semantic_links_created: 0,
+      curiosities_generated: 0,
+      explorations_completed: 0,
+      new_knowledge_acquired: 0,
+    }
 
-      const response = await fetch('/api/memory/consolidate', {
+    try {
+      console.log('[IdleSleep] Starting sleep cycle (memory + curiosity)...')
+
+      // Phase 1: Memory Consolidation
+      console.log('[IdleSleep] Phase 1: Memory consolidation...')
+      const memoryResponse = await fetch('/api/memory/consolidate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,18 +113,62 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
         }),
       })
 
-      if (!response.ok) {
-        throw new Error(`Consolidation failed: ${response.status}`)
+      if (memoryResponse.ok) {
+        const memoryData = await memoryResponse.json()
+        if (memoryData.success && memoryData.stats) {
+          Object.assign(combinedStats, memoryData.stats)
+          console.log('[IdleSleep] Memory consolidation done:', memoryData.stats)
+        }
       }
 
-      const data = await response.json()
+      // Phase 2: Generate New Curiosities (based on gaps found during consolidation)
+      console.log('[IdleSleep] Phase 2: Generating curiosities...')
+      const curiosityResponse = await fetch('/api/curiosity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'generate',
+          methods: ['concept_gap', 'failure', 'pattern', 'similarity'],
+          limit: 5, // Generate up to 5 new curiosities during sleep
+        }),
+      })
 
-      if (data.success && data.stats) {
-        console.log('[IdleSleep] Sleep complete:', data.stats)
-        onSleepComplete?.(data.stats)
-      } else {
-        throw new Error(data.error || 'Unknown error')
+      if (curiosityResponse.ok) {
+        const curiosityData = await curiosityResponse.json()
+        if (curiosityData.success) {
+          combinedStats.curiosities_generated = curiosityData.generated?.length || 0
+          console.log('[IdleSleep] Curiosities generated:', combinedStats.curiosities_generated)
+        }
       }
+
+      // Phase 3: Autonomous Exploration (explore pending curiosities)
+      console.log('[IdleSleep] Phase 3: Autonomous exploration...')
+      const exploreResponse = await fetch('/api/curiosity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'explore_batch',
+          limit: 3, // Explore up to 3 curiosities during sleep
+          methods: ['internal_graph', 'memory_recall', 'pattern_match'], // Prefer internal methods during sleep
+        }),
+      })
+
+      if (exploreResponse.ok) {
+        const exploreData = await exploreResponse.json()
+        if (exploreData.success) {
+          combinedStats.explorations_completed = exploreData.explored?.length || 0
+          // Count new knowledge from explorations
+          const newKnowledge = exploreData.explored?.reduce((sum: number, exp: { new_concepts?: number; new_relations?: number }) => {
+            return sum + (exp.new_concepts || 0) + (exp.new_relations || 0)
+          }, 0) || 0
+          combinedStats.new_knowledge_acquired = newKnowledge
+          console.log('[IdleSleep] Explorations done:', combinedStats.explorations_completed, 'new knowledge:', newKnowledge)
+        }
+      }
+
+      console.log('[IdleSleep] Sleep cycle complete:', combinedStats)
+      onSleepComplete?.(combinedStats)
+
     } catch (error) {
       console.error('[IdleSleep] Sleep error:', error)
       onSleepError?.(error instanceof Error ? error : new Error(String(error)))

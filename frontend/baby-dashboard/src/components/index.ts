@@ -36,3 +36,5 @@ export { AutonomousGoalsCard } from './AutonomousGoalsCard'
 export { MemoryConsolidationCard } from './MemoryConsolidationCard'
 // Phase 7: Meta-cognition
 export { MetacognitionCard } from './MetacognitionCard'
+// Phase 8: Autonomous Curiosity
+export { CuriosityCard } from './CuriosityCard'

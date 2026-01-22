@@ -398,6 +398,32 @@ v2에서 추가된 기능:
 - **UI 표시**: MemoryConsolidationCard에서 남은 시간 및 상태 표시
 - **트리거 타입**: `idle` (자동), `manual` (버튼), `scheduled` (pg_cron, 미구현)
 
+#### Idle 감지 기준 (상세)
+
+**감지하는 이벤트** (`useIdleSleep.ts:231`):
+```typescript
+const events = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll']
+```
+
+| 이벤트 | 설명 | 플랫폼 |
+|--------|------|--------|
+| `mousedown` | 마우스 클릭 | PC |
+| `mousemove` | 마우스 이동 | PC |
+| `keydown` | 키보드 입력 | PC |
+| `touchstart` | 터치 시작 | 모바일 |
+| `scroll` | 스크롤 | PC/모바일 |
+
+**작동 조건**:
+- ✅ 대시보드 탭이 열려있어야 함 (React 앱이 실행 중)
+- ✅ 위 이벤트 중 **아무 동작도 없으면** 30분 후 sleep 트리거
+- ❌ 브라우저 닫으면 → sleep 안 일어남 (앱 종료됨)
+- ❌ 대시보드 탭이 백그라운드면 → 브라우저에 따라 다름
+
+**예시**:
+- 대시보드 열어두고 유튜브 보기 → 30분 후 sleep ✅
+- 대시보드 탭 닫기 → sleep 안 됨 ❌
+- 대시보드에서 가끔 스크롤 → 타이머 리셋, sleep 안 됨
+
 구현된 기능:
 1. `strengthenEmotionalMemories()` - 감정 기반 강화
 2. `decayUnusedMemories()` - 시간 기반 감쇠
