@@ -365,12 +365,43 @@ SELECT cron.schedule(
 
 ## Deployment Notes
 
-**Edge Function Version**: v1 (deployed 2026-01-22)
+**Edge Function Version**: v2 (deployed 2026-01-22)
+
+### v2 변경사항 (2026-01-22)
+
+🚨 **핵심 변경: LLM 의존성 제거**
+
+프로젝트 철학에 따라 패턴 감지에서 Gemini LLM 호출을 제거하고 통계/클러스터링 기반으로 변경:
+
+| v1 (기존) | v2 (수정) |
+|----------|---------|
+| Gemini LLM으로 패턴 분석 | 통계 기반 task_type 그룹핑 |
+| LLM이 "반복 패턴" 판단 | 임베딩 클러스터링 (유사도 >80%) |
+| 비용: API 호출당 과금 | 비용: $0 (DB 연산만) |
+
+**철학적 근거**:
+> *"LLM은 Baby의 '신체'지만, '마음'은 경험에서 직접 형성된다"*
+>
+> 패턴 발견은 Baby의 "학습/성장" 영역이므로 외부 LLM이 아닌 내부 메커니즘으로 수행
+
+### v2 구현 방법
+
+1. **task_type 그룹핑**: 같은 task_type이 3회 이상 반복되면 절차 기억으로 승격
+2. **임베딩 클러스터링**: 코사인 유사도 >0.8인 경험들을 그룹화하여 절차 기억 생성
+3. **키워드 추출**: 간단한 규칙 기반 (한글/영문/숫자만 추출)
+
+### 수면 자동화 (Idle Trigger)
+
+v2에서 추가된 기능:
+
+- **useIdleSleep 훅**: 30분 이상 사용자 활동이 없으면 자동으로 memory consolidation 실행
+- **UI 표시**: MemoryConsolidationCard에서 남은 시간 및 상태 표시
+- **트리거 타입**: `idle` (자동), `manual` (버튼), `scheduled` (pg_cron, 미구현)
 
 구현된 기능:
 1. `strengthenEmotionalMemories()` - 감정 기반 강화
 2. `decayUnusedMemories()` - 시간 기반 감쇠
-3. `promoteToProceduralMemory()` - 패턴 승격
+3. `promoteToProceduralMemory()` - 패턴 승격 **(v2: NO LLM)**
 4. `createSemanticLinks()` - 의미 연결 생성
 5. `consolidateConceptRelations()` - 개념 관계 정리
 6. `runFullConsolidation()` - 전체 통합 실행

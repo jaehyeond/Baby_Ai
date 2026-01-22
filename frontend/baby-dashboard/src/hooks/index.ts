@@ -12,3 +12,5 @@ export type { UseCameraReturn, UseCameraOptions, CameraFacing } from './useCamer
 // Phase 4: Microphone
 export { useMicrophone } from './useMicrophone'
 export type { UseMicrophoneReturn, UseMicrophoneOptions } from './useMicrophone'
+// Phase 6: Idle Sleep (Memory Consolidation)
+export { useIdleSleep } from './useIdleSleep'

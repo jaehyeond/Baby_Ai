@@ -29,6 +29,8 @@
 | **Research-1** | **학습 아키텍처 연구 (반응성 학습)** | ✅ 완료 |
 | **Research-2** | **프론트엔드 기술 스택 조사** | ✅ 완료 |
 | **Architecture** | 반응성 학습 구조 재설계 | 🔄 검토 중 |
+| **Phase-6** | Memory Consolidation | ✅ 완료 |
+| **Phase-7** | Meta-cognition 설계 | ✅ 완료 |
 | **Migration** | JSON → Supabase 마이그레이션 | 📋 대기 |
 | **Frontend-F1** | Next.js 프로젝트 설정 | 📋 대기 |
 | **Frontend-F2** | 2D 대시보드 | 📋 대기 |
@@ -299,6 +301,59 @@ SELECT boost_memory_by_emotion(
 ---
 
 ## 작업 로그
+
+### 2026-01-22 - Phase 6 & 7 Implementation
+
+#### [Phase 6] Memory Consolidation 완료 ✅
+
+수면 유사 기억 통합 시스템 구현:
+
+| 구현 항목 | 상태 |
+|----------|------|
+| DB 테이블 (3개) | ✅ memory_consolidation_logs, procedural_memory, semantic_links |
+| Edge Function | ✅ memory-consolidation v1 |
+| Frontend | ✅ MemoryConsolidationCard |
+| API Route | ✅ /api/memory/consolidate |
+
+**주요 기능**:
+- 감정 기반 기억 강화 (>60% → 1.5배)
+- 시간 기반 기억 감쇠 (30일+)
+- 패턴 → 절차 기억 승격 (3회+)
+- 의미적 연결 생성 (유사도 >70%)
+
+#### [Phase 7] Meta-cognition 설계 완료 📋
+
+**🚨 핵심 결정: 외부 LLM 사용 금지**
+
+프로젝트 철학에 따라, Meta-cognition은 외부 LLM 없이 내부 메커니즘으로 구현:
+
+| 기존 계획 (❌) | 수정된 계획 (✅) |
+|--------------|----------------|
+| LLM에게 분석 요청 | 규칙 기반 자기 평가 |
+| LLM이 전략 분류 | 통계 기반 효과성 |
+| LLM이 인사이트 생성 | 패턴 매칭 연관성 |
+| 비용: $15~1,500/월 | 비용: $0 |
+
+**구현 방법**:
+1. 벡터 유사도 - 유사 경험 탐색
+2. 통계 계산 - 전략 효과성 평가
+3. 규칙 기반 - 조건부 강화/약화
+4. 헵의 법칙 - 연관 학습
+
+> *"Transformer는 '지식'을 주입하지만, 우리는 '학습하는 법'을 가르칩니다"*
+
+자세한 설계: [PHASE_7_METACOGNITION.md](./docs/PHASE_7_METACOGNITION.md)
+
+#### [버그 수정] 뉴런/시냅스 표시 ✅
+
+| 문제 | 원인 | 해결 |
+|------|------|------|
+| 뉴런 100개 제한 | `.limit(100)` 하드코딩 | limit(500)으로 증가 |
+| 시냅스 0개 표시 | 100개 뉴런 외 관계 필터링 | 자동 해결 |
+
+수정 파일: `useBrainData.ts:73, 83`
+
+---
 
 ### 2026-01-20 - Architecture Research
 

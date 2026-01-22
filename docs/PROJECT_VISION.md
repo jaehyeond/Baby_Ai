@@ -25,7 +25,9 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.4 | Physical World | ✅ 완료 | 물리 세계 이해 |
 | Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
 | Phase 5 | Autonomous Goals | ✅ 완료 | 자율 목표 설정 |
-| Phase 6+ | Future | 🔜 예정 | 고급 기능 |
+| Phase 6 | Memory Consolidation | ✅ 완료 | 장기 기억 통합 (수면 유사 과정) |
+| Phase 7 | Meta-cognition | 📋 설계완료 | 자기 사고에 대한 사고 (외부 LLM 없이) |
+| Phase 8+ | Future | 🔜 예정 | 고급 기능 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -125,6 +127,88 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 - 대화 컨텍스트: 최근 5개 대화 로드하여 기억 유지
 - 도구 사용: Gemini Function Calling으로 Wikipedia/사전 검색 가능
 - 발달 단계별 도구 해금 (TODDLER: 사전, CHILD: Wikipedia+계산)
+
+### Phase 6: Memory Consolidation ✅ (2026-01-22 완료)
+**목적**: Baby AI가 수면과 유사한 과정을 통해 기억을 정리하고 강화
+
+**이론적 배경**:
+- 낮에 해마(Hippocampus)에 저장된 단기 기억
+- 수면 중 피질(Cortex)로 이동하며 장기 기억화
+- 감정적으로 중요한 기억은 강화, 불필요한 기억은 삭제
+
+**구현된 기능**:
+1. **감정 기반 기억 강화** - 감정 강도 >60% → 최대 1.5배 강화
+2. **시간 기반 기억 감쇠** - 30일+ 미접근 → 점진적 약화
+3. **패턴 → 절차 기억 승격** - 3회+ 반복 패턴 → 자동화
+4. **의미적 연결 생성** - 유사도 >70% 경험들 연결
+5. **개념 관계 통합** - 지식 그래프 관계 강화/약화
+
+**DB 테이블**:
+- `memory_consolidation_logs` - 통합 작업 기록
+- `procedural_memory` - 절차적 기억
+- `semantic_links` - 경험 간 의미적 연결
+
+**Edge Function**: `memory-consolidation` v1
+- consolidate, strengthen, decay, promote_patterns, get_stats, get_procedural_memories
+
+**트리거 방식**:
+| 방식 | 트리거 |
+|------|--------|
+| `scheduled` | pg_cron 매일 새벽 3시 |
+| `idle` | 30분 이상 대화 없음 |
+| `manual` | UI에서 "수면 시작" 버튼 |
+
+---
+
+### Phase 7: Meta-cognition 📋 (설계 완료, 구현 예정)
+**목적**: Baby AI가 자신의 사고 과정을 분석하고 학습 (자기 사고에 대한 사고)
+
+**🚨 핵심 설계 원칙: 외부 LLM 사용 금지**
+
+프로젝트 철학에 따라, Meta-cognition은 **외부 LLM 호출 없이** 내부 메커니즘으로 구현:
+
+| 기존 계획 (❌ 잘못됨) | 수정된 계획 (✅ Baby 내재적) |
+|----------------------|---------------------------|
+| LLM에게 "왜 이렇게 답했나?" 분석 요청 | **규칙 기반 자기 평가** (유사 경험 비교) |
+| LLM이 전략 분류 | **통계 기반 전략 효과성** (성공률 계산) |
+| LLM이 인사이트 생성 | **패턴 매칭으로 연관성 발견** |
+
+**이유**:
+> *"Transformer는 '지식'을 주입하지만, 우리는 '학습하는 법'을 가르칩니다"*
+>
+> 외부 LLM 분석 = "주입된 지식" ≠ Baby가 스스로 학습한 것
+
+**구현 방법 (외부 LLM 없이)**:
+1. **벡터 유사도** - 유사 경험 탐색 (`embedding <-> target < 0.3`)
+2. **통계 계산** - 전략 효과성 평가 (`success_count / total_count`)
+3. **규칙 기반** - 조건부 강화/약화
+4. **헵의 법칙** - 연관 학습 (`strengthen_*()` 함수들)
+
+**예상 DB 스키마**:
+```sql
+-- 전략 효과성 (통계 기반)
+CREATE TABLE strategy_effectiveness (
+  strategy_name TEXT PRIMARY KEY,
+  success_count INT DEFAULT 0,
+  failure_count INT DEFAULT 0,
+  effectiveness_score FLOAT DEFAULT 0.5,  -- 계산: success / total
+  contexts_effective JSONB,
+  updated_at TIMESTAMPTZ
+);
+
+-- 자기 평가 기록 (규칙 기반)
+CREATE TABLE self_evaluation_logs (
+  id UUID PRIMARY KEY,
+  experience_id UUID REFERENCES experiences(id),
+  similar_experiences UUID[],  -- 벡터 유사도로 찾은 유사 경험
+  outcome TEXT,  -- success, failure, partial
+  strategy_used TEXT,
+  pattern_match_score FLOAT,  -- 유사 경험과의 일치도
+  created_at TIMESTAMPTZ
+);
+```
+
+---
 
 ### Phase 5: Autonomous Goal Setting ✅ (2026-01-21 완료)
 **목적**: Baby AI가 스스로 학습 목표를 설정하고 추구하는 능력

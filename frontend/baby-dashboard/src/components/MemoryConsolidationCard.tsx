@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@supabase/supabase-js'
+import { useIdleSleep } from '@/hooks'
 
 // Types
 interface ConsolidationLog {
@@ -68,6 +69,32 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
   const [activeTab, setActiveTab] = useState<'overview' | 'procedural' | 'history'>('overview')
   const [loading, setLoading] = useState(true)
   const [consolidating, setConsolidating] = useState(false)
+
+  // Idle sleep hook - auto memory consolidation after 30 minutes of inactivity
+  const { timeUntilSleep, isSleeping: isIdleSleeping, isIdle } = useIdleSleep({
+    idleTimeoutMs: 30 * 60 * 1000, // 30 minutes
+    enabled: true,
+    onSleepStart: () => {
+      console.log('[MemoryConsolidation] Idle sleep started')
+    },
+    onSleepComplete: (sleepStats) => {
+      console.log('[MemoryConsolidation] Idle sleep complete:', sleepStats)
+      fetchData() // Refresh data after sleep
+    },
+    onSleepError: (error) => {
+      console.error('[MemoryConsolidation] Idle sleep error:', error)
+    },
+  })
+
+  // Format time remaining
+  const formatTimeRemaining = (ms: number): string => {
+    const minutes = Math.floor(ms / 60000)
+    const seconds = Math.floor((ms % 60000) / 1000)
+    if (minutes > 0) {
+      return `${minutes}분 ${seconds}초`
+    }
+    return `${seconds}초`
+  }
 
   // Fetch data
   const fetchData = useCallback(async () => {
@@ -481,11 +508,40 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
         </AnimatePresence>
       </div>
 
+      {/* Idle Sleep Status */}
+      <div className="px-4 py-2 bg-slate-800/50 border-t border-slate-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {isIdleSleeping ? (
+              <>
+                <span className="animate-pulse text-lg">💤</span>
+                <span className="text-sm text-indigo-300">자동 수면 중...</span>
+              </>
+            ) : isIdle ? (
+              <>
+                <span className="text-lg">😪</span>
+                <span className="text-sm text-amber-300">유휴 상태 감지됨</span>
+              </>
+            ) : (
+              <>
+                <span className="text-lg">👀</span>
+                <span className="text-sm text-slate-400">
+                  자동 수면까지 {formatTimeRemaining(timeUntilSleep)}
+                </span>
+              </>
+            )}
+          </div>
+          <div className="text-xs text-slate-500">
+            {isIdle ? '⏰ idle' : '🟢 active'}
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
       <div className="px-4 py-2 bg-slate-900/50 border-t border-slate-700">
         <div className="flex items-center justify-between text-xs text-slate-500">
           <span>인간 뇌의 수면 중 기억 통합 모방</span>
-          <span>v1</span>
+          <span>v2 (NO LLM)</span>
         </div>
       </div>
     </div>
