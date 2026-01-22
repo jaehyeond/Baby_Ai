@@ -34,3 +34,5 @@ export { PhysicalWorldCard } from './PhysicalWorldCard'
 export { AutonomousGoalsCard } from './AutonomousGoalsCard'
 // Phase 6: Memory Consolidation
 export { MemoryConsolidationCard } from './MemoryConsolidationCard'
+// Phase 7: Meta-cognition
+export { MetacognitionCard } from './MetacognitionCard'

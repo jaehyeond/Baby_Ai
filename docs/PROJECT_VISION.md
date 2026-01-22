@@ -26,7 +26,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
 | Phase 5 | Autonomous Goals | ✅ 완료 | 자율 목표 설정 |
 | Phase 6 | Memory Consolidation | ✅ 완료 | 장기 기억 통합 (수면 유사 과정) |
-| Phase 7 | Meta-cognition | 📋 설계완료 | 자기 사고에 대한 사고 (외부 LLM 없이) |
+| Phase 7 | Meta-cognition | ✅ 완료 | 자기 사고에 대한 사고 (외부 LLM 없이) |
 | Phase 8+ | Future | 🔜 예정 | 고급 기능 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
@@ -160,7 +160,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 
 ---
 
-### Phase 7: Meta-cognition 📋 (설계 완료, 구현 예정)
+### Phase 7: Meta-cognition ✅ (2026-01-23 완료)
 **목적**: Baby AI가 자신의 사고 과정을 분석하고 학습 (자기 사고에 대한 사고)
 
 **🚨 핵심 설계 원칙: 외부 LLM 사용 금지**
@@ -178,35 +178,33 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 >
 > 외부 LLM 분석 = "주입된 지식" ≠ Baby가 스스로 학습한 것
 
-**구현 방법 (외부 LLM 없이)**:
-1. **벡터 유사도** - 유사 경험 탐색 (`embedding <-> target < 0.3`)
-2. **통계 계산** - 전략 효과성 평가 (`success_count / total_count`)
-3. **규칙 기반** - 조건부 강화/약화
-4. **헵의 법칙** - 연관 학습 (`strengthen_*()` 함수들)
+**구현된 기능 (외부 LLM 없이)**:
+1. **벡터 유사도** - `find_similar_experiences()` 함수로 유사 경험 탐색
+2. **통계 기반 전략 효과성** - 자동 트리거로 성공률 계산
+3. **규칙 기반 전략 추론** - `inferStrategy()` 함수 (explore, exploit, cautious, creative, analytical, imitative)
+4. **헵의 법칙** - `strengthen_experience_concept_link()` 함수로 연관 학습
 
-**예상 DB 스키마**:
-```sql
--- 전략 효과성 (통계 기반)
-CREATE TABLE strategy_effectiveness (
-  strategy_name TEXT PRIMARY KEY,
-  success_count INT DEFAULT 0,
-  failure_count INT DEFAULT 0,
-  effectiveness_score FLOAT DEFAULT 0.5,  -- 계산: success / total
-  contexts_effective JSONB,
-  updated_at TIMESTAMPTZ
-);
+**6가지 전략**:
+| 전략 | 설명 | 트리거 조건 |
+|------|------|------------|
+| `explore` | 새로운 접근법 시도 | 유사 경험 없음 |
+| `exploit` | 검증된 방법 사용 | 유사도↑ + 성공률↑ |
+| `cautious` | 신중한 접근 | 유사도↑ + 성공률↓ |
+| `creative` | 창의적 해결 | task_type이 creative/generation |
+| `analytical` | 분석적 접근 | task_type이 analysis/understanding |
+| `imitative` | 모방 학습 | 중간 유사도 |
 
--- 자기 평가 기록 (규칙 기반)
-CREATE TABLE self_evaluation_logs (
-  id UUID PRIMARY KEY,
-  experience_id UUID REFERENCES experiences(id),
-  similar_experiences UUID[],  -- 벡터 유사도로 찾은 유사 경험
-  outcome TEXT,  -- success, failure, partial
-  strategy_used TEXT,
-  pattern_match_score FLOAT,  -- 유사 경험과의 일치도
-  created_at TIMESTAMPTZ
-);
-```
+**DB 테이블**:
+- `strategy_effectiveness` - 전략별 효과성 (통계 기반)
+- `self_evaluation_logs` - 자기 평가 기록
+
+**Edge Function**: `self-evaluation` v1
+- evaluate, get_best_strategy, get_stats, get_evaluations, get_strategies
+
+**Frontend**: `MetacognitionCard` 컴포넌트
+- 전략 탭: 6가지 전략별 효과성 바 차트
+- 평가 탭: 최근 자기 평가 기록
+- 인사이트 탭: 통계 및 분석
 
 ---
 
