@@ -30,3 +30,7 @@ export { ConversationView, RecentConversation } from './ConversationView'
 export type { ConversationMessage } from './ConversationView'
 // Phase 4.4: Physical World Understanding
 export { PhysicalWorldCard } from './PhysicalWorldCard'
+// Phase 5: Autonomous Goal Setting
+export { AutonomousGoalsCard } from './AutonomousGoalsCard'
+// Phase 6: Memory Consolidation
+export { MemoryConsolidationCard } from './MemoryConsolidationCard'

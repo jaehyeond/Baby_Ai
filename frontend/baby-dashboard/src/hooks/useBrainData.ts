@@ -70,7 +70,7 @@ export function useBrainData() {
         .from('semantic_concepts')
         .select('id, name, category, strength, usage_count')
         .order('usage_count', { ascending: false })
-        .limit(100) as { data: RawConcept[] | null; error: Error | null }
+        .limit(500) as { data: RawConcept[] | null; error: Error | null }
 
       if (conceptsError) throw conceptsError
 
@@ -80,7 +80,7 @@ export function useBrainData() {
         .from('concept_relations')
         .select('id, from_concept_id, to_concept_id, relation_type, strength, evidence_count')
         .order('evidence_count', { ascending: false })
-        .limit(200) as { data: RawConceptRelation[] | null; error: Error | null }
+        .limit(500) as { data: RawConceptRelation[] | null; error: Error | null }
 
       if (crError) {
         console.warn('Failed to fetch concept_relations:', crError)

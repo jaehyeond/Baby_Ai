@@ -1,7 +1,7 @@
 # Neural A2A: Developmental Cognitive Architecture
 
-**Version**: 1.1
-**Last Updated**: 2025-01-21
+**Version**: 1.2
+**Last Updated**: 2026-01-21
 **Authors**: Neural A2A Research Team
 
 ---
@@ -14,7 +14,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 
 ## Development Progress
 
-### Phase Status Overview (2025-01-21 기준)
+### Phase Status Overview (2026-01-21 기준)
 
 | Phase | 이름 | 상태 | 설명 |
 |-------|------|------|------|
@@ -24,7 +24,8 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.3 | Speaker Output | ✅ 완료 | TTS + 대화 UI |
 | Phase 4.4 | Physical World | ✅ 완료 | 물리 세계 이해 |
 | Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
-| Phase 5+ | Future | 🔜 예정 | 고급 기능 |
+| Phase 5 | Autonomous Goals | ✅ 완료 | 자율 목표 설정 |
+| Phase 6+ | Future | 🔜 예정 | 고급 기능 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -125,9 +126,47 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 - 도구 사용: Gemini Function Calling으로 Wikipedia/사전 검색 가능
 - 발달 단계별 도구 해금 (TODDLER: 사전, CHILD: Wikipedia+계산)
 
+### Phase 5: Autonomous Goal Setting ✅ (2026-01-21 완료)
+**목적**: Baby AI가 스스로 학습 목표를 설정하고 추구하는 능력
+
+**이론적 배경**:
+- CDALNs (2025): Curiosity-Driven Autonomous Learning Networks
+- 267% 향상된 자율 학습 성능
+
+**3가지 호기심 유형**:
+1. **Epistemic Curiosity (지식 탐구)**
+   - "무엇을 배울까?" - 지식에 대한 순수한 궁금증
+   - 저신뢰 개념, 미검증 예측 시 활성화
+
+2. **Diversive Curiosity (다양성 추구)**
+   - "새로운 것을 시도할까?" - 변화와 새로움에 대한 욕구
+   - 지루함, 반복적 패턴 시 활성화
+
+3. **Empowerment Drive (영향력 추구)**
+   - "더 많은 것을 할 수 있게 될까?" - 능력 향상에 대한 욕구
+   - 성공률 낮은 패턴, 한계 발견 시 활성화
+
+**DB 테이블**:
+- `autonomous_goals` - 자율 생성된 목표
+- `goal_progress` - 목표 진행 상황
+- `autonomy_metrics` - 자율성 지표 시계열
+- `goal_templates` - 발달 단계별 목표 템플릿 (12개)
+
+**Edge Function**: `autonomous-goals` v1
+- `generate` - LLM 기반 목표 생성
+- `evaluate` - 실현 가능성 평가
+- `update_progress` - 진행 상황 기록
+- `get_metrics` - 자율성 지표 조회
+- `get_goals` - 활성 목표 목록
+
+**Frontend**: `AutonomousGoalsCard` 컴포넌트
+- Goals/Metrics/History 3개 탭
+- 실시간 Supabase 구독으로 업데이트
+- 호기심 점수 시각화
+
 ---
 
-## Known Issues & Fixes (2025-01-21)
+## Known Issues & Fixes (2026-01-21)
 
 ### 해결된 문제점 ✅
 

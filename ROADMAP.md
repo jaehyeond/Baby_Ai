@@ -153,24 +153,34 @@
 
 ---
 
-## Phase 5: 자율 목표 설정 ⏳ PLANNED
+## Phase 5: 자율 목표 설정 ✅ COMPLETED
 
-> ICAIR 2025 논문 참고: CDALNs
+> ICAIR 2025 논문 참고: CDALNs (Curiosity-Driven Autonomous Learning Networks)
 
 ### 목표
 스스로 뭘 배울지 결정
 
-### 계획된 기능
-- [ ] **Epistemic curiosity**: 지식 탐구
-- [ ] **Diversive curiosity**: 다양성 추구
-- [ ] **Empowerment drive**: 영향력 추구
-- [ ] 자발적 탐구 목표 생성
+### 구현된 기능
+- [x] **Epistemic curiosity**: 지식 탐구 ("무엇을 배울까?")
+- [x] **Diversive curiosity**: 다양성 추구 ("새로운 것을 시도할까?")
+- [x] **Empowerment drive**: 영향력 추구 ("더 많은 것을 할 수 있게 될까?")
+- [x] 자발적 탐구 목표 생성
 
-### 구현 항목
-- [ ] 내재적 동기 엔진 강화
-- [ ] 목표 생성 시스템
-- [ ] 자기 평가 메커니즘
-- [ ] 탐구 전략 학습
+### 구현 완료 항목
+- [x] 내재적 동기 엔진 강화 (`calculateCuriosityScores()`)
+- [x] 목표 생성 시스템 (`autonomous-goals` Edge Function v1)
+- [x] 자기 평가 메커니즘 (`evaluateGoal()`)
+- [x] 탐구 전략 학습 (12개 목표 템플릿)
+
+### DB 테이블
+- `autonomous_goals` - 자율 생성된 목표
+- `goal_progress` - 목표 진행 상황
+- `autonomy_metrics` - 자율성 지표 시계열
+- `goal_templates` - 발달 단계별 목표 템플릿
+
+### Frontend
+- `AutonomousGoalsCard` 컴포넌트 (Goals/Metrics/History 탭)
+- `/api/goals/generate` API 라우트
 
 ---
 
@@ -189,6 +199,10 @@
 
 | 날짜 | Phase | 변경 내용 |
 |------|-------|----------|
+| 2026-01-21 | 5 | Phase 5 Autonomous Goal Setting 완료 |
+| 2026-01-21 | 5 | autonomous-goals Edge Function v1 배포 |
+| 2026-01-21 | 5 | AutonomousGoalsCard 컴포넌트 추가 |
+| 2026-01-21 | 4.4 | Phase 4.4 Physical World Understanding 완료 |
 | 2026-01-21 | 3 | Phase 3 Emotion Engine 백엔드/프론트엔드 완료 |
 | 2026-01-21 | 3 | EmotionalLearningModulator 클래스 추가 |
 | 2026-01-21 | 3 | EmotionalInfluenceCard 컴포넌트 추가 |
