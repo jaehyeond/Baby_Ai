@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { useIdleSleep } from '@/hooks'
 
 // Types
@@ -49,11 +49,7 @@ interface MemoryConsolidationCardProps {
   className?: string
 }
 
-// Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Use shared Supabase client from lib/supabase.ts
 
 // Pattern type icons
 const patternTypeIcons: Record<string, string> = {
@@ -99,13 +95,24 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
   // Fetch data
   const fetchData = useCallback(async () => {
     try {
+      // Use type assertion for tables not in Database types
+      const supabaseAny = supabase as unknown as {
+        from: (table: string) => {
+          select: (columns: string) => {
+            order: (column: string, options: { ascending: boolean }) => {
+              limit: (count: number) => Promise<{ data: unknown[] | null; error: unknown }>
+            }
+          }
+        }
+      }
+
       const [logsRes, procRes, statsRes] = await Promise.all([
-        supabase
+        supabaseAny
           .from('memory_consolidation_logs')
           .select('*')
           .order('completed_at', { ascending: false })
           .limit(10),
-        supabase
+        supabaseAny
           .from('procedural_memory')
           .select('*')
           .order('strength', { ascending: false })
@@ -113,8 +120,8 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
         fetch('/api/memory/consolidate').then(r => r.json()),
       ])
 
-      if (logsRes.data) setLogs(logsRes.data)
-      if (procRes.data) setProceduralMemories(procRes.data)
+      if (logsRes.data) setLogs(logsRes.data as ConsolidationLog[])
+      if (procRes.data) setProceduralMemories(procRes.data as ProceduralMemory[])
       if (statsRes.stats) setStats(statsRes.stats)
     } catch (error) {
       console.error('[MemoryConsolidationCard] Fetch error:', error)
