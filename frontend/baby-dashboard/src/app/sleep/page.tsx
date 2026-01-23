@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Moon, Clock, Zap, Calendar } from 'lucide-react'
 import { MemoryConsolidationCard } from '@/components'
 
 export default function SleepPage() {
   const [mounted, setMounted] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
@@ -18,13 +19,17 @@ export default function SleepPage() {
       {/* Header */}
       <header className="mb-6 md:mb-8">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all touch-manipulation cursor-pointer z-10"
+          <button
+            type="button"
+            onClick={() => {
+              console.log('[SleepPage] Back button clicked')
+              window.location.href = '/'
+            }}
+            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all touch-manipulation cursor-pointer"
             aria-label="메인 페이지로 돌아가기"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-400 pointer-events-none" />
-          </Link>
+            <ArrowLeft className="w-5 h-5 text-slate-400" />
+          </button>
           <div className="min-w-0 flex-1">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               🌙 수면 & 기억 통합
