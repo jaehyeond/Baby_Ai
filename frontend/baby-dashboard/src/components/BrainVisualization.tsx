@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useMemo, Suspense, useEffect } from 'react'
+import { useRef, useState, useMemo, Suspense, useEffect, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -401,6 +401,35 @@ function Legend() {
   )
 }
 
+// WebGL Context Loss Recovery Handler
+function WebGLRecoveryHandler({ onContextLost }: { onContextLost: () => void }) {
+  const { gl } = useThree()
+
+  useEffect(() => {
+    const canvas = gl.domElement
+
+    const handleContextLost = (event: Event) => {
+      event.preventDefault()
+      console.warn('[BrainVisualization] WebGL context lost, will recover...')
+      onContextLost()
+    }
+
+    const handleContextRestored = () => {
+      console.log('[BrainVisualization] WebGL context restored')
+    }
+
+    canvas.addEventListener('webglcontextlost', handleContextLost)
+    canvas.addEventListener('webglcontextrestored', handleContextRestored)
+
+    return () => {
+      canvas.removeEventListener('webglcontextlost', handleContextLost)
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored)
+    }
+  }, [gl, onContextLost])
+
+  return null
+}
+
 // Main export component
 export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolean }) {
   const { brainData, isLoading, error, refetch } = useBrainData()
@@ -410,10 +439,22 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
   const [zoomOut, setZoomOut] = useState(false)
   const [reset, setReset] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [contextLost, setContextLost] = useState(false)
+  const [canvasKey, setCanvasKey] = useState(0)
 
   // Hydration 에러 방지
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  // WebGL Context Recovery: remount Canvas
+  const handleContextLost = useCallback(() => {
+    setContextLost(true)
+    // Remount canvas after short delay
+    setTimeout(() => {
+      setCanvasKey(k => k + 1)
+      setContextLost(false)
+    }, 100)
   }, [])
 
   // Count connections for selected neuron
@@ -430,7 +471,7 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
 
   if (isLoading) {
     return (
-      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`}>
+      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`} suppressHydrationWarning>
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
           <p className="text-slate-400">뉴런 네트워크 로딩 중...</p>
@@ -441,7 +482,7 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
 
   if (error) {
     return (
-      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`}>
+      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`} suppressHydrationWarning>
         <div className="text-center">
           <p className="text-red-400 mb-3">{error}</p>
           <button
@@ -457,7 +498,7 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
 
   if (!brainData || brainData.neurons.length === 0) {
     return (
-      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`}>
+      <div className={`bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 ${containerHeight} flex items-center justify-center`} suppressHydrationWarning>
         <div className="text-center">
           <Brain className="w-12 h-12 text-slate-600 mx-auto mb-3" />
           <p className="text-slate-400">뉴런 데이터가 없습니다</p>
@@ -467,7 +508,10 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
   }
 
   return (
-    <div className={`bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden relative ${mounted && fullScreen ? 'h-[calc(100vh-140px)]' : ''}`}>
+    <div
+      className={`bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden relative ${mounted && fullScreen ? 'h-[calc(100vh-140px)]' : ''}`}
+      suppressHydrationWarning
+    >
       {/* Header */}
       <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
         <div className="bg-slate-800/80 backdrop-blur rounded-lg px-3 py-1.5 text-xs text-slate-300">
@@ -516,21 +560,40 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
 
       {/* 3D Canvas */}
       <div className={`w-full ${canvasHeight}`}>
-        <Canvas camera={{ position: [0, 0, 8], fov: 60 }}>
-          <Suspense fallback={null}>
-            <BrainScene
-              neurons={brainData.neurons}
-              synapses={brainData.synapses}
-              astrocytes={brainData.astrocytes || []}
-              neuronToAstrocyte={brainData.neuronToAstrocyte || {}}
-              selectedNeuron={selectedNeuron}
-              onSelectNeuron={setSelectedNeuron}
-              selectedAstrocyte={selectedAstrocyte}
-              onSelectAstrocyte={setSelectedAstrocyte}
-            />
-            <CameraController zoomIn={zoomIn} zoomOut={zoomOut} reset={reset} />
-          </Suspense>
-        </Canvas>
+        {contextLost ? (
+          <div className="w-full h-full flex items-center justify-center bg-slate-900/50">
+            <p className="text-slate-400 text-sm">렌더러 복구 중...</p>
+          </div>
+        ) : (
+          <Canvas
+            key={canvasKey}
+            camera={{ position: [0, 0, 8], fov: 60 }}
+            gl={{
+              antialias: true,
+              powerPreference: 'high-performance',
+              failIfMajorPerformanceCaveat: false,
+            }}
+            onCreated={({ gl }) => {
+              // Enable context loss handling
+              gl.getContext().canvas.addEventListener('webglcontextlost', (e) => e.preventDefault())
+            }}
+          >
+            <Suspense fallback={null}>
+              <WebGLRecoveryHandler onContextLost={handleContextLost} />
+              <BrainScene
+                neurons={brainData.neurons}
+                synapses={brainData.synapses}
+                astrocytes={brainData.astrocytes || []}
+                neuronToAstrocyte={brainData.neuronToAstrocyte || {}}
+                selectedNeuron={selectedNeuron}
+                onSelectNeuron={setSelectedNeuron}
+                selectedAstrocyte={selectedAstrocyte}
+                onSelectAstrocyte={setSelectedAstrocyte}
+              />
+              <CameraController zoomIn={zoomIn} zoomOut={zoomOut} reset={reset} />
+            </Suspense>
+          </Canvas>
+        )}
       </div>
 
       {/* Selected neuron info */}
