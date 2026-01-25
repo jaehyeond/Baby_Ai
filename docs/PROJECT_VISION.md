@@ -1,7 +1,7 @@
 # Neural A2A: Developmental Cognitive Architecture
 
-**Version**: 1.2
-**Last Updated**: 2026-01-21
+**Version**: 1.3
+**Last Updated**: 2026-01-25
 **Authors**: Neural A2A Research Team
 
 ---
@@ -14,7 +14,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 
 ## Development Progress
 
-### Phase Status Overview (2026-01-21 기준)
+### Phase Status Overview (2026-01-25 기준)
 
 | Phase | 이름 | 상태 | 설명 |
 |-------|------|------|------|
@@ -23,11 +23,13 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 4.2 | Microphone Input | ✅ 완료 | 음성 입력 + STT |
 | Phase 4.3 | Speaker Output | ✅ 완료 | TTS + 대화 UI |
 | Phase 4.4 | Physical World | ✅ 완료 | 물리 세계 이해 |
-| Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 검색 능력 |
+| Phase 4.5 | Tool Use & Agency | ✅ 완료 | 도구 사용 + 웹 검색 (v14) |
 | Phase 5 | Autonomous Goals | ✅ 완료 | 자율 목표 설정 |
 | Phase 6 | Memory Consolidation | ✅ 완료 | 장기 기억 통합 (수면 유사 과정) |
 | Phase 7 | Meta-cognition | ✅ 완료 | 자기 사고에 대한 사고 (외부 LLM 없이) |
-| Phase 8+ | Future | 🔜 예정 | 고급 기능 |
+| Phase 8 | Autonomous Curiosity | ✅ 완료 | 내재적 호기심 모듈 |
+| Phase 9 | Textual Backprop | ✅ 완료 | 텍스트 피드백 기반 학습 |
+| Phase 10+ | Evolution | 📋 계획 | Self-Evolution Engine |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -110,8 +112,8 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
    | NEWBORN | 없음 (반사적 반응만) |
    | INFANT | 없음 |
    | TODDLER | 사전 검색 (단어 정의) |
-   | CHILD | Wikipedia, 간단한 계산 |
-   | TEEN | 웹 검색, 복잡한 도구 |
+   | CHILD | Wikipedia, 간단한 계산, **웹 검색** |
+   | TEEN | 모든 도구 + 복잡한 도구 체인 |
 
 3. **대화 컨텍스트 관리 개선**
    - 이전 대화 컨텍스트 로드
@@ -126,7 +128,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 - 감정 감쇠: 시간당 5% 중립값(0.5) 방향으로 감쇠
 - 대화 컨텍스트: 최근 5개 대화 로드하여 기억 유지
 - 도구 사용: Gemini Function Calling으로 Wikipedia/사전 검색 가능
-- 발달 단계별 도구 해금 (TODDLER: 사전, CHILD: Wikipedia+계산)
+- 발달 단계별 도구 해금 (TODDLER: 사전, CHILD: Wikipedia+계산+**웹 검색**)
 
 ### Phase 6: Memory Consolidation ✅ (2026-01-22 완료)
 **목적**: Baby AI가 수면과 유사한 과정을 통해 기억을 정리하고 강화
@@ -301,7 +303,7 @@ function applyEmotionDecay(emotions: EmotionState, lastUpdate: Date): EmotionSta
 **해결책**: Gemini Function Calling 통합
 - 발달 단계별 사용 가능한 도구 제한
 - TODDLER부터 사전 검색 가능
-- CHILD부터 Wikipedia 검색 가능
+- CHILD부터 Wikipedia, 웹 검색 가능
 
 ---
 
@@ -576,17 +578,28 @@ ICM (Intrinsic Curiosity Module) 기반:
 
 ## Roadmap
 
-### Phase 7 (✅ 완료): Foundation
+### Phase 1-7 (✅ 완료): Foundation
 - Supabase 뇌과학 기반 스키마
 - Cognitive Router (Dual Process)
-- 3중 기억 시스템
+- 3중 기억 시스템 (에피소드/의미/절차)
+- 도구 사용 (사전/위키/계산/웹검색)
+- 자율 목표 설정
+- 수면 기반 기억 통합
+- 메타인지 (자기 사고에 대한 사고)
 
-### Phase 8 (진행 예정): Learning
-- Textual Backpropagation
-- 자동 프롬프트 개선
-- 연결 가중치 학습
+### Phase 8 (✅ 완료): Autonomous Curiosity
+- 내재적 호기심 모듈
+- 정보 갭 감지
+- 자발적 탐색 행동
 
-### Phase 9+: Evolution
+### Phase 9 (✅ 완료): Textual Backpropagation
+- 텍스트 피드백으로 학습 (1-5점 평점 + 텍스트)
+- 관련 개념 강화/약화 (Hebb's Law)
+- 전략 효과성 업데이트
+- 피드백에서 새 개념 추출
+- 대시보드 피드백 카드 (TextualBackpropCard)
+
+### Phase 10+: Evolution
 - Self-Evolution Engine
 - Team Optimization
 - Persistent Learning
@@ -636,8 +649,9 @@ Neural A2A는 **"Baby vs 고등학생"** 논쟁을 초월합니다.
 
 | 항목 | 값 |
 |------|-----|
-| Version | 1.1 |
+| Version | 1.3 |
 | Created | 2025-01-19 |
-| Updated | 2025-01-21 |
+| Updated | 2026-01-25 |
 | Status | Active |
-| Next Review | After Phase 8 completion |
+| Current Phase | Phase 9 ✅ (Textual Backpropagation) |
+| Next Phase | Phase 10 (Self-Evolution Engine) |

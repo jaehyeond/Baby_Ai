@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX, Play, Pause, RefreshCw } from 'lucide-react'
+import { QuickFeedback } from './FeedbackButtons'
 
 export interface SpeechOutputProps {
   text: string
@@ -180,6 +181,8 @@ export interface SpeechBubbleProps {
   emotion?: string
   autoPlay?: boolean
   className?: string
+  experienceId?: string  // For feedback
+  showFeedback?: boolean  // Show feedback UI for AI responses
 }
 
 export function SpeechBubble({
@@ -190,6 +193,8 @@ export function SpeechBubble({
   emotion,
   autoPlay = false,
   className = '',
+  experienceId,
+  showFeedback = false,
 }: SpeechBubbleProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -299,6 +304,13 @@ export function SpeechBubble({
             </button>
           )}
         </div>
+
+        {/* Feedback UI for AI responses */}
+        {showFeedback && !isUser && experienceId && (
+          <div className="mt-2 pt-2 border-t border-slate-600/30">
+            <QuickFeedback experienceId={experienceId} />
+          </div>
+        )}
       </div>
     </motion.div>
   )

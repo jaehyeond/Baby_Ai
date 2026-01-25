@@ -397,32 +397,35 @@ class PipelineStatus(Enum):
 
 ## 7. 구현 로드맵
 
-### Phase 7: 피드백 루프 파이프라인 (현재)
+> ⚠️ **참고**: 이 로드맵은 **Neural A2A 아키텍처** 전용입니다.
+> Baby AI 발달 Phase (PROJECT_VISION.md)와는 별개의 번호 체계입니다.
+
+### Neural Phase 7: 피드백 루프 파이프라인
 - [ ] `FeedbackLoopPipeline` 클래스
 - [ ] `PipelineStatus` 열거형
 - [ ] `GlobalWorkspace` 기본 구현
 - [ ] 반복별 전략 변화 구현
 - [ ] Reviewer → Coder 피드백 전달
 
-### Phase 8: 멀티 LLM 지원
+### Neural Phase 8: 멀티 LLM 지원
 - [ ] `LLMFactory` 패턴
 - [ ] 에이전트별 LLM 설정 (config/agents.yaml)
 - [ ] Gemini API 연동
 - [ ] 비용 최적화 로직
 
-### Phase 9: 에이전트 확장
+### Neural Phase 9: 에이전트 확장
 - [ ] Router Agent (Thalamus)
 - [ ] Planner Agent (DLPFC)
 - [ ] Memory Agent (Hippocampus)
 - [ ] Monitor Agent (ACC)
 
-### Phase 10: Neural 클러스터링
+### Neural Phase 10: Neural 클러스터링
 - [ ] Cortical/Subcortical 계층 구현
 - [ ] Global Workspace 완전 구현
 - [ ] Attention Router
 - [ ] 병렬 실행
 
-### Phase 11: 학습 시스템
+### Neural Phase 11: 학습 시스템
 - [ ] Neuromodulation 시뮬레이션
 - [ ] Hebbian Learning 적용
 - [ ] 에러 패턴 학습

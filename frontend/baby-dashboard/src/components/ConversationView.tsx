@@ -24,6 +24,7 @@ export interface ConversationMessage {
   timestamp: Date
   emotion?: string
   isQuestion?: boolean
+  experienceId?: string  // For feedback (AI responses)
 }
 
 export interface ConversationViewProps {
@@ -144,6 +145,8 @@ export function ConversationView({
                 timestamp={formatTime(message.timestamp)}
                 emotion={message.emotion}
                 autoPlay={!message.isUser && index === messages.length - 1 && !!message.audioUrl}
+                experienceId={message.experienceId}
+                showFeedback={!message.isUser && !!message.experienceId}
               />
             ))}
 

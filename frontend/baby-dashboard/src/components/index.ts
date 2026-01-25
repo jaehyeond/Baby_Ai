@@ -38,3 +38,7 @@ export { MemoryConsolidationCard } from './MemoryConsolidationCard'
 export { MetacognitionCard } from './MetacognitionCard'
 // Phase 8: Autonomous Curiosity
 export { CuriosityCard } from './CuriosityCard'
+// Phase 9: Textual Backpropagation
+export { TextualBackpropCard } from './TextualBackpropCard'
+export { FeedbackButtons, QuickFeedback } from './FeedbackButtons'
+export type { FeedbackData, FeedbackResult } from './FeedbackButtons'

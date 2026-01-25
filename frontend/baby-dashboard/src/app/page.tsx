@@ -16,14 +16,15 @@ import {
   EmotionalInfluenceCard,
   MetacognitionCard,
   CuriosityCard,
+  TextualBackpropCard,
 } from '@/components'
 import type { BabyState, Experience, EmotionLog } from '@/lib/database.types'
-import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye, Lightbulb, Search, Moon } from 'lucide-react'
+import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye, Lightbulb, Search, Moon, Zap } from 'lucide-react'
 import { usePullToRefresh, useSettings, useNotifications } from '@/hooks'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence' | 'metacog' | 'curiosity'
+type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence' | 'metacog' | 'curiosity' | 'backprop'
 
 export default function Home() {
   const [babyState, setBabyState] = useState<BabyState | null>(null)
@@ -186,6 +187,7 @@ export default function Home() {
     { key: 'influence', label: '영향', icon: Heart },
     { key: 'metacog', label: '메타', icon: Lightbulb },
     { key: 'curiosity', label: '호기심', icon: Search },
+    { key: 'backprop', label: '피드백', icon: Zap },
   ]
 
   return (
@@ -368,6 +370,11 @@ export default function Home() {
             {activeTab === 'curiosity' && (
               <div className="lg:col-span-2">
                 <CuriosityCard className="h-full" />
+              </div>
+            )}
+            {activeTab === 'backprop' && (
+              <div className="lg:col-span-2">
+                <TextualBackpropCard className="h-full" />
               </div>
             )}
           </div>

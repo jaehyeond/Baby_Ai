@@ -1,9 +1,10 @@
 # Phase 4.5: Tool Use & Agency
 
-**Version**: 1.0
+**Version**: 1.2
 **Created**: 2025-01-21
+**Updated**: 2026-01-25
 **Status**: ✅ Completed
-**Edge Function Version**: v9
+**Edge Function Version**: v14
 
 ---
 
@@ -205,14 +206,18 @@ const tools = [
 ```
 
 **Step 3.2: 발달 단계별 도구 제한**
+
+> ⚠️ **v14 변경**: 원래 `web_search`는 TEEN(stage 4)에서 해금 예정이었으나,
+> 사용자 요청에 따라 **CHILD(stage 3)부터 해금**으로 앞당겨짐.
+
 ```typescript
 function getAvailableTools(developmentStage: number): Tool[] {
   const toolsByStage: Record<number, string[]> = {
-    1: [], // NEWBORN - 도구 없음
-    2: [], // INFANT - 도구 없음
-    3: ["search_dictionary"], // TODDLER - 사전만
-    4: ["search_dictionary", "search_wikipedia", "calculate"], // CHILD
-    5: ["search_dictionary", "search_wikipedia", "calculate", "web_search"], // TEEN
+    0: [], // NEWBORN - 도구 없음
+    1: [], // INFANT - 도구 없음
+    2: ["search_dictionary"], // TODDLER - 사전만
+    3: ["search_dictionary", "search_wikipedia", "calculate", "web_search"], // CHILD (v14: web_search 추가)
+    // 4+ (TEEN): 모든 도구 + 향후 복잡한 도구 체인
   };
 
   const availableToolNames = toolsByStage[developmentStage] ?? [];
@@ -230,6 +235,8 @@ async function executeTool(toolName: string, args: Record<string, any>): Promise
       return await searchWikipedia(args.query);
     case "calculate":
       return calculate(args.expression);
+    case "web_search":  // v14 추가
+      return await webSearch(args.query);
     default:
       return "알 수 없는 도구입니다";
   }
@@ -384,11 +391,91 @@ async function generateResponse(
 
 ## Deployment Notes
 
-**Edge Function Version**: v9 (deployed 2025-01-21)
+**Edge Function Version**: v14 (deployed 2026-01-25)
+
+### 버전 히스토리
+
+| 버전 | 날짜 | 변경 내용 |
+|------|------|----------|
+| v9 | 2025-01-21 | 초기 배포 - 감정 감쇠, 대화 컨텍스트, Function Calling |
+| v13 | 2026-01-25 | 🐛 버그 수정: experience_concepts 연결 누락 |
+| v14 | 2026-01-25 | ✨ 신규: `web_search` 도구 추가 (CHILD 단계부터) |
+
+### v13 버그 수정 (2026-01-25)
+
+**문제**: `extractAndSaveConcepts()` 함수가 `experience_concepts` 테이블에 INSERT를 하지 않음
+
+**증상**:
+- 최근 경험들의 `concept_count`가 모두 0
+- 수면 통합(memory consolidation)이 뉴런에 영향 X (Hebb's Law 적용 불가)
+
+**원인**:
+```typescript
+// v12 이전: idMap에 conceptId 저장만 하고 experience_concepts INSERT 누락
+for (const c of concepts) {
+  idMap.set(c.name, conceptId);
+  // ❌ experience_concepts INSERT 없음!
+}
+```
+
+**수정**:
+```typescript
+// v13: 개념 추출 후 experience_concepts에 연결
+if (expId && conceptId) {
+  await supabase.from('experience_concepts').insert({
+    experience_id: expId,
+    concept_id: conceptId,
+    relevance: 0.7,
+    co_activation_count: 1,
+    created_at: new Date().toISOString()  // ✅ 올바른 컬럼명
+  });
+}
+```
+
+**검증**:
+- 테스트: "컴퓨터가 뭐야?"
+- 결과: `concepts_linked: 4`
+- DB 확인: 4개 개념 연결됨 (모르는 말, 질문, 비비, 알려주세요)
+
+### v14 신규 기능: web_search (2026-01-25)
+
+**배경**:
+- 사용자가 "인터넷에서 찾아봐"라고 요청
+- 비비(CHILD 단계)가 "인터넷이 뭐야?"라고 응답
+- 범용 웹 검색 도구가 없었음
+
+**추가된 도구**:
+```typescript
+{
+  name: "web_search",
+  description: "인터넷에서 최신 정보를 검색합니다",
+  parameters: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "검색어" }
+    },
+    required: ["query"]
+  }
+}
+```
+
+**발달 단계별 도구 (업데이트됨)**:
+| 단계 | 해금 도구 |
+|------|-----------|
+| 0 (NEWBORN) | 없음 |
+| 1 (INFANT) | 없음 |
+| 2 (TODDLER) | search_dictionary |
+| 3 (CHILD) | search_dictionary, search_wikipedia, calculate, **web_search** |
+| 4+ (TEEN) | 모든 도구 |
+
+**구현**: DuckDuckGo Instant Answer API (무료, API 키 불필요)
+
+---
 
 구현된 기능:
 1. `applyEmotionDecay()` - 시간당 5% 중립값(0.5) 방향 감쇠
 2. `loadConversationContext()` - 최근 5개 대화 로드
 3. `getAvailableTools()` - 발달 단계별 도구 해금
-4. `executeTool()` - Wikipedia/사전 검색, 계산 실행
+4. `executeTool()` - Wikipedia/사전 검색, 계산, **웹 검색** 실행
 5. Gemini Function Calling 통합
+6. `extractAndSaveConcepts()` - 개념 추출 및 **experience_concepts 연결** (v13 수정)
