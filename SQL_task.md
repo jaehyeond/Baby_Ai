@@ -1,8 +1,8 @@
 # SQL Task: Robot_Brain Database Schema
 
 **프로젝트**: Robot_Brain (extbfhoktzozgqddjcps)
-**최종 업데이트**: 2025-12-31
-**스키마 버전**: v008
+**최종 업데이트**: 2026-02-04
+**스키마 버전**: v008 (v009 Phase A 예정)
 
 ---
 
