@@ -30,14 +30,55 @@ interface RawConceptRelation {
   evidence_count: number
 }
 
-// Category colors for neurons
+// Category colors for neurons (Temperature-based: frozen=cold, active=warm)
 const CATEGORY_COLORS: Record<string, string> = {
-  algorithm: '#f43f5e',
-  function: '#a855f7',
-  class: '#14b8a6',
-  general: '#3b82f6',
-  test: '#22c55e',
-  default: '#6366f1',
+  // Frozen knowledge - cold gray/blue (LLM already knows)
+  frozen_knowledge: '#64748b',  // slate-500
+
+  // Learned concepts - warm magenta/purple (Baby learned)
+  learned: '#d946ef',           // fuchsia-500
+
+  // Emotions - hot colors (feelings are warm)
+  감정: '#f97316',              // orange-500
+  emotion: '#f97316',
+
+  // People/Relations - teal (relationships)
+  person: '#14b8a6',            // teal-500
+  관계: '#06b6d4',              // cyan-500
+  사람: '#14b8a6',
+  인물: '#14b8a6',
+
+  // Abstract concepts - blue (thinking)
+  '추상적 개념': '#3b82f6',     // blue-500
+  'abstract concept': '#3b82f6',
+  인지: '#60a5fa',              // blue-400
+
+  // Actions/Behaviors - green (doing)
+  행위: '#22c55e',              // green-500
+  action: '#22c55e',
+  활동: '#22c55e',
+  행동: '#22c55e',
+
+  // Identity - gold (special, core)
+  identity: '#fbbf24',          // amber-400
+  이름: '#fbbf24',
+
+  // Objects/Things - purple
+  사물: '#a855f7',              // violet-500
+  thing: '#a855f7',
+  물체: '#a855f7',
+
+  // Locations - emerald
+  장소: '#10b981',              // emerald-500
+  location: '#10b981',
+  지리: '#10b981',
+
+  // Communication - pink
+  communication: '#ec4899',     // pink-500
+  인사말: '#ec4899',
+
+  // Default fallback
+  default: '#6366f1',           // indigo-500
 }
 
 // Generate 3D position using fibonacci sphere for even distribution

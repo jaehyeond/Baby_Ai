@@ -211,7 +211,10 @@ export function SpeechBubble({
   }, [isPlaying, audioUrl])
 
   useEffect(() => {
-    if (!audioUrl) return
+    // Skip if no audioUrl or if it's not a valid URL
+    if (!audioUrl || (!audioUrl.startsWith('http') && !audioUrl.startsWith('data:'))) {
+      return
+    }
 
     const audio = new Audio(audioUrl)
     audioRef.current = audio
@@ -222,8 +225,19 @@ export function SpeechBubble({
     }
     audio.onpause = () => setIsPlaying(false)
     audio.onended = () => setIsPlaying(false)
-    audio.onerror = (e) => {
-      console.error('[SpeechBubble] Audio error:', e)
+    audio.onerror = () => {
+      const error = audio.error
+      if (error) {
+        // MediaError codes: 1=MEDIA_ERR_ABORTED, 2=MEDIA_ERR_NETWORK, 3=MEDIA_ERR_DECODE, 4=MEDIA_ERR_SRC_NOT_SUPPORTED
+        const errorMessages: Record<number, string> = {
+          1: 'Playback aborted',
+          2: 'Network error',
+          3: 'Decode error',
+          4: 'Source not supported',
+        }
+        console.warn('[SpeechBubble] Audio error:', errorMessages[error.code] || `Unknown (${error.code})`, audioUrl?.substring(0, 50))
+      }
+      setIsPlaying(false)
     }
 
     // Auto-play for AI responses (only once)

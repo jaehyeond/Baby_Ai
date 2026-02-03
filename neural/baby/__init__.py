@@ -78,6 +78,43 @@ from .vision import (
     DetectedObject,
     get_vision_processor,
 )
+# Phase 10: Self-Evolution
+from .evolution import (
+    EvolutionEngine,
+    FailurePatternDetector,
+    PromptEvolver,
+    StrategyAdapter,
+    FailureType,
+    EvolutionType,
+    InsightType,
+    FailurePattern,
+    PromptEvolution,
+    EVOLUTION_RULES,
+)
+from .team_optimizer import (
+    TeamOptimizer,
+    CooperationPatternLearner,
+    TeamPerformanceTracker,
+    DynamicTeamBuilder,
+    CooperationType,
+    TeamType,
+    AgentRole,
+    Team,
+    TeamRecommendation,
+)
+from .persistence import (
+    PersistentLearningSubstrate,
+    SessionManager,
+    LearningRestorer,
+    ContinuityTracker,
+    LearningType,
+    SnapshotType,
+    RestoreType,
+    LearningSession,
+    LearningSnapshot,
+    CoreLearning,
+    RestorePoint,
+)
 
 __all__ = [
     # Emotions
@@ -128,4 +165,37 @@ __all__ = [
     "VisualSource",
     "DetectedObject",
     "get_vision_processor",
+    # Phase 10: Self-Evolution
+    "EvolutionEngine",
+    "FailurePatternDetector",
+    "PromptEvolver",
+    "StrategyAdapter",
+    "FailureType",
+    "EvolutionType",
+    "InsightType",
+    "FailurePattern",
+    "PromptEvolution",
+    "EVOLUTION_RULES",
+    # Phase 10: Team Optimizer
+    "TeamOptimizer",
+    "CooperationPatternLearner",
+    "TeamPerformanceTracker",
+    "DynamicTeamBuilder",
+    "CooperationType",
+    "TeamType",
+    "AgentRole",
+    "Team",
+    "TeamRecommendation",
+    # Phase 10: Persistent Learning
+    "PersistentLearningSubstrate",
+    "SessionManager",
+    "LearningRestorer",
+    "ContinuityTracker",
+    "LearningType",
+    "SnapshotType",
+    "RestoreType",
+    "LearningSession",
+    "LearningSnapshot",
+    "CoreLearning",
+    "RestorePoint",
 ]

@@ -151,11 +151,15 @@ function getCategoryBreakdown(neurons: Array<{ category: string }>) {
   })
 
   const CATEGORY_COLORS: Record<string, string> = {
-    algorithm: '#f43f5e',
-    function: '#a855f7',
-    class: '#14b8a6',
-    general: '#3b82f6',
-    test: '#22c55e',
+    frozen_knowledge: '#64748b',  // cold gray
+    learned: '#d946ef',           // warm magenta
+    감정: '#f97316',              // orange
+    emotion: '#f97316',
+    person: '#14b8a6',            // teal
+    '추상적 개념': '#3b82f6',     // blue
+    행위: '#22c55e',              // green
+    identity: '#fbbf24',          // gold
+    사물: '#a855f7',              // purple
   }
 
   return Object.entries(counts)

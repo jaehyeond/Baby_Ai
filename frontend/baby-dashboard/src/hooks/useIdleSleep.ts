@@ -181,7 +181,13 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
     }
   }, [isSleeping, onSleepStart, onSleepComplete, onSleepError])
 
-  // Reset idle timer
+  // Stable ref for triggerSleep to avoid dependency cycles
+  const triggerSleepRef = useRef(triggerSleep)
+  useEffect(() => {
+    triggerSleepRef.current = triggerSleep
+  }, [triggerSleep])
+
+  // Reset idle timer - stable callback without triggerSleep dependency
   const resetIdleTimer = useCallback(() => {
     lastActivityRef.current = Date.now()
     setLastActivityAt(new Date())
@@ -198,10 +204,10 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
     if (enabled) {
       idleTimerRef.current = setTimeout(() => {
         setIsIdle(true)
-        triggerSleep()
+        triggerSleepRef.current()
       }, idleTimeoutMs)
     }
-  }, [idleTimeoutMs, enabled, triggerSleep])
+  }, [idleTimeoutMs, enabled])
 
   // Update countdown
   useEffect(() => {
@@ -224,14 +230,20 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
     }
   }, [enabled, idleTimeoutMs, isIdle])
 
-  // Listen for user activity
+  // Stable ref for resetIdleTimer to avoid useEffect re-runs
+  const resetIdleTimerRef = useRef(resetIdleTimer)
+  useEffect(() => {
+    resetIdleTimerRef.current = resetIdleTimer
+  }, [resetIdleTimer])
+
+  // Listen for user activity - only re-run when enabled changes
   useEffect(() => {
     if (!enabled) return
 
     const events = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll']
 
     const handleActivity = () => {
-      resetIdleTimer()
+      resetIdleTimerRef.current()
     }
 
     // Add event listeners
@@ -240,7 +252,7 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
     })
 
     // Initialize timer
-    resetIdleTimer()
+    resetIdleTimerRef.current()
 
     return () => {
       // Remove event listeners
@@ -256,7 +268,7 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
         clearInterval(countdownIntervalRef.current)
       }
     }
-  }, [enabled, resetIdleTimer])
+  }, [enabled])
 
   return {
     timeUntilSleep,

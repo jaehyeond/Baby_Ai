@@ -687,32 +687,92 @@ gradient = analyze_feedback(feedback)  # → {"error_handling": -0.3}
 update_prompt(coder, gradient)  # 프롬프트에 에러 핸들링 강조 추가
 ```
 
-### Phase 9: Self-Evolution Engine ⏳
+### Phase 9: Self-Evolution Engine ✅ COMPLETED
 
 에이전트가 스스로 진화
 
-- [ ] 역할 자동 조정
-- [ ] 새로운 에이전트 팀 자동 생성
-- [ ] 성능 기반 팀 구성 최적화
-- [ ] 에이전트 프롬프트 자동 개선
+- [x] 역할 자동 조정 → `EvolutionEngine.suggest_prompt_improvement()`
+- [x] 새로운 에이전트 팀 자동 생성 → `DynamicTeamBuilder.build_team()`
+- [x] 성능 기반 팀 구성 최적화 → `TeamOptimizer.recommend_team()`
+- [x] 에이전트 프롬프트 자동 개선 → `PromptEvolver.evolve_prompt()`
 
-### Phase 10: Team Optimization 📋
+**핵심 구현** (2025-01-29):
+```python
+# 1. 실패 패턴 탐지 (LLM-free)
+patterns = await engine.analyze_recent_failures(window_hours=24)
+
+# 2. 규칙 기반 프롬프트 진화
+evolution = await engine.suggest_prompt_improvement(pattern, 'baby')
+
+# 3. A/B 테스트
+result = await engine.run_experiment(evolution_id, experience_id, success=True)
+
+# 4. 채택/롤백 결정
+decision = await engine.evaluate_and_decide(evolution_id)  # → adopt/rollback/continue
+```
+
+**파일**:
+- `neural/baby/evolution.py` - EvolutionEngine, FailurePatternDetector, PromptEvolver
+- DB: `prompt_evolution`, `evolution_experiments`, `self_reflection_insights`, `learned_prompt_rules`
+
+### Phase 10: Team Optimization ✅ COMPLETED
 
 팀 구성 최적화
 
-- [ ] 병렬 실행 지원 (같은 레이어 내)
-- [ ] 동적 팀 크기 조정
-- [ ] Attention 메커니즘 (어떤 에이전트에 집중할지)
-- [ ] 에이전트 간 협력 패턴 학습
+- [x] 병렬 실행 지원 → `CooperationType.PARALLEL`
+- [x] 동적 팀 크기 조정 → `DynamicTeamBuilder.build_team(complexity=0.7)`
+- [x] Attention 메커니즘 → `TeamPerformanceTracker.get_team_stats()`
+- [x] 에이전트 간 협력 패턴 학습 → `CooperationPatternLearner.record_cooperation()`
 
-### Phase 11: Persistent Substrate 📋
+**핵심 구현** (2025-01-29):
+```python
+# 1. 협력 패턴 학습
+await optimizer.learn_cooperation('coder', 'reviewer', 'coding', success=True, synergy_score=0.8)
+
+# 2. 최적 팀 추천
+recommendation = await optimizer.recommend_team('coding', complexity=0.7)
+
+# 3. 팀 성능 기록
+await optimizer.record_team_result(team_id, exp_id, success=True, quality=0.9)
+
+# 4. 팀 A/B 테스트
+experiment_id = await optimizer.run_team_experiment(baseline_id, treatment_id, 'coding')
+```
+
+**파일**:
+- `neural/baby/team_optimizer.py` - TeamOptimizer, CooperationPatternLearner, DynamicTeamBuilder
+- DB: `agent_teams`, `team_performance`, `agent_cooperation_patterns`, `team_experiments`
+
+### Phase 11: Persistent Substrate ✅ COMPLETED
 
 학습 결과 영속화
 
-- [ ] 학습된 프롬프트 저장 (JSON)
-- [ ] 연결 가중치 저장 (SQLite)
-- [ ] 에피소드 기록 (SQLite)
-- [ ] 세션 간 학습 상태 복원
+- [x] 학습된 프롬프트 저장 → `learned_prompt_rules` 테이블
+- [x] 연결 가중치 저장 → `strategy_weight_history` 테이블
+- [x] 에피소드 기록 → `learning_sessions`, `learning_snapshots`
+- [x] 세션 간 학습 상태 복원 → `LearningRestorer.restore_latest()`
+
+**핵심 구현** (2025-01-29):
+```python
+# 1. 세션 시작
+session_id = await substrate.start_session("Training Session 1")
+
+# 2. 주기적 체크포인트 (30분마다)
+await substrate.auto_checkpoint_if_needed()
+
+# 3. 세션 종료 (핵심 학습 추출)
+await substrate.end_session(key_learnings=["에러 핸들링 규칙 학습"])
+
+# 4. 다음 세션에서 복원
+await substrate.restore_latest()
+
+# 5. 효과적인 학습 조회
+learnings = await substrate.get_effective_learnings(min_effectiveness=0.6)
+```
+
+**파일**:
+- `neural/baby/persistence.py` - PersistentLearningSubstrate, SessionManager, LearningRestorer
+- DB: `learning_sessions`, `learning_snapshots`, `core_learnings`, `session_restore_points`
 
 ---
 

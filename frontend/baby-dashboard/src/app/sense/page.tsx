@@ -323,11 +323,17 @@ export default function SensePage() {
 
       const conversationData = await conversationResponse.json()
 
+      // Validate audio_url before using
+      const validAudioUrl = conversationData.audio_url &&
+        (conversationData.audio_url.startsWith('http') || conversationData.audio_url.startsWith('data:'))
+        ? conversationData.audio_url
+        : undefined
+
       // Add AI response
       const aiMessage: ConversationMessage = {
         id: `ai-${Date.now()}`,
         text: conversationData.response || '응답을 생성할 수 없습니다.',
-        audioUrl: conversationData.audio_url,
+        audioUrl: validAudioUrl,
         isUser: false,
         timestamp: new Date(),
         emotion: conversationData.emotion,
@@ -336,9 +342,9 @@ export default function SensePage() {
       setMessages(prev => [...prev, aiMessage])
 
       // Play audio immediately after receiving response
-      if (conversationData.audio_url) {
-        console.log('[SensePage] Attempting to play TTS audio:', conversationData.audio_url.substring(0, 50))
-        playAudioUrl(conversationData.audio_url).catch((err) => {
+      if (validAudioUrl) {
+        console.log('[SensePage] Attempting to play TTS audio:', validAudioUrl.substring(0, 50))
+        playAudioUrl(validAudioUrl).catch((err) => {
           console.warn('[SensePage] TTS autoplay failed:', err)
         })
       }
@@ -400,11 +406,17 @@ export default function SensePage() {
         debugLog(`TTS debug: ${data.tts_debug}`)
       }
 
+      // Validate audio_url before using
+      const validAudioUrl = data.audio_url &&
+        (data.audio_url.startsWith('http') || data.audio_url.startsWith('data:'))
+        ? data.audio_url
+        : undefined
+
       // Add AI response
       const aiMessage: ConversationMessage = {
         id: `ai-${Date.now()}`,
         text: data.response || '응답을 생성할 수 없습니다.',
-        audioUrl: data.audio_url,
+        audioUrl: validAudioUrl,
         isUser: false,
         timestamp: new Date(),
         emotion: data.emotion,
@@ -413,13 +425,13 @@ export default function SensePage() {
       setMessages(prev => [...prev, aiMessage])
 
       // Play audio immediately after receiving response (within user gesture context)
-      if (data.audio_url) {
-        debugLog(`TTS audio URL received: ${data.audio_url.substring(0, 80)}`)
-        playAudioUrl(data.audio_url).catch((err) => {
+      if (validAudioUrl) {
+        debugLog(`TTS audio URL received: ${validAudioUrl.substring(0, 80)}`)
+        playAudioUrl(validAudioUrl).catch((err) => {
           debugLog(`TTS playback failed: ${err.message || err}`)
         })
       } else {
-        debugLog('No audio_url in response!')
+        debugLog('No valid audio_url in response')
       }
 
     } catch (err) {
