@@ -42,3 +42,7 @@ export { CuriosityCard } from './CuriosityCard'
 export { TextualBackpropCard } from './TextualBackpropCard'
 export { FeedbackButtons, QuickFeedback } from './FeedbackButtons'
 export type { FeedbackData, FeedbackResult } from './FeedbackButtons'
+// Phase A: Proactive Questions
+export { QuestionNotification } from './QuestionNotification'
+export { QuestionBubble } from './QuestionBubble'
+export { QuestionList } from './QuestionList'

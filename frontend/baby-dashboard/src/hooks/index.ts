@@ -14,3 +14,6 @@ export { useMicrophone } from './useMicrophone'
 export type { UseMicrophoneReturn, UseMicrophoneOptions } from './useMicrophone'
 // Phase 6: Idle Sleep (Memory Consolidation)
 export { useIdleSleep } from './useIdleSleep'
+// Phase A: Proactive Questions
+export { usePendingQuestions } from './usePendingQuestions'
+export type { UsePendingQuestionsOptions, UsePendingQuestionsReturn } from './usePendingQuestions'

@@ -17,14 +17,17 @@ import {
   MetacognitionCard,
   CuriosityCard,
   TextualBackpropCard,
+  QuestionNotification,
+  QuestionBubble,
+  QuestionList,
 } from '@/components'
-import type { BabyState, Experience, EmotionLog } from '@/lib/database.types'
-import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye, Lightbulb, Search, Moon, Zap } from 'lucide-react'
-import { usePullToRefresh, useSettings, useNotifications } from '@/hooks'
+import type { BabyState, Experience, EmotionLog, PendingQuestion } from '@/lib/database.types'
+import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye, Lightbulb, Search, Moon, Zap, MessageCircle } from 'lucide-react'
+import { usePullToRefresh, useSettings, useNotifications, usePendingQuestions } from '@/hooks'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence' | 'metacog' | 'curiosity' | 'backprop'
+type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence' | 'metacog' | 'curiosity' | 'backprop' | 'questions'
 
 export default function Home() {
   const [babyState, setBabyState] = useState<BabyState | null>(null)
@@ -43,8 +46,69 @@ export default function Home() {
 
   // Settings and notifications
   const { settings } = useSettings()
-  const { notifyNewExperience, notifyStageChange, notifyEmotionSpike } = useNotifications()
+  const { notifyNewExperience, notifyStageChange, notifyEmotionSpike, sendNotification } = useNotifications()
   const prevStageRef = useRef<number | null>(null)
+
+  // Pending questions with realtime subscription (Phase A)
+  const {
+    questions: pendingQuestions,
+    newQuestionAlert,
+    clearAlert: clearQuestionAlert,
+    submitAnswer,
+    skipQuestion,
+    isLoading: isQuestionsLoading,
+  } = usePendingQuestions({ enableRealtime: true })
+
+  // State for QuestionBubble modal
+  const [selectedQuestion, setSelectedQuestion] = useState<PendingQuestion | null>(null)
+  const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
+
+  // Handle opening question modal from notification
+  const handleAnswerQuestion = useCallback((question: PendingQuestion) => {
+    setSelectedQuestion(question)
+    setIsQuestionModalOpen(true)
+    clearQuestionAlert()
+  }, [clearQuestionAlert])
+
+  // Handle selecting a question from the list
+  const handleSelectQuestion = useCallback((question: PendingQuestion) => {
+    setSelectedQuestion(question)
+    setIsQuestionModalOpen(true)
+  }, [])
+
+  // Handle closing question modal
+  const handleCloseQuestionModal = useCallback(() => {
+    setIsQuestionModalOpen(false)
+    setSelectedQuestion(null)
+  }, [])
+
+  // Handle answer submission
+  const handleSubmitAnswer = useCallback(
+    async (questionId: string, answer: string, confidence?: number) => {
+      await submitAnswer(questionId, answer, confidence)
+      console.log('[Page] Question answered:', questionId)
+    },
+    [submitAnswer]
+  )
+
+  // Handle skip question
+  const handleSkipQuestion = useCallback(
+    async (questionId: string) => {
+      await skipQuestion(questionId)
+      console.log('[Page] Question skipped:', questionId)
+    },
+    [skipQuestion]
+  )
+
+  // Send browser notification when new question arrives
+  useEffect(() => {
+    if (newQuestionAlert && settings.notificationsEnabled) {
+      sendNotification('비비가 궁금해해요!', {
+        body: newQuestionAlert.question,
+        tag: 'pending-question',
+      })
+    }
+  }, [newQuestionAlert, settings.notificationsEnabled, sendNotification])
 
   // 데이터 새로고침 함수 - uses settings for limits
   const refreshData = useCallback(async () => {
@@ -178,7 +242,7 @@ export default function Home() {
     }
   }, [settings, notifyNewExperience, notifyStageChange, notifyEmotionSpike])
 
-  const tabs: { key: ChartTab; label: string; icon: typeof BarChart3 }[] = [
+  const tabs: { key: ChartTab; label: string; icon: typeof BarChart3; badge?: number }[] = [
     { key: 'growth', label: '성장', icon: BarChart3 },
     { key: 'timeline', label: '감정', icon: Activity },
     { key: 'brain', label: '뇌', icon: Brain },
@@ -188,10 +252,28 @@ export default function Home() {
     { key: 'metacog', label: '메타', icon: Lightbulb },
     { key: 'curiosity', label: '호기심', icon: Search },
     { key: 'backprop', label: '피드백', icon: Zap },
+    { key: 'questions', label: '질문', icon: MessageCircle, badge: pendingQuestions.length > 0 ? pendingQuestions.length : undefined },
   ]
 
   return (
     <>
+      {/* Question Notification Toast (Phase A) */}
+      <QuestionNotification
+        question={newQuestionAlert}
+        onDismiss={clearQuestionAlert}
+        onAnswer={handleAnswerQuestion}
+        autoDismissMs={15000}
+      />
+
+      {/* Question Answer Modal (Phase A Day 4) */}
+      <QuestionBubble
+        question={selectedQuestion}
+        isOpen={isQuestionModalOpen}
+        onClose={handleCloseQuestionModal}
+        onSubmit={handleSubmitAnswer}
+        onSkip={handleSkipQuestion}
+      />
+
       {/* Pull to Refresh Indicator */}
       <PullToRefresh
         pullDistance={pullDistance}
@@ -304,7 +386,7 @@ export default function Home() {
             <h2 className="text-lg md:text-xl font-semibold text-slate-100">고급 시각화</h2>
 
             {/* Tab Selector */}
-            <div className="flex bg-slate-800/50 rounded-xl p-1 border border-slate-700/50">
+            <div className="flex bg-slate-800/50 rounded-xl p-1 border border-slate-700/50 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -324,6 +406,11 @@ export default function Home() {
                   )}
                   <tab.icon className="w-3.5 h-3.5 relative z-10" />
                   <span className="relative z-10 hidden sm:inline">{tab.label}</span>
+                  {tab.badge && (
+                    <span className="relative z-10 ml-1 min-w-[1.25rem] h-5 flex items-center justify-center text-xs bg-pink-500 text-white rounded-full px-1">
+                      {tab.badge}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -375,6 +462,18 @@ export default function Home() {
             {activeTab === 'backprop' && (
               <div className="lg:col-span-2">
                 <TextualBackpropCard className="h-full" />
+              </div>
+            )}
+            {activeTab === 'questions' && (
+              <div className="lg:col-span-2">
+                <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl p-4 md:p-6 border border-slate-700/50 backdrop-blur-sm">
+                  <QuestionList
+                    questions={pendingQuestions}
+                    isLoading={isQuestionsLoading}
+                    onSelectQuestion={handleSelectQuestion}
+                    onSkipQuestion={handleSkipQuestion}
+                  />
+                </div>
               </div>
             )}
           </div>

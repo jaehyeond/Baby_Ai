@@ -22,6 +22,8 @@
 | v008c | 2025-12-31 | concept_relations 테이블 (Knowledge Graph) |
 | v008d | 2025-12-31 | pattern_learning_events 테이블 |
 | v008e | 2025-12-31 | 시냅스 함수 5개 (강화/약화/검색) |
+| v009a | 2026-02-04 | **pending_questions** 테이블 (Phase A) |
+| v009b | 2026-02-04 | pending_questions RLS + Realtime |
 
 ---
 
@@ -38,6 +40,7 @@
 | **experience_concepts** | ✅ 완료 | ✅ | 경험↔개념 M:N (Hebb's Law) |
 | **concept_relations** | ✅ 완료 | ✅ | 개념 간 관계 (Knowledge Graph) |
 | **pattern_learning_events** | ✅ 완료 | ✅ | 절차 학습 이벤트 |
+| **pending_questions** | ✅ 완료 | ✅ | 🆕 비비가 사용자에게 물어볼 질문 (Phase A) |
 
 ---
 

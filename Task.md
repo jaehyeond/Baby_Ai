@@ -28,7 +28,7 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-03)
+## 📊 현재 시스템 상태 (2026-02-04)
 
 ### Edge Functions (12개 - 모두 ACTIVE)
 
@@ -40,7 +40,7 @@
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
 | `speech-synthesize` | v2 | ❌ | TTS (Google) | ✅ 정상 |
 | `memory-consolidation` | v6 | ❌ | 수면 모드 기억 통합 (LLM 미사용) | ✅ 정상 |
-| `generate-curiosity` | v3 | ✅ | 호기심 생성 | ✅ 정상 |
+| `generate-curiosity` | **v4** | ✅ | 호기심 생성 + 분류 (Phase A) | ✅ 정상 |
 | `autonomous-exploration` | v5 | ✅ | 자율 탐색/학습 | ✅ 정상 |
 | `self-evaluation` | v2 | ✅ | 메타인지 자기 평가 | ✅ 정상 |
 | `autonomous-goals` | v2 | ❌ | 자율 목표 생성 | ✅ 정상 |
@@ -224,10 +224,10 @@
 
 | Day | 작업 | 상태 | 비고 |
 |-----|------|------|------|
-| 1 | `pending_questions` 테이블 생성 | ⬜ 예정 | question, question_type, context, priority |
-| 2 | `generate-curiosity` v4 수정 | ⬜ 예정 | 호기심 분류 로직 추가 |
-| 3 | Supabase Realtime 연동 | ⬜ 예정 | 새 질문 실시간 푸시 |
-| 4 | 질문 UI 컴포넌트 | ⬜ 예정 | QuestionBubble, 응답 처리 |
+| 1 | `pending_questions` 테이블 생성 | ✅ 완료 | 15컬럼, RLS, Realtime 활성화 |
+| 2 | `generate-curiosity` v4 수정 | ✅ 완료 | Gemini 분류 + pending_questions 라우팅 |
+| 3 | Supabase Realtime 연동 | ✅ 완료 | usePendingQuestions hook + QuestionNotification |
+| 4 | 질문 UI 컴포넌트 | ⬜ 예정 | QuestionBubble 모달, 답변 저장 |
 | 5 | 통합 테스트 | ⬜ 예정 | End-to-end 검증 |
 
 **관련 문서**: [docs/PHASE_A_PROACTIVE_QUESTIONS.md](docs/PHASE_A_PROACTIVE_QUESTIONS.md)
