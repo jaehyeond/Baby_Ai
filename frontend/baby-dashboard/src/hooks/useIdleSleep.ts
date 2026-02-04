@@ -26,6 +26,10 @@ interface SleepStats {
   curiosities_generated?: number
   explorations_completed?: number
   new_knowledge_acquired?: number
+  // World Model stats
+  imagination_sessions?: number
+  connections_discovered?: number
+  predictions_made?: number
 }
 
 interface UseIdleSleepReturn {
@@ -53,7 +57,7 @@ interface UseIdleSleepReturn {
  * @example
  * ```tsx
  * const { timeUntilSleep, isSleeping, isIdle } = useIdleSleep({
- *   idleTimeoutMs: 30 * 60 * 1000, // 30 minutes
+ *   idleTimeoutMs: 10 * 60 * 1000, // 10 minutes
  *   onSleepStart: () => console.log('Baby is going to sleep...'),
  *   onSleepComplete: (stats) => console.log('Sleep complete!', stats),
  * })
@@ -61,7 +65,7 @@ interface UseIdleSleepReturn {
  */
 export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepReturn {
   const {
-    idleTimeoutMs = 30 * 60 * 1000, // 30 minutes default
+    idleTimeoutMs = 10 * 60 * 1000, // 10 minutes default (more frequent "thinking")
     enabled = true,
     onSleepStart,
     onSleepComplete,
@@ -96,6 +100,9 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
       curiosities_generated: 0,
       explorations_completed: 0,
       new_knowledge_acquired: 0,
+      imagination_sessions: 0,
+      connections_discovered: 0,
+      predictions_made: 0,
     }
 
     try {
@@ -164,6 +171,68 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
           combinedStats.new_knowledge_acquired = newKnowledge
           console.log('[IdleSleep] Explorations done:', combinedStats.explorations_completed, 'new knowledge:', newKnowledge)
         }
+      }
+
+      // Phase 4: World Model - Imagination (dream-like exploration)
+      console.log('[IdleSleep] Phase 4: World Model - Imagination...')
+      try {
+        // Pick a random topic from recent experiences or curiosities
+        const topics = [
+          '오늘 배운 것들의 연결고리',
+          '새로운 개념들 사이의 관계',
+          '내가 궁금했던 것들',
+        ]
+        const randomTopic = topics[Math.floor(Math.random() * topics.length)]
+
+        const imagineResponse = await fetch('/api/imagination', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'imagine',
+            topic: randomTopic,
+            trigger: 'idle_sleep',
+          }),
+        })
+
+        if (imagineResponse.ok) {
+          const imagineData = await imagineResponse.json()
+          if (imagineData.success && imagineData.session) {
+            combinedStats.imagination_sessions = 1
+            combinedStats.connections_discovered = imagineData.session.connections_discovered?.length || 0
+            console.log('[IdleSleep] Imagination session complete:', {
+              topic: imagineData.session.topic,
+              thoughts: imagineData.session.thoughts?.length || 0,
+              connections: combinedStats.connections_discovered,
+              insights: imagineData.session.insights?.length || 0,
+            })
+          }
+        }
+
+        // Also generate a prediction based on recent patterns
+        const predictResponse = await fetch('/api/imagination', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'predict',
+            scenario: '다음에 사용자와 대화할 때 어떤 주제가 나올까?',
+            prediction_type: 'behavior',
+            domain: 'conversation',
+          }),
+        })
+
+        if (predictResponse.ok) {
+          const predictData = await predictResponse.json()
+          if (predictData.success && predictData.prediction) {
+            combinedStats.predictions_made = 1
+            console.log('[IdleSleep] Prediction made:', {
+              prediction: predictData.prediction.prediction?.substring(0, 100),
+              confidence: predictData.prediction.confidence,
+            })
+          }
+        }
+      } catch (imaginationError) {
+        console.warn('[IdleSleep] Imagination phase error (non-critical):', imaginationError)
+        // Imagination errors are non-critical, continue with sleep completion
       }
 
       console.log('[IdleSleep] Sleep cycle complete:', combinedStats)
