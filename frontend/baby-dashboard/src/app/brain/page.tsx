@@ -1,12 +1,25 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useState, useCallback } from 'react'
 import { BrainVisualization } from '@/components/BrainVisualization'
-import { ArrowLeft, Brain } from 'lucide-react'
+import { ImaginationPanel } from '@/components/ImaginationPanel'
+import { PredictionVerifyPanel } from '@/components/PredictionVerifyPanel'
+import { ArrowLeft, Brain, Sparkles, Target } from 'lucide-react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import type { DiscoveredConnection } from '@/hooks/useImaginationSessions'
+
+type PanelType = 'imagination' | 'prediction'
 
 export default function BrainPage() {
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false)
+  const [activePanel, setActivePanel] = useState<PanelType>('imagination')
+  const [highlightedConnection, setHighlightedConnection] = useState<DiscoveredConnection | null>(null)
+
+  const handleConnectionHover = useCallback((connection: DiscoveredConnection | null) => {
+    setHighlightedConnection(connection)
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
       {/* Header */}
@@ -28,25 +41,156 @@ export default function BrainPage() {
             </div>
           </div>
         </div>
+
+        {/* Panel toggle buttons */}
+        <div className="flex items-center gap-2">
+          {/* Panel type toggle (desktop) */}
+          <div className="hidden md:flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
+            <button
+              onClick={() => setActivePanel('imagination')}
+              className={`p-2 rounded-lg transition-colors ${
+                activePanel === 'imagination'
+                  ? 'bg-violet-500/20 text-violet-400'
+                  : 'text-slate-400 hover:text-slate-300'
+              }`}
+              title="상상 세션"
+            >
+              <Sparkles className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActivePanel('prediction')}
+              className={`p-2 rounded-lg transition-colors ${
+                activePanel === 'prediction'
+                  ? 'bg-blue-500/20 text-blue-400'
+                  : 'text-slate-400 hover:text-slate-300'
+              }`}
+              title="예측 검증"
+            >
+              <Target className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Panel open/close button (mobile) */}
+          <button
+            onClick={() => setIsPanelCollapsed(!isPanelCollapsed)}
+            className="md:hidden p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 transition-colors"
+          >
+            {activePanel === 'imagination' ? (
+              <Sparkles className="w-5 h-5 text-violet-400" />
+            ) : (
+              <Target className="w-5 h-5 text-blue-400" />
+            )}
+          </button>
+        </div>
       </header>
 
-      {/* Full-screen Brain Visualization */}
+      {/* Main content with side panel */}
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="flex-1 p-4"
+        className="flex-1 flex overflow-hidden"
       >
-        <div className="h-full">
-          <BrainVisualizationFullScreen />
+        {/* 3D Brain Visualization */}
+        <div className="flex-1 p-4">
+          <BrainVisualizationFullScreen
+            highlightedConnection={highlightedConnection}
+          />
         </div>
+
+        {/* Side Panel (desktop) */}
+        <AnimatePresence mode="wait">
+          <div className="hidden md:block h-[calc(100vh-73px)]">
+            {activePanel === 'imagination' ? (
+              <ImaginationPanel
+                isCollapsed={isPanelCollapsed}
+                onToggleCollapse={() => setIsPanelCollapsed(!isPanelCollapsed)}
+                onConnectionHover={handleConnectionHover}
+                highlightedConnection={highlightedConnection}
+              />
+            ) : (
+              <PredictionVerifyPanel
+                isCollapsed={isPanelCollapsed}
+                onToggleCollapse={() => setIsPanelCollapsed(!isPanelCollapsed)}
+              />
+            )}
+          </div>
+        </AnimatePresence>
       </motion.main>
+
+      {/* Mobile panel overlay */}
+      <AnimatePresence>
+        {!isPanelCollapsed && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="md:hidden fixed inset-y-0 right-0 z-50 w-80 max-w-[90vw]"
+          >
+            {/* Mobile panel type toggle */}
+            <div className="absolute top-4 left-4 flex items-center gap-1 bg-slate-800/80 backdrop-blur rounded-lg p-1 z-10">
+              <button
+                onClick={() => setActivePanel('imagination')}
+                className={`p-2 rounded-lg transition-colors ${
+                  activePanel === 'imagination'
+                    ? 'bg-violet-500/20 text-violet-400'
+                    : 'text-slate-400'
+                }`}
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setActivePanel('prediction')}
+                className={`p-2 rounded-lg transition-colors ${
+                  activePanel === 'prediction'
+                    ? 'bg-blue-500/20 text-blue-400'
+                    : 'text-slate-400'
+                }`}
+              >
+                <Target className="w-4 h-4" />
+              </button>
+            </div>
+
+            {activePanel === 'imagination' ? (
+              <ImaginationPanel
+                isCollapsed={false}
+                onToggleCollapse={() => setIsPanelCollapsed(true)}
+                onConnectionHover={handleConnectionHover}
+                highlightedConnection={highlightedConnection}
+              />
+            ) : (
+              <PredictionVerifyPanel
+                isCollapsed={false}
+                onToggleCollapse={() => setIsPanelCollapsed(true)}
+              />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile backdrop */}
+      <AnimatePresence>
+        {!isPanelCollapsed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsPanelCollapsed(true)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
 // Full-screen version of brain visualization
-function BrainVisualizationFullScreen() {
+function BrainVisualizationFullScreen({
+  highlightedConnection,
+}: {
+  highlightedConnection?: DiscoveredConnection | null
+}) {
   return (
     <div className="h-[calc(100vh-120px)]">
       <Suspense fallback={
@@ -57,7 +201,10 @@ function BrainVisualizationFullScreen() {
           </div>
         </div>
       }>
-        <BrainVisualization fullScreen />
+        <BrainVisualization
+          fullScreen
+          highlightedConnection={highlightedConnection}
+        />
       </Suspense>
     </div>
   )

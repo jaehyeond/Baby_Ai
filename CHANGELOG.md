@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-02-05
+
+### Causal Discovery 파이프라인 활성화 ✅
+
+**문제 발견:**
+- `causal_models` 테이블이 0건 (인과관계 데이터 없음)
+- `discover_causal_relation()` 함수가 정의만 되어있고 호출되지 않음
+- CausalGraph UI 컴포넌트는 이미 구현되어 있었지만 데이터 없이 빈 화면
+
+**구현 내용:**
+- [x] `world_model.py`에 `extract_causal_relations_from_experience()` 함수 추가
+  - 감정 기반 인과관계 추출 (`_extract_emotion_based_causality`)
+  - 성공/실패 기반 인과관계 추출 (`_extract_outcome_based_causality`)
+  - LLM 기반 개념 인과관계 추출 (`_extract_concept_based_causality`)
+- [x] `auto_generate_from_experience()`에 causal discovery 통합
+  - 경험 처리 시 자동으로 인과관계 발견
+  - `causal_relations` 결과 필드 추가
+- [x] `test_world_model.py` 테스트 추가
+  - `test_causal_discovery()` 함수
+  - DB stats에 causal_models 조회 추가
+
+**테스트 결과:**
+```
+Causal Models: 3
+- 질문 → 호기심 (enables, strength: 0.60)
+- 학습 → 이해 (enables, strength: 0.50)
+- 질문 → 이해 (enables, strength: 0.50)
+```
+
+**파일 변경 목록:**
+| 파일 | 변경 |
+|------|------|
+| `neural/baby/world_model.py` | extract_causal_relations_from_experience() 함수 추가 |
+| `scripts/test_world_model.py` | test_causal_discovery() 테스트 추가 |
+| `ROADMAP.md` | Causal Discovery 파이프라인 완료 표시 |
+| `CHANGELOG.md` | 작업 기록 |
+
+**기대 효과:**
+- 대화할 때마다 인과관계 자동 축적
+- CausalGraph 탭에서 시각화 가능해짐
+- Baby AI의 인과 추론 능력 실제 작동
+
+---
+
 ## 2026-02-04
 
 ### 작업 내용

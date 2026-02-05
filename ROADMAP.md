@@ -78,7 +78,11 @@
 
 ### 추가 고려 사항 (Optional)
 - [ ] 행동 **전** 예측 → 최적 행동 선택 (CHILD 단계부터 활성화 예정)
-- [ ] Causal Graph D3.js/vis.js 시각화
+- [x] **Causal Discovery 파이프라인 활성화** (2026-02-05)
+  - `extract_causal_relations_from_experience()` 함수 추가
+  - 경험 처리 시 자동으로 인과관계 발견
+  - CausalGraph UI 컴포넌트와 연결됨
+- [ ] Causal Graph D3.js/vis.js 시각화 (향후 개선)
 - [ ] 예측 정확도 추이 대시보드
 
 ---
@@ -199,6 +203,8 @@
 
 | 날짜 | Phase | 변경 내용 |
 |------|-------|----------|
+| 2026-02-05 | 2 | Causal Discovery 파이프라인 활성화 |
+| 2026-02-05 | 2 | extract_causal_relations_from_experience() 함수 추가 |
 | 2026-01-21 | 5 | Phase 5 Autonomous Goal Setting 완료 |
 | 2026-01-21 | 5 | autonomous-goals Edge Function v1 배포 |
 | 2026-01-21 | 5 | AutonomousGoalsCard 컴포넌트 추가 |

@@ -30,7 +30,7 @@
 
 ## 📊 현재 시스템 상태 (2026-02-04)
 
-### Edge Functions (12개 - 모두 ACTIVE)
+### Edge Functions (13개 - 모두 ACTIVE)
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
@@ -45,9 +45,10 @@
 | `self-evaluation` | v2 | ✅ | 메타인지 자기 평가 | ✅ 정상 |
 | `autonomous-goals` | v2 | ❌ | 자율 목표 생성 | ✅ 정상 |
 | `textual-backpropagation` | v1 | ✅ | 피드백 전파 | ✅ 정상 |
+| `imagination-engine` | **v1** | ❌ | World Model 상상/예측 | ✅ 정상 |
 | `test-tts` | v2 | ❌ | TTS 테스트용 | ✅ 정상 |
 
-### Frontend API Routes (10개)
+### Frontend API Routes (11개)
 
 | Route | Edge Function | 상태 |
 |-------|---------------|------|
@@ -61,6 +62,7 @@
 | `/api/metacognition` | self-evaluation | ✅ 연결됨 |
 | `/api/goals/generate` | autonomous-goals | ✅ 연결됨 |
 | `/api/world/understand` | world-understanding | ✅ 연결됨 |
+| `/api/imagination` | imagination-engine | ✅ 연결됨 |
 
 ### Database 상태 (54개 테이블)
 
@@ -78,6 +80,9 @@
 | `autonomous_goals` | 24 | 자율 목표 |
 | `baby_state` | 1 | Baby AI 상태 (싱글톤) |
 | `self_evaluation_logs` | 0 | 메타인지 로그 |
+| `imagination_sessions` | 4+ | World Model 상상 세션 |
+| `predictions` | 6+ | 예측 기록 |
+| `simulations` | 2 | 시뮬레이션 기록 |
 
 ---
 
@@ -122,6 +127,38 @@
 - learning_sessions, learning_snapshots 테이블
 - core_learnings 테이블
 - session_restore_points 테이블
+
+### Phase W: World Model Integration ✅ (2026-02-04)
+- `imagination-engine` Edge Function v1 배포
+- `/api/imagination` API route 생성
+- `useIdleSleep` Phase 4 추가 (수면 시 상상 세션)
+- Brain 페이지에 `ImaginationPanel` 추가
+- 상상 세션 connections_discovered 3D 하이라이트
+- 관련 파일:
+  - `src/hooks/useImaginationSessions.ts` - 상상 세션 데이터 페칭
+  - `src/components/ImaginationPanel.tsx` - 상상 패널 UI
+  - `src/app/brain/page.tsx` - Brain 페이지 레이아웃 (3D + 패널)
+  - `src/components/BrainVisualization.tsx` - 3D 하이라이트 로직
+
+### Phase A: Proactive Questions ✅ (2026-02-04)
+- `pending_questions` 테이블 (15컬럼, RLS, Realtime)
+- `generate-curiosity` v4 (Gemini 분류 + pending_questions 라우팅)
+- Supabase Realtime 연동 (새 질문 알림)
+- 관련 파일:
+  - `src/hooks/usePendingQuestions.ts` - 질문 데이터 + Realtime 구독
+  - `src/components/QuestionNotification.tsx` - 토스트 알림
+  - `src/components/QuestionBubble.tsx` - 답변 입력 모달
+  - `src/components/QuestionList.tsx` - 질문 목록 카드
+  - `src/app/page.tsx` - 메인 페이지 통합 (질문 탭)
+
+### Phase V: Prediction Verification UI ✅ (2026-02-04)
+- World Model 예측 검증 UI 구현
+- 사용자가 예측이 맞았는지/틀렸는지 피드백 제공
+- 예측 정확도 통계 표시
+- 관련 파일:
+  - `src/hooks/usePredictions.ts` - 예측 데이터 페칭 + 검증 로직
+  - `src/components/PredictionVerifyPanel.tsx` - 예측 검증 패널
+  - `src/app/brain/page.tsx` - Brain 페이지에 패널 토글 추가 (상상/예측)
 
 ---
 
@@ -191,6 +228,61 @@
                                Louvain 클러스터링
                                          ↓
                                React Three Fiber 3D 렌더링
+                                         ↓
+                               + ImaginationPanel (상상 세션 시각화)
+                               + PredictionVerifyPanel (예측 검증)
+```
+
+### 6. World Model 흐름 ✅
+```
+수면 모드 → useIdleSleep Phase 4 → /api/imagination
+                                         ↓
+                               imagination-engine
+                                         ↓
+                               [Gemini LLM: 상상/예측]
+                                         ↓
+                               imagination_sessions,
+                               predictions 저장
+                                         ↓
+                               /brain 페이지에서 시각화
+```
+
+### 7. 능동적 질문 흐름 ✅ (Phase A)
+```
+호기심 생성 → generate-curiosity v4 → [Gemini: 질문 유형 분류]
+                                         ↓
+                               factual → autonomous-exploration (웹 검색)
+                               personal/preference/experience → pending_questions
+                                         ↓
+                               Supabase Realtime INSERT 이벤트
+                                         ↓
+                               usePendingQuestions hook → 새 질문 감지
+                                         ↓
+                               QuestionNotification 토스트 알림
+                                         ↓
+                               QuestionBubble 모달 → 사용자 답변 입력
+                                         ↓
+                               submitAnswer → pending_questions 업데이트
+                                          + semantic_concepts 저장
+                                          + experiences 저장
+```
+
+### 8. 예측 검증 흐름 ✅ (Phase V)
+```
+/brain 페이지 → PredictionVerifyPanel
+                     ↓
+               usePredictions hook → predictions 테이블 조회
+                     ↓
+               검증 대기 목록 표시 (was_correct = null)
+                     ↓
+               사용자 검증 클릭 → VerifyModal
+                     ↓
+               맞았다/틀렸다 + 실제 결과 + 배운 점 입력
+                     ↓
+               verifyPrediction → predictions UPDATE
+               (was_correct, verified_at, actual_outcome, insight_gained)
+                     ↓
+               정확도 통계 실시간 업데이트
 ```
 
 ---
@@ -214,9 +306,9 @@
 
 ---
 
-## 🚀 현재 진행 중인 Phase
+## ✅ 최근 완료된 Phase
 
-### Phase A: 비비의 능동적 질문 시스템 (2026-02-04~)
+### Phase A: 비비의 능동적 질문 시스템 ✅ (2026-02-04)
 
 > **목표**: 비비가 사용자에게 먼저 질문할 수 있는 구조 구현
 >
@@ -227,8 +319,8 @@
 | 1 | `pending_questions` 테이블 생성 | ✅ 완료 | 15컬럼, RLS, Realtime 활성화 |
 | 2 | `generate-curiosity` v4 수정 | ✅ 완료 | Gemini 분류 + pending_questions 라우팅 |
 | 3 | Supabase Realtime 연동 | ✅ 완료 | usePendingQuestions hook + QuestionNotification |
-| 4 | 질문 UI 컴포넌트 | ⬜ 예정 | QuestionBubble 모달, 답변 저장 |
-| 5 | 통합 테스트 | ⬜ 예정 | End-to-end 검증 |
+| 4 | 질문 UI 컴포넌트 | ✅ 완료 | QuestionBubble 모달, QuestionList, 답변 저장 |
+| 5 | 통합 및 배포 | ✅ 완료 | End-to-end 검증, Vercel 배포 |
 
 **관련 문서**: [docs/PHASE_A_PROACTIVE_QUESTIONS.md](docs/PHASE_A_PROACTIVE_QUESTIONS.md)
 
@@ -236,10 +328,11 @@
 
 ## 🎯 다음 단계 후보
 
-### Option A: World Model 통합 (상상/예측)
-- 현재 `imagination_sessions`, `simulations`, `predictions` 테이블 존재
-- 사용되지 않는 상태
-- 내부 시뮬레이션 기능 구현 필요
+### Option A: World Model 통합 (상상/예측) ✅ 완료
+- ~~현재 `imagination_sessions`, `simulations`, `predictions` 테이블 존재~~
+- ~~사용되지 않는 상태~~
+- ~~내부 시뮬레이션 기능 구현 필요~~
+- **완료**: imagination-engine Edge Function, /api/imagination, Brain 페이지 시각화
 
 ### Option B: Emotion Engine 강화
 - 현재 기본 감정 (6가지) 구현됨
@@ -266,7 +359,7 @@ our-a2a-project/
 │   ├── src/
 │   │   ├── app/                 # 페이지 (/, /brain, /sense, /sleep)
 │   │   ├── components/          # React 컴포넌트
-│   │   ├── hooks/               # useBrainData, useCamera, etc.
+│   │   ├── hooks/               # useBrainData, useCamera, useImaginationSessions, etc.
 │   │   └── lib/                 # Supabase client
 │   └── package.json
 │
@@ -277,6 +370,7 @@ our-a2a-project/
 │       ├── memory-consolidation/
 │       ├── generate-curiosity/
 │       ├── autonomous-exploration/
+│       ├── imagination-engine/
 │       └── ...
 │
 ├── agents/                      # A2A 서버 에이전트

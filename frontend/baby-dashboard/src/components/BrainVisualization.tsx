@@ -6,6 +6,7 @@ import { OrbitControls, Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useBrainData } from '@/hooks/useBrainData'
 import type { NeuronNode, Synapse, Astrocyte } from '@/lib/database.types'
+import type { DiscoveredConnection } from '@/hooks/useImaginationSessions'
 import { Brain, Loader2, RefreshCw, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
 // Category colors
@@ -214,6 +215,41 @@ function SynapseConnection({
   return <primitive ref={lineRef} object={lineObject} />
 }
 
+// Imagination connection line (special glowing line for discovered connections)
+function ImaginationConnection({
+  fromNeuron,
+  toNeuron,
+}: {
+  fromNeuron: NeuronNode
+  toNeuron: NeuronNode
+}) {
+  const lineRef = useRef<THREE.Line>(null)
+
+  const lineObject = useMemo(() => {
+    const points = [
+      new THREE.Vector3(...fromNeuron.position),
+      new THREE.Vector3(...toNeuron.position),
+    ]
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    const material = new THREE.LineBasicMaterial({
+      color: '#f59e0b', // Amber color for imagination connections
+      transparent: true,
+      opacity: 0.9,
+      linewidth: 2,
+    })
+    return new THREE.Line(geometry, material)
+  }, [fromNeuron, toNeuron])
+
+  useFrame((state) => {
+    if (lineRef.current) {
+      const material = lineRef.current.material as THREE.LineBasicMaterial
+      material.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 4) * 0.4
+    }
+  })
+
+  return <primitive ref={lineRef} object={lineObject} />
+}
+
 // Main 3D scene
 function BrainScene({
   neurons,
@@ -224,6 +260,7 @@ function BrainScene({
   onSelectNeuron,
   selectedAstrocyte,
   onSelectAstrocyte,
+  highlightedConnection,
 }: {
   neurons: NeuronNode[]
   synapses: Synapse[]
@@ -233,6 +270,7 @@ function BrainScene({
   onSelectNeuron: (node: NeuronNode | null) => void
   selectedAstrocyte: Astrocyte | null
   onSelectAstrocyte: (a: Astrocyte | null) => void
+  highlightedConnection?: DiscoveredConnection | null
 }) {
   const neuronMap = useMemo(() => new Map(neurons.map((n) => [n.id, n])), [neurons])
 
@@ -263,6 +301,42 @@ function BrainScene({
     if (!selectedAstrocyte) return new Set<string>()
     return new Set(selectedAstrocyte.neuronIds)
   }, [selectedAstrocyte])
+
+  // Find neurons matching highlighted imagination connection
+  const imaginationHighlight = useMemo(() => {
+    if (!highlightedConnection) return null
+
+    // Find neurons by name (partial match for flexibility)
+    const findNeuronByName = (name: string): NeuronNode | null => {
+      // Exact match first
+      let found = neurons.find(n => n.name === name)
+      if (found) return found
+
+      // Partial match (contains)
+      found = neurons.find(n => n.name.includes(name) || name.includes(n.name))
+      if (found) return found
+
+      return null
+    }
+
+    const fromNeuron = findNeuronByName(highlightedConnection.from)
+    const toNeuron = findNeuronByName(highlightedConnection.to)
+
+    if (!fromNeuron || !toNeuron) return null
+
+    return {
+      fromNeuron,
+      toNeuron,
+      fromId: fromNeuron.id,
+      toId: toNeuron.id,
+    }
+  }, [highlightedConnection, neurons])
+
+  // Set of imagination-highlighted neuron IDs
+  const imaginationHighlightedIds = useMemo(() => {
+    if (!imaginationHighlight) return new Set<string>()
+    return new Set([imaginationHighlight.fromId, imaginationHighlight.toId])
+  }, [imaginationHighlight])
 
   return (
     <>
@@ -301,10 +375,22 @@ function BrainScene({
           key={neuron.id}
           node={neuron}
           isSelected={selectedNeuron?.id === neuron.id}
-          isHighlighted={connectedNeuronIds.has(neuron.id) || selectedAstrocyteNeuronIds.has(neuron.id)}
+          isHighlighted={
+            connectedNeuronIds.has(neuron.id) ||
+            selectedAstrocyteNeuronIds.has(neuron.id) ||
+            imaginationHighlightedIds.has(neuron.id)
+          }
           onSelect={onSelectNeuron}
         />
       ))}
+
+      {/* Imagination connection line (when hovering over a discovered connection) */}
+      {imaginationHighlight && (
+        <ImaginationConnection
+          fromNeuron={imaginationHighlight.fromNeuron}
+          toNeuron={imaginationHighlight.toNeuron}
+        />
+      )}
 
       {/* Camera controls */}
       <OrbitControls
@@ -431,7 +517,13 @@ function WebGLRecoveryHandler({ onContextLost }: { onContextLost: () => void }) 
 }
 
 // Main export component
-export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolean }) {
+export function BrainVisualization({
+  fullScreen = false,
+  highlightedConnection,
+}: {
+  fullScreen?: boolean
+  highlightedConnection?: DiscoveredConnection | null
+}) {
   const { brainData, isLoading, error, refetch } = useBrainData()
   const [selectedNeuron, setSelectedNeuron] = useState<NeuronNode | null>(null)
   const [selectedAstrocyte, setSelectedAstrocyte] = useState<Astrocyte | null>(null)
@@ -589,6 +681,7 @@ export function BrainVisualization({ fullScreen = false }: { fullScreen?: boolea
                 onSelectNeuron={setSelectedNeuron}
                 selectedAstrocyte={selectedAstrocyte}
                 onSelectAstrocyte={setSelectedAstrocyte}
+                highlightedConnection={highlightedConnection}
               />
               <CameraController zoomIn={zoomIn} zoomOut={zoomOut} reset={reset} />
             </Suspense>

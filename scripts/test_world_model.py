@@ -149,10 +149,10 @@ def test_imagination():
         print("[FAILED] Could not start imagination session")
 
 
-def test_auto_generation():
-    """자동 생성 테스트"""
+def test_causal_discovery():
+    """인과관계 발견 테스트"""
     print("\n" + "=" * 60)
-    print("4. AUTO-GENERATION TEST")
+    print("4. CAUSAL DISCOVERY TEST")
     print("=" * 60)
 
     db = get_brain_db()
@@ -161,11 +161,104 @@ def test_auto_generation():
     wm = WorldModel(
         db=db,
         llm_client=llm,
-        development_stage=3,  # TODDLER
+        development_stage=4,  # CHILD - 인과 추론 가능
         verbose=True,
     )
 
-    # 경험에서 자동 생성
+    # 인과 추론 가능 여부 확인
+    print(f"\nCan reason causally: {wm.can_reason_causally()}")
+
+    # 직접 인과관계 발견
+    result = wm.discover_causal_relation(
+        cause_concept="질문",
+        effect_concept="호기심",
+        evidence="테스트: 질문을 하면 호기심이 생김",
+    )
+
+    if result:
+        print(f"\n[SUCCESS] Causal relation discovered:")
+        print(f"  ID: {result.get('id', 'N/A')}")
+        print(f"  Type: {result.get('relationship_type', 'N/A')}")
+        print(f"  Strength: {result.get('causal_strength', 0):.2f}")
+    else:
+        print("[INFO] Could not discover causal relation (concepts may not exist)")
+
+    # 경험에서 인과관계 추출
+    relations = wm.extract_causal_relations_from_experience(
+        experience={
+            "task": "새로운 개념을 배우는 대화",
+            "success": True,
+            "task_type": "learning",
+        },
+        emotional_state={
+            "curiosity": 0.8,
+            "joy": 0.7,
+            "fear": 0.1,
+            "frustration": 0.1,
+        },
+    )
+
+    print(f"\n[RESULTS] Causal relations from experience: {len(relations)}")
+    for rel in relations[:5]:
+        print(f"  - {rel.get('relationship_type', 'N/A')}: strength={rel.get('causal_strength', 0):.2f}")
+
+
+def test_prediction_verification():
+    """예측 자동 검증 테스트"""
+    print("\n" + "=" * 60)
+    print("5. PREDICTION AUTO-VERIFICATION TEST")
+    print("=" * 60)
+
+    db = get_brain_db()
+    llm = get_llm_client()
+
+    wm = WorldModel(
+        db=db,
+        llm_client=llm,
+        development_stage=4,  # CHILD
+        verbose=True,
+    )
+
+    # 현재 미검증 예측 수 확인
+    unverified_before = db.get_unverified_predictions(limit=50)
+    print(f"\n[BEFORE] 미검증 예측: {len(unverified_before)}개")
+
+    # 자동 검증 실행
+    verified = wm.auto_verify_predictions(
+        current_experience={
+            "task": "algorithm 유형의 작업 완료",
+            "success": True,
+            "task_type": "algorithm",
+        }
+    )
+
+    print(f"\n[RESULTS] 이번에 검증된 예측: {len(verified)}개")
+    for v in verified:
+        result = "[O] 정확" if v.get("was_correct") else "[X] 부정확"
+        print(f"  - {result}: {v.get('scenario', 'N/A')}")
+
+    # 검증 후 미검증 예측 수 확인
+    unverified_after = db.get_unverified_predictions(limit=50)
+    print(f"\n[AFTER] 미검증 예측: {len(unverified_after)}개")
+
+
+def test_auto_generation():
+    """자동 생성 테스트 (예측 검증 포함)"""
+    print("\n" + "=" * 60)
+    print("6. AUTO-GENERATION TEST (with Auto-Verification)")
+    print("=" * 60)
+
+    db = get_brain_db()
+    llm = get_llm_client()
+
+    wm = WorldModel(
+        db=db,
+        llm_client=llm,
+        development_stage=4,  # CHILD - 인과 추론 포함
+        verbose=True,
+    )
+
+    # 경험에서 자동 생성 (검증도 포함)
     results = wm.auto_generate_from_experience(
         experience={
             "task": "정렬 알고리즘 구현",
@@ -181,15 +274,17 @@ def test_auto_generation():
     )
 
     print(f"\n[RESULTS]")
-    print(f"  Prediction: {'Yes' if results.get('prediction') else 'No'}")
+    print(f"  Verified Predictions: {len(results.get('verified_predictions', []))}")
+    print(f"  New Prediction: {'Yes' if results.get('prediction') else 'No'}")
     print(f"  Simulation: {'Yes' if results.get('simulation') else 'No'}")
     print(f"  Imagination: {'Yes' if results.get('imagination') else 'No'}")
+    print(f"  Causal Relations: {len(results.get('causal_relations', []))}")
 
 
 def test_db_stats():
     """DB 통계 확인"""
     print("\n" + "=" * 60)
-    print("5. DATABASE STATS")
+    print("7. DATABASE STATS")
     print("=" * 60)
 
     db = get_brain_db()
@@ -212,6 +307,12 @@ def test_db_stats():
     for sess in sessions[:3]:
         print(f"  - {sess.get('topic', 'N/A')[:40]}...")
 
+    # 인과 모델 조회
+    causal_models = db.get_causal_models(min_confidence=0.0, limit=10)
+    print(f"\nCausal Models: {len(causal_models)}")
+    for cm in causal_models[:5]:
+        print(f"  - {cm.get('relationship_type', 'N/A')}: strength={cm.get('causal_strength', 0):.2f}, conf={cm.get('confidence', 0):.2f}")
+
 
 def main():
     print("\n" + "=" * 60)
@@ -231,6 +332,8 @@ def main():
         test_prediction()
         test_simulation()
         test_imagination()
+        test_causal_discovery()
+        test_prediction_verification()
         test_auto_generation()
         test_db_stats()
 

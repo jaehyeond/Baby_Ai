@@ -649,6 +649,304 @@ JSON 배열로 인사이트 3개를 제공하세요:
                 print(f"[WORLD_MODEL] 인과 관계 저장 실패: {e}")
             return None
 
+    def extract_causal_relations_from_experience(
+        self,
+        experience: dict,
+        emotional_state: dict = None,
+    ) -> list[dict]:
+        """
+        경험에서 인과관계 자동 추출
+
+        전략:
+        1. 경험의 감정 변화에서 인과관계 추출 (행동 → 감정)
+        2. 성공/실패와 관련된 인과관계 추출
+        3. 관련 개념들 사이의 인과관계 탐색
+        """
+        if not self.can_reason_causally():
+            return []
+
+        if not self._db or not self._llm_client:
+            return []
+
+        discovered_relations = []
+        task = experience.get("task", "")
+        success = experience.get("success", False)
+        task_type = experience.get("task_type", "general")
+
+        # 1. 감정 기반 인과관계 (행동 → 감정)
+        if emotional_state:
+            emotion_causal_pairs = self._extract_emotion_based_causality(
+                task, task_type, success, emotional_state
+            )
+            discovered_relations.extend(emotion_causal_pairs)
+
+        # 2. 성공/실패 기반 인과관계
+        outcome_causal_pairs = self._extract_outcome_based_causality(
+            task, task_type, success
+        )
+        discovered_relations.extend(outcome_causal_pairs)
+
+        # 3. 개념 관계에서 인과관계 추론 (LLM 기반)
+        if len(discovered_relations) < 3:  # 충분한 관계가 없을 때만
+            concept_causal_pairs = self._extract_concept_based_causality(task)
+            discovered_relations.extend(concept_causal_pairs)
+
+        if self._verbose and discovered_relations:
+            print(f"[WORLD_MODEL] 인과관계 {len(discovered_relations)}개 발견")
+
+        return discovered_relations
+
+    def _extract_emotion_based_causality(
+        self,
+        task: str,
+        task_type: str,
+        success: bool,
+        emotional_state: dict,
+    ) -> list[dict]:
+        """감정 변화에서 인과관계 추출"""
+        relations = []
+
+        # 감정-원인 매핑
+        emotion_triggers = {
+            "curiosity": ("질문", "호기심"),
+            "joy": ("성공", "기쁨") if success else None,
+            "frustration": ("실패", "좌절") if not success else None,
+            "fear": ("위험", "두려움"),
+            "surprise": ("새로움", "놀람"),
+        }
+
+        for emotion, trigger_pair in emotion_triggers.items():
+            if trigger_pair and emotional_state.get(emotion, 0) > 0.6:
+                cause_name, effect_name = trigger_pair
+                relation = self.discover_causal_relation(
+                    cause_concept=cause_name,
+                    effect_concept=effect_name,
+                    evidence=f"경험: {task[:50]}...",
+                )
+                if relation:
+                    relations.append(relation)
+
+        # 작업 유형별 인과관계
+        task_type_emotions = {
+            "learning": ("학습", "이해"),
+            "conversation": ("대화", "연결"),
+            "exploration": ("탐험", "발견"),
+        }
+
+        if task_type in task_type_emotions:
+            cause, effect = task_type_emotions[task_type]
+            relation = self.discover_causal_relation(
+                cause_concept=cause,
+                effect_concept=effect,
+                evidence=f"작업 유형: {task_type}",
+            )
+            if relation:
+                relations.append(relation)
+
+        return relations
+
+    def _extract_outcome_based_causality(
+        self,
+        task: str,
+        task_type: str,
+        success: bool,
+    ) -> list[dict]:
+        """성공/실패에서 인과관계 추출"""
+        relations = []
+
+        if success:
+            # 성공 패턴
+            success_pairs = [
+                ("노력", "성공"),
+                ("이해", "성공"),
+                ("연습", "향상"),
+            ]
+            for cause, effect in success_pairs[:1]:  # 한 번에 하나씩만
+                relation = self.discover_causal_relation(
+                    cause_concept=cause,
+                    effect_concept=effect,
+                    evidence=f"성공 경험: {task[:30]}",
+                )
+                if relation:
+                    relations.append(relation)
+        else:
+            # 실패 패턴
+            failure_pairs = [
+                ("실수", "실패"),
+                ("서두름", "실수"),
+            ]
+            for cause, effect in failure_pairs[:1]:
+                relation = self.discover_causal_relation(
+                    cause_concept=cause,
+                    effect_concept=effect,
+                    evidence=f"실패 경험: {task[:30]}",
+                )
+                if relation:
+                    relations.append(relation)
+
+        return relations
+
+    def _extract_concept_based_causality(self, task: str) -> list[dict]:
+        """
+        LLM을 사용해 task에서 인과관계 추출
+        """
+        relations = []
+
+        if not self._llm_client:
+            return relations
+
+        try:
+            prompt = f"""다음 경험에서 인과관계를 찾아주세요.
+
+경험: "{task}"
+
+인과관계를 JSON 배열로 응답하세요. 각 항목은 {{"cause": "원인개념", "effect": "결과개념"}} 형식입니다.
+- 최대 2개까지만
+- 일반적인 개념 사용 (예: 질문, 학습, 호기심, 이해 등)
+- 관계가 없으면 빈 배열 []
+
+JSON만 응답:"""
+
+            response = self._llm_client.generate(prompt=prompt, max_tokens=150)
+
+            # JSON 파싱
+            import re
+            json_match = re.search(r'\[.*\]', response, re.DOTALL)
+            if json_match:
+                causal_pairs = json.loads(json_match.group())
+
+                for pair in causal_pairs[:2]:
+                    if "cause" in pair and "effect" in pair:
+                        relation = self.discover_causal_relation(
+                            cause_concept=pair["cause"],
+                            effect_concept=pair["effect"],
+                            evidence=f"LLM 추출: {task[:30]}",
+                        )
+                        if relation:
+                            relations.append(relation)
+
+        except Exception as e:
+            if self._verbose:
+                print(f"[WORLD_MODEL] LLM 인과관계 추출 실패: {e}")
+
+        return relations
+
+    # ==================== Auto-Verification ====================
+
+    def auto_verify_predictions(
+        self,
+        current_experience: dict,
+    ) -> list[dict]:
+        """
+        현재 경험을 기반으로 이전 예측들을 자동 검증
+
+        전략:
+        1. 미검증 예측 중 현재 경험과 관련된 것 찾기
+        2. 예측 시나리오와 실제 결과 비교
+        3. auto_verified = true로 표시
+        """
+        if not self._db or not self._llm_client:
+            return []
+
+        verified_predictions = []
+        task = current_experience.get("task", "")
+        task_type = current_experience.get("task_type", "general")
+        success = current_experience.get("success", False)
+
+        # 미검증 예측 조회
+        try:
+            unverified = self._db.get_unverified_predictions(limit=20)
+        except Exception as e:
+            if self._verbose:
+                print(f"[WORLD_MODEL] 미검증 예측 조회 실패: {e}")
+            return []
+
+        if not unverified:
+            return []
+
+        # 각 예측에 대해 관련성 확인 및 검증
+        for prediction in unverified:
+            scenario = prediction.get("scenario", "")
+            prediction_text = prediction.get("prediction", "")
+            prediction_id = prediction.get("id", "")
+
+            # 관련성 확인 (시나리오에 task_type이 포함되어 있는지)
+            is_related = (
+                task_type.lower() in scenario.lower() or
+                any(keyword in scenario.lower() for keyword in task.lower().split()[:3])
+            )
+
+            if not is_related:
+                continue
+
+            # LLM으로 예측 정확성 판단
+            actual_outcome = f"task_type: {task_type}, success: {success}, task: {task[:100]}"
+
+            try:
+                prompt = f"""예측의 정확성을 판단하세요.
+
+원래 예측: {prediction_text}
+시나리오: {scenario}
+
+실제 결과: {actual_outcome}
+
+이 예측이 맞았나요?
+- "correct": 예측과 실제 결과가 대체로 일치
+- "incorrect": 예측과 실제 결과가 다름
+- "uncertain": 판단 불가
+
+한 단어로만 응답:"""
+
+                response = self._llm_client.generate(prompt=prompt, max_tokens=30)
+                response_lower = response.lower().strip()
+
+                # 판단 불가면 건너뛰기
+                if "uncertain" in response_lower:
+                    continue
+
+                was_correct = "correct" in response_lower and "incorrect" not in response_lower
+
+                # DB 업데이트 (auto_verified 플래그 포함)
+                update_data = {
+                    "actual_outcome": actual_outcome,
+                    "was_correct": was_correct,
+                    "prediction_error": 0.0 if was_correct else 1.0,
+                    "verified_at": datetime.utcnow().isoformat(),
+                    "auto_verified": True,
+                    "verification_context": {
+                        "verified_by": "auto_verify_predictions",
+                        "related_task": task[:100],
+                        "task_type": task_type,
+                        "task_success": success,
+                    },
+                }
+
+                self._db.client.table("predictions").update(update_data).eq("id", prediction_id).execute()
+
+                verified_predictions.append({
+                    "prediction_id": prediction_id,
+                    "was_correct": was_correct,
+                    "scenario": scenario[:50],
+                })
+
+                if was_correct:
+                    self._correct_predictions += 1
+
+                if self._verbose:
+                    result = "[O] 정확" if was_correct else "[X] 부정확"
+                    print(f"[WORLD_MODEL] 예측 자동검증: {result} - {scenario[:30]}...")
+
+            except Exception as e:
+                if self._verbose:
+                    print(f"[WORLD_MODEL] 예측 검증 실패 ({prediction_id}): {e}")
+                continue
+
+        if self._verbose and verified_predictions:
+            correct_count = sum(1 for p in verified_predictions if p["was_correct"])
+            print(f"[WORLD_MODEL] 자동 검증 완료: {len(verified_predictions)}개 중 {correct_count}개 정확")
+
+        return verified_predictions
+
     # ==================== Auto-Generation ====================
 
     def auto_generate_from_experience(
@@ -659,19 +957,36 @@ JSON 배열로 인사이트 3개를 제공하세요:
         """
         경험에서 자동으로 World Model 데이터 생성
 
+        - 예측 검증 (이전 예측들 자동 검증)
         - 예측 생성 (성공/실패 예측)
         - 간단한 시뮬레이션
         - 상상 세션 (호기심이 높을 때)
+        - 인과관계 발견 (CHILD 단계부터)
         """
         results = {
+            "verified_predictions": [],
             "prediction": None,
             "simulation": None,
             "imagination": None,
+            "causal_relations": [],
         }
 
         task = experience.get("task", "")
         success = experience.get("success", False)
         task_type = experience.get("task_type", "general")
+
+        # 0. 이전 예측 자동 검증 (예측 능력이 있을 때)
+        if self.can_predict():
+            try:
+                verified = self.auto_verify_predictions(experience)
+                results["verified_predictions"] = verified
+
+                if self._verbose and verified:
+                    print(f"[WORLD_MODEL] 이전 예측 {len(verified)}개 자동 검증 완료")
+
+            except Exception as e:
+                if self._verbose:
+                    print(f"[WORLD_MODEL] 예측 자동 검증 오류: {e}")
 
         # 1. 예측 생성 (다음 유사 작업 결과 예측)
         if self.can_predict():
@@ -711,6 +1026,22 @@ JSON 배열로 인사이트 3개를 제공하세요:
                     self.imagine_thought(thought_type="exploration")
 
                 results["imagination"] = self.end_imagination()
+
+        # 4. 인과관계 발견 (CHILD 단계부터)
+        if self.can_reason_causally():
+            try:
+                causal_relations = self.extract_causal_relations_from_experience(
+                    experience=experience,
+                    emotional_state=emotional_state,
+                )
+                results["causal_relations"] = causal_relations
+
+                if self._verbose and causal_relations:
+                    print(f"[WORLD_MODEL] 인과관계 {len(causal_relations)}개 저장됨")
+
+            except Exception as e:
+                if self._verbose:
+                    print(f"[WORLD_MODEL] 인과관계 추출 오류: {e}")
 
         return results
 
