@@ -16,8 +16,8 @@ interface WakeWordIndicatorProps {
 
 const STATE_CONFIG: Record<WakeWordState, { color: string; label: string; pulse: boolean }> = {
   OFF: { color: 'slate', label: '항상 듣기', pulse: false },
-  LISTENING: { color: 'green', label: '듣고 있어요...', pulse: true },
-  CAPTURING: { color: 'cyan', label: '', pulse: true },
+  LISTENING: { color: 'green', label: '"비비야"라고 불러주세요', pulse: true },
+  CAPTURING: { color: 'cyan', label: '듣는 중...', pulse: true },
   PROCESSING: { color: 'yellow', label: '처리 중...', pulse: false },
   SPEAKING: { color: 'orange', label: '말하는 중...', pulse: false },
 }
@@ -96,15 +96,17 @@ export function WakeWordIndicator({
             >
               {error}
             </motion.p>
-          ) : state === 'CAPTURING' && transcript ? (
+          ) : (state === 'CAPTURING' || state === 'LISTENING') && transcript ? (
             <motion.p
-              key="transcript"
+              key={`transcript-${state}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-xs text-cyan-300 truncate font-medium"
+              className={`text-xs truncate font-medium ${
+                state === 'CAPTURING' ? 'text-cyan-300' : 'text-green-300/70'
+              }`}
             >
-              &ldquo;{transcript}&rdquo;
+              {state === 'CAPTURING' ? `"${transcript}"` : `🎤 ${transcript}`}
             </motion.p>
           ) : (
             <motion.p

@@ -33,6 +33,10 @@ const WAKE_PATTERNS = [
   /비비야/, /비비아/, /베비야/, /베베야/,
   /비비얌/, /비비요/, /삐삐야/, /베비아/,
   /비비 야/, /비비 아/,
+  // 추가 변형 (Samsung STT 대응)
+  /BB야/, /bb야/, /비 비야/, /비 비아/,
+  /빼비야/, /뻬비야/, /피비야/, /피피야/,
+  /비비$/, // "비비"만 말한 경우 (뒤에 아무것도 없으면)
 ]
 
 function detectWakeWord(text: string): { found: boolean; commandText: string } {
@@ -41,6 +45,7 @@ function detectWakeWord(text: string): { found: boolean; commandText: string } {
     const match = normalized.match(pattern)
     if (match) {
       const commandText = normalized.slice(match.index! + match[0].length).trim()
+      console.log('[WakeWord] MATCHED:', pattern, '→ command:', commandText || '(empty)')
       return { found: true, commandText }
     }
   }
@@ -178,12 +183,22 @@ export function useWakeWord(options: UseWakeWordOptions): UseWakeWordReturn {
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       failureCountRef.current = 0
 
+      // Debug: log all results
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const alts = []
+        for (let j = 0; j < event.results[i].length; j++) {
+          alts.push(event.results[i][j].transcript)
+        }
+        console.log(`[WakeWord] state=${stateRef.current} result[${i}] final=${event.results[i].isFinal}:`, alts.join(' | '))
+      }
+
       if (stateRef.current === 'LISTENING') {
         // Check all results and alternatives for wake word
         for (let i = event.resultIndex; i < event.results.length; i++) {
           for (let j = 0; j < event.results[i].length; j++) {
             const { found, commandText } = detectWakeWord(event.results[i][j].transcript)
             if (found) {
+              console.log('[WakeWord] ✅ Wake word detected! Command:', commandText || '(waiting for command)')
               capturedTextRef.current = commandText
               setTranscript(commandText)
               if (commandText.length > 0) {
