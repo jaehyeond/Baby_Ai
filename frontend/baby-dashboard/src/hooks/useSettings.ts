@@ -21,6 +21,9 @@ export interface Settings {
   // Data
   maxExperiencesToShow: number
   maxEmotionLogsToShow: number
+
+  // Wake Word (Always Listening)
+  alwaysListeningEnabled: boolean
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +38,7 @@ const DEFAULT_SETTINGS: Settings = {
   refreshInterval: 30,
   maxExperiencesToShow: 10,
   maxEmotionLogsToShow: 50,
+  alwaysListeningEnabled: false,
 }
 
 const STORAGE_KEY = 'baby-dashboard-settings'

@@ -46,3 +46,5 @@ export type { FeedbackData, FeedbackResult } from './FeedbackButtons'
 export { QuestionNotification } from './QuestionNotification'
 export { QuestionBubble } from './QuestionBubble'
 export { QuestionList } from './QuestionList'
+// Phase W: Wake Word (Always Listening)
+export { WakeWordIndicator } from './WakeWordIndicator'

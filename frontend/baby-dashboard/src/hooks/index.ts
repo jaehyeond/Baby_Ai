@@ -17,3 +17,6 @@ export { useIdleSleep } from './useIdleSleep'
 // Phase A: Proactive Questions
 export { usePendingQuestions } from './usePendingQuestions'
 export type { UsePendingQuestionsOptions, UsePendingQuestionsReturn } from './usePendingQuestions'
+// Phase W: Wake Word (Always Listening)
+export { useWakeWord } from './useWakeWord'
+export type { WakeWordState, UseWakeWordReturn } from './useWakeWord'

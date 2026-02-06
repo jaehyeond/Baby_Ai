@@ -3,8 +3,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
-import { CameraCapture, AudioRecorder, ConversationView } from '@/components'
+import { CameraCapture, AudioRecorder, ConversationView, WakeWordIndicator } from '@/components'
 import type { ConversationMessage } from '@/components'
+import { useWakeWord } from '@/hooks/useWakeWord'
+import { useSettings } from '@/hooks/useSettings'
 import {
   Camera,
   Mic,
@@ -344,9 +346,10 @@ export default function SensePage() {
       // Play audio immediately after receiving response
       if (validAudioUrl) {
         console.log('[SensePage] Attempting to play TTS audio:', validAudioUrl.substring(0, 50))
-        playAudioUrl(validAudioUrl).catch((err) => {
-          console.warn('[SensePage] TTS autoplay failed:', err)
-        })
+        wakeWordRef.current.pauseForSpeaking()
+        playAudioUrl(validAudioUrl)
+          .catch((err) => { console.warn('[SensePage] TTS autoplay failed:', err) })
+          .finally(() => wakeWordRef.current.resumeAfterSpeaking())
       }
 
     } catch (err) {
@@ -427,9 +430,10 @@ export default function SensePage() {
       // Play audio immediately after receiving response (within user gesture context)
       if (validAudioUrl) {
         debugLog(`TTS audio URL received: ${validAudioUrl.substring(0, 80)}`)
-        playAudioUrl(validAudioUrl).catch((err) => {
-          debugLog(`TTS playback failed: ${err.message || err}`)
-        })
+        wakeWordRef.current.pauseForSpeaking()
+        playAudioUrl(validAudioUrl)
+          .catch((err) => { debugLog(`TTS playback failed: ${err.message || err}`) })
+          .finally(() => wakeWordRef.current.resumeAfterSpeaking())
       } else {
         debugLog('No valid audio_url in response')
       }
@@ -452,6 +456,23 @@ export default function SensePage() {
     setMessages([])
     setConversationError(null)
   }, [])
+
+  // Wake Word (Always Listening) - Phase W
+  const { settings, saveSettings } = useSettings()
+
+  const handleWakeWordCommand = useCallback(async (text: string) => {
+    setActiveTab('conversation')
+    await handleSendText(text)
+  }, [handleSendText])
+
+  const wakeWord = useWakeWord({
+    onCommand: handleWakeWordCommand,
+    silenceTimeoutMs: 2000,
+  })
+
+  // Keep stable ref for use in stale closures (handleAudioSubmit, handleSendText have [] deps)
+  const wakeWordRef = useRef(wakeWord)
+  useEffect(() => { wakeWordRef.current = wakeWord }, [wakeWord])
 
   const tabs: { key: SenseTab; label: string; icon: typeof Camera; disabled?: boolean }[] = [
     { key: 'camera', label: '카메라', icon: Camera },
@@ -480,6 +501,25 @@ export default function SensePage() {
           </div>
         </div>
       </header>
+
+      {/* Wake Word (Always Listening) Indicator */}
+      <WakeWordIndicator
+        state={wakeWord.state}
+        isSupported={wakeWord.isSupported}
+        transcript={wakeWord.transcript}
+        error={wakeWord.error}
+        enabled={settings.alwaysListeningEnabled}
+        onToggle={(enabled) => {
+          saveSettings({ alwaysListeningEnabled: enabled })
+          if (enabled) {
+            unlockAudio()
+            wakeWord.start()
+          } else {
+            wakeWord.stop()
+          }
+        }}
+        className="mb-4"
+      />
 
       {/* Tab Selector */}
       <div className="flex bg-slate-800/50 rounded-xl p-1 mb-6 border border-slate-700/50">

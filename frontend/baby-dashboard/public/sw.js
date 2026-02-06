@@ -1,6 +1,6 @@
-const CACHE_NAME = 'baby-brain-v1';
-const STATIC_CACHE = 'baby-brain-static-v1';
-const DYNAMIC_CACHE = 'baby-brain-dynamic-v1';
+const CACHE_NAME = 'baby-brain-v2';
+const STATIC_CACHE = 'baby-brain-static-v2';
+const DYNAMIC_CACHE = 'baby-brain-dynamic-v2';
 
 // Static assets to cache
 const STATIC_ASSETS = [
