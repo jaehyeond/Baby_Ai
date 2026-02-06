@@ -1,8 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 // Supabase Edge Function URL
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+
+// Get current development stage from baby_state
+async function getDevelopmentStage(): Promise<number> {
+  try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    const { data } = await supabase
+      .from('baby_state')
+      .select('development_stage')
+      .limit(1)
+      .single()
+    return data?.development_stage ?? 0
+  } catch {
+    return 0
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +32,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get current development stage
+    const developmentStage = await getDevelopmentStage()
+
     // Call Supabase Edge Function directly
     const response = await fetch(`${SUPABASE_URL}/functions/v1/vision-process`, {
       method: 'POST',
@@ -26,6 +45,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         image_data: image,
         mime_type: mime_type || 'image/jpeg',
+        development_stage: developmentStage,
       }),
     })
 
