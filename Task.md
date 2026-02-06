@@ -1,6 +1,6 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-04
+**최종 업데이트**: 2026-02-06
 
 ---
 
@@ -28,13 +28,13 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-04)
+## 📊 현재 시스템 상태 (2026-02-06)
 
 ### Edge Functions (13개 - 모두 ACTIVE)
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
-| `conversation-process` | v17 | ❌ | 대화 처리 (Gemini + 정체성 기억) | ✅ 정상 |
+| `conversation-process` | **v19** | ❌ | 대화 처리 (Gemini + 정체성 + 복합감정 + 자기평가) | ✅ 정상 |
 | `vision-process` | v3 | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
 | `world-understanding` | v2 | ❌ | 물리 세계 이해 | ✅ 정상 |
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
@@ -68,21 +68,22 @@
 
 | 테이블 | 레코드 수 | 용도 |
 |--------|----------|------|
-| `semantic_concepts` | 413 | 개념/지식 (뉴런) |
-| `concept_relations` | 429 | 개념 간 관계 (시냅스) |
-| `experiences` | 460 | 경험 기억 (해마) |
-| `emotion_logs` | 184 | 감정 기록 (편도체) |
+| `semantic_concepts` | 447 | 개념/지식 (뉴런) |
+| `concept_relations` | 519 | 개념 간 관계 (시냅스) |
+| `experiences` | 583 | 경험 기억 (해마) |
+| `emotion_logs` | 211 | 감정 기록 (편도체) |
 | `curiosity_queue` | 9 | 호기심 대기열 (모두 learned) |
 | `exploration_logs` | 9 | 탐색 기록 |
 | `procedural_patterns` | 102 | 절차 기억 (소뇌) |
 | `memory_consolidation_logs` | 553 | 기억 통합 로그 |
-| `visual_experiences` | 8 | 시각 경험 |
+| `visual_experiences` | 13 | 시각 경험 |
 | `autonomous_goals` | 24 | 자율 목표 |
 | `baby_state` | 1 | Baby AI 상태 (싱글톤) |
-| `self_evaluation_logs` | 0 | 메타인지 로그 |
-| `imagination_sessions` | 4+ | World Model 상상 세션 |
-| `predictions` | 6+ | 예측 기록 |
-| `simulations` | 2 | 시뮬레이션 기록 |
+| `self_evaluation_logs` | 1+ | 메타인지 로그 ✅ (v19에서 자동 트리거) |
+| `imagination_sessions` | 9 | World Model 상상 세션 |
+| `predictions` | 8 | 예측 기록 (5개 자동 검증됨) |
+| `causal_models` | 3 | 인과관계 모델 |
+| `pending_questions` | 8 | 능동적 질문 (모두 answered) |
 
 ---
 
@@ -289,10 +290,10 @@
 
 ## ⚠️ Known Issues (2026-02-03)
 
-### 1. self_evaluation_logs 비어있음
-- **상태**: 0개 레코드
-- **원인**: self-evaluation Edge Function 호출은 있으나 (로그 확인됨) 기록 안 됨
-- **우선순위**: 낮음 (기능에 영향 없음)
+### 1. ~~self_evaluation_logs 비어있음~~ ✅ 해결됨 (2026-02-06)
+- **상태**: ~~0개 레코드~~ → 자동 생성 중
+- **원인**: self-evaluation Edge Function을 아무도 호출하지 않았음
+- **해결**: conversation-process v19에 `triggerSelfEvaluation()` 통합
 
 ### 2. 호기심 탐색 기록 적음
 - **상태**: curiosity_queue 9개, exploration_logs 9개
@@ -334,10 +335,11 @@
 - ~~내부 시뮬레이션 기능 구현 필요~~
 - **완료**: imagination-engine Edge Function, /api/imagination, Brain 페이지 시각화
 
-### Option B: Emotion Engine 강화
-- 현재 기본 감정 (6가지) 구현됨
-- 감정→행동 매핑 강화
-- 감정 기반 목표 생성 개선
+### Option B: Emotion Engine 강화 ✅ 완료 (2026-02-06)
+- ~~현재 기본 감정 (6가지) 구현됨~~
+- ~~감정→행동 매핑 강화~~
+- ~~감정 기반 목표 생성 개선~~
+- **완료**: 5개 복합감정, valence/arousal, emotion_goal_influences 파이프라인, 자기평가 자동 트리거
 
 ### Option C: 자율 탐색 개선
 - 호기심 생성 로직 개선

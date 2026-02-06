@@ -721,6 +721,6 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 ## 참고
 
-- [task_baby_brain.md](./task_baby_brain.md) - 작업 진행 상황
+- [Task.md](./Task.md) - 작업 진행 상황 (Source of Truth)
 - [Supabase pgvector Docs](https://supabase.com/docs/guides/database/extensions/pgvector)
 - [Supabase Realtime Docs](https://supabase.com/docs/guides/realtime)

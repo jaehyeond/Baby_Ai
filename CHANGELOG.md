@@ -5,7 +5,124 @@
 
 ---
 
+## 2026-02-06
+
+### Emotion→Goal Pipeline + Self-Evaluation Fix ✅
+
+**문제 발견:**
+- `emotion_goal_influences` 테이블이 0건 (방금 만든 테이블인데 호출 안 됨 - 3번째 "정의만 되고 호출 안 됨" 패턴!)
+- `self_evaluation_logs` 0건 (Edge Function 존재하지만 아무도 호출하지 않음 - 같은 패턴!)
+
+**구현 내용:**
+- [x] `conversation-process` v19 배포 (두 문제 한 번에 해결)
+  - 복합 감정 감지 (`detectCompoundEmotion()`) + valence/arousal 계산 추가
+  - `saveEmotionLog()` 업데이트: valence, arousal, compound_emotion 컬럼 채움
+  - `saveEmotionGoalInfluence()` 함수 추가: 감정→목표 매핑 자동 기록
+  - `triggerSelfEvaluation()` 함수 추가: 경험별 자기평가 자동 기록 (LLM 없이, 규칙 기반)
+- [x] Frontend: EmotionRadar에 "감정 기반 추천 목표" 섹션 추가
+  - GOAL_TYPE_CONFIG (6개 목표 타입 한국어 레이블/아이콘/설명)
+  - EMOTION_GOAL_MAP (복합+기본 감정 → 목표 타입 매핑)
+  - framer-motion 애니메이션
+- [x] 빌드 테스트 통과 (20/20 페이지)
+- [x] 실제 대화 테스트로 파이프라인 검증 완료
+
+**검증 결과:**
+| 테이블 | 이전 | 이후 |
+|--------|------|------|
+| emotion_goal_influences | 0 | 1+ (자동 생성) |
+| self_evaluation_logs | 0 | 1+ (자동 생성) |
+| emotion_logs (새 필드) | null | valence/arousal/compound 채워짐 |
+
+**팀 분배:**
+- Lead (Opus): Edge Function 분석 + v19 작성/배포 + 테스트/검증
+- Frontend Agent (Sonnet): EmotionRadar.tsx 시각화 추가
+- 순차 실행: 분석 → Edge Function → 검증 → Frontend → 빌드
+
+**교훈:**
+- "정의만 되고 호출 안 됨" 패턴 3번째 반복 → MEMORY에 "새 테이블/함수 추가 시 호출 지점 반드시 확인" 강화
+- 두 개의 독립적 문제가 같은 근본 원인 (conversation-process에서 호출 부재) → 한 번의 업데이트로 동시 해결
+
+**파일 변경 목록:**
+| 파일 | 변경 |
+|------|------|
+| Supabase `conversation-process` | v18 → v19 (compound detect + VA + goal influence + self-eval) |
+| `frontend/.../EmotionRadar.tsx` | GOAL_TYPE_CONFIG + EMOTION_GOAL_MAP + 추천 목표 섹션 |
+
+---
+
+### Emotion Engine Upgrade (Phase E) ✅
+
+**작업 내용:**
+- [x] DB Migration: emotion_logs에 `valence`, `arousal`, `compound_emotion` 컬럼 추가
+- [x] DB Migration: `emotion_goal_influences` 테이블 생성 (감정→목표 영향 기록)
+- [x] DB Migration: `recent_emotion_stats`, `daily_emotion_summary` view에 VA/compound 추가
+- [x] DB: 기존 211개 emotion_logs 레코드 valence/arousal 백필 완료
+- [x] Backend: `emotions.py`에 5개 복합 감정 추가 (pride, anxiety, wonder, melancholy, determination)
+- [x] Backend: `COMPOUND_EMOTIONS` dict + `EMOTION_GOAL_MAP` dict 추가
+- [x] Backend: `EmotionalState.detect_compound_emotion()` 메서드 추가
+- [x] Backend: `EmotionalCore.suggest_goal_from_emotion()` 메서드 추가
+- [x] Backend: `EmotionalState.to_dict()` 업데이트 (compound_emotion 필드 추가)
+- [x] Frontend: `EmotionRadar.tsx` 탭 시스템 추가 (감정 레이더 / 감정 지도)
+- [x] Frontend: Valence-Arousal 2D ScatterChart (Russell's circumplex model)
+- [x] Frontend: Compound emotion badge (헤더 우측, framer-motion 애니메이션)
+- [x] Frontend: `database.types.ts`에 새 컬럼/테이블 타입 추가
+- [x] 빌드 테스트 통과 (TypeScript 에러 1건 수정)
+
+**팀 분배 전략:**
+- Lead (Opus): DB migration 직접 + 통합/빌드/검증
+- Backend Agent (Sonnet): emotions.py 코드 작성
+- Frontend Agent (Sonnet): EmotionRadar.tsx + database.types.ts 코드 작성
+- 순차 실행: DB → Backend (검증) → Frontend (Backend 인터페이스 확정 후) → 통합
+
+**파일 변경 목록:**
+| 파일 | 변경 |
+|------|------|
+| `neural/baby/emotions.py` | COMPOUND_EMOTIONS, EMOTION_GOAL_MAP, detect/suggest 메서드 추가 |
+| `frontend/.../EmotionRadar.tsx` | 탭 시스템 + VA plot + compound badge |
+| `frontend/.../database.types.ts` | emotion_logs 새 컬럼 + emotion_goal_influences 타입 |
+| Supabase | 4개 migration (컬럼추가, 테이블생성, 백필, view 재생성) |
+
+---
+
+### MD 파일 재구성 및 최신화 ✅
+
+**작업 내용:**
+- [x] `task_baby_brain.md` → `docs/archive/` 아카이브 (2026-01-20 이후 미업데이트, Task.md와 역할 중복)
+- [x] `ROADMAP.md` → Phase A/V/W, Causal Discovery, Prediction Auto-Verification 추가
+- [x] `PROJECT_VISION.md` → Phase 10/11/W/A/V 및 최신 파이프라인 추가 (v1.4)
+- [x] `Task.md` → DB 통계 최신화 (447 뉴런, 519 시냅스, 583 경험)
+- [x] `CHANGELOG.md` → 누락된 Prediction Auto-Verification 엔트리 추가
+
+**DB 최신 통계 (2026-02-06):**
+| 항목 | 수량 | 변화 |
+|------|------|------|
+| semantic_concepts | 447 | +34 (from 413) |
+| concept_relations | 519 | +90 (from 429) |
+| experiences | 583 | +123 (from 460) |
+| emotion_logs | 211 | +27 (from 184) |
+| visual_experiences | 13 | +5 (from 8) |
+| causal_models | 3 | 신규 |
+| predictions | 8 (5 verified) | +2 (from 6) |
+| pending_questions | 8 (all answered) | 신규 |
+| imagination_sessions | 9 | +5 (from 4) |
+
+---
+
 ## 2026-02-05
+
+### Prediction Auto-Verification 파이프라인 ✅
+
+**문제 발견:**
+- `verify_prediction()` 함수가 정의만 되어있고 호출되지 않음 (Causal Discovery와 동일 패턴)
+- 미검증 예측 5개가 `was_correct = null`로 방치
+
+**구현 내용:**
+- [x] `world_model.py`에 `auto_verify_predictions()` 함수 추가
+  - 미검증 예측 조회 → 관련 경험 확인 → LLM으로 정확성 판단 → DB 업데이트
+- [x] `auto_generate_from_experience()`에서 자동 호출 통합
+- [x] 5개 예측 자동 검증 완료 (`auto_verified=true`, `was_correct=true`)
+
+---
 
 ### Causal Discovery 파이프라인 활성화 ✅
 

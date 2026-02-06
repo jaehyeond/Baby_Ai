@@ -1,7 +1,7 @@
 # Neural A2A: Developmental Cognitive Architecture
 
-**Version**: 1.3
-**Last Updated**: 2026-01-25
+**Version**: 1.4
+**Last Updated**: 2026-02-06
 **Authors**: Neural A2A Research Team
 
 ---
@@ -29,7 +29,13 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase 7 | Meta-cognition | ✅ 완료 | 자기 사고에 대한 사고 (외부 LLM 없이) |
 | Phase 8 | Autonomous Curiosity | ✅ 완료 | 내재적 호기심 모듈 |
 | Phase 9 | Textual Backprop | ✅ 완료 | 텍스트 피드백 기반 학습 |
-| Phase 10+ | Evolution | 📋 계획 | Self-Evolution Engine |
+| Phase 10 | Team Optimization | ✅ 완료 | 에이전트 팀 최적화 |
+| Phase 11 | Persistent Substrate | ✅ 완료 | 영구 학습 기판 |
+| Phase W | World Model Integration | ✅ 완료 | 상상 엔진 + Brain 시각화 |
+| Phase A | Proactive Questions | ✅ 완료 | 능동적 질문 시스템 |
+| Phase V | Prediction Verification | ✅ 완료 | 예측 검증 UI |
+| Phase - | Causal Discovery | ✅ 완료 | 인과관계 자동 발견 파이프라인 |
+| Phase - | Prediction Auto-Verify | ✅ 완료 | 예측 자동 검증 파이프라인 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -599,10 +605,37 @@ ICM (Intrinsic Curiosity Module) 기반:
 - 피드백에서 새 개념 추출
 - 대시보드 피드백 카드 (TextualBackpropCard)
 
-### Phase 10+: Evolution
-- Self-Evolution Engine
-- Team Optimization
-- Persistent Learning
+### Phase 10 (✅ 완료): Team Optimization
+- agent_teams, team_performance 테이블
+- agent_cooperation_patterns 테이블
+- team_experiments 테이블
+
+### Phase 11 (✅ 완료): Persistent Substrate
+- learning_sessions, learning_snapshots 테이블
+- core_learnings 테이블
+- session_restore_points 테이블
+
+### Phase W (✅ 완료, 2026-02-04): World Model Frontend Integration
+- `imagination-engine` Edge Function v1 배포
+- 수면 모드에서 자동 상상 세션
+- Brain 페이지 3D 하이라이트
+
+### Phase A (✅ 완료, 2026-02-04): Proactive Questions
+- Gemini 기반 호기심 분류 (factual vs personal)
+- `pending_questions` 테이블 + Supabase Realtime
+- 질문 알림 → 모달 답변 → semantic_concepts 저장
+
+### Phase V (✅ 완료, 2026-02-04): Prediction Verification UI
+- World Model 예측 검증 패널
+- 사용자 검증 + 정확도 통계
+
+### Causal Discovery Pipeline (✅ 활성화, 2026-02-05)
+- 경험에서 인과관계 자동 추출 (감정/성공실패/LLM 기반)
+- `causal_models` 테이블 활성화
+
+### Prediction Auto-Verification (✅ 완료, 2026-02-05)
+- 자동 예측 검증 파이프라인
+- 5개 예측 자동 검증 완료
 
 ---
 
@@ -649,9 +682,9 @@ Neural A2A는 **"Baby vs 고등학생"** 논쟁을 초월합니다.
 
 | 항목 | 값 |
 |------|-----|
-| Version | 1.3 |
+| Version | 1.4 |
 | Created | 2025-01-19 |
-| Updated | 2026-01-25 |
+| Updated | 2026-02-06 |
 | Status | Active |
-| Current Phase | Phase 9 ✅ (Textual Backpropagation) |
-| Next Phase | Phase 10 (Self-Evolution Engine) |
+| Latest Phases | Phase A/V/W ✅, Causal Discovery ✅, Prediction Auto-Verify ✅ |
+| Next Candidates | Emotion Engine 강화, 자율 탐색 개선, 질문 만료 로직 |

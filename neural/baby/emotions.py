@@ -29,6 +29,58 @@ class EmotionType(Enum):
     BOREDOM = "boredom"          # 지루함 - 너무 쉬움
 
 
+# 복합 감정 정의 (기본 감정의 조합)
+COMPOUND_EMOTIONS = {
+    "pride": {
+        "description": "자부심 - 성공 후 기쁨",
+        "requires": {"joy": 0.6},
+        "boosts": {"curiosity": 0.1},
+        "conditions": lambda state: state.joy > 0.6 and state.fear < 0.3,
+    },
+    "anxiety": {
+        "description": "불안 - 두려움과 좌절의 결합",
+        "requires": {"fear": 0.4, "frustration": 0.4},
+        "boosts": {},
+        "conditions": lambda state: state.fear > 0.4 and state.frustration > 0.4,
+    },
+    "wonder": {
+        "description": "경이 - 호기심과 놀람의 결합",
+        "requires": {"curiosity": 0.5, "surprise": 0.4},
+        "boosts": {"curiosity": 0.15},
+        "conditions": lambda state: state.curiosity > 0.5 and state.surprise > 0.4,
+    },
+    "melancholy": {
+        "description": "우울 - 지루함에 좌절이 더해짐",
+        "requires": {"boredom": 0.5},
+        "boosts": {},
+        "conditions": lambda state: state.boredom > 0.5 and state.frustration > 0.3,
+    },
+    "determination": {
+        "description": "결의 - 좌절을 딛고 호기심으로",
+        "requires": {"frustration": 0.4, "curiosity": 0.5},
+        "boosts": {"curiosity": 0.1},
+        "conditions": lambda state: state.frustration > 0.4 and state.curiosity > 0.5 and state.fear < 0.4,
+    },
+}
+
+
+# 감정 → 목표 타입 매핑
+EMOTION_GOAL_MAP = {
+    "pride": "skill_deepening",          # 잘하는 것 더 깊이 학습
+    "anxiety": "safety_seeking",          # 안전한 영역에서 연습
+    "wonder": "exploration",              # 새로운 영역 탐색
+    "melancholy": "social_connection",    # 사용자와 대화 추구
+    "determination": "challenge_seeking",  # 어려운 과제 도전
+    # 기본 감정 매핑
+    "curiosity": "exploration",
+    "joy": "skill_deepening",
+    "fear": "safety_seeking",
+    "surprise": "exploration",
+    "frustration": "challenge_seeking",
+    "boredom": "novelty_seeking",
+}
+
+
 @dataclass
 class Emotion:
     """개별 감정"""
@@ -104,8 +156,21 @@ class EmotionalState:
         low_arousal = self.boredom
         return high_arousal - low_arousal * 0.5
 
+    def detect_compound_emotion(self) -> Optional[str]:
+        """
+        현재 감정 상태에서 복합 감정 감지
+
+        Returns:
+            Optional[str]: 감지된 복합 감정 이름, 없으면 None
+        """
+        for name, config in COMPOUND_EMOTIONS.items():
+            if config["conditions"](self):
+                return name
+        return None
+
     def to_dict(self) -> dict:
-        """딕셔너리 변환"""
+        """딕셔너리 변환 (compound emotion 포함)"""
+        compound = self.detect_compound_emotion()
         return {
             "curiosity": self.curiosity,
             "joy": self.joy,
@@ -116,6 +181,7 @@ class EmotionalState:
             "dominant": self.dominant_emotion.value,
             "valence": self.valence,
             "arousal": self.arousal,
+            "compound_emotion": compound,
         }
 
 
@@ -453,6 +519,51 @@ class EmotionalCore:
             "risk_tolerance": self.get_risk_tolerance(),
             "attention_focus": self.get_attention_focus(),
         }
+
+    def detect_compound_emotion(self) -> Optional[str]:
+        """현재 감정 상태에서 복합 감정 감지"""
+        return self.get_state().detect_compound_emotion()
+
+    def suggest_goal_from_emotion(self) -> Optional[dict]:
+        """
+        감정 상태 기반 목표 타입 제안
+
+        Returns:
+            Optional[dict]: {goal_type, emotional_basis, confidence}
+        """
+        state = self.get_state()
+        compound = state.detect_compound_emotion()
+
+        # 복합 감정 우선
+        if compound and compound in EMOTION_GOAL_MAP:
+            return {
+                "goal_type": EMOTION_GOAL_MAP[compound],
+                "emotional_basis": {
+                    "dominant": state.dominant_emotion.value,
+                    "compound": compound,
+                    "valence": state.valence,
+                    "arousal": state.arousal,
+                },
+                "confidence": 0.7,
+                "reasoning": COMPOUND_EMOTIONS[compound]["description"],
+            }
+
+        # 기본 감정 기반
+        dominant = state.dominant_emotion.value
+        if dominant in EMOTION_GOAL_MAP:
+            return {
+                "goal_type": EMOTION_GOAL_MAP[dominant],
+                "emotional_basis": {
+                    "dominant": dominant,
+                    "compound": None,
+                    "valence": state.valence,
+                    "arousal": state.arousal,
+                },
+                "confidence": 0.5,
+                "reasoning": f"주요 감정 '{dominant}' 기반 제안",
+            }
+
+        return None
 
     def __repr__(self) -> str:
         state = self.get_state()

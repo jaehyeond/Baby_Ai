@@ -136,24 +136,25 @@
 
 ---
 
-## Phase 4: Mobile Embodied AI (카메라/마이크) ⏳ PLANNED
+## Phase 4: Mobile Embodied AI (카메라/마이크) ✅ COMPLETED
 
 > Embodied AI Survey 참고
 
 ### 목표
 모바일 앱 → 로봇/AR 글래스
 
-### 계획된 기능
-- [ ] 카메라로 세상을 봄
-- [ ] 마이크로 대화
-- [ ] 스피커로 질문/반박
-- [ ] 실제 물리 세계 이해
+### 구현된 기능
+- [x] 카메라로 세상을 봄 (Phase 4.1 - Camera Input)
+- [x] 마이크로 대화 (Phase 4.2 - Microphone Input + STT)
+- [x] 스피커로 질문/반박 (Phase 4.3 - Google Cloud TTS)
+- [x] 실제 물리 세계 이해 (Phase 4.4 - Physical World Understanding)
+- [x] 도구 사용 및 에이전시 (Phase 4.5 - Gemini Function Calling)
 
 ### 구현 항목
-- [ ] 카메라 입력 처리
-- [ ] 음성 인식/합성
-- [ ] 멀티모달 학습
-- [ ] 물체 인식 및 추적
+- [x] 카메라 입력 처리 (`vision-process` Edge Function, `/sense` 페이지)
+- [x] 음성 인식/합성 (`audio-transcribe`, `speech-synthesize` Edge Functions)
+- [x] 멀티모달 학습 (Gemini Vision + STT)
+- [x] 물체 인식 및 추적 (`world-understanding` Edge Function)
 
 ---
 
@@ -188,6 +189,67 @@
 
 ---
 
+## Phase W: World Model Frontend Integration ✅ COMPLETED (2026-02-04)
+
+> 수면 모드에서 자동 상상 세션 실행 및 Brain 페이지 시각화
+
+### 구현된 기능
+- [x] `imagination-engine` Edge Function v1 배포
+- [x] `/api/imagination` API route 생성
+- [x] `useIdleSleep` Phase 4 추가 (수면 시 상상 세션)
+- [x] Brain 페이지에 `ImaginationPanel` 추가
+- [x] 상상 세션 connections_discovered 3D 하이라이트
+
+### 관련 파일
+- `src/hooks/useImaginationSessions.ts` - 상상 세션 데이터 페칭
+- `src/components/ImaginationPanel.tsx` - 상상 패널 UI
+- `src/app/brain/page.tsx` - Brain 페이지 레이아웃 (3D + 패널)
+- `src/components/BrainVisualization.tsx` - 3D 하이라이트 로직
+
+---
+
+## Phase A: Proactive Questions ✅ COMPLETED (2026-02-04)
+
+> 비비가 사용자에게 먼저 질문하는 능동적 질문 시스템
+
+### 구현된 기능
+- [x] `pending_questions` 테이블 (15컬럼, RLS, Realtime)
+- [x] `generate-curiosity` v4 (Gemini 분류 + pending_questions 라우팅)
+- [x] Supabase Realtime 연동 (새 질문 알림)
+- [x] `QuestionBubble` 모달 + `QuestionList` UI
+- [x] 답변 → `semantic_concepts` 자동 저장
+
+### 호기심 분류 로직
+```
+호기심 → Gemini 분류 → factual? → curiosity_queue → 웹 검색 (autonomous-exploration)
+                     → personal/preference/experience? → pending_questions → 사용자에게 질문
+```
+
+---
+
+## Phase V: Prediction Verification UI ✅ COMPLETED (2026-02-04)
+
+> World Model 예측을 사용자가 검증할 수 있는 UI
+
+### 구현된 기능
+- [x] 예측 검증 패널 (`PredictionVerifyPanel`)
+- [x] 예측 정확도 통계 표시
+- [x] 사용자 검증 (맞았다/틀렸다 + 실제 결과 + 배운 점)
+
+---
+
+## Prediction Auto-Verification Pipeline ✅ COMPLETED (2026-02-05)
+
+> 사용자 검증 없이 자동으로 예측 검증하는 파이프라인
+
+### 구현된 기능
+- [x] `auto_verify_predictions()` 함수 추가 (world_model.py)
+- [x] `auto_generate_from_experience()`에서 자동 호출
+- [x] 미검증 예측 조회 → 관련성 확인 → LLM으로 정확성 판단 → DB 업데이트
+- [x] 5개 예측 자동 검증 완료 (`auto_verified=true`, `was_correct=true`)
+
+---
+
 ## 관련 연구
 
 | 프로젝트/연구 | 주요 내용 | 우리와의 차이점 |
@@ -203,8 +265,13 @@
 
 | 날짜 | Phase | 변경 내용 |
 |------|-------|----------|
+| 2026-02-06 | - | MD 파일 재구성: task_baby_brain.md 아카이브, ROADMAP 최신화 |
+| 2026-02-05 | - | Prediction Auto-Verification 파이프라인 활성화 |
 | 2026-02-05 | 2 | Causal Discovery 파이프라인 활성화 |
 | 2026-02-05 | 2 | extract_causal_relations_from_experience() 함수 추가 |
+| 2026-02-04 | V | Phase V: Prediction Verification UI 완료 |
+| 2026-02-04 | A | Phase A: Proactive Questions 완료 (5일간 구현) |
+| 2026-02-04 | W | Phase W: World Model Frontend Integration 완료 |
 | 2026-01-21 | 5 | Phase 5 Autonomous Goal Setting 완료 |
 | 2026-01-21 | 5 | autonomous-goals Edge Function v1 배포 |
 | 2026-01-21 | 5 | AutonomousGoalsCard 컴포넌트 추가 |
