@@ -114,6 +114,31 @@ pytest
 
 ---
 
+## 🤖 Subagents (Task Delegation)
+
+`.claude/agents/`에 정의된 Subagent들. Lead(Opus)가 Task tool로 호출하여 작업 위임.
+
+| Agent | 모델 | Scope | 역할 |
+|-------|------|-------|------|
+| `backend-dev` | Sonnet | `neural/baby/` | Python 모듈 (감정, World Model, DB 등) |
+| `frontend-dev` | Sonnet | `frontend/baby-dashboard/src/` | React 컴포넌트, hooks, 페이지 |
+| `db-engineer` | Sonnet | Supabase | SQL migration, Edge Functions |
+
+### 실행 순서 (순차 필수)
+```
+1. DB (스키마/Edge Function) → 검증
+2. Backend (Python 코드) → 검증
+3. Frontend (컴포넌트/hooks) → Backend 인터페이스 확정 후
+4. Lead: 통합 → 빌드 테스트 → git commit
+```
+
+### 규칙
+- **Lead만 git 관리** - subagent는 코드 작성만
+- **"정의만 되고 호출 안 됨" 방지** - 모든 agent에 적용
+- **검증 후 다음 단계** - 병렬 실행보다 순차 실행이 안전
+
+---
+
 ## 🔴 Known Issues & Lessons Learned
 
 > 코드 수정 시 발생한 문제와 해결책을 기록합니다. 같은 실수를 반복하지 않기 위함.
