@@ -460,14 +460,62 @@ export default function SensePage() {
   // Wake Word (Always Listening) - Phase W
   const { settings, saveSettings } = useSettings()
 
+  // Track conversation mode for resumeAfterSpeaking
+  const isConversationModeRef = useRef(false)
+
   const handleWakeWordCommand = useCallback(async (text: string) => {
     setActiveTab('conversation')
     await handleSendText(text)
   }, [handleSendText])
 
+  const handleWakeWordGreeting = useCallback(async () => {
+    unlockAudio()
+    setActiveTab('conversation')
+    debugLog('Wake word greeting triggered')
+
+    try {
+      const res = await fetch('/api/wake-greeting', { method: 'POST' })
+      const data = await res.json()
+      debugLog(`Greeting response: ${data.greeting_text}`)
+
+      // Add greeting message to conversation
+      const greetingMsg: ConversationMessage = {
+        id: `greeting-${Date.now()}`,
+        text: data.greeting_text,
+        audioUrl: data.audio_url,
+        isUser: false,
+        timestamp: new Date(),
+        emotion: data.emotion,
+      }
+      setMessages(prev => [...prev, greetingMsg])
+
+      // Play TTS greeting
+      if (data.audio_url) {
+        wakeWordRef.current.pauseForSpeaking()
+        isConversationModeRef.current = true
+        try {
+          await playAudioUrl(data.audio_url)
+        } catch (err) {
+          debugLog(`Greeting TTS failed: ${err}`)
+        }
+        // After greeting TTS, enter continuous conversation mode
+        wakeWordRef.current.enterConversing()
+      } else {
+        // No audio, still enter conversation mode
+        wakeWordRef.current.enterConversing()
+      }
+    } catch (err) {
+      debugLog(`Greeting error: ${err}`)
+      // On error, try to resume listening
+      wakeWordRef.current.enterConversing()
+    }
+  }, [])
+
   const wakeWord = useWakeWord({
     onCommand: handleWakeWordCommand,
+    onGreeting: handleWakeWordGreeting,
     silenceTimeoutMs: 2000,
+    conversationTimeoutMs: 30000,
   })
 
   // Keep stable ref for use in stale closures (handleAudioSubmit, handleSendText have [] deps)

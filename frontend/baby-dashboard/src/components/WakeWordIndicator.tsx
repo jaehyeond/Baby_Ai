@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Ear, EarOff, Loader2, Volume2 } from 'lucide-react'
+import { Ear, EarOff, Loader2, Volume2, MessageCircle, Sparkles } from 'lucide-react'
 import type { WakeWordState } from '@/hooks/useWakeWord'
 
 interface WakeWordIndicatorProps {
@@ -17,6 +17,8 @@ interface WakeWordIndicatorProps {
 const STATE_CONFIG: Record<WakeWordState, { color: string; label: string; pulse: boolean }> = {
   OFF: { color: 'slate', label: '항상 듣기', pulse: false },
   LISTENING: { color: 'green', label: '"비비야"라고 불러주세요', pulse: true },
+  GREETING: { color: 'purple', label: '비비가 인사하는 중...', pulse: true },
+  CONVERSING: { color: 'blue', label: '대화 중 (자유롭게 말하세요)', pulse: true },
   CAPTURING: { color: 'cyan', label: '듣는 중...', pulse: true },
   PROCESSING: { color: 'yellow', label: '처리 중...', pulse: false },
   SPEAKING: { color: 'orange', label: '말하는 중...', pulse: false },
@@ -31,6 +33,10 @@ function StateIcon({ state }: { state: WakeWordState }) {
       return <Volume2 className={className} />
     case 'OFF':
       return <EarOff className={className} />
+    case 'GREETING':
+      return <Sparkles className={className} />
+    case 'CONVERSING':
+      return <MessageCircle className={className} />
     default:
       return <Ear className={className} />
   }
@@ -52,6 +58,8 @@ export function WakeWordIndicator({
   const colorMap: Record<string, { bg: string; border: string; text: string; ring: string }> = {
     slate: { bg: 'bg-slate-800/50', border: 'border-slate-700/50', text: 'text-slate-400', ring: '' },
     green: { bg: 'bg-green-950/30', border: 'border-green-700/50', text: 'text-green-400', ring: 'ring-green-500/30' },
+    purple: { bg: 'bg-purple-950/30', border: 'border-purple-700/50', text: 'text-purple-400', ring: 'ring-purple-500/30' },
+    blue: { bg: 'bg-blue-950/30', border: 'border-blue-700/50', text: 'text-blue-400', ring: 'ring-blue-500/30' },
     cyan: { bg: 'bg-cyan-950/30', border: 'border-cyan-700/50', text: 'text-cyan-400', ring: 'ring-cyan-500/30' },
     yellow: { bg: 'bg-yellow-950/30', border: 'border-yellow-700/50', text: 'text-yellow-400', ring: '' },
     orange: { bg: 'bg-orange-950/30', border: 'border-orange-700/50', text: 'text-orange-400', ring: '' },
@@ -96,17 +104,19 @@ export function WakeWordIndicator({
             >
               {error}
             </motion.p>
-          ) : (state === 'CAPTURING' || state === 'LISTENING') && transcript ? (
+          ) : (state === 'CAPTURING' || state === 'LISTENING' || state === 'CONVERSING') && transcript ? (
             <motion.p
               key={`transcript-${state}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className={`text-xs truncate font-medium ${
-                state === 'CAPTURING' ? 'text-cyan-300' : 'text-green-300/70'
+                state === 'CAPTURING' ? 'text-cyan-300' :
+                state === 'CONVERSING' ? 'text-blue-300' :
+                'text-green-300/70'
               }`}
             >
-              {state === 'CAPTURING' ? `"${transcript}"` : `🎤 ${transcript}`}
+              {state === 'CAPTURING' || state === 'CONVERSING' ? `"${transcript}"` : `🎤 ${transcript}`}
             </motion.p>
           ) : (
             <motion.p

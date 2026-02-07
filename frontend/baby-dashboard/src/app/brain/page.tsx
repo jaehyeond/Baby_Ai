@@ -1,20 +1,42 @@
 'use client'
 
-import { Suspense, useState, useCallback } from 'react'
+import { Suspense, useState, useCallback, useEffect } from 'react'
 import { BrainVisualization } from '@/components/BrainVisualization'
+import { RealisticBrain } from '@/components/RealisticBrain'
 import { ImaginationPanel } from '@/components/ImaginationPanel'
 import { PredictionVerifyPanel } from '@/components/PredictionVerifyPanel'
-import { ArrowLeft, Brain, Sparkles, Target } from 'lucide-react'
+import { ArrowLeft, Brain, Sparkles, Target, Atom, Network } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createClient } from '@supabase/supabase-js'
 import type { DiscoveredConnection } from '@/hooks/useImaginationSessions'
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
 type PanelType = 'imagination' | 'prediction'
+type BrainViewMode = 'abstract' | 'anatomical'
 
 export default function BrainPage() {
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false)
   const [activePanel, setActivePanel] = useState<PanelType>('imagination')
   const [highlightedConnection, setHighlightedConnection] = useState<DiscoveredConnection | null>(null)
+  const [viewMode, setViewMode] = useState<BrainViewMode>('anatomical')
+  const [developmentStage, setDevelopmentStage] = useState(2)
+
+  // Fetch development stage
+  useEffect(() => {
+    supabase
+      .from('baby_state')
+      .select('development_stage')
+      .single()
+      .then(({ data }) => {
+        if (data?.development_stage != null) {
+          setDevelopmentStage(data.development_stage)
+        }
+      })
+  }, [])
 
   const handleConnectionHover = useCallback((connection: DiscoveredConnection | null) => {
     setHighlightedConnection(connection)
@@ -42,8 +64,33 @@ export default function BrainPage() {
           </div>
         </div>
 
-        {/* Panel toggle buttons */}
         <div className="flex items-center gap-2">
+          {/* Brain view mode toggle */}
+          <div className="flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('anatomical')}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === 'anatomical'
+                  ? 'bg-rose-500/20 text-rose-400'
+                  : 'text-slate-400 hover:text-slate-300'
+              }`}
+              title="해부학적 뇌 (영역 기반)"
+            >
+              <Atom className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('abstract')}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === 'abstract'
+                  ? 'bg-violet-500/20 text-violet-400'
+                  : 'text-slate-400 hover:text-slate-300'
+              }`}
+              title="추상 네트워크"
+            >
+              <Network className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* Panel type toggle (desktop) */}
           <div className="hidden md:flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
             <button
@@ -93,9 +140,25 @@ export default function BrainPage() {
       >
         {/* 3D Brain Visualization */}
         <div className="flex-1 p-4">
-          <BrainVisualizationFullScreen
-            highlightedConnection={highlightedConnection}
-          />
+          <div className="h-[calc(100vh-120px)]">
+            <Suspense fallback={
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <Brain className="w-12 h-12 text-violet-400 animate-pulse mx-auto mb-3" />
+                  <p className="text-slate-400">뉴런 네트워크 로딩 중...</p>
+                </div>
+              </div>
+            }>
+              {viewMode === 'anatomical' ? (
+                <RealisticBrain developmentStage={developmentStage} />
+              ) : (
+                <BrainVisualization
+                  fullScreen
+                  highlightedConnection={highlightedConnection}
+                />
+              )}
+            </Suspense>
+          </div>
         </div>
 
         {/* Side Panel (desktop) */}
@@ -181,31 +244,6 @@ export default function BrainPage() {
           />
         )}
       </AnimatePresence>
-    </div>
-  )
-}
-
-// Full-screen version of brain visualization
-function BrainVisualizationFullScreen({
-  highlightedConnection,
-}: {
-  highlightedConnection?: DiscoveredConnection | null
-}) {
-  return (
-    <div className="h-[calc(100vh-120px)]">
-      <Suspense fallback={
-        <div className="h-full flex items-center justify-center">
-          <div className="text-center">
-            <Brain className="w-12 h-12 text-violet-400 animate-pulse mx-auto mb-3" />
-            <p className="text-slate-400">뉴런 네트워크 로딩 중...</p>
-          </div>
-        </div>
-      }>
-        <BrainVisualization
-          fullScreen
-          highlightedConnection={highlightedConnection}
-        />
-      </Suspense>
     </div>
   )
 }

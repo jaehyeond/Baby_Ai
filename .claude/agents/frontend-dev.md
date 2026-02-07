@@ -13,7 +13,7 @@ model: sonnet
 ## Key Directories
 - `src/components/`: React 컴포넌트 (37+ 파일)
 - `src/hooks/`: Custom hooks (useBrainData, useCamera, usePendingQuestions 등)
-- `src/app/`: Next.js 14 페이지 (/, /brain, /sense, /sleep)
+- `src/app/`: Next.js 16 페이지 (/, /brain, /sense, /sleep)
 - `src/lib/`: Supabase client, 유틸리티
 - `src/types/`: TypeScript 타입 정의
 
@@ -26,12 +26,13 @@ model: sonnet
 - `QuestionNotification.tsx`: 질문 알림 토스트
 
 ## Technology Stack
-- Next.js 14 + TypeScript
+- Next.js 16 + TypeScript (App Router only, Turbopack default)
+- React 19.2+ (Server/Client Components)
 - React Three Fiber (3D 시각화)
 - Recharts (차트)
 - Framer Motion (애니메이션)
 - Supabase Client (@supabase/supabase-js)
-- Tailwind CSS
+- Tailwind CSS 4
 
 ## Rules
 

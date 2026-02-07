@@ -82,6 +82,8 @@ pytest
 ## Environment
 
 - **Python**: ≥3.10 (권장 3.12), a2a-sdk 요구사항
+- **Node.js**: ≥20.9 (Next.js 16 요구사항)
+- **Frontend**: Next.js 16 + React 19.2 + Tailwind CSS 4 + Turbopack
 - **ANTHROPIC_API_KEY**: `.env` 파일에 설정 필수
 
 ## Task Tracking
@@ -121,7 +123,7 @@ pytest
 | Agent | 모델 | Scope | 역할 |
 |-------|------|-------|------|
 | `backend-dev` | Sonnet | `neural/baby/` | Python 모듈 (감정, World Model, DB 등) |
-| `frontend-dev` | Sonnet | `frontend/baby-dashboard/src/` | React 컴포넌트, hooks, 페이지 |
+| `frontend-dev` | Sonnet | `frontend/baby-dashboard/src/` | Next.js 16 + React 19 컴포넌트, hooks, 페이지 |
 | `db-engineer` | Sonnet | Supabase | SQL migration, Edge Functions |
 
 ### 실행 순서 (순차 필수)
