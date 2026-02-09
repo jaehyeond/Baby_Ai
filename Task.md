@@ -1,6 +1,6 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-06
+**최종 업데이트**: 2026-02-09
 
 ---
 
@@ -28,14 +28,14 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-06)
+## 📊 현재 시스템 상태 (2026-02-09)
 
 ### Edge Functions (13개 - 모두 ACTIVE)
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
-| `conversation-process` | **v19** | ❌ | 대화 처리 (Gemini + 정체성 + 복합감정 + 자기평가) | ✅ 정상 |
-| `vision-process` | v3 | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
+| `conversation-process` | **v21** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + **spreading activation**) | ✅ 정상 |
+| `vision-process` | **v4** | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
 | `world-understanding` | v2 | ❌ | 물리 세계 이해 | ✅ 정상 |
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
 | `speech-synthesize` | v2 | ❌ | TTS (Google) | ✅ 정상 |
@@ -64,14 +64,17 @@
 | `/api/world/understand` | world-understanding | ✅ 연결됨 |
 | `/api/imagination` | imagination-engine | ✅ 연결됨 |
 
-### Database 상태 (54개 테이블)
+### Database 상태 (57개+ 테이블)
 
 | 테이블 | 레코드 수 | 용도 |
 |--------|----------|------|
-| `semantic_concepts` | 447 | 개념/지식 (뉴런) |
-| `concept_relations` | 519 | 개념 간 관계 (시냅스) |
-| `experiences` | 583 | 경험 기억 (해마) |
-| `emotion_logs` | 211 | 감정 기록 (편도체) |
+| `semantic_concepts` | 452+ | 개념/지식 (뉴런) |
+| `concept_relations` | 519+ | 개념 간 관계 (시냅스) |
+| `experiences` | 583+ | 경험 기억 (해마) |
+| `emotion_logs` | 211+ | 감정 기록 (편도체) |
+| `brain_regions` | 9 | ✅ 뇌 영역 (Phase B) |
+| `concept_brain_mapping` | 452 | ✅ 개념→영역 매핑 (Phase B) |
+| `neuron_activations` | 0+ | ✅ 실시간 활성화 (Phase B, Realtime) |
 | `curiosity_queue` | 9 | 호기심 대기열 (모두 learned) |
 | `exploration_logs` | 9 | 탐색 기록 |
 | `procedural_patterns` | 102 | 절차 기억 (소뇌) |
@@ -79,9 +82,10 @@
 | `visual_experiences` | 13 | 시각 경험 |
 | `autonomous_goals` | 24 | 자율 목표 |
 | `baby_state` | 1 | Baby AI 상태 (싱글톤) |
-| `self_evaluation_logs` | 1+ | 메타인지 로그 ✅ (v19에서 자동 트리거) |
+| `self_evaluation_logs` | 1+ | 메타인지 로그 (v19 자동 트리거) |
+| `emotion_goal_influences` | 1+ | 감정→목표 영향 (v19) |
 | `imagination_sessions` | 9 | World Model 상상 세션 |
-| `predictions` | 8 | 예측 기록 (5개 자동 검증됨) |
+| `predictions` | 8+ | 예측 기록 (자동 검증) |
 | `causal_models` | 3 | 인과관계 모델 |
 | `pending_questions` | 8 | 능동적 질문 (모두 answered) |
 
@@ -327,29 +331,34 @@
 
 ---
 
-## 🎯 다음 단계 후보
+## 🎯 궁극적 비전: "살아있는 인지 발달 시뮬레이터"
 
-### Option A: World Model 통합 (상상/예측) ✅ 완료
-- ~~현재 `imagination_sessions`, `simulations`, `predictions` 테이블 존재~~
-- ~~사용되지 않는 상태~~
-- ~~내부 시뮬레이션 기능 구현 필요~~
-- **완료**: imagination-engine Edge Function, /api/imagination, Brain 페이지 시각화
+> AGI가 아니라, 아기의 뇌가 어떻게 개념을 형성하고, 감정이 사고에 어떻게 영향 주고,
+> 기억이 어떻게 조직되는지를 **실시간 3D로 시각화하면서 직접 키울 수 있는 인터랙티브 시스템**.
 
-### Option B: Emotion Engine 강화 ✅ 완료 (2026-02-06)
-- ~~현재 기본 감정 (6가지) 구현됨~~
-- ~~감정→행동 매핑 강화~~
-- ~~감정 기반 목표 생성 개선~~
-- **완료**: 5개 복합감정, valence/arousal, emotion_goal_influences 파이프라인, 자기평가 자동 트리거
+### ✅ Phase C1 완료 - 활성화 전파 (Spreading Activation)
 
-### Option C: 자율 탐색 개선
-- 호기심 생성 로직 개선
-- 탐색 성공률 모니터링
-- 학습 결과 정체성 통합
+"사과" 활성화 → 시냅스 따라 "빨간색", "과일"로 파동 전파 → /brain에서 파동 시각화
++ A+C: 페이지 진입 시 마지막 대화 파동 자동 재생 + 누적 히트맵 base glow
 
-### Option D: Mobile/Embodied AI
-- 카메라/마이크 상시 활용
-- 물리 세계 이해 강화
-- 실시간 환경 인식
+### 다음 로드맵
+
+| Phase | 기간 | 핵심 | 상태 |
+|-------|------|------|------|
+| C1: 활성화 전파 | 1주 | 시냅스 기반 파동 전파 + A+C 재생/히트맵 | ✅ 완료 |
+| C2: 헵 학습 | 1주 | 함께 활성화 → 시냅스 강화 | ⏳ 대기 |
+| C3: 기억 재생 | 1주 | 수면 시 뉴런 재활성화 | ⏳ 대기 |
+| D1-3: 자발적 사고 | 3-4주 | 내적 시뮬레이션, 감정 주의, 자동 전이 | ⏳ 대기 |
+| E2: 세상 이해 | 1-2개월 | 감각 통합, 환경 패턴, 사회적 인지 | ⏳ 대기 |
+| F: 창발적 지능 | 2-3개월+ | 호기심 루프, 메타인지, 꿈 | ⏳ 대기 |
+
+### 완료된 Phase 목록 (역순)
+- ✅ Phase C1: 활성화 전파 + A+C 재생/히트맵 (2026-02-09)
+- ✅ Phase B: 해부학적 뇌 시각화 (2026-02-07)
+- ✅ Phase W2: Wake Word 연속 대화 (2026-02-07)
+- ✅ Phase E: Emotion Engine 강화 (2026-02-06)
+- ✅ Phase A/V/W: 능동적 질문/예측 검증/상상 엔진 (2026-02-04)
+- ✅ Phase 1-11: Core Architecture (~ 2026-01-21)
 
 ---
 

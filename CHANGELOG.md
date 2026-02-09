@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-02-09
+
+### Phase C1: 활성화 전파 (Spreading Activation) ✅
+- [x] `conversation-process` v21: `spreadActivation()` BFS 함수 (maxDepth=2, decay=0.5)
+  - 양방향 전파 (from/to, 역방향 0.7x)
+  - trigger_type: 'spreading_activation'
+- [x] `useNeuronActivations.ts`: spreadingRegions + waveCount 상태 추가 (5s decay)
+- [x] `RealisticBrain.tsx`: SpreadingRipple 컴포넌트 (확장 링 + amber glow)
+  - spreading 영역: 느린 맥동, 넓은 glow, amber 발광
+  - 활성 영역 범례에 wave count + spreading 표시
+- [x] MD 파일 업데이트 (ROADMAP, PROJECT_VISION, Task, CHANGELOG)
+- [x] 빌드 성공 (TypeScript 에러 없음)
+
+### Phase C1-A+C: 파동 재생 + 누적 히트맵 ✅
+- [x] DB 마이그레이션: `brain_region_id` 인덱스 + `trigger_type, created_at` 복합 인덱스
+- [x] RPC 함수 `get_brain_activation_summary()`: replay + heatmap 단일 호출
+  - replay: 최근 대화 턴의 활성화 200개 (시간순)
+  - heatmap: 영역별 누적 활성화 횟수 + 평균 강도
+- [x] `useNeuronActivations.ts`: mount 시 RPC 호출 → 3초 staggered replay + heatmap state
+- [x] `RealisticBrain.tsx`: heatmapIntensity → base glow (자주 쓴 영역 은은히 빛남)
+  - replay 중 "마지막 대화 파동 재생 중..." UI 표시
+  - 누적 활성화 기록 범례 (비활성 시)
+- [x] 빌드 성공 (TypeScript 에러 없음)
+
+---
+
+## 2026-02-07
+
+### Phase W2: Wake Word 대화 흐름 개선 ✅
+- [x] `useWakeWord.ts` 7-state 머신 (OFF/LISTENING/GREETING/CONVERSING/CAPTURING/PROCESSING/SPEAKING)
+- [x] "비비야" → 인사 → 연속 대화 (wake word 없이)
+- [x] `/api/wake-greeting` API route + `WakeWordIndicator.tsx` 상태 추가
+- [x] `sense/page.tsx` 통합
+
+### Phase B: 해부학적 뇌 시각화 ✅
+- [x] DB: `brain_regions`(9), `concept_brain_mapping`(452), `neuron_activations`(Realtime)
+- [x] `conversation-process` v20: neuron activations 자동 기록
+- [x] `RealisticBrain.tsx` + `useNeuronActivations.ts` + `useBrainRegions.ts`
+- [x] `brain/page.tsx` 해부학/추상 뷰 토글
+- [x] 빌드 + Vercel 배포
+
+---
+
 ## 2026-02-06
 
 ### Emotion→Goal Pipeline + Self-Evaluation Fix ✅

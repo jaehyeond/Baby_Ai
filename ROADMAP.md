@@ -250,6 +250,78 @@
 
 ---
 
+## Phase E: Emotion Engine 강화 ✅ COMPLETED (2026-02-06)
+
+> 5개 복합감정 + Valence/Arousal + 감정→목표 파이프라인
+
+### 구현된 기능
+- [x] 5개 복합 감정: pride, anxiety, wonder, melancholy, determination
+- [x] Valence/Arousal 2D 감정 공간 (Russell's circumplex model)
+- [x] `emotion_goal_influences` 테이블 + 자동 기록
+- [x] `self_evaluation_logs` 자동 트리거 (conversation-process v19)
+- [x] Frontend: EmotionRadar VA plot + compound badge + 추천 목표
+
+---
+
+## Phase W2: Wake Word 대화 흐름 개선 ✅ COMPLETED (2026-02-07)
+
+> "비비야" wake word → 즉시 인사 + 연속 대화 모드
+
+### 구현된 기능
+- [x] `useWakeWord.ts` 7-state 머신: OFF/LISTENING/GREETING/CONVERSING/CAPTURING/PROCESSING/SPEAKING
+- [x] "비비야"만 → 즉시 인사 ("네, 형아!") 후 연속 대화 모드
+- [x] 연속 대화 모드에서 wake word 없이 자유롭게 대화
+- [x] "대화 끝" / "그만" / "잘 가" / "바이" → 대화 종료
+- [x] `/api/wake-greeting` API route
+- [x] `WakeWordIndicator.tsx` GREETING/CONVERSING 상태 시각화
+
+---
+
+## Phase B: 해부학적 뇌 시각화 ✅ COMPLETED (2026-02-07)
+
+> 9개 뇌 영역 + 구 좌표계 기반 3D Procedural Brain + Realtime 활성화
+
+### DB
+- [x] `brain_regions` (9개), `concept_brain_mapping` (452개), `neuron_activations` (Realtime)
+- [x] `auto_map_concept_to_region()` 트리거
+- [x] `conversation-process` v20: neuron_activations 자동 기록
+
+### Frontend
+- [x] `RealisticBrain.tsx` - React Three Fiber 3D 해부학적 뇌
+- [x] `useNeuronActivations.ts` - Supabase Realtime 구독
+- [x] `useBrainRegions.ts` - 영역 + 발달 단계 파라미터
+- [x] `brain/page.tsx` - 해부학 ↔ 추상 뷰 토글
+
+---
+
+## 궁극적 프로젝트 비전: "살아있는 인지 발달 시뮬레이터"
+
+> AGI가 아니라, 아기의 뇌가 어떻게 개념을 형성하고, 감정이 사고에 어떻게 영향 주고, 기억이 어떻게 조직되는지를 **실시간 3D로 시각화하면서 직접 키울 수 있는 인터랙티브 시스템**.
+
+### Future Roadmap
+
+#### Phase C: 뇌에 생명 불어넣기 (1-2주)
+| 단계 | 핵심 | 효과 |
+|------|------|------|
+| C1: 활성화 전파 ✅ | 파동 전파 + A+C 재생/히트맵 | /brain 진입 시 자동 파동 재생 + 누적 base glow |
+| C2: 헵 학습 | 함께 활성화된 뉴런 간 시냅스 강화 | 쓸수록 강해지는 뇌 |
+| C3: 기억 재생 | 주기적 최근 경험 뉴런 재활성화 | 쉴 때도 뇌가 반짝임 |
+
+#### Phase D: 자발적 사고 (3-4주)
+| 단계 | 핵심 | 효과 |
+|------|------|------|
+| D1: 내적 시뮬레이션 | "만약 ~하면?" 자동 예측 | prefrontal 자발 활성 |
+| D2: 감정 기반 주의 | amygdala가 attention 게이트 | 감정에 따라 집중 영역 변화 |
+| D3: 발달 자동 전이 | 조건 충족 시 자동 단계 업 | 새 영역 "깨어남" |
+
+#### Phase E2: 세상 이해 (1-2개월)
+- 감각 통합 (cross-modal), 환경 패턴 인식, 사회적 인지 (Theory of Mind)
+
+#### Phase F: 창발적 지능 (2-3개월+)
+- 자기강화 호기심 루프, 메타인지, 꿈/창의성
+
+---
+
 ## 관련 연구
 
 | 프로젝트/연구 | 주요 내용 | 우리와의 차이점 |
@@ -265,6 +337,10 @@
 
 | 날짜 | Phase | 변경 내용 |
 |------|-------|----------|
+| 2026-02-09 | C1 | Phase C1 완료: Spreading Activation + A+C (인덱스, RPC, replay, heatmap) |
+| 2026-02-07 | B | Phase B: 해부학적 뇌 시각화 완료 (9영역, 452매핑, Realtime) |
+| 2026-02-07 | W2 | Phase W2: Wake Word 연속 대화 모드 완료 (7-state) |
+| 2026-02-06 | E | Phase E: Emotion Engine 강화 (복합감정, VA, 감정→목표) |
 | 2026-02-06 | - | MD 파일 재구성: task_baby_brain.md 아카이브, ROADMAP 최신화 |
 | 2026-02-05 | - | Prediction Auto-Verification 파이프라인 활성화 |
 | 2026-02-05 | 2 | Causal Discovery 파이프라인 활성화 |

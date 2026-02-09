@@ -76,6 +76,44 @@ function BrainShell({ opacity = 0.06, scale = 1 }: { opacity?: number; scale?: n
   )
 }
 
+// ── Spreading Ripple Effect (v21) ─────────────────────────
+
+function SpreadingRipple({
+  position,
+  color,
+  intensity,
+  baseSize,
+}: {
+  position: [number, number, number]
+  color: string
+  intensity: number
+  baseSize: number
+}) {
+  const ringRef = useRef<THREE.Mesh>(null)
+
+  useFrame((state) => {
+    if (!ringRef.current) return
+    // Expanding ring animation: grows outward and fades
+    const t = (state.clock.elapsedTime * 0.8) % 1 // 0→1 cycle over ~1.25s
+    const scale = baseSize * (1.5 + t * 2.0)
+    ringRef.current.scale.setScalar(scale)
+    ;(ringRef.current.material as THREE.MeshBasicMaterial).opacity = intensity * 0.35 * (1 - t)
+  })
+
+  return (
+    <mesh ref={ringRef} position={position} rotation={[Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[0.8, 1.0, 32]} />
+      <meshBasicMaterial
+        color={color}
+        transparent
+        opacity={0}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
+    </mesh>
+  )
+}
+
 // ── Brain Region Mesh ─────────────────────────────────────
 
 function BrainRegionMesh({
@@ -83,6 +121,8 @@ function BrainRegionMesh({
   isActive,
   isAvailable,
   activeIntensity,
+  spreadIntensity,
+  heatmapIntensity,
   neuronCount,
   isSelected,
   onSelect,
@@ -91,6 +131,8 @@ function BrainRegionMesh({
   isActive: boolean
   isAvailable: boolean
   activeIntensity: number
+  spreadIntensity: number
+  heatmapIntensity: number // A+C: 0-1 cumulative activation history
   neuronCount: number
   isSelected: boolean
   onSelect: (region: BrainRegion | null) => void
@@ -105,28 +147,34 @@ function BrainRegionMesh({
     return Math.max(0.3, Math.min(1.2, 0.3 + neuronCount * 0.003))
   }, [neuronCount])
 
+  const isSpreading = spreadIntensity > 0
+
   useFrame((state) => {
     if (!meshRef.current) return
 
     if (isAvailable) {
-      // Pulse when active
       if (isActive) {
-        const pulse = Math.sin(state.clock.elapsedTime * 4) * 0.15
-        meshRef.current.scale.setScalar(baseSize + pulse * activeIntensity)
+        // Spreading activations: slower, wider pulse
+        const speed = isSpreading ? 2.5 : 4
+        const amplitude = isSpreading ? 0.2 : 0.15
+        const pulse = Math.sin(state.clock.elapsedTime * speed) * amplitude
+        const effectiveIntensity = Math.max(activeIntensity, spreadIntensity)
+        meshRef.current.scale.setScalar(baseSize + pulse * effectiveIntensity)
       } else {
         meshRef.current.scale.setScalar(baseSize)
       }
     } else {
-      // Ghost state for undeveloped regions
       meshRef.current.scale.setScalar(baseSize * 0.4)
     }
 
-    // Glow effect
+    // Glow effect - spreading uses warmer tint
     if (glowRef.current) {
       if (isActive) {
-        const glow = Math.sin(state.clock.elapsedTime * 3) * 0.3 + 0.7
-        ;(glowRef.current.material as THREE.MeshBasicMaterial).opacity = glow * activeIntensity * 0.4
-        glowRef.current.scale.setScalar(baseSize * 2.0)
+        const speed = isSpreading ? 2 : 3
+        const glow = Math.sin(state.clock.elapsedTime * speed) * 0.3 + 0.7
+        const effectiveIntensity = Math.max(activeIntensity, spreadIntensity)
+        ;(glowRef.current.material as THREE.MeshBasicMaterial).opacity = glow * effectiveIntensity * (isSpreading ? 0.5 : 0.4)
+        glowRef.current.scale.setScalar(baseSize * (isSpreading ? 2.5 : 2.0))
       } else {
         ;(glowRef.current.material as THREE.MeshBasicMaterial).opacity = 0
       }
@@ -141,12 +189,22 @@ function BrainRegionMesh({
       <mesh ref={glowRef}>
         <sphereGeometry args={[1, 16, 16]} />
         <meshBasicMaterial
-          color={region.color}
+          color={isSpreading ? '#f59e0b' : region.color}
           transparent
           opacity={0}
           depthWrite={false}
         />
       </mesh>
+
+      {/* Spreading ripple ring */}
+      {isSpreading && (
+        <SpreadingRipple
+          position={[0, 0, 0]}
+          color={region.color}
+          intensity={spreadIntensity}
+          baseSize={baseSize}
+        />
+      )}
 
       {/* Main region sphere */}
       <mesh
@@ -163,8 +221,14 @@ function BrainRegionMesh({
           color={region.color}
           transparent
           opacity={regionOpacity}
-          emissive={region.color}
-          emissiveIntensity={isActive ? activeIntensity * 0.8 : isAvailable ? 0.1 : 0}
+          emissive={isSpreading ? '#f59e0b' : region.color}
+          emissiveIntensity={
+            isActive
+              ? Math.max(activeIntensity, spreadIntensity) * 0.8
+              : isAvailable
+                ? Math.max(0.1, heatmapIntensity * 0.3) // A+C: base glow from cumulative history
+                : 0
+          }
           roughness={0.6}
           metalness={0.2}
         />
@@ -178,6 +242,9 @@ function BrainRegionMesh({
             <p className="text-[10px] text-slate-400">{region.display_name_en}</p>
             {neuronCount > 0 && (
               <p className="text-[10px] text-slate-500">{neuronCount} concepts</p>
+            )}
+            {isSpreading && (
+              <p className="text-[10px] text-amber-400">spreading activation</p>
             )}
           </div>
         </Html>
@@ -295,7 +362,7 @@ function BrainScene({
   showCrossSection: boolean
 }) {
   const { regions, stageParams } = useBrainRegions(developmentStage)
-  const { activeRegions, activeNeurons } = useNeuronActivations()
+  const { activeRegions, activeNeurons, spreadingRegions, heatmapRegions } = useNeuronActivations()
   const { brainData } = useBrainData()
 
   // Count neurons per region (using brainData.neurons count distributed by region)
@@ -337,9 +404,11 @@ function BrainScene({
             <BrainRegionMesh
               key={region.id}
               region={region}
-              isActive={activeRegions.has(region.id)}
+              isActive={activeRegions.has(region.id) || spreadingRegions.has(region.id)}
               isAvailable={isAvailable}
               activeIntensity={activeRegions.get(region.id) || 0}
+              spreadIntensity={spreadingRegions.get(region.id) || 0}
+              heatmapIntensity={heatmapRegions.get(region.id) || 0}
               neuronCount={neuronCountByRegion.get(region.id) || 0}
               isSelected={selectedRegion?.id === region.id}
               onSelect={onSelectRegion}
@@ -389,7 +458,7 @@ export function RealisticBrain({
   const [selectedRegion, setSelectedRegion] = useState<BrainRegion | null>(null)
   const [showCrossSection, setShowCrossSection] = useState(false)
   const { regions, stageParams, loading } = useBrainRegions(developmentStage)
-  const { activeRegions } = useNeuronActivations()
+  const { activeRegions, spreadingRegions, waveCount, heatmapRegions, isReplaying } = useNeuronActivations()
 
   const handleSelectRegion = useCallback((region: BrainRegion | null) => {
     setSelectedRegion(region)
@@ -449,23 +518,72 @@ export function RealisticBrain({
         </p>
       </div>
 
-      {/* Active Regions Legend */}
-      {activeRegions.size > 0 && (
-        <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 border border-slate-700/50">
-          <p className="text-[10px] text-slate-400 mb-1">활성 영역</p>
-          <div className="flex flex-wrap gap-1">
-            {regions
-              .filter(r => activeRegions.has(r.id))
-              .map(r => (
-                <span
-                  key={r.id}
-                  className="text-[10px] px-1.5 py-0.5 rounded"
-                  style={{ backgroundColor: r.color + '33', color: r.color }}
-                >
-                  {r.display_name}
-                </span>
-              ))}
-          </div>
+      {/* Replay indicator */}
+      {isReplaying && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-violet-500/20 backdrop-blur rounded-full px-4 py-1.5 border border-violet-400/30">
+          <p className="text-[11px] text-violet-300 animate-pulse">
+            마지막 대화 파동 재생 중...
+          </p>
+        </div>
+      )}
+
+      {/* Active Regions Legend + Heatmap */}
+      {(activeRegions.size > 0 || spreadingRegions.size > 0 || heatmapRegions.size > 0) && (
+        <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 border border-slate-700/50 max-w-[200px]">
+          {/* Active regions */}
+          {(activeRegions.size > 0 || spreadingRegions.size > 0) && (
+            <>
+              <p className="text-[10px] text-slate-400 mb-1">
+                활성 영역
+                {waveCount > 0 && (
+                  <span className="ml-2 text-amber-400">wave {waveCount}</span>
+                )}
+              </p>
+              <div className="flex flex-wrap gap-1 mb-1.5">
+                {regions
+                  .filter(r => activeRegions.has(r.id) || spreadingRegions.has(r.id))
+                  .map(r => {
+                    const isSpreading = spreadingRegions.has(r.id) && !activeRegions.has(r.id)
+                    return (
+                      <span
+                        key={r.id}
+                        className={`text-[10px] px-1.5 py-0.5 rounded ${isSpreading ? 'ring-1 ring-amber-400/50' : ''}`}
+                        style={{ backgroundColor: r.color + '33', color: isSpreading ? '#f59e0b' : r.color }}
+                      >
+                        {r.display_name}{isSpreading ? ' ~' : ''}
+                      </span>
+                    )
+                  })}
+              </div>
+            </>
+          )}
+          {/* Heatmap legend (when no active regions) */}
+          {activeRegions.size === 0 && spreadingRegions.size === 0 && heatmapRegions.size > 0 && (
+            <>
+              <p className="text-[10px] text-slate-400 mb-1">누적 활성화 기록</p>
+              <div className="flex flex-wrap gap-1">
+                {regions
+                  .filter(r => heatmapRegions.has(r.id))
+                  .sort((a, b) => (heatmapRegions.get(b.id) || 0) - (heatmapRegions.get(a.id) || 0))
+                  .map(r => {
+                    const intensity = heatmapRegions.get(r.id) || 0
+                    return (
+                      <span
+                        key={r.id}
+                        className="text-[10px] px-1.5 py-0.5 rounded"
+                        style={{
+                          backgroundColor: r.color + Math.round(intensity * 50 + 10).toString(16).padStart(2, '0'),
+                          color: r.color,
+                          opacity: 0.5 + intensity * 0.5,
+                        }}
+                      >
+                        {r.display_name}
+                      </span>
+                    )
+                  })}
+              </div>
+            </>
+          )}
         </div>
       )}
 

@@ -36,6 +36,10 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase V | Prediction Verification | ✅ 완료 | 예측 검증 UI |
 | Phase - | Causal Discovery | ✅ 완료 | 인과관계 자동 발견 파이프라인 |
 | Phase - | Prediction Auto-Verify | ✅ 완료 | 예측 자동 검증 파이프라인 |
+| Phase E | Emotion Engine 강화 | ✅ 완료 | 복합감정 + VA + 감정→목표 파이프라인 |
+| Phase W2 | Wake Word 대화 개선 | ✅ 완료 | 7-state 머신, 연속 대화 모드 |
+| Phase B | 해부학적 뇌 시각화 | ✅ 완료 | 9영역 3D Brain + Realtime 활성화 |
+| Phase C1 | 활성화 전파 | ✅ 완료 | Spreading Activation + A+C 재생/히트맵 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -682,9 +686,10 @@ Neural A2A는 **"Baby vs 고등학생"** 논쟁을 초월합니다.
 
 | 항목 | 값 |
 |------|-----|
-| Version | 1.4 |
+| Version | 1.5 |
 | Created | 2025-01-19 |
-| Updated | 2026-02-06 |
+| Updated | 2026-02-09 |
 | Status | Active |
-| Latest Phases | Phase A/V/W ✅, Causal Discovery ✅, Prediction Auto-Verify ✅ |
-| Next Candidates | Emotion Engine 강화, 자율 탐색 개선, 질문 만료 로직 |
+| Latest Phases | Phase E/W2/B/C1 ✅ 완료 |
+| Ultimate Vision | "살아있는 인지 발달 시뮬레이터" — 실시간 3D 뇌 시각화 + 키울 수 있는 AI |
+| Next | C2 헵 학습 → C3 기억 재생 → D1 자발적 사고 |
