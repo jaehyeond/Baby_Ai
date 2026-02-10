@@ -27,6 +27,16 @@ export interface ActivationContext {
   timestamp: string
 }
 
+// v23: Thought process step - shows HOW the brain processed info
+export interface ThoughtStep {
+  conceptName: string
+  conceptCategory: string
+  regionName: string
+  triggerType: 'conversation' | 'spreading_activation'
+  intensity: number
+  timestamp: string
+}
+
 export function useNeuronActivations() {
   const [activeRegions, setActiveRegions] = useState<Map<string, number>>(new Map())
   const [activeNeurons, setActiveNeurons] = useState<Map<string, number>>(new Map())
@@ -38,6 +48,8 @@ export function useNeuronActivations() {
   const [isReplaying, setIsReplaying] = useState(false)
   // v22: Conversation context that caused activations
   const [activationContext, setActivationContext] = useState<ActivationContext | null>(null)
+  // v23: Thought process log - ordered steps showing brain's thinking
+  const [thoughtProcess, setThoughtProcess] = useState<ThoughtStep[]>([])
   const timeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
   const replayTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
 
@@ -150,11 +162,15 @@ export function useNeuronActivations() {
       }
 
       // v22: Extract conversation context from replay data
+      // v23: Extended with concept_name, concept_category, region_name
       interface ReplayActivation extends NeuronActivation {
         experience_id?: string
         user_message?: string
         ai_response?: string
         dominant_emotion?: string
+        concept_name?: string
+        concept_category?: string
+        region_name?: string
       }
       const replayRaw = data.replay as ReplayActivation[]
       if (replayRaw.length > 0) {
@@ -169,6 +185,19 @@ export function useNeuronActivations() {
             timestamp: withContext.created_at,
           })
         }
+
+        // v23: Build thought process from replay data
+        const steps: ThoughtStep[] = replayRaw
+          .filter(a => a.concept_name && a.region_name)
+          .map(a => ({
+            conceptName: a.concept_name!,
+            conceptCategory: a.concept_category || '',
+            regionName: a.region_name!,
+            triggerType: a.trigger_type as 'conversation' | 'spreading_activation',
+            intensity: a.intensity,
+            timestamp: a.created_at,
+          }))
+        setThoughtProcess(steps)
       }
 
       // 2. Replay: stagger activations over 3 seconds
@@ -209,6 +238,41 @@ export function useNeuronActivations() {
       }, async (payload) => {
         const activation = payload.new as NeuronActivation & { experience_id?: string }
         addActivation(activation)
+
+        // v23: Load concept/region names for thought process
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const [conceptRes, regionRes] = await Promise.all([
+            activation.concept_id
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ? (supabase as any).from('semantic_concepts').select('name, category').eq('id', activation.concept_id).single()
+              : Promise.resolve({ data: null }),
+            activation.brain_region_id
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ? (supabase as any).from('brain_regions').select('display_name').eq('id', activation.brain_region_id).single()
+              : Promise.resolve({ data: null }),
+          ])
+
+          if (conceptRes.data && regionRes.data) {
+            const step: ThoughtStep = {
+              conceptName: conceptRes.data.name,
+              conceptCategory: conceptRes.data.category || '',
+              regionName: regionRes.data.display_name,
+              triggerType: activation.trigger_type as 'conversation' | 'spreading_activation',
+              intensity: activation.intensity,
+              timestamp: activation.created_at,
+            }
+
+            // If this is a new conversation trigger, reset thought process
+            if (activation.trigger_type === 'conversation') {
+              setThoughtProcess([step])
+            } else {
+              setThoughtProcess(prev => [...prev, step])
+            }
+          }
+        } catch {
+          // Silently ignore - thought process is optional enhancement
+        }
 
         // v22: When a new conversation activation arrives, load its context
         if (activation.experience_id && activation.trigger_type === 'conversation') {
@@ -254,5 +318,7 @@ export function useNeuronActivations() {
     isReplaying,     // True during initial replay animation
     // v22: Conversation context that caused activations
     activationContext,
+    // v23: Thought process log
+    thoughtProcess,
   }
 }

@@ -400,7 +400,7 @@ function BrainScene({
         autoRotate={!selectedNeuron && !selectedAstrocyte}
         autoRotateSpeed={0.5}
         minDistance={3}
-        maxDistance={20}
+        maxDistance={40}
       />
     </>
   )
@@ -414,7 +414,7 @@ function CameraController({ zoomIn, zoomOut, reset }: { zoomIn: boolean; zoomOut
     if (zoomIn && camera.position.length() > 4) {
       camera.position.multiplyScalar(0.98)
     }
-    if (zoomOut && camera.position.length() < 14) {
+    if (zoomOut && camera.position.length() < 35) {
       camera.position.multiplyScalar(1.02)
     }
     if (reset) {
