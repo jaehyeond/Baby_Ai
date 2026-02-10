@@ -29,6 +29,25 @@
   - 누적 활성화 기록 범례 (비활성 시)
 - [x] 빌드 성공 (TypeScript 에러 없음)
 
+### Phase C2: 대화 컨텍스트 + 상상 자동화 ✅
+- [x] DB 마이그레이션: `neuron_activations`에 `experience_id` 컬럼 추가 + 인덱스
+- [x] RPC `get_brain_activation_summary()` 업데이트: replay에 experience context (user_message, ai_response, dominant_emotion) 포함
+- [x] `conversation-process` v22:
+  - `logNeuronActivations()`에 `experienceId` 파라미터 추가
+  - `spreadActivation()`에 `experienceId` 파라미터 추가
+  - `maybeImagine()` 함수 추가 (4번째 "호출 안 됨" 패턴 수정!)
+    - 조건: stage >= 3, curiosity > 0.6, 40% 확률
+    - Gemini가 대화 기반 상상 토픽/thoughts/connections 생성
+    - trigger: 'conversation_curiosity'
+  - 응답에 `imagination_triggered` 필드 추가
+- [x] `useNeuronActivations.ts`: `activationContext` 상태 추가 (experienceId, userMessage, aiResponse, emotion)
+  - RPC replay에서 experience context 자동 추출
+  - Realtime 구독에서 conversation 활성화 시 experience 조회
+- [x] `RealisticBrain.tsx`: "파동의 원인" 패널 추가
+  - 활성 영역 + replay 중 하단에 표시
+  - 형아의 메시지 + 비비의 응답 + 감정 표시
+- [x] 빌드 성공 (TypeScript 에러 없음)
+
 ---
 
 ## 2026-02-07

@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { useBrainRegions, type BrainRegion } from '@/hooks/useBrainRegions'
 import { useNeuronActivations } from '@/hooks/useNeuronActivations'
 import { useBrainData } from '@/hooks/useBrainData'
-import { Brain, Loader2, ZoomIn, ZoomOut, RotateCcw, Eye } from 'lucide-react'
+import { Brain, Loader2, ZoomIn, ZoomOut, RotateCcw, Eye, MessageCircle } from 'lucide-react'
 
 // ── Helpers ────────────────────────────────────────────────
 
@@ -458,7 +458,7 @@ export function RealisticBrain({
   const [selectedRegion, setSelectedRegion] = useState<BrainRegion | null>(null)
   const [showCrossSection, setShowCrossSection] = useState(false)
   const { regions, stageParams, loading } = useBrainRegions(developmentStage)
-  const { activeRegions, spreadingRegions, waveCount, heatmapRegions, isReplaying } = useNeuronActivations()
+  const { activeRegions, spreadingRegions, waveCount, heatmapRegions, isReplaying, activationContext } = useNeuronActivations()
 
   const handleSelectRegion = useCallback((region: BrainRegion | null) => {
     setSelectedRegion(region)
@@ -509,7 +509,7 @@ export function RealisticBrain({
       </div>
 
       {/* Stage Info */}
-      <div className="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 border border-slate-700/50">
+      <div className={`absolute ${activationContext && (activeRegions.size > 0 || isReplaying) ? 'bottom-[90px]' : 'bottom-4'} left-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 border border-slate-700/50 transition-all`}>
         <p className="text-xs text-slate-400">
           발달 단계: <span className="text-violet-400 font-medium">{stageParams.label}</span>
         </p>
@@ -605,6 +605,29 @@ export function RealisticBrain({
             활성화 단계: {selectedRegion.development_stage_min}+
             {selectedRegion.is_internal && ' · 내부 구조'}
           </p>
+        </div>
+      )}
+
+      {/* v22: Activation Cause Panel - shows what conversation triggered waves */}
+      {activationContext && (activeRegions.size > 0 || isReplaying) && (
+        <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur rounded-lg px-3 py-2.5 border border-violet-500/30 max-w-[260px]">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <MessageCircle className="w-3 h-3 text-violet-400" />
+            <p className="text-[10px] text-violet-400 font-medium">파동의 원인</p>
+            {activationContext.emotion && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-300">
+                {activationContext.emotion}
+              </span>
+            )}
+          </div>
+          <div className="space-y-1">
+            <p className="text-[11px] text-slate-300 line-clamp-2">
+              <span className="text-slate-500">형아:</span> &quot;{activationContext.userMessage}&quot;
+            </p>
+            <p className="text-[11px] text-violet-300/80 line-clamp-2">
+              <span className="text-slate-500">비비:</span> &quot;{activationContext.aiResponse}&quot;
+            </p>
+          </div>
         </div>
       )}
     </div>

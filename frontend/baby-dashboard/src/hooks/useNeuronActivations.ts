@@ -9,12 +9,22 @@ interface NeuronActivation {
   intensity: number
   trigger_type: string
   created_at: string
+  experience_id?: string
 }
 
 export interface RegionHeatmap {
   brain_region_id: string
   activation_count: number
   avg_intensity: number
+}
+
+// v22: Conversation context that caused activations
+export interface ActivationContext {
+  experienceId: string
+  userMessage: string
+  aiResponse: string
+  emotion: string
+  timestamp: string
 }
 
 export function useNeuronActivations() {
@@ -26,6 +36,8 @@ export function useNeuronActivations() {
   // A+C: Cumulative heatmap (persistent base glow)
   const [heatmapRegions, setHeatmapRegions] = useState<Map<string, number>>(new Map())
   const [isReplaying, setIsReplaying] = useState(false)
+  // v22: Conversation context that caused activations
+  const [activationContext, setActivationContext] = useState<ActivationContext | null>(null)
   const timeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
   const replayTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
 
@@ -137,8 +149,30 @@ export function useNeuronActivations() {
         setHeatmapRegions(heatmap)
       }
 
+      // v22: Extract conversation context from replay data
+      interface ReplayActivation extends NeuronActivation {
+        experience_id?: string
+        user_message?: string
+        ai_response?: string
+        dominant_emotion?: string
+      }
+      const replayRaw = data.replay as ReplayActivation[]
+      if (replayRaw.length > 0) {
+        // Find the first activation with experience context
+        const withContext = replayRaw.find(a => a.experience_id && a.user_message)
+        if (withContext) {
+          setActivationContext({
+            experienceId: withContext.experience_id!,
+            userMessage: withContext.user_message || '',
+            aiResponse: withContext.ai_response || '',
+            emotion: withContext.dominant_emotion || '',
+            timestamp: withContext.created_at,
+          })
+        }
+      }
+
       // 2. Replay: stagger activations over 3 seconds
-      const replay = data.replay as NeuronActivation[]
+      const replay = replayRaw as NeuronActivation[]
       if (replay.length > 0) {
         setIsReplaying(true)
         const totalDuration = 3000
@@ -172,8 +206,33 @@ export function useNeuronActivations() {
         event: 'INSERT',
         schema: 'public',
         table: 'neuron_activations',
-      }, (payload) => {
-        addActivation(payload.new as NeuronActivation)
+      }, async (payload) => {
+        const activation = payload.new as NeuronActivation & { experience_id?: string }
+        addActivation(activation)
+
+        // v22: When a new conversation activation arrives, load its context
+        if (activation.experience_id && activation.trigger_type === 'conversation') {
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: exp } = await (supabase as any)
+              .from('experiences')
+              .select('task, output, dominant_emotion, created_at')
+              .eq('id', activation.experience_id)
+              .single()
+
+            if (exp) {
+              setActivationContext({
+                experienceId: activation.experience_id,
+                userMessage: exp.task || '',
+                aiResponse: exp.output || '',
+                emotion: exp.dominant_emotion || '',
+                timestamp: exp.created_at || activation.created_at,
+              })
+            }
+          } catch {
+            // Silently ignore - context is optional
+          }
+        }
       })
       .subscribe()
 
@@ -193,5 +252,7 @@ export function useNeuronActivations() {
     // A+C: Persistent data
     heatmapRegions,  // Normalized 0-1 per region (cumulative activation history)
     isReplaying,     // True during initial replay animation
+    // v22: Conversation context that caused activations
+    activationContext,
   }
 }
