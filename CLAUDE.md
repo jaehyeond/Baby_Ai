@@ -6,6 +6,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Claude 기반 A2A(Agent-to-Agent) 멀티에이전트 시스템. Google의 A2A 프로토콜을 사용하여 에이전트 간 통신을 구현합니다.
 
+## ⚠️ 세션 프로토콜 (필수)
+
+> **새 세션 시작 시 반드시 아래 순서를 따를 것.** 문서를 확인하지 않고 작업하면 이미 완료된 작업을 반복하거나, 잘못된 버전 정보로 작업하게 됨.
+
+### 작업 전 필수 확인 (우선순위 순)
+
+| 순서 | 문서 | 자동 로드 | 확인 목적 |
+|------|------|-----------|-----------|
+| 0 | **MEMORY.md** | ✅ 자동 | 프로젝트 상태 요약 (항상 최신) |
+| 0 | **CLAUDE.md** | ✅ 자동 | 설계 원칙, Known Issues, Subagents |
+| 1 | **Task.md** | ❌ 수동 | Source of Truth - EF 버전, DB 통계, Phase 상태 |
+| 2 | **CHANGELOG.md** | ❌ 수동 | 최근 작업 기록 (최상단 날짜만 확인) |
+| 3 | **ROADMAP.md** | ❌ 필요시 | 현재 Phase 위치와 다음 단계 |
+| 4 | **docs/PAPER_PLAN.md** | ❌ 논문 관련 시 | 논문 준비 상태 (Section 9) |
+| 5 | **SQL_task.md** | ❌ DB 작업 시 | DB 스키마 버전 (현재 v012) |
+
+### 세션 시작 방법
+```
+방법 1: /session-start 실행 (추천 - 자동으로 문서 확인 + DB 상태 조회)
+방법 2: Task.md + CHANGELOG.md 직접 읽기 (빠른 시작)
+```
+
+### 세션 종료 시 필수
+1. **CHANGELOG.md** - 오늘 작업 내용 기록 (날짜별)
+2. **Task.md** - 변경된 EF 버전, DB 통계 업데이트
+3. **MEMORY.md** - 새로운 패턴/이슈 발견 시 업데이트
+
+### 절대 규칙
+- **"정의만 되고 호출 안 됨" 방지**: 새 테이블/함수/Edge Function 추가 시 반드시 호출 지점 확인
+- **conversation-process 수정 시**: 현재 v23 기준으로 작업. CHANGELOG에서 최신 변경 확인 필수
+- **이미 완료된 Phase 재작업 금지**: Task.md "✅ 완료된 Phase" 섹션 확인
+
+---
+
 ## Commands
 
 ### Setup
@@ -125,6 +159,7 @@ pytest
 | `backend-dev` | Sonnet | `neural/baby/` | Python 모듈 (감정, World Model, DB 등) |
 | `frontend-dev` | Sonnet | `frontend/baby-dashboard/src/` | Next.js 16 + React 19 컴포넌트, hooks, 페이지 |
 | `db-engineer` | Sonnet | Supabase | SQL migration, Edge Functions |
+| `brain-researcher` | Opus | 신경과학 연구 | 뇌 아키텍처 설계, 인지과학 문헌 조사 |
 
 ### 실행 순서 (순차 필수)
 ```
@@ -200,17 +235,30 @@ const resetIdleTimer = useCallback(() => {
 
 ## 🧠 Brain DB 구조 요약
 
-### 현재 테이블 통계 (2025-02-03)
+### 현재 테이블 통계 (2026-02-10)
 | 테이블 | 레코드 수 | 용도 |
 |--------|----------|------|
-| semantic_concepts | 401 | 개념/지식 (뉴런) |
-| concept_relations | 393 | 개념 간 관계 (시냅스) |
-| experiences | 447 | 경험 기억 (해마) |
-| experience_concepts | 361 | 경험↔개념 연결 |
-| emotion_logs | 171 | 감정 기록 (편도체) |
-| procedural_patterns | 102 | 절차 기억 (소뇌) |
-| curiosity_queue | 187 | 호기심 대기열 |
-| visual_experiences | 6 | 시각 경험 |
+| semantic_concepts | 452+ | 개념/지식 (뉴런) |
+| concept_relations | 519+ | 개념 간 관계 (시냅스) |
+| experiences | 583+ | 경험 기억 (해마) |
+| experience_concepts | 361+ | 경험↔개념 연결 |
+| emotion_logs | 171+ | 감정 기록 (편도체) |
+| procedural_patterns | 102+ | 절차 기억 (소뇌) |
+| curiosity_queue | 187+ | 호기심 대기열 |
+| visual_experiences | 13 | 시각 경험 |
+| brain_regions | 9 | 뇌 영역 (Phase B) |
+| concept_brain_mapping | 452 | 개념→영역 매핑 (Phase B) |
+| neuron_activations | 0+ | 실시간 뉴런 활성화 (Phase B) |
+| causal_models | 3 | 인과관계 모델 |
+| predictions | 8+ | 예측 (자동검증) |
+| self_evaluation_logs | 1+ | 자기평가 (v19) |
+| emotion_goal_influences | 1+ | 감정→목표 영향 (v19) |
+| imagination_sessions | 0+ | 상상 세션 (v22) |
+
+### Conversation Pipeline (v23, 최신)
+- `conversation-process` Edge Function v23
+- 파이프라인: 복합감정 → VA → 목표영향 → 자기평가 → 뉴런활성화(experience_id) → spreading activation(BFS) → maybeImagine() → predictions
+- ThoughtProcess 데이터: 대화 컨텍스트, 직접 활성화 경로, 연상 확산 그룹
 
 ### Memory Consolidation v6 (수면 모드)
 - 30분마다 scheduled 실행
@@ -220,9 +268,9 @@ const resetIdleTimer = useCallback(() => {
 
 ### 핵심 테이블 관계
 ```
-experiences ─┬─ experience_concepts ─── semantic_concepts
+experiences ─┬─ experience_concepts ─── semantic_concepts ─── concept_brain_mapping ─── brain_regions
              │                              │
-             └─ emotion_logs                └─ concept_relations
+             └─ emotion_logs                └─ concept_relations ─── neuron_activations
                                                (시냅스 가중치)
 ```
 

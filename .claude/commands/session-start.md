@@ -1,65 +1,50 @@
-# Session Start
+# Session Start - Baby AI 프로젝트
 
-Baby AI 프로젝트 작업 세션을 시작합니다.
+새 세션을 시작합니다. 아래 단계를 **순서대로 실행**하세요.
 
-## 세션 시작 체크리스트
+## Step 1: 핵심 문서 읽기 (병렬)
 
-### 1. 핵심 문서 확인
-```
-필수 읽기:
-1. CLAUDE.md - 프로젝트 개요, Known Issues, 설계 원칙
-2. Task.md - 현재 진행 상황, Phase 상태
-```
+다음 2개 파일을 **동시에** 읽으세요:
+1. `Task.md` - Source of Truth (EF 버전, DB 통계, Phase 상태, 논문 상태)
+2. `CHANGELOG.md` - **최상단 날짜 기록만** (offset 0, limit 50)
 
-### 2. 현재 상태 조회
+## Step 2: DB 실시간 상태 조회
+
+Supabase에서 현재 Baby 상태를 조회하세요:
 
 ```sql
--- Baby 상태
+-- Baby 현재 상태
 SELECT development_stage, experience_count, success_count,
-       curiosity, joy, dominant_emotion, updated_at
-FROM baby_state
-ORDER BY updated_at DESC LIMIT 1;
-
--- 최근 문제 확인
-SELECT term, status, exploration_method, error_message
-FROM curiosity_queue
-WHERE status = 'failed'
-ORDER BY updated_at DESC LIMIT 5;
+       curiosity, joy, fear, frustration, boredom,
+       dominant_emotion, updated_at
+FROM baby_state LIMIT 1;
 ```
 
-### 3. 핵심 설계 원칙 상기
+## Step 3: 상태 요약 보고
+
+읽은 문서와 DB 조회 결과를 기반으로 사용자에게 **간결하게** 보고:
 
 ```
-🔑 핵심 설계 원칙:
-
-1. "Baby"는 지식이 없다는 의미가 아님
-   - LLM 지식은 그대로 활용
-   - 그 위에 발달적 메커니즘 추가
-
-2. 학습 대상 구분
-   ✅ 학습해야 할 것: 사용자 고유 개념 (비비, 엄마), 감정적 경험, 자아 정체성
-   ❌ 학습하면 안 됨: 일반 지식 (algorithm 등) - LLM이 이미 알고 있음
-
-3. 수면 모드 목적
-   ❌ 외부 학습
-   ✅ 해마 기억 재활성화
-   ✅ 시냅스 정리 (약한 연결 제거)
-   ✅ 정체성 강화
+📊 Baby AI 세션 시작 보고
+━━━━━━━━━━━━━━━━━━━━━━
+🧠 발달 단계: Stage X (이름)
+💭 감정: dominant_emotion (수치)
+📝 마지막 작업: CHANGELOG 최신 날짜 + 요약
+🔧 최신 EF: conversation-process vXX
+📄 논문: Task.md 논문 섹션 요약
+⏭️ 다음 단계: ROADMAP 기준 다음 Phase
+━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 4. 작업 시작
+## Step 4: 사용자 지시 대기
 
-```
-사용 가능한 skills:
-/baby-status    - Baby AI 현재 상태
-/brain-analyze  - 지식 그래프 분석
-/deploy-function - Edge Function 배포
-/sleep-mode     - 수면 모드 트리거
-/fix-issue      - 문제 진단 및 수정
-```
+보고 후 사용자의 작업 지시를 기다리세요.
+- 작업 지시가 특정 영역이면 해당 문서 추가 확인 (ROADMAP, SQL_task 등)
+- 논문 관련이면 `docs/PAPER_PLAN.md` Section 9 확인
 
-## 세션 종료 시
+## 주의사항
 
-1. Task.md 업데이트 (완료된 작업 체크)
-2. CLAUDE.md에 새로운 이슈 기록 (있다면)
-3. 다음 세션 TODO 정리
+- **이미 완료된 Phase를 다시 구현하지 마세요** - Task.md "✅ 완료된 Phase" 확인
+- **conversation-process 수정 시** 현재 버전 확인 필수 (CHANGELOG 최신 기록)
+- **새 기능 추가 시** "정의만 되고 호출 안 됨" 패턴 방지 - 반드시 호출 지점 확인
+- **DB 스키마 변경 시** SQL_task.md 확인 (현재 스키마 버전)

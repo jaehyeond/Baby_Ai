@@ -1,6 +1,6 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-09
+**최종 업데이트**: 2026-02-10
 
 ---
 
@@ -28,13 +28,13 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-09)
+## 📊 현재 시스템 상태 (2026-02-10)
 
 ### Edge Functions (13개 - 모두 ACTIVE)
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
-| `conversation-process` | **v21** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + **spreading activation**) | ✅ 정상 |
+| `conversation-process` | **v23** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + spreading activation + **maybeImagine** + ThoughtProcess) | ✅ 정상 |
 | `vision-process` | **v4** | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
 | `world-understanding` | v2 | ❌ | 물리 세계 이해 | ✅ 정상 |
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
@@ -84,7 +84,7 @@
 | `baby_state` | 1 | Baby AI 상태 (싱글톤) |
 | `self_evaluation_logs` | 1+ | 메타인지 로그 (v19 자동 트리거) |
 | `emotion_goal_influences` | 1+ | 감정→목표 영향 (v19) |
-| `imagination_sessions` | 9 | World Model 상상 세션 |
+| `imagination_sessions` | 9 | World Model 상상 세션 (v22 자동 트리거) |
 | `predictions` | 8+ | 예측 기록 (자동 검증) |
 | `causal_models` | 3 | 인과관계 모델 |
 | `pending_questions` | 8 | 능동적 질문 (모두 answered) |
@@ -171,7 +171,7 @@
 
 ### 1. 대화 흐름 ✅
 ```
-사용자 입력 → /api/conversation → conversation-process (v17)
+사용자 입력 → /api/conversation → conversation-process (v23)
                                       ↓
                               [Gemini LLM 호출]
                               [정체성 개념 조회 - semantic_concepts]
@@ -395,6 +395,27 @@ our-a2a-project/
 ├── CLAUDE.md                    # Claude Code 가이드
 └── Task.md                      # 이 파일
 ```
+
+---
+
+## 📝 논문 준비 상태 (2026-02-10)
+
+> 상세: [docs/PAPER_PLAN.md](docs/PAPER_PLAN.md) Section 9 참조
+
+### 6-Agent Deep Review 결과 요약
+- **ICDL 2026**: 적합하나 D-31 기한 tight (8-12주 분량)
+- **ISMAR 2026**: 부적합 (AR/MR 필수) → **IEEE VIS 2026** 대안 추천
+- **수식 F2 (Spreading)**: 코드 vs 논문 불일치 (CRITICAL)
+- **Emotion modulation**: 계산되나 downstream 미적용
+- **C_raw 베이스라인**: 미구현 (ablation 필수)
+- **추천 로드맵**: arXiv preprint → VIS 2026 → ICDL 2027
+- **현재 상태**: 사용자 방향 결정 대기 중
+
+### 논문 전 기술 우선순위 (시스템 개선)
+1. Spreading Activation 피드백 루프 (결과 → 응답 생성 영향)
+2. Emotion modulation downstream 연결
+3. 수식 F2, F4, F7, F8 코드-논문 일치
+4. C_raw 베이스라인 실험 스크립트
 
 ---
 

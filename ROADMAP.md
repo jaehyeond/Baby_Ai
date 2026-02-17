@@ -294,6 +294,24 @@
 
 ---
 
+## Phase C1: Spreading Activation + ThoughtProcess ✅ COMPLETED (2026-02-09~10)
+
+> 대화 시 뉴런 활성화 전파 + 사고 과정 시각화
+
+### 구현된 기능
+- [x] `conversation-process` v21→v23: spreading activation (BFS), neuron_activations에 experience_id
+- [x] `maybeImagine()`: stage >= 3일 때 imagination_sessions 자동 생성 (v22 추가, v23 수정)
+- [x] ThoughtProcessPanel: 대화 컨텍스트, 직접 활성화 경로, 연상 확산 그룹 시각화
+- [x] brain/page.tsx: 파동 재생 + 누적 히트맵 + 사고 과정 패널
+- [x] DB: brain_region_id 인덱스, trigger_type+created_at 복합 인덱스, get_brain_activation_summary RPC
+
+### 논문 준비 상태 (2026-02-10)
+- [x] PAPER_PLAN.md Section 9: 6-agent SCI deep review 완료
+- 주요 발견: F2 spreading activation 수식-코드 불일치 (CRITICAL), ISMAR 부적합 → VIS 2026 대안
+- 다음: 코드-수식 정합성 확보 → 데이터 수집 → 논문 작성
+
+---
+
 ## 궁극적 프로젝트 비전: "살아있는 인지 발달 시뮬레이터"
 
 > AGI가 아니라, 아기의 뇌가 어떻게 개념을 형성하고, 감정이 사고에 어떻게 영향 주고, 기억이 어떻게 조직되는지를 **실시간 3D로 시각화하면서 직접 키울 수 있는 인터랙티브 시스템**.
@@ -303,7 +321,7 @@
 #### Phase C: 뇌에 생명 불어넣기 (1-2주)
 | 단계 | 핵심 | 효과 |
 |------|------|------|
-| C1: 활성화 전파 ✅ | 파동 전파 + A+C 재생/히트맵 | /brain 진입 시 자동 파동 재생 + 누적 base glow |
+| C1: 활성화 전파 ✅ | 파동 전파 + A+C 재생/히트맵 + ThoughtProcess | /brain 진입 시 자동 파동 재생 + 사고 과정 패널 |
 | C2: 헵 학습 | 함께 활성화된 뉴런 간 시냅스 강화 | 쓸수록 강해지는 뇌 |
 | C3: 기억 재생 | 주기적 최근 경험 뉴런 재활성화 | 쉴 때도 뇌가 반짝임 |
 
@@ -337,6 +355,9 @@
 
 | 날짜 | Phase | 변경 내용 |
 |------|-------|----------|
+| 2026-02-10 | C1 | conversation-process v23: maybeImagine() 수정, ThoughtProcess 패널, experience_id 추적 |
+| 2026-02-10 | - | SCI 논문 6-agent deep review (PAPER_PLAN.md Section 9) |
+| 2026-02-10 | - | 전체 문서 업데이트 (Task/CHANGELOG/CLAUDE/SQL_task/ROADMAP/PROJECT_VISION) |
 | 2026-02-09 | C1 | Phase C1 완료: Spreading Activation + A+C (인덱스, RPC, replay, heatmap) |
 | 2026-02-07 | B | Phase B: 해부학적 뇌 시각화 완료 (9영역, 452매핑, Realtime) |
 | 2026-02-07 | W2 | Phase W2: Wake Word 연속 대화 모드 완료 (7-state) |

@@ -14,7 +14,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 
 ## Development Progress
 
-### Phase Status Overview (2026-01-25 기준)
+### Phase Status Overview (2026-02-10 기준)
 
 | Phase | 이름 | 상태 | 설명 |
 |-------|------|------|------|
@@ -39,7 +39,7 @@ Neural A2A는 **발달적 인지 아키텍처(Developmental Cognitive Architectu
 | Phase E | Emotion Engine 강화 | ✅ 완료 | 복합감정 + VA + 감정→목표 파이프라인 |
 | Phase W2 | Wake Word 대화 개선 | ✅ 완료 | 7-state 머신, 연속 대화 모드 |
 | Phase B | 해부학적 뇌 시각화 | ✅ 완료 | 9영역 3D Brain + Realtime 활성화 |
-| Phase C1 | 활성화 전파 | ✅ 완료 | Spreading Activation + A+C 재생/히트맵 |
+| Phase C1 | 활성화 전파 | ✅ 완료 | Spreading Activation + ThoughtProcess 패널 + v23 파이프라인 |
 
 ### Phase 4: Multimodal Embodied AI (상세)
 
@@ -650,7 +650,7 @@ ICM (Intrinsic Curiosity Module) 기반:
 | **지식** | 정적, 사전학습 | 정적 + 동적 시냅스 |
 | **학습** | Fine-tuning만 | 경험 기반 실시간 학습 |
 | **기억** | 컨텍스트 윈도우 | 3중 기억 (에피소드/의미/절차) |
-| **감정** | 없음 | 6가지 기본 감정 |
+| **감정** | 없음 | 6 기본 + 5 복합 감정 (VA 공간) |
 | **발달** | 없음 | 6단계 발달 |
 | **라우팅** | 단일 모델 | Dual Process 기반 |
 
@@ -686,10 +686,12 @@ Neural A2A는 **"Baby vs 고등학생"** 논쟁을 초월합니다.
 
 | 항목 | 값 |
 |------|-----|
-| Version | 1.5 |
+| Version | 1.6 |
 | Created | 2025-01-19 |
-| Updated | 2026-02-09 |
+| Updated | 2026-02-10 |
 | Status | Active |
-| Latest Phases | Phase E/W2/B/C1 ✅ 완료 |
+| Latest Phases | Phase E/W2/B/C1 ✅ 완료, conversation-process v23 |
+| Pipeline | v23: compound emotion → VA → goal → self-eval → neuron activations → spreading activation → maybeImagine → predictions |
+| Paper Status | SCI 논문 deep review 완료 (PAPER_PLAN.md §9), F2 수식 수정 필요 |
 | Ultimate Vision | "살아있는 인지 발달 시뮬레이터" — 실시간 3D 뇌 시각화 + 키울 수 있는 AI |
 | Next | C2 헵 학습 → C3 기억 재생 → D1 자발적 사고 |

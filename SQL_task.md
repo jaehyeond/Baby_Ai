@@ -1,8 +1,8 @@
 # SQL Task: Robot_Brain Database Schema
 
 **프로젝트**: Robot_Brain (extbfhoktzozgqddjcps)
-**최종 업데이트**: 2026-02-04
-**스키마 버전**: v008 (v009 Phase A 예정)
+**최종 업데이트**: 2026-02-10
+**스키마 버전**: v012 (Phase C1 완료)
 
 ---
 
@@ -24,6 +24,15 @@
 | v008e | 2025-12-31 | 시냅스 함수 5개 (강화/약화/검색) |
 | v009a | 2026-02-04 | **pending_questions** 테이블 (Phase A) |
 | v009b | 2026-02-04 | pending_questions RLS + Realtime |
+| v010a | 2026-02-07 | **brain_regions** 테이블 (9개 영역, 구 좌표계) |
+| v010b | 2026-02-07 | **concept_brain_mapping** 테이블 (452개 매핑) |
+| v010c | 2026-02-07 | **neuron_activations** 테이블 (Realtime) |
+| v010d | 2026-02-07 | `auto_map_concept_to_region()` 트리거 |
+| v010e | 2026-02-07 | 기존 452개 개념 일괄 영역 매핑 |
+| v011a | 2026-02-09 | neuron_activations에 brain_region_id 인덱스 추가 |
+| v011b | 2026-02-09 | trigger_type + created_at 복합 인덱스 추가 |
+| v011c | 2026-02-09 | `get_brain_activation_summary` RPC 함수 |
+| v012a | 2026-02-10 | neuron_activations에 **experience_id** 컬럼 추가 (파동↔대화 추적) |
 
 ---
 
@@ -40,7 +49,13 @@
 | **experience_concepts** | ✅ 완료 | ✅ | 경험↔개념 M:N (Hebb's Law) |
 | **concept_relations** | ✅ 완료 | ✅ | 개념 간 관계 (Knowledge Graph) |
 | **pattern_learning_events** | ✅ 완료 | ✅ | 절차 학습 이벤트 |
-| **pending_questions** | ✅ 완료 | ✅ | 🆕 비비가 사용자에게 물어볼 질문 (Phase A) |
+| **pending_questions** | ✅ 완료 | ✅ | 비비가 사용자에게 물어볼 질문 (Phase A) |
+| **brain_regions** | ✅ 완료 | ✅ | 🆕 9개 뇌 영역 (구 좌표계, Phase B) |
+| **concept_brain_mapping** | ✅ 완료 | ✅ | 🆕 개념→영역 매핑 (452개, Phase B) |
+| **neuron_activations** | ✅ 완료 | ✅ | 🆕 실시간 뉴런 활성화 (Realtime, Phase B/C1) |
+| **imagination_sessions** | ✅ 완료 | ✅ | 🆕 상상 세션 (Phase W/v22) |
+| **self_evaluation_logs** | ✅ 완료 | ✅ | 🆕 자기평가 (Phase E/v19) |
+| **emotion_goal_influences** | ✅ 완료 | ✅ | 🆕 감정→목표 영향 (Phase E/v19) |
 
 ---
 
@@ -641,6 +656,99 @@ $$ LANGUAGE plpgsql;
 
 ---
 
+### v010: Phase B - 해부학적 뇌 구조
+
+```sql
+-- v010a: brain_regions (9개 영역, 구 좌표계)
+CREATE TABLE brain_regions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT UNIQUE NOT NULL,
+  display_name TEXT NOT NULL,
+  color TEXT NOT NULL,
+  theta_min FLOAT, theta_max FLOAT,
+  phi_min FLOAT, phi_max FLOAT,
+  radius FLOAT DEFAULT 1.0,
+  development_stage_min INT DEFAULT 0,
+  is_internal BOOLEAN DEFAULT false
+);
+
+-- v010b: concept_brain_mapping
+CREATE TABLE concept_brain_mapping (
+  concept_id UUID REFERENCES semantic_concepts(id) ON DELETE CASCADE,
+  brain_region_id UUID REFERENCES brain_regions(id),
+  PRIMARY KEY (concept_id, brain_region_id)
+);
+
+-- v010c: neuron_activations (Realtime)
+CREATE TABLE neuron_activations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  concept_id UUID REFERENCES semantic_concepts(id),
+  brain_region_id UUID REFERENCES brain_regions(id),
+  trigger_type TEXT NOT NULL,  -- 'conversation', 'vision', 'memory', 'emotion'
+  intensity FLOAT DEFAULT 0.5,
+  experience_id UUID,  -- v012a 추가: 파동↔대화 추적
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX idx_activations_recent ON neuron_activations(created_at DESC);
+
+-- v010d: 자동 매핑 트리거
+CREATE OR REPLACE FUNCTION auto_map_concept_to_region()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO concept_brain_mapping (concept_id, brain_region_id)
+  SELECT NEW.id, br.id FROM brain_regions br
+  WHERE br.name = CASE
+    WHEN NEW.category IN ('emotion', '감정') THEN 'amygdala'
+    WHEN NEW.category IN ('visual', '시각') THEN 'occipital'
+    WHEN NEW.category IN ('language', '언어', 'identity', '정체성') THEN 'temporal'
+    WHEN NEW.category IN ('spatial', '공간') THEN 'parietal'
+    WHEN NEW.category IN ('action', '행동', 'motor') THEN 'motor_cortex'
+    WHEN NEW.category IN ('procedural', '절차') THEN 'cerebellum'
+    ELSE 'prefrontal'
+  END
+  ON CONFLICT DO NOTHING;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**상태**: ✅ 완료
+**실행일**: 2026-02-07
+
+---
+
+### v011: Phase C1 - Spreading Activation 인덱스/RPC
+
+```sql
+-- v011a: brain_region_id 인덱스
+CREATE INDEX idx_activations_region ON neuron_activations(brain_region_id);
+
+-- v011b: trigger_type + created_at 복합 인덱스
+CREATE INDEX idx_activations_trigger ON neuron_activations(trigger_type, created_at DESC);
+
+-- v011c: get_brain_activation_summary RPC
+CREATE OR REPLACE FUNCTION get_brain_activation_summary(p_experience_id UUID)
+RETURNS TABLE (region_name TEXT, activation_count BIGINT, avg_intensity FLOAT)
+AS $$ ... $$;
+```
+
+**상태**: ✅ 완료
+**실행일**: 2026-02-09
+
+---
+
+### v012: experience_id 추적
+
+```sql
+-- v012a: neuron_activations에 experience_id 추가
+ALTER TABLE neuron_activations ADD COLUMN experience_id UUID;
+```
+
+**상태**: ✅ 완료
+**실행일**: 2026-02-10
+
+---
+
 ## 핵심 기능
 
 ### 1. 기억 강화/약화 (Memory Consolidation)
@@ -709,12 +817,9 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 ## 다음 단계
 
-1. **Python 연동** (다음 세션 권장):
-   - `supabase-py` 설치 및 클라이언트 설정
-   - `neural/baby/memory.py` 수정하여 Supabase 연동
-   - 기존 `.baby_memory/` JSON 데이터 마이그레이션
-2. **임베딩 생성**: OpenAI text-embedding-3-small로 경험 벡터화
-3. **프론트엔드**: Realtime 구독으로 감정/발달 상태 실시간 시각화
+1. **Phase C2: 헵 학습** - 함께 활성화된 뉴런 간 시냅스 자동 강화
+2. **Phase C3: 기억 재생** - 주기적 최근 경험 뉴런 재활성화
+3. **논문용 수식 정합성** - F2 spreading activation 수식과 코드(BFS) 일치시키기
 4. **스케일링**: 데이터 증가 시 IVFFlat → HNSW 인덱스 전환
 
 ---

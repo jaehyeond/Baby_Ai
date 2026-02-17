@@ -1,0 +1,363 @@
+================================================================================
+ICDL 2025 PAPER SEARCH - COMPREHENSIVE CHECKLIST
+================================================================================
+
+OBJECTIVE: Find ALL ICDL 2025 papers that overlap with BabyBrain's:
+  - Emotion-modulated learning
+  - Intrinsic motivation/curiosity
+  - 3-type memory systems
+  - Memory consolidation/sleep
+  - Stage-gated development
+  - Spreading activation
+  - Hebbian/synaptic plasticity
+  - Affective computing
+  - Developmental learning frameworks
+
+================================================================================
+SECTION 1: AUTOMATED SEARCHES (Start here)
+================================================================================
+
+SEARCH ENGINE #1: IEEE Xplore
+URL: https://ieeexplore.ieee.org/
+[ ] Navigate to search bar
+[ ] Search: "ICDL 2025"
+[ ] Filter: Conference Publications ONLY
+[ ] Filter: Year = 2025
+[ ] Save results (screenshot or PDF)
+[ ] Scan titles for emotion/memory/development keywords
+[ ] Download abstracts for promising papers
+[ ] Record DOI/links for each paper found
+
+SEARCH ENGINE #2: DBLP Computer Science Bibliography
+URL: https://dblp.org/
+[ ] Search: "ICDL 2025"
+[ ] Record all papers with titles + authors
+[ ] Note: DBLP is authoritative for CS conferences
+[ ] Look for papers by known researchers (see author list below)
+[ ] Check for links to PDFs
+
+SEARCH ENGINE #3: Google Scholar
+URL: https://scholar.google.com/
+[ ] Search 1: "ICDL 2025" (general search)
+[ ] Search 2: "ICDL 2025 emotion learning"
+[ ] Search 3: "ICDL 2025 intrinsic motivation"
+[ ] Search 4: "ICDL 2025 memory consolidation"
+[ ] Search 5: "ICDL 2025 memory episodic semantic"
+[ ] Search 6: "ICDL 2025 developmental learning"
+[ ] Search 7: "ICDL 2025 LLM development"
+[ ] Search 8: "ICDL 2025 large language model"
+[ ] Search 9: "ICDL 2025 Hebbian plasticity"
+[ ] Search 10: "ICDL 2025 curiosity development"
+[ ] Filter results by 2025 only
+[ ] Sort by relevance
+[ ] Record top 30 results
+
+SEARCH ENGINE #4: arXiv
+URL: https://arxiv.org/
+[ ] Search: "ICDL 2025 emotion"
+[ ] Search: "ICDL 2025 development learning"
+[ ] Search: "ICDL 2025 memory"
+[ ] Note: Authors may post preprints before/after conference
+[ ] Download preprints if available
+[ ] Check submission dates (look for ~2024 submissions = ICDL 2025 papers)
+
+================================================================================
+SECTION 2: AUTHOR-BASED SEARCHES (Target known researchers)
+================================================================================
+
+For EACH author below, perform searches on:
+  1. Google Scholar: "[Author Name]" 2025
+  2. dblp.org: search author profile
+  3. ResearchGate: search author + 2025
+  4. IEEE Xplore: search author 2025
+
+ICDL CORE RESEARCHERS (Priority 1 - Very High Likelihood):
+
+[ ] Oudeyer, Pierre-Yves (Inria Bordeaux)
+    Topic focus: intrinsic motivation, learning progress, language+goals
+    Search: "Oudeyer" 2025 + "Oudeyer" emotion + "Oudeyer" motivation
+
+[ ] Colas, Clément (Inria Bordeaux / Google)
+    Topic focus: language-conditioned IM, LLM for goal generation
+    Search: "Colas" 2025 + "Colas" language motivation
+
+[ ] Dominey, Peter (LIRMM Montpellier)
+    Topic focus: episodic memory, semantic learning, narrative
+    Search: "Dominey" 2025 + "Dominey" memory episodic
+
+[ ] Pointeau, Grégory (LIRMM Montpellier)
+    Topic focus: autobiographical memory, narrative development
+    Search: "Pointeau" 2025 + "Pointeau" memory narrative
+
+[ ] Asada, Minoru (Osaka University / RIKEN)
+    Topic focus: cognitive development, emotion, pain
+    Search: "Asada" 2025 + "Asada" emotion development
+
+[ ] Tani, Jun (Okinawa Institute of Science & Technology)
+    Topic focus: predictive coding, complexity, development
+    Search: "Tani" 2025 + "Tani" predictive development
+
+[ ] Triesch, Jochen (University of Frankfurt)
+    Topic focus: Hebbian learning, STDP, visual development
+    Search: "Triesch" 2025 + "Triesch" STDP plasticity
+
+[ ] Cangelosi, Angelo (University of Manchester)
+    Topic focus: language acquisition, embodied learning, robots
+    Search: "Cangelosi" 2025 + "Cangelosi" development language
+
+[ ] Schillaci, Giulia (University of Tübingen)
+    Topic focus: intrinsic motivation, predictive models
+    Search: "Schillaci" 2025 + "Schillaci" motivation learning
+
+[ ] Boucenna, Sofiane (ETIS Cergy)
+    Topic focus: social emotion, robot development
+    Search: "Boucenna" 2025 + "Boucenna" emotion robot
+
+SECONDARY RESEARCHERS (Priority 2 - Medium Likelihood):
+
+[ ] Lones, Michael (Edinburgh)
+    Topic: emotion-modulated agents
+    Search: "Lones" 2025 emotion
+
+[ ] van de Ven, Gido (various institutions)
+    Topic: memory replay, continual learning
+    Search: "van de Ven" 2025 memory
+
+[ ] Doncieux, Stéphane (ISIR Paris)
+    Topic: open-ended learning, developmental robotics
+    Search: "Doncieux" 2025 development
+
+[ ] Hafez, Karim (Sorbonne University)
+    Topic: social robots, emotional interaction
+    Search: "Hafez" 2025 emotion
+
+================================================================================
+SECTION 3: KEYWORD-BASED SEARCHES (Catch anything missed)
+================================================================================
+
+For each keyword/phrase below, search on Google Scholar, IEEE Xplore, and arXiv:
+
+EMOTION + LEARNING:
+[ ] "emotion modulated learning" 2025
+[ ] "emotional modulation" learning 2025
+[ ] "affective learning" development 2025
+[ ] "emotion reinforcement learning" 2025
+[ ] "emotion affects learning" 2025
+
+MEMORY + DEVELOPMENT:
+[ ] "memory consolidation" learning 2025
+[ ] "episodic memory" development 2025
+[ ] "semantic memory" learning 2025
+[ ] "sleep memory" consolidation 2025
+[ ] "memory replay" learning 2025
+
+CURIOSITY + DEVELOPMENT:
+[ ] "curiosity driven learning" development 2025
+[ ] "intrinsic motivation" ICDL 2025
+[ ] "learning progress" curiosity 2025
+[ ] "exploration exploitation" emotion 2025
+
+LLM + DEVELOPMENT:
+[ ] "large language model" developmental 2025
+[ ] "LLM" "developmental learning" 2025
+[ ] "language model" "cognitive development" 2025
+[ ] "LLM" stage learning 2025
+
+COGNITIVE ARCHITECTURE:
+[ ] "cognitive architecture" development 2025
+[ ] "spreading activation" learning 2025
+[ ] "concept network" development 2025
+[ ] "semantic network" learning 2025
+
+PLASTICITY + DEVELOPMENT:
+[ ] "synaptic plasticity" development 2025
+[ ] "Hebbian learning" development 2025
+[ ] "STDP" development 2025
+[ ] "learning rules" plasticity 2025
+
+================================================================================
+SECTION 4: CONFERENCE WEBSITE & OFFICIAL SOURCES
+================================================================================
+
+[ ] Visit official ICDL 2025 website
+    - Search: "ICDL 2025" + conference website
+    - Look for: program, proceedings, accepted papers list
+    - Download: program PDF if available
+    - Note: full names, abstracts, session info
+
+[ ] Check IEEE (host organization)
+    - URL: https://www.ieee.org/
+    - Search: ICDL 2025 conference papers
+
+[ ] Check ACM Digital Library (if ICDL was co-hosted)
+    - URL: https://dl.acm.org/
+    - Search: ICDL 2025
+
+[ ] Check conference social media
+    - Twitter/X: search #ICDL2025
+    - LinkedIn: ICDL 2025 posts from participants
+    - ResearchGate: ICDL 2025 group discussions
+
+================================================================================
+SECTION 5: REFERENCE MINING (Follow the citations)
+================================================================================
+
+Once you find your first 5-10 papers:
+
+[ ] For each paper found:
+    [ ] Read the "Related Work" section
+    [ ] Note any papers cited that overlap with your interests
+    [ ] Record papers that are from ICDL 2024-2025 (may indicate ICDL 2025 relevance)
+    [ ] Search for papers by co-authors
+
+[ ] Look for "See Also" / "Related Work" sections
+[ ] Check if papers cite each other (creates networks of related work)
+
+================================================================================
+SECTION 6: VERIFICATION & QUALITY CHECK
+================================================================================
+
+For EACH paper you find, verify:
+
+[ ] Title is EXACT (not paraphrased)
+[ ] Authors are correct and in correct order
+[ ] DOI/link works and links to correct paper
+[ ] Abstract matches the title (no accidental duplicates)
+[ ] Conference year is confirmed as 2025
+[ ] Content actually relates to emotion/memory/learning (not just keywords)
+
+RED FLAGS (discard if found):
+[ ] Title or authors don't match abstract content
+[ ] Same paper listed twice under different names
+[ ] Paper is from 2024 conference (not 2025)
+[ ] Paper is from non-ICDL conference (unless you're doing broader search)
+[ ] Abstract is auto-generated nonsense (happens with OCR errors)
+
+================================================================================
+SECTION 7: DOCUMENTATION
+================================================================================
+
+As you find papers, record each in: ICDL_2025_PAPER_TRACKER.md
+
+For each paper record:
+[ ] Title (exact)
+[ ] Authors (all, in order)
+[ ] Abstract (copy-paste verbatim)
+[ ] DOI/IEEE Xplore link
+[ ] Conference session/track (if available)
+[ ] Key contribution (your summary)
+[ ] Technical mechanism (your summary)
+[ ] Overlap areas with BabyBrain (check boxes)
+[ ] Their strengths vs BabyBrain
+[ ] BabyBrain's strengths vs theirs
+[ ] Threat level (1-5/5)
+[ ] Must cite? (YES/SHOULD/OPTIONAL)
+[ ] Draft citation sentence
+
+================================================================================
+SECTION 8: ANALYSIS & SYNTHESIS
+================================================================================
+
+After collecting all papers:
+
+[ ] Create summary table: All papers found with threat levels
+[ ] Count papers by threat level:
+    - 5/5 = _____ papers (likely reject if not differentiated)
+    - 4/5 = _____ papers (major threats, must differentiate)
+    - 3/5 = _____ papers (significant overlap, must cite)
+    - 2/5 = _____ papers (moderate overlap, should cite)
+    - 1/5 = _____ papers (minimal overlap, optional cite)
+
+[ ] Identify "clusters" of related papers
+[ ] Note any research communities/groups that appear multiple times
+[ ] Identify gaps (areas you thought might be covered but aren't)
+[ ] Identify surprising papers (topics you didn't expect)
+
+[ ] Draft "Related Work" sections:
+    - Group papers by topic (Intrinsic Motivation, Memory, Emotion, etc.)
+    - Write 2-3 sentence summary of each topic area
+    - Explain how BabyBrain differs from/builds on this work
+
+================================================================================
+SECTION 9: COMPLETION CRITERIA
+================================================================================
+
+You are DONE when:
+
+[ ] Searched IEEE Xplore ICDL 2025 proceedings (at least 30 minutes)
+[ ] Searched DBLP for ICDL 2025 (found all papers listed)
+[ ] Searched Google Scholar using all 10 keyword queries
+[ ] Searched for papers by all 10+ ICDL core researchers
+[ ] Checked arXiv for ICDL 2025 papers
+[ ] Checked official ICDL website
+[ ] Done reference mining (5+ iterations)
+[ ] Recorded 15+ papers with threat level >= 2/5
+[ ] Recorded 5+ papers with threat level >= 3/5
+[ ] Created summary analysis table
+[ ] Drafted "Related Work" section outline
+[ ] Identified any papers threatening novelty (3+/5)
+[ ] Have clear differentiation strategy for each 3+/5 threat
+[ ] Verified all papers are actually ICDL 2025 (not 2024 or 2026)
+
+================================================================================
+SECTION 10: TIME ESTIMATES
+================================================================================
+
+Activity                          Time Estimate    Your Time
+-----------------------------     ----------------  --------
+IEEE Xplore search                30-45 min
+DBLP search                       15-20 min
+Google Scholar searches (10)      45-60 min
+Author searches (10+ researchers) 60-90 min
+arXiv search                      15-20 min
+Conference website                10-15 min
+Reference mining (5 iterations)   30-60 min
+Recording in tracker              45-90 min
+Analysis & synthesis              30-45 min
+                                  --------
+TOTAL ESTIMATED TIME              4.5-7 hours
+
+Recommendation: Budget 1 full work day (8 hours) to be thorough.
+
+================================================================================
+SECTION 11: CONTINGENCY PLANS
+================================================================================
+
+IF you cannot find ICDL 2025 proceedings:
+  [ ] Check if papers were published to arXiv instead
+  [ ] Check researchgate.net for papers by key authors
+  [ ] Email authors directly asking if they presented at ICDL 2025
+  [ ] Check ICDL-EpiRob combined proceedings (they merged conferences)
+  [ ] Broaden search to ICDL 2024 and adjacent 2025 conferences (AAMAS, CoRL)
+
+IF you find conflicting information (same paper with different titles):
+  [ ] Check DOI to verify it's the same paper
+  [ ] Use DOI as source of truth
+  [ ] Note which source had incorrect info
+
+IF you find a paper that PERFECTLY matches BabyBrain's novelty claims:
+  [ ] STOP and inform team immediately
+  [ ] Download full paper and read carefully
+  [ ] Assess whether claims are identical or different
+  [ ] Decide if submission is still viable
+  [ ] Adjust novelty claims if needed
+
+================================================================================
+FINAL CHECKLIST - BEFORE YOU FINISH
+================================================================================
+
+[ ] All papers recorded in ICDL_2025_PAPER_TRACKER.md
+[ ] All DOIs verified (links work)
+[ ] All threat levels assigned (1-5/5)
+[ ] At least 3 papers identified as "MUST CITE"
+[ ] You have clear differentiation strategy for top threats
+[ ] You understand the ICDL 2025 research landscape
+[ ] You could write Related Work section today if needed
+[ ] You identified any novel competitor (threat 4-5/5)
+[ ] You can explain why BabyBrain is still novel despite competition
+
+================================================================================
+COMPLETED: [ ] Date: __________
+Reviewer:  [ ] Name: __________
+
+================================================================================

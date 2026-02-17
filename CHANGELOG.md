@@ -5,6 +5,44 @@
 
 ---
 
+## 2026-02-10
+
+### conversation-process v23 배포 ✅
+- [x] `maybeImagine()` 400 에러 수정 (jsonb[]/uuid[] 타입 불일치)
+  - thoughts: string[] → {type, content, timestamp, connections}[] (jsonb[])
+  - connections_discovered: string[] → {content, discovered_at}[] (jsonb[])
+  - predictions_made: string[] → [] (uuid[]이므로 텍스트 예측 제외)
+- [x] ThoughtProcess 패널 데이터 강화
+  - RPC `get_brain_activation_summary()`에 concept_name, concept_category, region_name JOIN 추가
+  - Realtime 구독에서 concept/region 조회 추가
+  - ThoughtStep 인터페이스: conceptName, conceptCategory, regionName, triggerType, intensity
+- [x] `RealisticBrain.tsx` + `brain/page.tsx` ThoughtProcessPanel 구현
+  - "파동의 원인" (대화 컨텍스트) + "생각 경로" (direct) + "연상 확산" (spreading) 3섹션
+  - 영역별 그룹화 + 접기/펼치기
+
+### SCI 논문 Deep Review ✅
+- [x] 6개 병렬 에이전트 실행: ICDL 학회, ISMAR 학회, 수식 검증, Gap 분석, LLM 방어, Ablation 비판
+- [x] PAPER_PLAN.md에 Section 9 (검토 결과) 추가
+- [x] 핵심 발견:
+  - ISMAR 부적합 (AR/MR 필수) → IEEE VIS 2026 대안
+  - 수식 F2 CRITICAL (코드 BFS ≠ 논문 recurrence)
+  - Emotion downstream 미적용, Spreading 피드백 없음
+  - C_raw 베이스라인 필수
+  - 추천: arXiv → VIS 2026 → ICDL 2027
+- [x] 경쟁 논문 확인: Vygotskian Autotelic AI (Colas, Nature MI 2022), CoALA, Voyager, Reflexion
+
+### 문서 정비 ✅
+- [x] PAPER_PLAN.md: Section 9 추가 (6-Agent Review 결과)
+- [x] MEMORY.md: 논문 검토 결과, v23 상태 반영
+- [x] Task.md: v23 버전, 논문 준비 상태 섹션 추가
+- [x] CHANGELOG.md: 2026-02-10 기록
+- [x] CLAUDE.md: brain-researcher agent, DB 통계 최신화
+- [x] SQL_task.md: Phase B/C1 마이그레이션 기록
+- [x] ROADMAP.md: Phase C1 완료 + v23 반영
+- [x] PROJECT_VISION.md: Phase C1 완료 반영
+
+---
+
 ## 2026-02-09
 
 ### Phase C1: 활성화 전파 (Spreading Activation) ✅
