@@ -71,3 +71,6 @@ next-env.d.ts
 
 # Vercel
 .vercel
+
+# Ablation logs (results are in docs/figures/table2_primary_results.csv)
+scripts/ablation_logs/*.log

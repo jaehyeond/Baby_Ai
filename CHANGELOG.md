@@ -5,6 +5,70 @@
 
 ---
 
+## 2026-02-23
+
+### v30 기억 회상 라이브 테스트 + 전체 진단 ✅
+- [x] **v30 테스트 결과**: 기억 회상 파이프라인 작동 확인
+  - "날짜에 대해 공부 했어?" → concepts_recalled: 10, experiences_recalled: 5
+  - v28 대비: "비비는 잘 몰라요!" → "날짜 박사가 될 거라서 잘 알고 있어요!" (확실한 개선)
+  - DB description 직접 인용: "특정한 시점을 가리키는 단위"
+  - 이전 대화 참조: "전에 형이랑도 이야기했잖아요!"
+- [x] **한계 발견**: 10개 concept 중 2-3개만 피상적 활용 → 프롬프트 강화 필요
+
+### 발견된 버그 3건
+1. **useBrainRegions.ts stage 5 미정의** — STAGE_PARAMS에 5 없음 → fallback으로 BABY 표시 (DB는 stage=5)
+2. **stage 번호 체계 불일치** — BabyStateCard(1-based) vs useBrainRegions(0-based)
+3. **발달 단계 전이 미구현** — `_check_stage_advance()`는 Python에만 존재, EF에서 stage 올리는 로직 없음
+   - "정의만 되고 호출 안 됨" 패턴 5번째 발견!
+
+### DB 현재 통계 (2026-02-23)
+| 테이블 | 수량 |
+|--------|------|
+| semantic_concepts | 488 (prod) |
+| concept_relations | 616 |
+| experiences | 965 |
+| baby_state | stage=5, exp=2175 |
+
+---
+
+## 2026-02-20
+
+### conversation-process v29/v30 배포 ✅
+- [x] **v29**: Memory Recall Pipeline 구현
+  - `extractKeywords()` — 한국어 조사 제거 + 불용어 필터링
+  - `loadRelevantConcepts()` — ILIKE 기반 concept 검색
+  - `loadRelevantExperiences()` — 과거 대화 경험 검색
+  - `formatMemoryContext()` — 프롬프트에 기억 컨텍스트 주입
+- [x] **v30 (v29b)**: 프롬프트 강화
+  - `[필수 규칙]` 섹션 추가 — "모르겠어요/기억 안 나요/까먹었어요" 금지
+  - `[기억 강도: X%]` 표시 추가
+  - extras에 `concepts_recalled`, `experiences_recalled` 저장
+  - 디버그 로그: keyword 추출, recall 결과 로깅
+
+---
+
+## 2026-02-18
+
+### conversation-process v27 배포 ✅ (CRITICAL BUG FIX)
+- [x] **Concept isolation bug 수정**: ablation runs 간 개념 오염 방지
+  - 원인: `extractAndSaveConcepts()`이 concept 이름으로 글로벌 검색 → 프로덕션/다른 run의 concept 재사용
+  - 결과: rep=1은 86 concepts, rep=2-5는 16-22 concepts (프로덕션 452개와 name 충돌)
+  - 수정: concept/relation lookup에 `.eq("ablation_run_id", ablationRunId)` 스코핑 추가
+  - `.single()` → `.maybeSingle()` (no-match 시 graceful handling)
+- [x] 기존 ablation 데이터 전량 삭제 (5 runs + 모든 FK 참조)
+- [x] Dry-run 검증 통과 (concept 격리 확인)
+- [x] 20-run ablation 재실행 시작 (background task)
+
+### ICDL 2026 논문 진행 ✅
+- [x] §9.2 수식 정렬 갱신 (F7 이전 분석 오류 수정 - 실제로 이미 일치!)
+- [x] §16 Wordbank CDI 비교 분석 추가
+  - Fenson (2007), McMurray (2007), Day et al. (2025) 참고
+  - BabyBrain vs CDI norms 정규화 비교 프레임워크
+- [x] PARAMETER_TAXONOMY.md 생성 (3-Tier 파라미터 분류)
+- [x] F4 emotion downstream 구현 (v24→v25→v26→v27)
+
+---
+
 ## 2026-02-10
 
 ### conversation-process v23 배포 ✅

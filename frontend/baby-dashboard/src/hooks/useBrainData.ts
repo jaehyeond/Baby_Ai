@@ -31,7 +31,7 @@ interface RawConceptRelation {
 }
 
 // Category colors for neurons (Temperature-based: frozen=cold, active=warm)
-const CATEGORY_COLORS: Record<string, string> = {
+export const CATEGORY_COLORS: Record<string, string> = {
   // Frozen knowledge - cold gray/blue (LLM already knows)
   frozen_knowledge: '#64748b',  // slate-500
 
@@ -190,6 +190,12 @@ function createAstrocytes(
   const astrocytes: Astrocyte[] = []
   const neuronToAstrocyte: Record<string, string> = {}
 
+  // First pass: count actual multi-member clusters for correct fibonacci total
+  let actualClusterCount = 0
+  for (const [, memberIds] of clusterMembers) {
+    if (memberIds.length >= 2) actualClusterCount++
+  }
+
   let astrocyteIndex = 0
 
   for (const [clusterId, memberIds] of clusterMembers) {
@@ -226,16 +232,16 @@ function createAstrocytes(
     })
     const avgStrength = synapseCount > 0 ? totalStrength / synapseCount : 0.5
 
-    // Create astrocyte
+    // Create astrocyte — use actualClusterCount (not clusterMembers.size) for uniform sphere distribution
     const astrocyteId = `astrocyte-${astrocyteIndex}`
     const astrocyte: Astrocyte = {
       id: astrocyteId,
       name: `${dominantCategory} 클러스터`,
       color: CATEGORY_COLORS[dominantCategory] || CATEGORY_COLORS.default,
-      position: fibonacciSphere(astrocyteIndex, clusterMembers.size, 6),
+      position: fibonacciSphere(astrocyteIndex, actualClusterCount, 6),
       neuronIds: memberIds,
       strength: avgStrength,
-      size: Math.min(0.5 + members.length * 0.1, 2), // Size based on member count
+      size: Math.min(0.5 + members.length * 0.1, 2),
     }
 
     astrocytes.push(astrocyte)
@@ -264,6 +270,9 @@ function positionNeuronsWithAstrocytes(
   // Neurons without astrocyte get placed in center
   const orphanNeurons: NeuronNode[] = []
 
+  // Global sphere radius for astrocytes
+  const GLOBAL_RADIUS = 6
+
   neurons.forEach(neuron => {
     const astrocyteId = neuronToAstrocyte[neuron.id]
     const astrocyte = astrocyteId ? astrocyteMap.get(astrocyteId) : null
@@ -271,7 +280,8 @@ function positionNeuronsWithAstrocytes(
     if (astrocyte) {
       // Find position within cluster
       const memberIndex = astrocyte.neuronIds.indexOf(neuron.id)
-      const localRadius = 1 + astrocyte.neuronIds.length * 0.05 // Radius scales with cluster size
+      // Cap local radius so neurons don't exceed global sphere boundary
+      const localRadius = Math.min(1 + astrocyte.neuronIds.length * 0.03, 2.5)
       const localPos = fibonacciSphere(memberIndex, astrocyte.neuronIds.length, localRadius)
 
       // Position around astrocyte center
@@ -285,9 +295,9 @@ function positionNeuronsWithAstrocytes(
     }
   })
 
-  // Position orphan neurons at center
+  // Position orphan neurons on the OUTER sphere (same radius as clusters, not center)
   orphanNeurons.forEach((neuron, index) => {
-    neuron.position = fibonacciSphere(index, orphanNeurons.length, 2)
+    neuron.position = fibonacciSphere(index, orphanNeurons.length, GLOBAL_RADIUS * 0.8)
   })
 }
 
@@ -307,6 +317,7 @@ export function useBrainData() {
       const { data: concepts, error: conceptsError } = await (supabase as any)
         .from('semantic_concepts')
         .select('id, name, category, strength, usage_count')
+        .is('ablation_run_id', null)
         .order('usage_count', { ascending: false })
         .limit(500) as { data: RawConcept[] | null; error: Error | null }
 
@@ -317,6 +328,7 @@ export function useBrainData() {
       const { data: conceptRelations, error: crError } = await (supabase as any)
         .from('concept_relations')
         .select('id, from_concept_id, to_concept_id, relation_type, strength, evidence_count')
+        .is('ablation_run_id', null)
         .order('evidence_count', { ascending: false })
         .limit(500) as { data: RawConceptRelation[] | null; error: Error | null }
 

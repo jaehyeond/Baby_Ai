@@ -1,6 +1,6 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-10
+**최종 업데이트**: 2026-02-23
 
 ---
 
@@ -28,13 +28,13 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-10)
+## 📊 현재 시스템 상태 (2026-02-23)
 
 ### Edge Functions (13개 - 모두 ACTIVE)
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
-| `conversation-process` | **v23** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + spreading activation + **maybeImagine** + ThoughtProcess) | ✅ 정상 |
+| `conversation-process` | **v30** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + spreading + maybeImagine + ablation isolation + **Memory Recall Pipeline** + LC-NE modulator) | ✅ 정상 |
 | `vision-process` | **v4** | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
 | `world-understanding` | v2 | ❌ | 물리 세계 이해 | ✅ 정상 |
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
@@ -68,9 +68,9 @@
 
 | 테이블 | 레코드 수 | 용도 |
 |--------|----------|------|
-| `semantic_concepts` | 452+ | 개념/지식 (뉴런) |
-| `concept_relations` | 519+ | 개념 간 관계 (시냅스) |
-| `experiences` | 583+ | 경험 기억 (해마) |
+| `semantic_concepts` | 488 | 개념/지식 (뉴런) |
+| `concept_relations` | 616 | 개념 간 관계 (시냅스) |
+| `experiences` | 965 | 경험 기억 (해마) |
 | `emotion_logs` | 211+ | 감정 기록 (편도체) |
 | `brain_regions` | 9 | ✅ 뇌 영역 (Phase B) |
 | `concept_brain_mapping` | 452 | ✅ 개념→영역 매핑 (Phase B) |
@@ -171,16 +171,21 @@
 
 ### 1. 대화 흐름 ✅
 ```
-사용자 입력 → /api/conversation → conversation-process (v23)
+사용자 입력 → /api/conversation → conversation-process (v30)
                                       ↓
-                              [Gemini LLM 호출]
+                              [키워드 추출 - extractKeywords()]
+                              [기억 회상 - loadRelevantConcepts() + loadRelevantExperiences()]
                               [정체성 개념 조회 - semantic_concepts]
                               [대화 컨텍스트 - audio_conversations]
                                       ↓
-                              응답 + 감정 + 개념 추출
+                              [Gemini LLM 호출 (기억 + 정체성 + 컨텍스트 주입)]
+                              [LC-NE 감정 조절 - computeEmotionalModulator()]
                                       ↓
-                              experiences, emotion_logs,
-                              semantic_concepts 저장
+                              응답 + 감정 + 개념 추출 + 기억 recall 통계
+                                      ↓
+                              experiences (extras: recall stats),
+                              emotion_logs, semantic_concepts,
+                              neuron_activations, spreading 저장
 ```
 
 ### 2. 비전 흐름 ✅
@@ -292,7 +297,7 @@
 
 ---
 
-## ⚠️ Known Issues (2026-02-03)
+## ⚠️ Known Issues (2026-02-23)
 
 ### 1. ~~self_evaluation_logs 비어있음~~ ✅ 해결됨 (2026-02-06)
 - **상태**: ~~0개 레코드~~ → 자동 생성 중
@@ -305,9 +310,27 @@
 - **현재**: 모두 "learned" 상태로 정상
 
 ### 3. visual_experiences 적음
-- **상태**: 8개 레코드
+- **상태**: 13개 레코드
 - **원인**: 카메라 기능 사용 빈도 낮음
 - **우선순위**: 낮음
+
+### 4. useBrainRegions.ts stage 5+ 미정의 (BUG)
+- **증상**: DB stage=5인데 뇌 시각화에서 "BABY" 표시
+- **원인**: `STAGE_PARAMS`에 0-4만 정의, 5 이상은 fallback → STAGE_PARAMS[2] (BABY)
+- **추가**: BabyStateCard(1-based) vs useBrainRegions(0-based) 번호 체계 불일치
+- **우선순위**: 높음 (즉시 수정 가능)
+
+### 5. 발달 단계 자동 전이 미구현 (ARCHITECTURE GAP)
+- **증상**: 대화를 아무리 해도 stage가 자동으로 올라가지 않음
+- **원인**: `_check_stage_advance()`는 Python `development.py`에만 존재, Edge Function에 없음
+- **현재**: DB stage=5는 이전 수동 설정 추정
+- **패턴**: "정의만 되고 호출 안 됨" 5번째 사례
+- **우선순위**: 중간 (논문에서는 stage가 중요한 메커니즘)
+
+### 6. 기억 회상 깊이 부족 (v30)
+- **증상**: 10개 concept이 recall되지만 Gemini가 2-3개만 피상적 사용
+- **원인**: (a) concept description이 1줄짜리 (b) "1-3문장" 제약 (c) 현재 날짜 미제공
+- **우선순위**: 중간 (프롬프트 강화로 개선 가능)
 
 ---
 

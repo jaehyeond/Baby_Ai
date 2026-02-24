@@ -1,0 +1,5 @@
+Condition,n,Categories (median),Shannon H' (median),Pielou J (median),Top-3 Categories
+Full System,5,7,1.808,0.887,"ACTION, EMOTION, PROPERTY"
+No Stage Gates,5,6,1.540,0.855,"OTHER, ACTION, EMOTION"
+No Emotion,5,4,1.369,0.928,"OTHER, ACTION, PROPERTY"
+No Sleep,5,5,1.465,0.936,"OTHER, ACTION, PROPERTY"

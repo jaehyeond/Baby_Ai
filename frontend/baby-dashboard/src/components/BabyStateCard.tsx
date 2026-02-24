@@ -4,13 +4,16 @@ import { motion } from 'framer-motion'
 import { Brain, Sparkles, Trophy, TrendingUp } from 'lucide-react'
 import type { BabyState } from '@/lib/database.types'
 
-// 발달 단계 이름 매핑
+// 발달 단계 이름 매핑 (0-based, matches Python DevelopmentStage enum)
 const STAGE_NAMES: Record<number, { name: string; emoji: string; description: string }> = {
-  1: { name: 'NEWBORN', emoji: '👶', description: '세상을 처음 보는 단계' },
-  2: { name: 'INFANT', emoji: '💒', description: '기본 패턴을 인식하는 단계' },
+  0: { name: 'NEWBORN', emoji: '👶', description: '세상을 처음 보는 단계' },
+  1: { name: 'INFANT', emoji: '💒', description: '기본 패턴을 인식하는 단계' },
+  2: { name: 'BABY', emoji: '🧒', description: '모방하며 배우는 단계' },
   3: { name: 'TODDLER', emoji: '🚶', description: '스스로 탐험하는 단계' },
   4: { name: 'CHILD', emoji: '🧒', description: '복잡한 문제를 해결하는 단계' },
   5: { name: 'TEEN', emoji: '🧑', description: '추상적 사고를 하는 단계' },
+  6: { name: 'YOUNG ADULT', emoji: '🧑‍🎓', description: '성숙한 사고를 하는 단계' },
+  7: { name: 'MATURE', emoji: '🧠', description: '완성된 신경 네트워크' },
 }
 
 interface BabyStateCardProps {
@@ -29,7 +32,7 @@ export function BabyStateCard({ state, isLoading }: BabyStateCardProps) {
     )
   }
 
-  const stage = STAGE_NAMES[state.development_stage ?? 1] ?? STAGE_NAMES[1]
+  const stage = STAGE_NAMES[state.development_stage ?? 0] ?? STAGE_NAMES[0]
   const successRate = state.experience_count
     ? Math.round(((state.success_count ?? 0) / state.experience_count) * 100)
     : 0

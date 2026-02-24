@@ -1,0 +1,5 @@
+Condition,n,Median,IQR,Mean,SD,Cliff's δ,Effect,p-value
+Full System,5,22.0,17-22,31.6,32.0,-,-,-
+No Stage Gates,5,17.0,12-19,15.8,4.1,0.400,medium,0.344
+No Emotion,5,9.0,9-9,9.4,1.5,0.800,large,0.040
+No Sleep,5,8.0,7-9,7.6,1.7,0.920,large,0.020

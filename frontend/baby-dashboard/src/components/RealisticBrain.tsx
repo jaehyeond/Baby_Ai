@@ -657,14 +657,20 @@ export function RealisticBrain({
         </button>
       </div>
 
-      {/* Stage Info - repositioned above thought panel when active */}
-      <div className="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 border border-slate-700/50 z-10">
-        <p className="text-xs text-slate-400">
-          발달 단계: <span className="text-violet-400 font-medium">{stageParams.label}</span>
+      {/* Stage Info - top-right, always visible above wave panels */}
+      <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md rounded-xl px-4 py-2.5 border border-violet-500/40 z-20 shadow-lg shadow-violet-500/10">
+        <p className="text-sm font-semibold text-violet-300">
+          {stageParams.label}
+          <span className="ml-2 text-xs text-slate-400 font-normal">Stage {developmentStage}</span>
         </p>
-        <p className="text-[10px] text-slate-500">
-          뇌 크기 {Math.round(stageParams.scale * 100)}% · 시냅스 밀도 {Math.round(stageParams.synapseDensity * 100)}%
-        </p>
+        <div className="flex items-center gap-3 mt-1">
+          <p className="text-[11px] text-slate-400">
+            뇌 <span className="text-violet-400 font-medium">{Math.round(stageParams.scale * 100)}%</span>
+          </p>
+          <p className="text-[11px] text-slate-400">
+            시냅스 <span className="text-amber-400 font-medium">{Math.round(stageParams.synapseDensity * 100)}%</span>
+          </p>
+        </div>
       </div>
 
       {/* Replay indicator */}

@@ -9,15 +9,9 @@ import type { NeuronNode, Synapse, Astrocyte } from '@/lib/database.types'
 import type { DiscoveredConnection } from '@/hooks/useImaginationSessions'
 import { Brain, Loader2, RefreshCw, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
-// Category colors
-const CATEGORY_COLORS: Record<string, string> = {
-  algorithm: '#f43f5e',
-  function: '#a855f7',
-  class: '#14b8a6',
-  general: '#3b82f6',
-  test: '#22c55e',
-  default: '#6366f1',
-}
+// Category colors — imported from useBrainData for single source of truth
+// (used in legend display; actual neuron colors come from useBrainData.CATEGORY_COLORS)
+import { CATEGORY_COLORS } from '@/hooks/useBrainData'
 
 // Single neuron node component
 function Neuron({
@@ -399,8 +393,8 @@ function BrainScene({
         enableRotate={true}
         autoRotate={!selectedNeuron && !selectedAstrocyte}
         autoRotateSpeed={0.5}
-        minDistance={3}
-        maxDistance={40}
+        minDistance={1}
+        maxDistance={80}
       />
     </>
   )
@@ -411,10 +405,10 @@ function CameraController({ zoomIn, zoomOut, reset }: { zoomIn: boolean; zoomOut
   const { camera } = useThree()
 
   useFrame(() => {
-    if (zoomIn && camera.position.length() > 4) {
+    if (zoomIn && camera.position.length() > 1.5) {
       camera.position.multiplyScalar(0.98)
     }
-    if (zoomOut && camera.position.length() < 35) {
+    if (zoomOut && camera.position.length() < 70) {
       camera.position.multiplyScalar(1.02)
     }
     if (reset) {
@@ -470,16 +464,28 @@ function NeuronInfoPanel({
   )
 }
 
-// Legend component
-function Legend() {
+// Legend component — shows only categories present in data
+function Legend({ neurons }: { neurons?: NeuronNode[] }) {
+  const activeCategories = useMemo(() => {
+    if (!neurons) return []
+    const counts = new Map<string, number>()
+    neurons.forEach(n => {
+      counts.set(n.category, (counts.get(n.category) || 0) + 1)
+    })
+    // Sort by count descending, take top 10
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+  }, [neurons])
+
   return (
     <div className="absolute top-4 left-4 bg-slate-800/80 backdrop-blur rounded-lg p-3 text-xs">
       <p className="text-slate-400 mb-2 font-medium">카테고리</p>
       <div className="space-y-1.5">
-        {Object.entries(CATEGORY_COLORS).filter(([k]) => k !== 'default').map(([category, color]) => (
+        {activeCategories.map(([category, count]) => (
           <div key={category} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-            <span className="text-slate-300">{category}</span>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[category] || CATEGORY_COLORS.default }} />
+            <span className="text-slate-300">{category} <span className="text-slate-500">({count})</span></span>
           </div>
         ))}
       </div>
@@ -648,7 +654,7 @@ export function BrainVisualization({
       </div>
 
       {/* Legend */}
-      <Legend />
+      <Legend neurons={brainData?.neurons} />
 
       {/* 3D Canvas */}
       <div className={`w-full ${canvasHeight}`}>

@@ -5,14 +5,16 @@ import { motion } from 'framer-motion'
 import { Loader2, Trophy, Lock, Clock, Star, ChevronDown, ChevronUp } from 'lucide-react'
 import { useState } from 'react'
 
-// Stage names in Korean
+// Stage names (0-based, matches Python DevelopmentStage enum)
 const STAGE_NAMES: Record<number, string> = {
   0: 'NEWBORN',
   1: 'INFANT',
-  2: 'TODDLER',
-  3: 'CHILD',
-  4: 'ADOLESCENT',
-  5: 'ADULT',
+  2: 'BABY',
+  3: 'TODDLER',
+  4: 'CHILD',
+  5: 'TEEN',
+  6: 'YOUNG ADULT',
+  7: 'MATURE',
 }
 
 export function MilestoneTimeline() {
