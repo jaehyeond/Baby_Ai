@@ -163,18 +163,21 @@ Unity에서 공식 Supabase SDK (`supabase-csharp`)는 Quest 3S (Android/IL2CPP)
 
 ### 4.4 추가 구현 필요 (ISMAR용)
 
+> [!tip] 빠른 시작
+> Unity 공식 [MR Example (OpenXR)](https://github.com/Unity-Technologies/mr-example-meta-openxr) 프로젝트를 기반으로 시작하면 Step 1, 9, 10의 상당 부분을 절약할 수 있다.
+
 | Step | 작업 | 기술 | 예상 시간 |
 |------|------|------|----------|
-| 1 | Unity 프로젝트 생성 + URP + Meta XR SDK | Unity 2022.3 LTS | 2h |
-| 2 | `SupabaseRestClient` — 6개 테이블 REST 로드 | UnityWebRequest + PostgREST | 4h |
-| 3 | `BrainDataManager` — 피보나치 배치 + Louvain 클러스터링 포트 | C# 재구현 | 4h |
-| 4 | `NeuronRenderer` — GPU Instancing 500개 구체 | `Graphics.DrawMeshInstanced` | 3h |
+| 1 | Unity 프로젝트 생성 + URP + Meta OpenXR | Unity 6 LTS (6000.3.9f1+) | 2h |
+| 2 | `SupabaseClient` — 6개 테이블 REST 로드 | `supabase-csharp` + UniTask (또는 UnityWebRequest 직접) | 4h |
+| 3 | `BrainDataManager` — 피보나치 배치 + 클러스터링 포트 | C# 재구현 | 4h |
+| 4 | `NeuronRenderer` — SRP Batcher 활용 500개 구체 | URP SRP Batcher (동일 셰이더 배리언트) | 3h |
 | 5 | `ConnectionRenderer` — 프로시저럴 메시 시냅스 | 단일 Mesh, billboard quad | 3h |
 | 6 | `RegionRenderer` — 9개 투명 구체 + 히트맵 | URP Transparent | 2h |
-| 7 | `SupabaseRealtimeClient` — WebSocket + Phoenix 프로토콜 | NativeWebSocket | 6h |
+| 7 | `SupabaseRealtimeClient` — WebSocket 실시간 구독 | `supabase-csharp` Realtime + link.xml (IL2CPP 대응) | 6h |
 | 8 | 활성화 이펙트 — 발광, 감쇠(3s/5s), 리플 | Emissive + 타이머 | 4h |
-| 9 | VR/MR 인터랙션 — 레이캐스트 선택, 정보 패널 | Meta XR Interaction SDK | 4h |
-| 10 | MR 패스스루 + 공간 배치 | OVRPassthroughLayer | 3h |
+| 9 | VR/MR 인터랙션 — 레이캐스트 선택, 정보 패널 | XR Interaction Toolkit + XR Hands | 4h |
+| 10 | MR 패스스루 + 공간 배치 | OpenXR Meta Passthrough API | 3h |
 | **합계** | | | **~35h** |
 
 ### 4.5 클라이언트 측 재구현 항목
@@ -204,23 +207,45 @@ Unity에서 공식 Supabase SDK (`supabase-csharp`)는 Quest 3S (Android/IL2CPP)
 | Stereo Rendering | **Multiview** (single-pass, 양안 1회 렌더) |
 | 배포 | **APK 사이드로드** (USB 연결 5분, 앱스토어 불필요) |
 
-**필요 패키지:**
-- `com.meta.xr.sdk.core` — 필수
-- `com.meta.xr.sdk.interaction` — 컨트롤러/손 인터랙션
+**필요 패키지 (Unity 6 LTS + Meta XR SDK v74+):**
+- `com.unity.xr.openxr` — OpenXR Plugin (Unity 6 표준, 빌드 프로필 생성 시 자동 설치)
+- `com.unity.xr.meta-openxr` (v2.1.0+) — Meta Quest 전용 OpenXR 확장 (패스스루, Depth API, 손 추적)
+- `com.unity.xr.interaction.toolkit` — XR Interaction Toolkit (레이캐스트, 그랩)
+- `com.unity.xr.hands` — 손 추적 (25-joint skeleton)
 - `com.unity.nuget.newtonsoft-json` — Supabase JSON 파싱 (JsonUtility는 배열/중첩 객체 불가)
-- `com.endel.nativewebsocket` — 실시간 WebSocket (Android/IL2CPP 호환)
+- `supabase-csharp` (NuGet via NuGetForUnity) — Supabase REST + Realtime C# 클라이언트
+- `UniTask` (NuGet) — Unity async/await 지원 (supabase-csharp 필수 의존)
+
+> [!warning] IL2CPP + Supabase Realtime 주의
+> Android/IL2CPP 빌드에서 WebSocket AOT 컴파일 이슈 발생 가능.
+> 반드시 `Assets/link.xml`에 `System.Reactive`, `Websocket.Client` preserve 추가.
+> 문제 지속 시 `kamyker/supabase-unity` fork 사용 고려.
+
+> [!note] Unity 버전 선택 근거 (2026-02 검증)
+> - **Unity 6.3 LTS (6000.3.9f1)**: 2026-02-18 최신, LTS 2027-12까지 지원
+> - Meta 공식: "SDKs v74+ → Unity 6.1+ 권장, OpenXR Plugin 필수"
+> - 구 `com.meta.xr.sdk.core` (Oculus XR Plugin)은 v74+에서 새 기능 미지원 (deprecation)
+> - OpenXR Meta v2.1.0: Depth API + 패스스루 성능 패리티 달성 (Oculus XR Plugin과 동급)
+> - Unity 공식 MR Example: https://github.com/Unity-Technologies/mr-example-meta-openxr
 
 ### 4.7 렌더링 성능 예측
 
 | 요소 | 기법 | Draw Calls | 삼각형 |
 |------|------|-----------|--------|
-| 뉴런 500개 | GPU Instancing (아이코스피어 80-320 tris) | **1-2** | 40K-160K |
+| 뉴런 500개 | SRP Batcher (동일 URP/Lit 셰이더, MaterialPropertyBlock으로 색상 변경) | **1-5** | 40K-160K |
 | 시냅스 600개 | 단일 프로시저럴 메시 (billboard quad) | **1** | 1,200 |
 | 뇌 영역 9개 | URP 투명 구체 | **9** | ~7K |
 | UI/라벨 | TextMeshPro | 5-10 | minimal |
-| **총계** | | **~16-22** | **~170K** |
+| **총계** | | **~16-25** | **~170K** |
 
-Quest 3S 예산: ~200 draw calls, 1M 삼각형 (72Hz 기준). **예산의 10-15%만 사용. 72fps 여유.**
+Quest 3S 예산: **~100 draw calls 이하 권장** (Meta 공식), 750K-1M 삼각형 (72Hz 기준). **예산의 16-25%만 사용.**
+
+> [!important] SRP Batcher vs GPU Instancing (2026-02 검증)
+> - URP에서는 **SRP Batcher가 기본 활성화**되며 GPU Instancing보다 우선 적용됨
+> - GPU Instancing을 쓰려면 SRP Batcher를 꺼야 함 → 다른 오브젝트 성능 저하 가능
+> - **권장 전략**: SRP Batcher 유지 + 동일 셰이더 배리언트 사용 → 자동 배칭
+> - 뉴런 500개가 모두 같은 URP/Lit 셰이더 → SRP Batcher가 효율적으로 배칭
+> - 프로파일링 후 GPU Instancing이 더 빠르면 전환 (Quest에서 실측 필수)
 
 > [!important] 금지 사항
 > - `LineRenderer` 사용 금지 — 600개 = 600 draw calls
@@ -310,7 +335,7 @@ User Study의 3개 조건:
 | Abstract | RQ + BrainXR 시스템 + 평가 결과 요약 | 0.3p |
 | **1. Introduction** | AI XAI 필요성 → MR의 기회 → RQ 3개 → 기여 3개 | 1.0p |
 | **2. Related Work** | 2.1 뇌 시각화 (NeuroCave, SlicerVR, HoloAnatomy) / 2.2 AI 시각화 (TensorBoard, CNN Explainer — 2D) / 2.3 몰입 분석 (Dwyer, Kwon) / 2.4 인지 아키텍처 시각화 (ACT-R, SOAR — 원시적 2D) → **Gap 명시** | 1.5p |
-| **3. BrainXR System** | 3.1 인지 아키텍처 요약 (ICDL 논문 참조) / 3.2 뇌 영역 매핑 (9 regions, 구 좌표계) / 3.3 확산 활성화 시각화 (BFS + ripple) / 3.4 실시간 파이프라인 (Supabase → WebXR) / 3.5 MR 인터랙션 (패스스루, 손 추적, 공간 배치) | 2.0p |
+| **3. BrainXR System** | 3.1 인지 아키텍처 요약 (ICDL 논문 참조) / 3.2 뇌 영역 매핑 (9 regions, 구 좌표계) / 3.3 확산 활성화 시각화 (BFS + ripple) / 3.4 실시간 파이프라인 (Supabase → Unity OpenXR) / 3.5 MR 인터랙션 (패스스루, 손 추적, 공간 배치) | 2.0p |
 | **4. User Study** | 4.1 설계 (3-condition within-subjects) / 4.2 참여자 / 4.3 과제 (T1-T4) / 4.4 측정 도구 / 4.5 절차 | 1.0p |
 | **5. Results** | 5.1 과제 수행 (정확도, 시간) / 5.2 인지 부하 (NASA-TLX) / 5.3 사용성 (SUS) / 5.4 현존감 (IPQ) / 5.5 정성 분석 | 1.5p |
 | **6. Discussion** | MR의 효과 해석, 해부학적 메타포의 의의, 한계점 (iOS 미지원, N 크기, 학습 효과), 미래 작업 | 1.0p |
@@ -362,9 +387,9 @@ User Study의 3개 조건:
 
 | 일 | 작업 | 산출물 |
 |----|------|--------|
-| 목-금 | Unity 프로젝트 생성, URP + Meta XR SDK 설치, Quest 빌드 확인 | 빈 씬이 Quest에서 실행됨 |
-| 토-일 | `SupabaseRestClient` (6개 테이블 REST 로드) + `BrainDataManager` (피보나치+클러스터링 포트) | 데이터 로드 + 3D 좌표 계산 완료 |
-| 월 | `NeuronRenderer` (GPU Instancing) + `ConnectionRenderer` (프로시저럴 메시) | 500 뉴런 + 600 시냅스 렌더링 |
+| 목-금 | Unity 6 LTS (6000.3.9f1) + MR Example 기반 프로젝트, OpenXR Meta 설치, Quest 빌드 확인 | 빈 씬이 Quest에서 MR 패스스루로 실행됨 |
+| 토-일 | `supabase-csharp` + UniTask 설치, 6개 테이블 REST 로드 + `BrainDataManager` (피보나치+클러스터링 포트) | 데이터 로드 + 3D 좌표 계산 완료 |
+| 월 | `NeuronRenderer` (SRP Batcher) + `ConnectionRenderer` (프로시저럴 메시) | 500 뉴런 + 600 시냅스 렌더링 |
 | 화 | `RegionRenderer` (9개 투명 구) + 히트맵 색상 | 전체 뇌 시각화 Unity에서 동작 |
 | 수 | Quest 3S 빌드 + 성능 확인 (72fps 타겟) | Quest에서 정적 뇌 시각화 |
 
@@ -374,8 +399,8 @@ User Study의 3개 조건:
 
 | 일 | 작업 | 산출물 |
 |----|------|--------|
-| 목-금 | `SupabaseRealtimeClient` (NativeWebSocket + Phoenix) + 활성화 이펙트(발광, 감쇠) | 실시간 뉴런 발화가 3D에서 표현됨 |
-| 토-일 | MR 패스스루 (OVRPassthroughLayer) + 공간 배치 | 실제 테이블 위에 뇌 배치 |
+| 목-금 | `supabase-csharp` Realtime (link.xml 포함) + 활성화 이펙트(발광, 감쇠) | 실시간 뉴런 발화가 3D에서 표현됨 |
+| 토-일 | MR 패스스루 (OpenXR Meta Passthrough) + 공간 배치 | 실제 테이블 위에 뇌 배치 |
 | 월 | 레이캐스트 선택 + 정보 패널 (뉴런/영역 선택 시 이름, 카테고리, 강도 표시) | 인터랙션 동작 |
 | 화 | 데모 영상 촬영 (Quest 3S MR) + pilot test (2-3명) | 30초-3분 영상 |
 | 수 | 버그 수정 + User study 프로토콜/설문지 준비 | 안정화된 프로토타입 |
@@ -426,7 +451,7 @@ User Study의 3개 조건:
 | 기준 | 가중치 | 우리 논문 대응 |
 |------|--------|---------------|
 | **Novelty** | 높음 | 5개 갭 — 선행연구 0건 |
-| **Technical Contribution** | 높음 | WebXR 실시간 파이프라인 + MR 인터랙션 |
+| **Technical Contribution** | 높음 | Unity 6 + OpenXR 실시간 파이프라인 + MR 인터랙션 |
 | **AR/MR Relevance** | **결정적** | MR 패스스루 + 공간 배치 + user study |
 | **Evaluation** | 높음 | 3-condition within-subjects, N=16-24 |
 | **Significance** | 중간 | AI XAI + MR의 새로운 교차점 |
@@ -449,7 +474,7 @@ User Study의 3개 조건:
 
 ### BrainXR: Real-time Mixed Reality Visualization of Cognitive Processes in a Developmental AI System
 
-Understanding the internal cognitive processes of AI systems remains a fundamental challenge in explainable AI (XAI). Current visualization tools are predominantly two-dimensional and static, limiting users' ability to comprehend complex dynamics such as spreading activation, emotion-modulated learning, and developmental progression. We present BrainXR, a mixed reality system that enables real-time visualization of cognitive processes in a developmental AI architecture. BrainXR maps 486 artificial semantic concepts onto nine anatomically-inspired brain regions using spherical coordinates, and renders spreading activation waves, emotion-driven modulation, and developmental growth in three dimensions. The system is built on WebXR, allowing deployment on Meta Quest 3S (with color passthrough for mixed reality), Android smartphones (AR mode), and desktop browsers from a single codebase.
+Understanding the internal cognitive processes of AI systems remains a fundamental challenge in explainable AI (XAI). Current visualization tools are predominantly two-dimensional and static, limiting users' ability to comprehend complex dynamics such as spreading activation, emotion-modulated learning, and developmental progression. We present BrainXR, a mixed reality system that enables real-time visualization of cognitive processes in a developmental AI architecture. BrainXR maps 486 artificial semantic concepts onto nine anatomically-inspired brain regions using spherical coordinates, and renders spreading activation waves, emotion-driven modulation, and developmental growth in three dimensions. The system is built on Unity 6 with OpenXR, targeting Meta Quest 3S with color passthrough for mixed reality, with additional support for desktop 3D viewing.
 
 To evaluate whether mixed reality improves comprehension of AI cognitive processes, we conducted a within-subjects user study (N=XX) comparing three visualization conditions: a 2D dashboard, a 3D desktop viewer, and a mixed reality experience on Quest 3S. Participants performed four tasks: identifying active brain regions, tracing activation spread paths, comparing activation patterns across conversations, and estimating developmental stage. We measured task accuracy, response time, cognitive workload (NASA-TLX), usability (SUS), and sense of presence (IPQ).
 
@@ -477,7 +502,7 @@ Results show that [결과 — 실험 후 작성]. Our work demonstrates that Bra
 1. **프로젝트 소개**: 9개 뇌 영역에 486개 개념이 매핑된 발달 인지 AI. 대화하면 뉴런이 활성화되고 확산된다.
 2. **ISMAR 논문 핵심**: 이 과정을 MR로 보여주는 시스템 "BrainXR". 테이블 위에 AI의 뇌를 놓고 실시간으로 관찰.
 3. **왜 새로운가**: AI 시각화는 전부 2D(TensorBoard 등). 뇌 VR은 실제 뇌만(NeuroCave 등). "인공 인지 + XR" 교차점에 논문 0건.
-4. **기술**: 기존 Next.js + Three.js 코드에 WebXR 추가. Unity 아님. URL 접속으로 체험 가능.
+4. **기술**: Unity 6 + OpenXR Meta로 Quest 3S MR 빌드. 기존 웹 대시보드는 2D 비교 조건으로 활용.
 5. **평가**: 16-24명 user study. 2D vs 3D vs MR 비교. NASA-TLX, SUS, SSQ 사용.
 6. **ICDL과의 관계**: ICDL은 아키텍처 자체(ablation), ISMAR은 시각화 + HCI. RQ/IV/DV/데이터 모두 다름. salami slicing 아님.
 7. **타임라인**: Abstract 3/9, Paper 3/16. 코드는 2주 내 완성 가능 (기존 자산 있음). User study가 병목.
