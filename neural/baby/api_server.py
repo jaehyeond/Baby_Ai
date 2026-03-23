@@ -1286,7 +1286,7 @@ async def post_imagination(request: Request):
                 topic=topic,
                 imagination_type="free_association",
                 curiosity_level=curiosity_level,
-                trigger_event=trigger,
+                trigger=trigger,
             )
             if session:
                 await db.end_imagination_session(
@@ -1534,6 +1534,147 @@ async def verify_prediction_endpoint(prediction_id: str, request: Request):
         return {"success": True, "prediction_id": prediction_id, "was_correct": was_correct}
     except Exception as e:
         logger.error(f"verify_prediction_endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Audio Transcription (STT) ──────────────────────────────────────────────────
+
+@app.post("/api/audio/transcribe")
+async def audio_transcribe(request: Request):
+    """
+    음성 → 텍스트 변환 (STT)
+    Gemini 멀티모달 Audio API 사용
+    입력: { audio_data: str (base64), mime_type: str, duration_ms: int }
+    출력: { text: str, confidence: float, language: str }
+    """
+    try:
+        body = await request.json()
+        audio_data_b64: str = body.get("audio_data", "")
+        mime_type: str = body.get("mime_type", "audio/webm")
+        duration_ms: int = body.get("duration_ms", 0)
+
+        if not audio_data_b64:
+            raise HTTPException(status_code=400, detail="audio_data is required")
+
+        audio_bytes = base64.b64decode(audio_data_b64)
+
+        from .llm_client import get_llm_client
+        llm = get_llm_client()
+        google_client = llm._get_google_client()
+
+        prompt = (
+            "이 오디오를 한국어로 정확하게 텍스트로 변환해주세요. "
+            "변환된 텍스트만 출력하고 다른 설명은 하지 마세요."
+        )
+
+        try:
+            # 새로운 SDK (google.genai)
+            if hasattr(google_client, 'models'):
+                from google.genai import types as genai_types
+                audio_part = genai_types.Part.from_bytes(
+                    data=audio_bytes,
+                    mime_type=mime_type,
+                )
+                text_part = genai_types.Part.from_text(prompt)
+                response = google_client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=[audio_part, text_part],
+                )
+                transcribed = response.text.strip()
+            else:
+                # 구버전 SDK (google.generativeai)
+                import google.generativeai as genai
+                model = google_client.GenerativeModel("gemini-2.0-flash")
+                audio_part = {
+                    "mime_type": mime_type,
+                    "data": audio_data_b64,
+                }
+                response = model.generate_content([audio_part, prompt])
+                transcribed = response.text.strip()
+        except Exception as gemini_err:
+            logger.warning(f"Gemini STT error: {gemini_err}, returning empty transcription")
+            transcribed = ""
+
+        return {
+            "text": transcribed,
+            "confidence": 0.9 if transcribed else 0.0,
+            "language": "ko-KR",
+            "duration_ms": duration_ms,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"audio_transcribe error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Speech Synthesis (TTS) ─────────────────────────────────────────────────────
+
+@app.post("/api/speech/synthesize")
+async def speech_synthesize(request: Request):
+    """
+    텍스트 → 음성 변환 (TTS)
+    Gemini TTS API 사용 (gemini-2.5-flash-preview-tts)
+    입력: { text: str, voice: str, speaking_rate: float, pitch: float }
+    출력: { audio_content: str (base64 WAV), duration: float, format: str }
+    """
+    try:
+        body = await request.json()
+        text: str = body.get("text", "")
+        voice: str = body.get("voice", "Kore")  # Gemini TTS voice (Korean)
+        speaking_rate: float = body.get("speaking_rate", 1.0)
+        pitch: float = body.get("pitch", 0.0)
+
+        if not text:
+            raise HTTPException(status_code=400, detail="text is required")
+
+        from .llm_client import get_llm_client
+        llm = get_llm_client()
+        google_client = llm._get_google_client()
+
+        audio_b64 = ""
+        try:
+            # 새로운 SDK (google.genai) — Gemini TTS
+            if hasattr(google_client, 'models'):
+                from google.genai import types as genai_types
+                response = google_client.models.generate_content(
+                    model="gemini-2.5-flash-preview-tts",
+                    contents=text,
+                    config=genai_types.GenerateContentConfig(
+                        response_modalities=["AUDIO"],
+                        speech_config=genai_types.SpeechConfig(
+                            voice_config=genai_types.VoiceConfig(
+                                prebuilt_voice_config=genai_types.PrebuiltVoiceConfig(
+                                    voice_name=voice,
+                                )
+                            )
+                        ),
+                    ),
+                )
+                # 오디오 데이터 추출
+                audio_data = response.candidates[0].content.parts[0].inline_data.data
+                audio_b64 = base64.b64encode(audio_data).decode("utf-8")
+            else:
+                # 구버전 SDK는 TTS 미지원 — 빈 응답
+                logger.warning("Gemini TTS requires new SDK (google-genai). Returning empty audio.")
+                audio_b64 = ""
+        except Exception as tts_err:
+            logger.warning(f"Gemini TTS error: {tts_err}, returning empty audio")
+            audio_b64 = ""
+
+        return {
+            "audio_content": audio_b64,
+            "audio_url": None,
+            "duration": len(text) * 0.08 if audio_b64 else 0,  # 대략적 추정
+            "format": "audio/wav",
+            "voice": voice,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"speech_synthesize error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

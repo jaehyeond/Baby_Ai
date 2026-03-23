@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Supabase Edge Function URL
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,16 +14,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Call Supabase Edge Function for TTS
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/speech-synthesize`, {
+    const response = await fetch(`${FASTAPI_URL}/api/speech/synthesize`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
-        voice: voice || 'ko-KR-Neural2-A', // Default Korean child voice
+        voice: voice || 'Kore',
         speaking_rate: speaking_rate || 1.0,
         pitch: pitch || 0.0,
       }),
@@ -33,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Speech API] Edge Function error:', errorText)
+      console.error('[Speech API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to synthesize speech' },
         { status: response.status }

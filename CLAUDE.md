@@ -135,7 +135,6 @@ pytest
 | `/session-start` | 세션 시작 - 핵심 문서 확인, 현재 상태 조회 |
 | `/baby-status` | Baby AI 현재 상태 (발달, 감정, 지식) |
 | `/brain-analyze` | 지식 그래프 분석 (개념, 시냅스, 클러스터) |
-| `/deploy-function` | Edge Function 배포 |
 | `/sleep-mode` | 수면 모드 트리거 (기억 통합) |
 | `/fix-issue` | 문제 진단 및 수정 |
 
@@ -156,9 +155,9 @@ pytest
 
 | Agent | 모델 | Scope | 역할 |
 |-------|------|-------|------|
-| `backend-dev` | Sonnet | `neural/baby/` | Python 모듈 (감정, World Model, DB 등) |
+| `backend-dev` | Sonnet | `neural/baby/` | Python 모듈 (api_server.py, neo4j_db.py, conversation_handler.py 등) |
 | `frontend-dev` | Sonnet | `frontend/baby-dashboard/src/` | Next.js 16 + React 19 컴포넌트, hooks, 페이지 |
-| `db-engineer` | Sonnet | Supabase | SQL migration, Edge Functions |
+| `db-engineer` | Sonnet | Neo4j AuraDB | Cypher 쿼리, 노드/관계 설계 |
 | `brain-researcher` | Opus | 신경과학 연구 | 뇌 아키텍처 설계, 인지과학 문헌 조사 |
 
 ### 실행 순서 (순차 필수)
@@ -235,43 +234,31 @@ const resetIdleTimer = useCallback(() => {
 
 ## 🧠 Brain DB 구조 요약
 
-### 현재 테이블 통계 (2026-02-10)
-| 테이블 | 레코드 수 | 용도 |
-|--------|----------|------|
-| semantic_concepts | 452+ | 개념/지식 (뉴런) |
-| concept_relations | 519+ | 개념 간 관계 (시냅스) |
-| experiences | 583+ | 경험 기억 (해마) |
-| experience_concepts | 361+ | 경험↔개념 연결 |
-| emotion_logs | 171+ | 감정 기록 (편도체) |
-| procedural_patterns | 102+ | 절차 기억 (소뇌) |
-| curiosity_queue | 187+ | 호기심 대기열 |
-| visual_experiences | 13 | 시각 경험 |
-| brain_regions | 9 | 뇌 영역 (Phase B) |
-| concept_brain_mapping | 452 | 개념→영역 매핑 (Phase B) |
-| neuron_activations | 0+ | 실시간 뉴런 활성화 (Phase B) |
-| causal_models | 3 | 인과관계 모델 |
-| predictions | 8+ | 예측 (자동검증) |
-| self_evaluation_logs | 1+ | 자기평가 (v19) |
-| emotion_goal_influences | 1+ | 감정→목표 영향 (v19) |
-| imagination_sessions | 0+ | 상상 세션 (v22) |
+### ⚠️ Neo4j 노드 통계 (2026-03-19 실측 — Supabase 완전 대체됨)
+| 노드 | 수량 | 용도 |
+|------|------|------|
+| Concept | 820 | 개념/지식 (뉴런) |
+| Experience | 3039 | 경험 기억 (해마) |
+| EmotionLog | 1503 | 감정 기록 (편도체) |
+| CuriosityLog | 811 | 호기심 |
+| SleepLog | 2716 | 수면 기록 |
+| Procedure | 102 | 절차 기억 (소뇌) |
+| AutonomousGoal | 146 | 자율 목표 |
+| BrainRegion | 9 | 뇌 영역 (Phase B) |
 
-### Conversation Pipeline (v23, 최신)
-- `conversation-process` Edge Function v23
-- 파이프라인: 복합감정 → VA → 목표영향 → 자기평가 → 뉴런활성화(experience_id) → spreading activation(BFS) → maybeImagine() → predictions
-- ThoughtProcess 데이터: 대화 컨텍스트, 직접 활성화 경로, 연상 확산 그룹
+### Neo4j 관계
+- RELATES_TO: 680 (시냅스), MAPPED_TO: 820, INVOLVES: 1060, CAUSES: 3
 
-### Memory Consolidation v6 (수면 모드)
-- 30분마다 scheduled 실행
-- **강화**: emotional_salience > 0.3인 기억 강화
-- **감쇠**: 1일 이상 미접근 기억 약화
-- **패턴 승격**: 2회 이상 반복 → procedural_memory
+### Conversation Pipeline (FastAPI conversation_handler.py v30, 최신)
+- `neural/baby/conversation_handler.py` — Deno Edge Function 완전 대체
+- 파이프라인: Memory Recall → Gemini → 개념추출 → spreading activation → Redis Pub/Sub (SSE)
+- TTS: `/api/speech/synthesize` 연동 완료 (2026-03-23)
 
-### 핵심 테이블 관계
+### 핵심 그래프 관계
 ```
-experiences ─┬─ experience_concepts ─── semantic_concepts ─── concept_brain_mapping ─── brain_regions
-             │                              │
-             └─ emotion_logs                └─ concept_relations ─── neuron_activations
-                                               (시냅스 가중치)
+Experience ─── INVOLVES ─── Concept ─── RELATES_TO ─── Concept
+                                │
+                           MAPPED_TO ─── BrainRegion
 ```
 
 ---

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Supabase Edge Function URL
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,13 +20,9 @@ export async function POST(request: NextRequest) {
     const base64Audio = Buffer.from(arrayBuffer).toString('base64')
     const duration = durationStr ? parseFloat(durationStr) : 0
 
-    // Call Supabase Edge Function for STT
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/audio-transcribe`, {
+    const response = await fetch(`${FASTAPI_URL}/api/audio/transcribe`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         audio_data: base64Audio,
         mime_type: audioFile.type || 'audio/webm',
@@ -38,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Audio API] Edge Function error:', errorText)
+      console.error('[Audio API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to transcribe audio' },
         { status: response.status }
@@ -46,7 +40,14 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json()
-    return NextResponse.json(data)
+    // FastAPI returns { text, confidence, language, duration_ms }
+    // Map to { transcript } for backwards compatibility with sense/page.tsx
+    return NextResponse.json({
+      transcript: data.text || '',
+      text: data.text || '',
+      confidence: data.confidence ?? 0.9,
+      language: data.language || 'ko-KR',
+    })
 
   } catch (error) {
     console.error('[Audio API] Error:', error)
