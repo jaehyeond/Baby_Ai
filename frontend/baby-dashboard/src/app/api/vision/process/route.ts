@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 
-// Supabase Edge Function URL
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+// Phase 4a: Supabase Edge Function → FastAPI
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
-// Get current development stage from baby_state
+// Get current development stage from FastAPI (Supabase 직접 쿼리 제거)
 async function getDevelopmentStage(): Promise<number> {
   try {
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    const { data } = await supabase
-      .from('baby_state')
-      .select('development_stage')
-      .limit(1)
-      .single()
-    return data?.development_stage ?? 0
+    const res = await fetch(`${FASTAPI_URL}/api/state`)
+    if (!res.ok) return 0
+    const data = await res.json() as { development_stage?: number }
+    return data.development_stage ?? 0
   } catch {
     return 0
   }
@@ -23,7 +18,7 @@ async function getDevelopmentStage(): Promise<number> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { image, mime_type, enable_world_understanding = true } = body
+    const { image, mime_type } = body
 
     if (!image) {
       return NextResponse.json(
@@ -32,77 +27,39 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get current development stage
     const developmentStage = await getDevelopmentStage()
 
-    // Call Supabase Edge Function directly
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/vision-process`, {
+    const response = await fetch(`${FASTAPI_URL}/api/vision/process`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         image_data: image,
         mime_type: mime_type || 'image/jpeg',
-        development_stage: developmentStage,
       }),
     })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Vision API] Edge Function error:', errorText)
+      console.error('[Vision API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to process image' },
         { status: response.status }
       )
     }
 
-    const data = await response.json()
-
-    // Phase 4.4: Call world-understanding for physical world analysis
-    if (enable_world_understanding && data.visual_experience) {
-      try {
-        const worldResponse = await fetch(`${SUPABASE_URL}/functions/v1/world-understanding`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            image_data: image,
-            mime_type: mime_type || 'image/jpeg',
-            visual_experience_id: data.visual_experience.id,
-            objects_detected: data.visual_experience.objects_detected || [],
-            development_stage: data.visual_experience.development_stage || 0,
-            action: 'analyze',
-          }),
-        })
-
-        if (worldResponse.ok) {
-          const worldData = await worldResponse.json()
-          // Merge world understanding data into response
-          data.world_understanding = {
-            physical_objects: worldData.physical_objects,
-            spatial_relations: worldData.spatial_relations,
-            tracking_events: worldData.tracking_events,
-            physics_insights: worldData.physics_insights,
-            emotional_response: worldData.emotional_response,
-          }
-          console.log('[Vision API] World understanding processed:', {
-            objects: worldData.physical_objects?.length || 0,
-            relations: worldData.spatial_relations?.length || 0,
-          })
-        } else {
-          console.warn('[Vision API] World understanding failed, continuing without it')
-        }
-      } catch (worldError) {
-        console.warn('[Vision API] World understanding error:', worldError)
-        // Continue without world understanding data
-      }
+    const data = await response.json() as {
+      visual_experience: Record<string, unknown>
+      emotional_changes: Record<string, unknown>
+      success: boolean
+      message?: string
     }
 
-    return NextResponse.json(data)
+    // world-understanding은 Phase 4d에서 FastAPI 이식 후 추가
+    // development_stage는 클라이언트 참고용으로 포함
+    return NextResponse.json({
+      ...data,
+      development_stage: developmentStage,
+    })
 
   } catch (error) {
     console.error('[Vision API] Error:', error)

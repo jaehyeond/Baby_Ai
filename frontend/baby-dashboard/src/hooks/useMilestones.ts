@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
 
 // Milestone definitions with metadata
 export const MILESTONE_DEFINITIONS: Record<string, MilestoneInfo> = {
@@ -133,27 +132,23 @@ export function useMilestones() {
     setError(null)
 
     try {
-      // Fetch baby state for milestones and stage
-      const { data: stateData, error: stateError } = await supabase
-        .from('baby_state')
-        .select('milestones, development_stage, experience_count')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .single()
+      // Fetch baby state from FastAPI
+      const fastapiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
+      const stateRes = await fetch(`${fastapiUrl}/api/state`)
+      if (!stateRes.ok) throw new Error(`state fetch failed: ${stateRes.status}`)
+      const stateData = await stateRes.json() as {
+        emotional_state: Record<string, number>
+        development_stage: number
+        experience_count: number
+        capabilities: string[]
+      }
 
-      if (stateError) throw stateError
-
-      const achievedMilestones = (stateData?.milestones as string[]) || []
+      const achievedMilestones: string[] = []  // milestones 필드는 FastAPI 미구현 → Phase 4b에서 추가
       const currentStage = stateData?.development_stage || 0
       const experienceCount = stateData?.experience_count || 0
 
-      // Fetch experiences to estimate achievement times
-      const { data: experiences, error: expError } = await supabase
-        .from('experiences')
-        .select('id, task, success, created_at')
-        .order('created_at', { ascending: true })
-
-      if (expError) throw expError
+      // experiences 목록: FastAPI 미구현 → 빈 배열 (마일스톤 달성 시간 추정 불가)
+      const experiences: Array<{ id: string; task: string; success: boolean; created_at: string }> = []
 
       // Estimate milestone achievement times based on experience patterns
       const milestoneAchievementTimes = estimateMilestoneAchievements(

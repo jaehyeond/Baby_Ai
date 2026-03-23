@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { supabase, subscribeToTable } from '@/lib/supabase'
 import {
   BabyStateCard,
   EmotionRadar,
@@ -21,11 +20,53 @@ import {
   QuestionBubble,
   QuestionList,
 } from '@/components'
-import type { BabyState, Experience, EmotionLog, PendingQuestion } from '@/lib/database.types'
+import type { PendingQuestion } from '@/lib/database.types'
 import { RefreshCw, BarChart3, Activity, Settings, Brain, Trophy, Sparkles, Heart, Eye, Lightbulb, Search, Moon, Zap, MessageCircle } from 'lucide-react'
-import { usePullToRefresh, useSettings, useNotifications, usePendingQuestions } from '@/hooks'
+import { usePullToRefresh, useSettings, useNotifications, usePendingQuestions, useSSESubscription } from '@/hooks'
+import type { SSEBabyStateData, SSEExperienceData } from '@/hooks'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
+
+// FastAPI 응답 기반 로컬 타입 (Supabase 타입 대체)
+interface BabyState {
+  development_stage: number
+  experience_count: number
+  success_count?: number
+  dominant_emotion?: string
+  curiosity?: number
+  joy?: number
+  fear?: number
+  surprise?: number
+  frustration?: number
+  boredom?: number
+  emotional_state?: Record<string, number>
+}
+
+interface Experience {
+  id: string
+  task: string
+  task_type: string
+  output: string
+  success: boolean
+  emotional_salience?: number
+  dominant_emotion?: string
+  development_stage?: number
+  created_at: string
+}
+
+interface EmotionLog {
+  id: string
+  curiosity: number
+  joy: number
+  fear: number
+  surprise?: number
+  frustration: number
+  boredom?: number
+  dominant_emotion: string
+  created_at: string
+}
 
 type ChartTab = 'growth' | 'timeline' | 'brain' | 'milestones' | 'world' | 'influence' | 'metacog' | 'curiosity' | 'backprop' | 'questions'
 
@@ -110,41 +151,40 @@ export default function Home() {
     }
   }, [newQuestionAlert, settings.notificationsEnabled, sendNotification])
 
-  // 데이터 새로고침 함수 - uses settings for limits
+  // 데이터 새로고침 함수 - FastAPI 병렬 fetch
   const refreshData = useCallback(async () => {
     setIsLoading(true)
 
     const experienceLimit = settings.maxExperiencesToShow || 10
     const emotionLimit = settings.maxEmotionLogsToShow || 50
 
-    const [stateRes, expRes, allExpRes, emotionRes] = await Promise.all([
-      supabase
-        .from('baby_state')
-        .select('*')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .single(),
-      supabase
-        .from('experiences')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(experienceLimit),
-      supabase
-        .from('experiences')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100),
-      supabase
-        .from('emotion_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(emotionLimit),
-    ])
+    try {
+      const [stateRes, expRes, allExpRes, emotionRes] = await Promise.all([
+        fetch(`${FASTAPI_URL}/api/state`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/experiences?limit=${experienceLimit}`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/experiences?limit=100`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/emotion-logs?limit=${emotionLimit}`).then(r => r.ok ? r.json() : null),
+      ])
 
-    if (stateRes.data) setBabyState(stateRes.data)
-    if (expRes.data) setExperiences(expRes.data)
-    if (allExpRes.data) setAllExperiences(allExpRes.data)
-    if (emotionRes.data) setEmotionLogs(emotionRes.data)
+      if (stateRes) {
+        // FastAPI /api/state → {emotional_state, development_stage, experience_count, capabilities}
+        const emotState = stateRes.emotional_state || {}
+        setBabyState({
+          development_stage: stateRes.development_stage ?? 0,
+          experience_count: stateRes.experience_count ?? 0,
+          dominant_emotion: emotState.dominant_emotion ||
+            Object.entries(emotState as Record<string, number>)
+              .reduce((max: [string, number], [k, v]) =>
+                (v as number) > max[1] ? [k, v as number] : max, ['joy', 0])[0],
+          ...emotState,
+        })
+      }
+      if (expRes?.experiences) setExperiences(expRes.experiences)
+      if (allExpRes?.experiences) setAllExperiences(allExpRes.experiences)
+      if (emotionRes?.emotion_logs) setEmotionLogs(emotionRes.emotion_logs)
+    } catch (err) {
+      console.error('[Page] refreshData error:', err)
+    }
 
     setIsLoading(false)
     setLastUpdated(new Date().toLocaleTimeString('ko-KR'))
@@ -171,76 +211,48 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [settings.autoRefresh, settings.refreshInterval, refreshData])
 
-  // Realtime 구독 with notifications
-  useEffect(() => {
-    // baby_state 테이블 구독
-    const stateChannel = subscribeToTable('baby_state', (payload) => {
-      if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
-        const newState = payload.new as BabyState
+  // SSE 구독 (FastAPI Redis Pub/Sub → baby_state, experience 이벤트)
+  useSSESubscription(useCallback((event) => {
+    if (event.type === 'baby_state') {
+      const newState = event.data as SSEBabyStateData
 
-        // Check for stage change notification
-        if (
-          settings.notificationsEnabled &&
-          settings.notifyOnStageChange &&
-          prevStageRef.current !== null &&
-          newState.development_stage !== null &&
-          prevStageRef.current !== newState.development_stage
-        ) {
-          notifyStageChange(prevStageRef.current, newState.development_stage)
-        }
-        prevStageRef.current = newState.development_stage
-
-        setBabyState(newState)
-        setLastUpdated(new Date().toLocaleTimeString('ko-KR'))
+      // Stage change notification
+      if (
+        settings.notificationsEnabled &&
+        settings.notifyOnStageChange &&
+        prevStageRef.current !== null &&
+        prevStageRef.current !== newState.development_stage
+      ) {
+        notifyStageChange(prevStageRef.current, newState.development_stage)
       }
-    })
+      prevStageRef.current = newState.development_stage
 
-    // experiences 테이블 구독
-    const expChannel = subscribeToTable('experiences', (payload) => {
-      if (payload.eventType === 'INSERT' && payload.new) {
-        const newExp = payload.new as Experience
-
-        // Send notification for new experience
-        if (settings.notificationsEnabled && settings.notifyOnNewExperience) {
-          notifyNewExperience(newExp.task, newExp.success ?? false)
-        }
-
-        setExperiences((prev) => [newExp, ...prev.slice(0, 9)])
-        setAllExperiences((prev) => [newExp, ...prev.slice(0, 99)])
-        setLastUpdated(new Date().toLocaleTimeString('ko-KR'))
-      }
-    })
-
-    // emotion_logs 테이블 구독
-    const emotionChannel = subscribeToTable('emotion_logs', (payload) => {
-      if (payload.eventType === 'INSERT' && payload.new) {
-        const newLog = payload.new as EmotionLog
-
-        // Check for emotion spike notification
-        if (settings.notificationsEnabled && settings.notifyOnEmotionSpike) {
-          const emotions = [
-            { name: '호기심', value: newLog.curiosity },
-            { name: '기쁨', value: newLog.joy },
-            { name: '두려움', value: newLog.fear },
-            { name: '좌절', value: newLog.frustration },
-          ]
-          const spike = emotions.find((e) => e.value > 0.8)
-          if (spike) {
-            notifyEmotionSpike(spike.name, spike.value)
-          }
-        }
-
-        setEmotionLogs((prev) => [newLog, ...prev.slice(0, 49)])
-        setLastUpdated(new Date().toLocaleTimeString('ko-KR'))
-      }
-    })
-
-    return () => {
-      stateChannel.unsubscribe()
-      expChannel.unsubscribe()
-      emotionChannel.unsubscribe()
+      setBabyState({
+        development_stage: newState.development_stage,
+        experience_count: 0,        // SSE에는 experience_count 없음 → poll 유지
+        dominant_emotion: newState.dominant_emotion,
+        curiosity: newState.curiosity,
+        joy: newState.joy,
+        fear: newState.fear,
+        surprise: newState.surprise,
+        frustration: newState.frustration,
+        boredom: newState.boredom,
+      })
+      setLastUpdated(new Date().toLocaleTimeString('ko-KR'))
     }
-  }, [settings, notifyNewExperience, notifyStageChange, notifyEmotionSpike])
+
+    if (event.type === 'experience') {
+      const newExpPartial = event.data as SSEExperienceData
+
+      // New experience notification
+      if (settings.notificationsEnabled && settings.notifyOnNewExperience) {
+        notifyNewExperience(newExpPartial.task_type || 'conversation', true)
+      }
+
+      // SSE experience에는 전체 필드가 없으므로 refreshData로 최신 데이터 로드
+      refreshData()
+    }
+  }, [settings, notifyStageChange, notifyNewExperience, refreshData]))
 
   const tabs: { key: ChartTab; label: string; icon: typeof BarChart3; badge?: number }[] = [
     { key: 'growth', label: '성장', icon: BarChart3 },
@@ -339,13 +351,16 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Left Column */}
           <div className="space-y-4 md:space-y-6">
-            <BabyStateCard state={babyState} isLoading={isLoading} />
-            <ActivityLog experiences={experiences} isLoading={isLoading} />
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <BabyStateCard state={babyState as any} isLoading={isLoading} />
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <ActivityLog experiences={experiences as any} isLoading={isLoading} />
           </div>
 
           {/* Right Column */}
           <div className="space-y-4 md:space-y-6">
-            <EmotionRadar state={babyState} isLoading={isLoading} />
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <EmotionRadar state={babyState as any} isLoading={isLoading} />
 
             {/* Quick Stats Card */}
             <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl p-4 md:p-6 border border-slate-700/50 backdrop-blur-sm">
@@ -420,13 +435,16 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {activeTab === 'growth' && (
               <>
-                <GrowthChart experiences={allExperiences} isLoading={isLoading} />
-                <ExperienceDistribution experiences={allExperiences} isLoading={isLoading} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <GrowthChart experiences={allExperiences as any} isLoading={isLoading} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <ExperienceDistribution experiences={allExperiences as any} isLoading={isLoading} />
               </>
             )}
             {activeTab === 'timeline' && (
               <div className="lg:col-span-2">
-                <EmotionTimeline emotionLogs={emotionLogs} isLoading={isLoading} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <EmotionTimeline emotionLogs={emotionLogs as any} isLoading={isLoading} />
               </div>
             )}
             {activeTab === 'brain' && (

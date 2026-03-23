@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
 import {
   Brain,
   Lightbulb,
@@ -54,6 +53,8 @@ function transformBabyState(data: Record<string, unknown>): BabyStateWithInfluen
 interface EmotionalInfluenceCardProps {
   className?: string
 }
+
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 // 감정 기반 영향도 계산 함수 (프론트엔드에서 시뮬레이션)
 function calculateInfluence(state: BabyStateWithInfluence): EmotionalInfluence {
@@ -218,17 +219,15 @@ export function EmotionalInfluenceCard({ className = '' }: EmotionalInfluenceCar
   const fetchData = async () => {
     setLoading(true)
     try {
-      const { data } = await supabase
-        .from('baby_state')
-        .select('curiosity, joy, fear, frustration, boredom, dominant_emotion')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .single()
-
-      if (data) {
-        const transformed = transformBabyState(data as Record<string, unknown>)
-        setBabyState(transformed)
-        setInfluence(calculateInfluence(transformed))
+      const res = await fetch(`${FASTAPI_URL}/api/state`)
+      if (res.ok) {
+        const data = await res.json()
+        const stateData = data.state || data
+        if (stateData) {
+          const transformed = transformBabyState(stateData as Record<string, unknown>)
+          setBabyState(transformed)
+          setInfluence(calculateInfluence(transformed))
+        }
       }
     } catch (error) {
       console.error('Failed to fetch baby state:', error)
@@ -238,18 +237,7 @@ export function EmotionalInfluenceCard({ className = '' }: EmotionalInfluenceCar
 
   useEffect(() => {
     fetchData()
-
-    // 실시간 구독
-    const channel = supabase
-      .channel('emotional_influence')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'baby_state' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    return () => {
-      channel.unsubscribe()
-    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (loading) {

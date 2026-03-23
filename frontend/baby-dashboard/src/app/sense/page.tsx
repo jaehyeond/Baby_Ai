@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { supabase } from '@/lib/supabase'
 import { CameraCapture, AudioRecorder, ConversationView, WakeWordIndicator } from '@/components'
 import type { ConversationMessage } from '@/components'
 import { useWakeWord } from '@/hooks/useWakeWord'
@@ -159,7 +158,8 @@ interface AudioConversation {
   created_at: string
 }
 
-// Transform Supabase row to local type
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
+
 function transformVisualExperience(row: Record<string, unknown>): VisualExperience {
   return {
     id: row.id as string,
@@ -190,14 +190,12 @@ export default function SensePage() {
   useEffect(() => {
     async function fetchRecent() {
       try {
-        const { data } = await supabase
-          .from('visual_experiences')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(5)
-
-        if (data) {
-          setRecentVisuals(data.map(transformVisualExperience))
+        const res = await fetch(`${FASTAPI_URL}/api/visual-experiences?limit=5`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.experiences) {
+            setRecentVisuals(data.experiences.map(transformVisualExperience))
+          }
         }
       } catch (e) {
         console.error('Failed to fetch recent visuals:', e)
@@ -205,18 +203,6 @@ export default function SensePage() {
     }
 
     fetchRecent()
-
-    // Subscribe to changes
-    const channel = supabase
-      .channel('visual_experiences')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'visual_experiences' }, (payload) => {
-        setRecentVisuals((prev) => [transformVisualExperience(payload.new as Record<string, unknown>), ...prev.slice(0, 4)])
-      })
-      .subscribe()
-
-    return () => {
-      channel.unsubscribe()
-    }
   }, [])
 
   // Handle image capture

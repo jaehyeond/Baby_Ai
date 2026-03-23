@@ -74,3 +74,6 @@ next-env.d.ts
 
 # Ablation logs (results are in docs/figures/table2_primary_results.csv)
 scripts/ablation_logs/*.log
+
+# DB Migration - exported Supabase data
+scripts/migration/migration_data/

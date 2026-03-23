@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { supabase } from '@/lib/supabase'
 
 export interface BrainRegion {
   id: string
@@ -42,18 +41,24 @@ export function useBrainRegions(developmentStage: number) {
 
   useEffect(() => {
     async function fetchRegions() {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any)
-        .from('brain_regions')
-        .select('*')
-        .order('development_stage_min', { ascending: true }) as { data: BrainRegion[] | null; error: Error | null }
-
-      if (error) {
-        console.error('[useBrainRegions] Error:', error)
-      } else if (data) {
-        setRegions(data as BrainRegion[])
+      try {
+        const fastapiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
+        const res = await fetch(`${fastapiUrl}/api/brain/regions`)
+        if (!res.ok) {
+          console.error('[useBrainRegions] FastAPI error:', res.status)
+          return
+        }
+        const json = await res.json() as { regions: BrainRegion[] }
+        // development_stage_min 오름차순 정렬 (Supabase order 대체)
+        const sorted = [...(json.regions || [])].sort(
+          (a, b) => a.development_stage_min - b.development_stage_min
+        )
+        setRegions(sorted)
+      } catch (err) {
+        console.error('[useBrainRegions] Error:', err)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     fetchRegions()
   }, [])

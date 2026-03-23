@@ -305,11 +305,6 @@
 - [x] brain/page.tsx: 파동 재생 + 누적 히트맵 + 사고 과정 패널
 - [x] DB: brain_region_id 인덱스, trigger_type+created_at 복합 인덱스, get_brain_activation_summary RPC
 
-### 논문 준비 상태 (2026-02-10)
-- [x] PAPER_PLAN.md Section 9: 6-agent SCI deep review 완료
-- 주요 발견: F2 spreading activation 수식-코드 불일치 (CRITICAL), ISMAR 부적합 → VIS 2026 대안
-- 다음: 코드-수식 정합성 확보 → 데이터 수집 → 논문 작성
-
 ---
 
 ## 궁극적 프로젝트 비전: "살아있는 인지 발달 시뮬레이터"

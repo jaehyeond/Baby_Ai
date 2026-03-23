@@ -34,7 +34,7 @@
 
 | Function | Version | JWT | 용도 | 상태 |
 |----------|---------|-----|------|------|
-| `conversation-process` | **v30** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + spreading + maybeImagine + ablation isolation + **Memory Recall Pipeline** + LC-NE modulator) | ✅ 정상 |
+| `conversation-process` | **v30** | ❌ | 대화 처리 (Gemini + 복합감정 + 자기평가 + neuron activations + spreading + maybeImagine + **Memory Recall Pipeline** + LC-NE modulator) | ✅ 정상 |
 | `vision-process` | **v4** | ❌ | 이미지 분석 (Gemini Vision) | ✅ 정상 |
 | `world-understanding` | v2 | ❌ | 물리 세계 이해 | ✅ 정상 |
 | `audio-transcribe` | v2 | ❌ | STT (Gemini) | ✅ 정상 |
@@ -325,7 +325,7 @@
 - **원인**: `_check_stage_advance()`는 Python `development.py`에만 존재, Edge Function에 없음
 - **현재**: DB stage=5는 이전 수동 설정 추정
 - **패턴**: "정의만 되고 호출 안 됨" 5번째 사례
-- **우선순위**: 중간 (논문에서는 stage가 중요한 메커니즘)
+- **우선순위**: 중간
 
 ### 6. 기억 회상 깊이 부족 (v30)
 - **증상**: 10개 concept이 recall되지만 Gemini가 2-3개만 피상적 사용
@@ -418,27 +418,6 @@ our-a2a-project/
 ├── CLAUDE.md                    # Claude Code 가이드
 └── Task.md                      # 이 파일
 ```
-
----
-
-## 📝 논문 준비 상태 (2026-02-10)
-
-> 상세: [docs/PAPER_PLAN.md](docs/PAPER_PLAN.md) Section 9 참조
-
-### 6-Agent Deep Review 결과 요약
-- **ICDL 2026**: 적합하나 D-31 기한 tight (8-12주 분량)
-- **ISMAR 2026**: 부적합 (AR/MR 필수) → **IEEE VIS 2026** 대안 추천
-- **수식 F2 (Spreading)**: 코드 vs 논문 불일치 (CRITICAL)
-- **Emotion modulation**: 계산되나 downstream 미적용
-- **C_raw 베이스라인**: 미구현 (ablation 필수)
-- **추천 로드맵**: arXiv preprint → VIS 2026 → ICDL 2027
-- **현재 상태**: 사용자 방향 결정 대기 중
-
-### 논문 전 기술 우선순위 (시스템 개선)
-1. Spreading Activation 피드백 루프 (결과 → 응답 생성 영향)
-2. Emotion modulation downstream 연결
-3. 수식 F2, F4, F7, F8 코드-논문 일치
-4. C_raw 베이스라인 실험 스크립트
 
 ---
 

@@ -20,3 +20,10 @@ export type { UsePendingQuestionsOptions, UsePendingQuestionsReturn } from './us
 // Phase W: Wake Word (Always Listening)
 export { useWakeWord } from './useWakeWord'
 export type { WakeWordState, UseWakeWordReturn } from './useWakeWord'
+// Phase 3: SSE (FastAPI Redis Pub/Sub)
+export { SSEProvider } from './SSEContext'
+export type {
+  SSEEvent, SSEEventType, SSEHandler,
+  SSEBabyStateData, SSEExperienceData, SSENeuronActivationItem,
+} from './SSEContext'
+export { useSSESubscription } from './useSSESubscription'

@@ -8,13 +8,10 @@ import { PredictionVerifyPanel } from '@/components/PredictionVerifyPanel'
 import { ArrowLeft, Brain, Sparkles, Target, Atom, Network, MessageCircle, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
 import type { DiscoveredConnection } from '@/hooks/useImaginationSessions'
 import { useNeuronActivations, type ThoughtStep } from '@/hooks/useNeuronActivations'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 type PanelType = 'imagination' | 'prediction'
 type BrainViewMode = 'abstract' | 'anatomical'
@@ -29,17 +26,16 @@ export default function BrainPage() {
   // Thought process data for abstract view overlay
   const { activeRegions, isReplaying, activationContext, thoughtProcess } = useNeuronActivations()
 
-  // Fetch development stage
+  // Fetch development stage from FastAPI (Phase 4c: Supabase 직접 쿼리 제거)
   useEffect(() => {
-    supabase
-      .from('baby_state')
-      .select('development_stage')
-      .single()
-      .then(({ data }) => {
+    fetch(`${FASTAPI_URL}/api/state`)
+      .then(res => res.ok ? res.json() : null)
+      .then((data: { development_stage?: number } | null) => {
         if (data?.development_stage != null) {
           setDevelopmentStage(data.development_stage)
         }
       })
+      .catch(() => {/* fallback: keep default stage 2 */})
   }, [])
 
   const handleConnectionHover = useCallback((connection: DiscoveredConnection | null) => {

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
 import type { NeuronNode, Synapse, BrainData, Astrocyte, BrainDataWithAstrocytes } from '@/lib/database.types'
 
 // Type for raw concept data from Supabase
@@ -311,52 +310,26 @@ export function useBrainData() {
     setError(null)
 
     try {
-      // Fetch semantic concepts (neurons)
-      // Using 'as any' because these tables aren't in the generated TypeScript types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: concepts, error: conceptsError } = await (supabase as any)
-        .from('semantic_concepts')
-        .select('id, name, category, strength, usage_count')
-        .is('ablation_run_id', null)
-        .order('usage_count', { ascending: false })
-        .limit(500) as { data: RawConcept[] | null; error: Error | null }
+      const fastapiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
-      if (conceptsError) throw conceptsError
+      // Fetch semantic concepts (neurons) from FastAPI
+      const conceptsRes = await fetch(`${fastapiUrl}/api/brain/concepts?limit=500`)
+      if (!conceptsRes.ok) throw new Error(`concepts fetch failed: ${conceptsRes.status}`)
+      const conceptsJson = await conceptsRes.json() as { concepts: RawConcept[] }
+      const concepts: RawConcept[] | null = conceptsJson.concepts ?? null
 
-      // Fetch direct concept relations (synapses from concept_relations table)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: conceptRelations, error: crError } = await (supabase as any)
-        .from('concept_relations')
-        .select('id, from_concept_id, to_concept_id, relation_type, strength, evidence_count')
-        .is('ablation_run_id', null)
-        .order('evidence_count', { ascending: false })
-        .limit(500) as { data: RawConceptRelation[] | null; error: Error | null }
-
-      if (crError) {
-        console.warn('Failed to fetch concept_relations:', crError)
+      // Fetch direct concept relations from FastAPI
+      const relationsRes = await fetch(`${fastapiUrl}/api/brain/concept-relations?limit=500`)
+      const conceptRelations: RawConceptRelation[] | null = relationsRes.ok
+        ? ((await relationsRes.json()) as { relations: RawConceptRelation[] }).relations ?? null
+        : null
+      if (!relationsRes.ok) {
+        console.warn('[useBrainData] concept-relations fetch failed:', relationsRes.status)
       }
 
-      // DEBUG: Log fetched data
-      console.log('[useBrainData] concepts:', concepts?.length, 'conceptRelations:', conceptRelations?.length, 'crError:', crError)
-
-      // DEBUG: Log first 3 concept IDs and first 3 relation IDs
-      if (concepts && concepts.length > 0) {
-        console.log('[useBrainData] First 3 concept IDs:', concepts.slice(0, 3).map(c => c.id))
-      }
-      if (conceptRelations && conceptRelations.length > 0) {
-        console.log('[useBrainData] First 3 relation pairs:', conceptRelations.slice(0, 3).map(cr => `${cr.from_concept_id} -> ${cr.to_concept_id}`))
-      }
-
-      // Fetch co-occurrence data using raw SQL via RPC or direct query
-      // Since we can't use raw SQL directly, we'll compute synapses from experience_concepts
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: experienceConcepts, error: ecError } = await (supabase as any)
-        .from('experience_concepts')
-        .select('experience_id, concept_id, relevance, co_activation_count')
-        .order('co_activation_count', { ascending: false })
-        .limit(500) as { data: RawExperienceConcept[] | null; error: Error | null }
-
-      if (ecError) throw ecError
+      // experience_concepts co-occurrence: FastAPI 미구현.
+      // concept_relations(RELATES_TO)가 있으므로 빈 배열로 처리해도 시각화 가능.
+      const experienceConcepts: RawExperienceConcept[] | null = []
 
       // Build concept ID to index map
       const conceptMap = new Map<string, number>()

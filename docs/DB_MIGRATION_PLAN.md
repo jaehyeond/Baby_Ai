@@ -152,7 +152,7 @@ ORDER BY similarity DESC
 | `pending_questions` | 8 | `:PendingQuestion` 노드 |
 | `curiosity_queue` | 9 | `:CuriosityLog` 노드 |
 | `autonomous_goals` | 24 | `:AutonomousGoal` 노드 |
-| `ablation_runs` | 20 | `:AblationRun` 노드 (ICDL 논문용) |
+| `ablation_runs` | 20 | `:AblationRun` 노드 |
 
 ### 3-3. RPC Functions (4개)
 
@@ -785,7 +785,7 @@ from neural.baby.neo4j_db import BrainDatabase  # db.py → neo4j_db.py
 ### Phase 5: 검증 & 정리 (Day 11-12)
 
 - [ ] E2E 테스트: 대화 → 기억 → 감정 → 뇌 시각화
-- [ ] ablation 실험 재현성 확인 (ICDL 논문)
+
 - [ ] 성능 벤치마크: 응답 지연, 벡터 검색 정확도
 - [ ] Supabase 프로젝트 아카이브 (삭제하지 않음)
 - [ ] 문서 업데이트 (Task.md, MEMORY.md)
@@ -800,7 +800,7 @@ from neural.baby.neo4j_db import BrainDatabase  # db.py → neo4j_db.py
 | Neo4j 벡터 검색 성능 저하 | 매우 낮음 (<50K) | 중 | Qdrant 분리 (확장 로드맵) |
 | Deno→Python 변환 버그 | 중간 | 높 | Edge Function별 단위 테스트 |
 | Realtime 지연 증가 | 낮음 | 중 | Redis → 직접 WebSocket 전환 |
-| ICDL 논문 ablation 재현 실패 | 낮음 | 매우 높 | 이관 전 전체 ablation 데이터 백업 |
+
 | Vercel Cold Start + FastAPI | 중간 | 중 | Railway/Fly.io에 FastAPI 배포 |
 
 ---

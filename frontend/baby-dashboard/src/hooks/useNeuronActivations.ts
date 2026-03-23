@@ -1,15 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useSSESubscription } from './useSSESubscription'
+import type { SSEEvent, SSENeuronActivationItem } from './useSSESubscription'
 
 interface NeuronActivation {
-  concept_id: string
-  brain_region_id: string
+  concept_id: string | null
+  brain_region_id: string | null
   intensity: number
   trigger_type: string
-  created_at: string
-  experience_id?: string
+  created_at?: string
 }
 
 export interface RegionHeatmap {
@@ -27,7 +27,7 @@ export interface ActivationContext {
   timestamp: string
 }
 
-// v23: Thought process step - shows HOW the brain processed info
+// v23: Thought process step
 export interface ThoughtStep {
   conceptName: string
   conceptCategory: string
@@ -40,15 +40,11 @@ export interface ThoughtStep {
 export function useNeuronActivations() {
   const [activeRegions, setActiveRegions] = useState<Map<string, number>>(new Map())
   const [activeNeurons, setActiveNeurons] = useState<Map<string, number>>(new Map())
-  // v21: Track spreading activations separately for ripple visual effect
   const [spreadingRegions, setSpreadingRegions] = useState<Map<string, number>>(new Map())
   const [waveCount, setWaveCount] = useState(0)
-  // A+C: Cumulative heatmap (persistent base glow)
   const [heatmapRegions, setHeatmapRegions] = useState<Map<string, number>>(new Map())
   const [isReplaying, setIsReplaying] = useState(false)
-  // v22: Conversation context that caused activations
   const [activationContext, setActivationContext] = useState<ActivationContext | null>(null)
-  // v23: Thought process log - ordered steps showing brain's thinking
   const [thoughtProcess, setThoughtProcess] = useState<ThoughtStep[]>([])
   const timeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
   const replayTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
@@ -56,12 +52,9 @@ export function useNeuronActivations() {
   const addActivation = useCallback((activation: NeuronActivation) => {
     const { concept_id, brain_region_id, intensity, trigger_type } = activation
     const isSpreading = trigger_type === 'spreading_activation'
-    // Spreading activations decay slower (5s) for visible wave effect, direct activations 3s
     const decayMs = isSpreading ? 5000 : 3000
 
-    // Activate region
     if (brain_region_id) {
-      // For spreading activations, add to separate spreading map for ripple effect
       if (isSpreading) {
         setSpreadingRegions(prev => {
           const next = new Map(prev)
@@ -85,7 +78,6 @@ export function useNeuronActivations() {
         timeoutsRef.current.set(spreadKey, timeout)
       }
 
-      // Always update main active regions (combined intensity)
       setActiveRegions(prev => {
         const next = new Map(prev)
         const current = next.get(brain_region_id) || 0
@@ -108,11 +100,9 @@ export function useNeuronActivations() {
       timeoutsRef.current.set(regionKey, timeout)
     }
 
-    // Activate neuron
     if (concept_id) {
       setActiveNeurons(prev => {
         const next = new Map(prev)
-        // For spreading, use the propagated (lower) intensity
         const current = next.get(concept_id) || 0
         next.set(concept_id, Math.max(current, intensity))
         return next
@@ -133,89 +123,66 @@ export function useNeuronActivations() {
       timeoutsRef.current.set(neuronKey, timeout)
     }
 
-    // v21: Track wave events
     if (isSpreading) {
       setWaveCount(prev => prev + 1)
     }
   }, [])
 
-  // A+C: Load activation summary on mount (replay + heatmap)
+  // 초기 heatmap + replay 로드 (FastAPI)
   useEffect(() => {
     async function loadActivationSummary() {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).rpc('get_brain_activation_summary')
-
-      if (error || !data) {
-        if (error) console.error('[useNeuronActivations] RPC error:', error)
-        return
-      }
-
-      // 1. Heatmap: normalize activation counts to 0-1 range
-      const heatmapRaw = data.heatmap as RegionHeatmap[]
-      if (heatmapRaw.length > 0) {
-        const maxCount = Math.max(...heatmapRaw.map((h: RegionHeatmap) => h.activation_count))
-        const heatmap = new Map<string, number>()
-        for (const h of heatmapRaw) {
-          heatmap.set(h.brain_region_id, maxCount > 0 ? h.activation_count / maxCount : 0)
+      try {
+        const fastapiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
+        const res = await fetch(`${fastapiUrl}/api/brain/activation-summary`)
+        if (!res.ok) {
+          console.error('[useNeuronActivations] activation-summary error:', res.status)
+          return
         }
-        setHeatmapRegions(heatmap)
-      }
+        const data = await res.json() as {
+          heatmap: Array<{
+            concept_id: string
+            brain_region_id: string | null
+            activation_count: number
+            avg_intensity: number
+          }>
+          replay: Array<NeuronActivation>
+        }
 
-      // v22: Extract conversation context from replay data
-      // v23: Extended with concept_name, concept_category, region_name
-      interface ReplayActivation extends NeuronActivation {
-        experience_id?: string
-        user_message?: string
-        ai_response?: string
-        dominant_emotion?: string
-        concept_name?: string
-        concept_category?: string
-        region_name?: string
-      }
-      const replayRaw = data.replay as ReplayActivation[]
-      if (replayRaw.length > 0) {
-        // Find the first activation with experience context
-        const withContext = replayRaw.find(a => a.experience_id && a.user_message)
-        if (withContext) {
-          setActivationContext({
-            experienceId: withContext.experience_id!,
-            userMessage: withContext.user_message || '',
-            aiResponse: withContext.ai_response || '',
-            emotion: withContext.dominant_emotion || '',
-            timestamp: withContext.created_at,
+        // heatmap: brain_region_id 기준 집계 → 0~1 정규화
+        const regionCounts = new Map<string, number>()
+        for (const h of data.heatmap) {
+          if (h.brain_region_id) {
+            regionCounts.set(
+              h.brain_region_id,
+              (regionCounts.get(h.brain_region_id) || 0) + h.activation_count
+            )
+          }
+        }
+        if (regionCounts.size > 0) {
+          const maxCount = Math.max(...regionCounts.values())
+          const heatmap = new Map<string, number>()
+          for (const [rid, count] of regionCounts) {
+            heatmap.set(rid, maxCount > 0 ? count / maxCount : 0)
+          }
+          setHeatmapRegions(heatmap)
+        }
+
+        // replay: 최근 활성화 순차 재생
+        if (data.replay.length > 0) {
+          setIsReplaying(true)
+          const totalDuration = 3000
+          const interval = Math.max(15, totalDuration / data.replay.length)
+
+          data.replay.forEach((activation, i) => {
+            const t = setTimeout(() => {
+              addActivation(activation)
+              if (i === data.replay.length - 1) setIsReplaying(false)
+            }, i * interval)
+            replayTimeoutsRef.current.push(t)
           })
         }
-
-        // v23: Build thought process from replay data
-        const steps: ThoughtStep[] = replayRaw
-          .filter(a => a.concept_name && a.region_name)
-          .map(a => ({
-            conceptName: a.concept_name!,
-            conceptCategory: a.concept_category || '',
-            regionName: a.region_name!,
-            triggerType: a.trigger_type as 'conversation' | 'spreading_activation',
-            intensity: a.intensity,
-            timestamp: a.created_at,
-          }))
-        setThoughtProcess(steps)
-      }
-
-      // 2. Replay: stagger activations over 3 seconds
-      const replay = replayRaw as NeuronActivation[]
-      if (replay.length > 0) {
-        setIsReplaying(true)
-        const totalDuration = 3000
-        const interval = Math.max(15, totalDuration / replay.length)
-
-        replay.forEach((activation: NeuronActivation, i: number) => {
-          const t = setTimeout(() => {
-            addActivation(activation)
-            if (i === replay.length - 1) {
-              setIsReplaying(false)
-            }
-          }, i * interval)
-          replayTimeoutsRef.current.push(t)
-        })
+      } catch (err) {
+        console.error('[useNeuronActivations] loadActivationSummary error:', err)
       }
     }
 
@@ -227,98 +194,33 @@ export function useNeuronActivations() {
     }
   }, [addActivation])
 
-  // Realtime subscription
+  // SSE 실시간 구독 (Supabase Realtime 대체)
+  const sseHandler = useCallback((event: SSEEvent) => {
+    if (event.type !== 'neuron_activation') return
+    const activations = event.data as SSENeuronActivationItem[]
+    for (const activation of activations) {
+      addActivation(activation)
+    }
+  }, [addActivation])
+
+  useSSESubscription(sseHandler)
+
+  // 클린업
   useEffect(() => {
-    const channel = supabase
-      .channel('brain-activity')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'neuron_activations',
-      }, async (payload) => {
-        const activation = payload.new as NeuronActivation & { experience_id?: string }
-        addActivation(activation)
-
-        // v23: Load concept/region names for thought process
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const [conceptRes, regionRes] = await Promise.all([
-            activation.concept_id
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ? (supabase as any).from('semantic_concepts').select('name, category').eq('id', activation.concept_id).single()
-              : Promise.resolve({ data: null }),
-            activation.brain_region_id
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ? (supabase as any).from('brain_regions').select('display_name').eq('id', activation.brain_region_id).single()
-              : Promise.resolve({ data: null }),
-          ])
-
-          if (conceptRes.data && regionRes.data) {
-            const step: ThoughtStep = {
-              conceptName: conceptRes.data.name,
-              conceptCategory: conceptRes.data.category || '',
-              regionName: regionRes.data.display_name,
-              triggerType: activation.trigger_type as 'conversation' | 'spreading_activation',
-              intensity: activation.intensity,
-              timestamp: activation.created_at,
-            }
-
-            // If this is a new conversation trigger, reset thought process
-            if (activation.trigger_type === 'conversation') {
-              setThoughtProcess([step])
-            } else {
-              setThoughtProcess(prev => [...prev, step])
-            }
-          }
-        } catch {
-          // Silently ignore - thought process is optional enhancement
-        }
-
-        // v22: When a new conversation activation arrives, load its context
-        if (activation.experience_id && activation.trigger_type === 'conversation') {
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { data: exp } = await (supabase as any)
-              .from('experiences')
-              .select('task, output, dominant_emotion, created_at')
-              .eq('id', activation.experience_id)
-              .single()
-
-            if (exp) {
-              setActivationContext({
-                experienceId: activation.experience_id,
-                userMessage: exp.task || '',
-                aiResponse: exp.output || '',
-                emotion: exp.dominant_emotion || '',
-                timestamp: exp.created_at || activation.created_at,
-              })
-            }
-          } catch {
-            // Silently ignore - context is optional
-          }
-        }
-      })
-      .subscribe()
-
     return () => {
-      channel.unsubscribe()
       timeoutsRef.current.forEach(t => clearTimeout(t))
       timeoutsRef.current.clear()
     }
-  }, [addActivation])
+  }, [])
 
   return {
     activeRegions,
     activeNeurons,
-    // v21: Spreading wave visualization
     spreadingRegions,
     waveCount,
-    // A+C: Persistent data
-    heatmapRegions,  // Normalized 0-1 per region (cumulative activation history)
-    isReplaying,     // True during initial replay animation
-    // v22: Conversation context that caused activations
+    heatmapRegions,
+    isReplaying,
     activationContext,
-    // v23: Thought process log
     thoughtProcess,
   }
 }

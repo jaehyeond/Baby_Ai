@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
-
 // Types
 interface Goal {
   id: string
@@ -48,11 +46,7 @@ interface AutonomousGoalsCardProps {
   className?: string
 }
 
-// Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 // Goal type icons and colors
 const goalTypeConfig: Record<string, { icon: string; color: string; label: string; bgColor: string }> = {
@@ -107,27 +101,14 @@ export function AutonomousGoalsCard({ className = '' }: AutonomousGoalsCardProps
   const fetchData = useCallback(async () => {
     try {
       const [goalsRes, progressRes, metricsRes] = await Promise.all([
-        supabase
-          .from('autonomous_goals')
-          .select('*')
-          .order('combined_motivation', { ascending: false })
-          .limit(20),
-        supabase
-          .from('goal_progress')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(20),
-        supabase
-          .from('autonomy_metrics')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single(),
+        fetch(`${FASTAPI_URL}/api/goals?limit=20`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/goal-progress?limit=20`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/autonomy-metrics`).then(r => r.ok ? r.json() : null),
       ])
 
-      if (goalsRes.data) setGoals(goalsRes.data)
-      if (progressRes.data) setProgress(progressRes.data)
-      if (metricsRes.data) setMetrics(metricsRes.data)
+      if (goalsRes?.goals) setGoals(goalsRes.goals)
+      if (progressRes?.progress) setProgress(progressRes.progress)
+      if (metricsRes?.metrics) setMetrics(metricsRes.metrics)
     } catch (error) {
       console.error('[AutonomousGoalsCard] Fetch error:', error)
     } finally {
@@ -137,26 +118,6 @@ export function AutonomousGoalsCard({ className = '' }: AutonomousGoalsCardProps
 
   useEffect(() => {
     fetchData()
-
-    // Subscribe to real-time updates
-    const goalsChannel = supabase
-      .channel('autonomous_goals_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'autonomous_goals' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    const metricsChannel = supabase
-      .channel('autonomy_metrics_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'autonomy_metrics' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(goalsChannel)
-      supabase.removeChannel(metricsChannel)
-    }
   }, [fetchData])
 
   // Generate new goals

@@ -17,10 +17,14 @@ dependencies = [
     "httpx>=0.28.0",
     "python-dotenv>=1.0.0",
     "pydantic>=2.10.0",
-    # Supabase (Baby Brain DB)
+    # Supabase (Baby Brain DB - 마이그레이션 완료 후 제거 예정)
     "supabase>=2.0.0",
     # OpenAI (Embeddings)
     "openai>=1.0.0",
+    # Neo4j AuraDB (DB Migration - Phase 0 완료)
+    "neo4j>=5.0.0",
+    # Upstash Redis (Pub/Sub + Cache - Phase 0 완료)
+    "redis[hiredis]>=5.0.0",
 ]
 
 [project.optional-dependencies]

@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+// Phase 4b: Supabase → FastAPI
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
 // Development stage names
 const STAGE_NAMES: Record<number, string> = {
@@ -45,52 +42,35 @@ function generateGreeting(stage: number, emotion: string): string {
 
 export async function POST() {
   try {
-    // 1. Get current baby state
-    const { data: babyState, error: stateError } = await supabase
-      .from('baby_state')
-      .select('development_stage, dominant_emotion, joy, curiosity, fear')
-      .single()
-
-    if (stateError) {
-      console.error('[WakeGreeting] Failed to get baby state:', stateError)
-    }
-
-    const stage = babyState?.development_stage ?? 2
-    const emotion = babyState?.dominant_emotion ?? 'joy'
-
-    // 2. Generate greeting text
-    const greetingText = generateGreeting(stage, emotion)
-
-    // 3. Generate TTS audio via speech-synthesize Edge Function
-    let audioUrl: string | undefined
+    // 1. Get current baby state from FastAPI
+    let stage = 2
+    let emotion = 'joy'
     try {
-      const ttsResponse = await fetch(`${SUPABASE_URL}/functions/v1/speech-synthesize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          text: greetingText,
-          voice: 'ko-KR-Neural2-A',
-          speaking_rate: 1.1,
-          pitch: 2.0,
-        }),
-      })
-
-      if (ttsResponse.ok) {
-        const ttsData = await ttsResponse.json()
-        audioUrl = ttsData.audio_url
-      } else {
-        console.error('[WakeGreeting] TTS failed:', await ttsResponse.text())
+      const stateRes = await fetch(`${FASTAPI_URL}/api/state`)
+      if (stateRes.ok) {
+        const stateData = await stateRes.json() as {
+          development_stage: number
+          emotional_state: Record<string, number>
+        }
+        stage = stateData.development_stage ?? 2
+        // Determine dominant emotion from emotional_state map
+        const emotionState = stateData.emotional_state || {}
+        const dominant = Object.entries(emotionState).reduce(
+          (max, [key, val]) => val > max[1] ? [key, val] : max,
+          ['joy', 0] as [string, number]
+        )
+        emotion = dominant[0]
       }
-    } catch (ttsErr) {
-      console.error('[WakeGreeting] TTS error:', ttsErr)
+    } catch (stateErr) {
+      console.error('[WakeGreeting] Failed to get state:', stateErr)
     }
+
+    // 2. Generate greeting text (logic stays in Route, no TTS until Phase 4d)
+    const greetingText = generateGreeting(stage, emotion)
 
     return NextResponse.json({
       greeting_text: greetingText,
-      audio_url: audioUrl,
+      audio_url: null,  // TTS: Phase 4d
       emotion,
       development_stage: stage,
     })

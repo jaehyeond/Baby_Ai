@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { supabase } from '@/lib/supabase'
 import { useIdleSleep } from '@/hooks'
+
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 // Types
 interface ConsolidationLog {
@@ -49,8 +50,6 @@ interface MemoryConsolidationCardProps {
   className?: string
 }
 
-// Use shared Supabase client from lib/supabase.ts
-
 // Pattern type icons
 const patternTypeIcons: Record<string, string> = {
   conversation: '💬',
@@ -95,34 +94,15 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
   // Fetch data
   const fetchData = useCallback(async () => {
     try {
-      // Use type assertion for tables not in Database types
-      const supabaseAny = supabase as unknown as {
-        from: (table: string) => {
-          select: (columns: string) => {
-            order: (column: string, options: { ascending: boolean }) => {
-              limit: (count: number) => Promise<{ data: unknown[] | null; error: unknown }>
-            }
-          }
-        }
-      }
-
       const [logsRes, procRes, statsRes] = await Promise.all([
-        supabaseAny
-          .from('memory_consolidation_logs')
-          .select('*')
-          .order('completed_at', { ascending: false })
-          .limit(10),
-        supabaseAny
-          .from('procedural_memory')
-          .select('*')
-          .order('strength', { ascending: false })
-          .limit(10),
+        fetch(`${FASTAPI_URL}/api/sleep-logs?limit=10`).then(r => r.ok ? r.json() : null),
+        fetch(`${FASTAPI_URL}/api/procedural-memory?limit=10`).then(r => r.ok ? r.json() : null),
         fetch('/api/memory/consolidate').then(r => r.json()),
       ])
 
-      if (logsRes.data) setLogs(logsRes.data as ConsolidationLog[])
-      if (procRes.data) setProceduralMemories(procRes.data as ProceduralMemory[])
-      if (statsRes.stats) setStats(statsRes.stats)
+      if (logsRes?.logs) setLogs(logsRes.logs as ConsolidationLog[])
+      if (procRes?.procedural_memories) setProceduralMemories(procRes.procedural_memories as ProceduralMemory[])
+      if (statsRes?.stats) setStats(statsRes.stats)
     } catch (error) {
       console.error('[MemoryConsolidationCard] Fetch error:', error)
     } finally {
@@ -132,26 +112,6 @@ export function MemoryConsolidationCard({ className = '' }: MemoryConsolidationC
 
   useEffect(() => {
     fetchData()
-
-    // Subscribe to real-time updates
-    const logsChannel = supabase
-      .channel('memory_consolidation_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'memory_consolidation_logs' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    const procChannel = supabase
-      .channel('procedural_memory_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'procedural_memory' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(logsChannel)
-      supabase.removeChannel(procChannel)
-    }
   }, [fetchData])
 
   // Run consolidation

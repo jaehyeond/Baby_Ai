@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
-
 // Types
 interface PhysicalObject {
   id: string
@@ -54,12 +52,6 @@ interface PhysicalWorldCardProps {
   className?: string
 }
 
-// Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 // Category icons
 const categoryIcons: Record<string, string> = {
   person: '👤',
@@ -103,66 +95,10 @@ export function PhysicalWorldCard({ className = '' }: PhysicalWorldCardProps) {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'objects' | 'physics' | 'permanence'>('objects')
 
-  // Fetch data
+  // physical_objects, spatial_relations, physics_intuitions, object_tracking_events
+  // are Supabase-only tables with no Neo4j equivalent — data renders as empty.
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true)
-      try {
-        const [objectsRes, relationsRes, intuitionsRes, eventsRes] = await Promise.all([
-          supabase
-            .from('physical_objects')
-            .select('*')
-            .order('familiarity', { ascending: false })
-            .limit(20),
-          supabase
-            .from('spatial_relations')
-            .select('*')
-            .eq('is_current', true)
-            .order('created_at', { ascending: false })
-            .limit(10),
-          supabase
-            .from('physics_intuitions')
-            .select('*')
-            .order('acquired_at_stage', { ascending: true }),
-          supabase
-            .from('object_tracking_events')
-            .select('*, object:physical_objects(*)')
-            .order('created_at', { ascending: false })
-            .limit(10),
-        ])
-
-        if (objectsRes.data) setObjects(objectsRes.data)
-        if (relationsRes.data) setRelations(relationsRes.data)
-        if (intuitionsRes.data) setIntuitions(intuitionsRes.data)
-        if (eventsRes.data) setTrackingEvents(eventsRes.data)
-      } catch (error) {
-        console.error('Failed to fetch physical world data:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-
-    // Subscribe to realtime updates
-    const objectsChannel = supabase
-      .channel('physical_objects_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'physical_objects' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    const eventsChannel = supabase
-      .channel('tracking_events_changes')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'object_tracking_events' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    return () => {
-      objectsChannel.unsubscribe()
-      eventsChannel.unsubscribe()
-    }
+    setLoading(false)
   }, [])
 
   // Stats

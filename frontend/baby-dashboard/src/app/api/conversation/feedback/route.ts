@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Supabase Edge Function URL
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+// Phase 4c: Supabase Edge Function → FastAPI
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
 /**
  * POST /api/conversation/feedback
@@ -27,15 +26,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Call textual-backpropagation Edge Function
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/textual-backpropagation`, {
+    const response = await fetch(`${FASTAPI_URL}/api/conversation/feedback`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        action: 'submit_feedback',
         experience_id,
         rating,
         feedback_text,
@@ -47,15 +41,14 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Feedback API] Edge Function error:', errorText)
+      console.error('[Feedback API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to submit feedback' },
         { status: response.status }
       )
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    return NextResponse.json(await response.json())
 
   } catch (error) {
     console.error('[Feedback API] Error:', error)
@@ -81,53 +74,28 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get('limit') || '20'
     const feedbackId = searchParams.get('feedback_id')
 
-    let edgeFunctionAction: string
-    const requestBody: Record<string, unknown> = {}
-
-    switch (action) {
-      case 'history':
-        edgeFunctionAction = 'get_feedback_history'
-        requestBody.limit = parseInt(limit)
-        break
-      case 'impact':
-        if (!feedbackId) {
-          return NextResponse.json(
-            { error: 'feedback_id is required for impact action' },
-            { status: 400 }
-          )
-        }
-        edgeFunctionAction = 'get_impact_report'
-        requestBody.feedback_id = feedbackId
-        break
-      case 'stats':
-      default:
-        edgeFunctionAction = 'get_propagation_stats'
-        break
+    if (action === 'impact' && !feedbackId) {
+      return NextResponse.json(
+        { error: 'feedback_id is required for impact action' },
+        { status: 400 }
+      )
     }
 
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/textual-backpropagation`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({
-        action: edgeFunctionAction,
-        ...requestBody,
-      }),
-    })
+    const params = new URLSearchParams({ action, limit })
+    if (feedbackId) params.set('feedback_id', feedbackId)
+
+    const response = await fetch(`${FASTAPI_URL}/api/conversation/feedback?${params}`)
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Feedback API] Edge Function error:', errorText)
+      console.error('[Feedback API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to get feedback data' },
         { status: response.status }
       )
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    return NextResponse.json(await response.json())
 
   } catch (error) {
     console.error('[Feedback API] Error:', error)

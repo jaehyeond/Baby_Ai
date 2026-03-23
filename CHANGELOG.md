@@ -5,6 +5,158 @@
 
 ---
 
+## 2026-03-19 (Phase 3)
+
+### DB Migration Phase 3: SSE + Redis Pub/Sub 프론트엔드 연결 완료 ✅
+
+**완료 항목**:
+- [x] `neural/baby/conversation_handler.py` — Spreading Activation 추가 (Step 5.5)
+  - `get_spreading_activation(concept_ids)` 호출 후 `publish_neuron_activation()` 발행
+  - `saved_concept_ids` 수집 패턴으로 기존 루프 비파괴적 수정
+- [x] `neural/baby/api_server.py` — `GET /api/brain/activation-summary` 엔드포인트 추가
+  - Neo4j INVOLVES 관계 기반 heatmap + replay 데이터 반환
+  - `useNeuronActivations` 초기 로드용
+- [x] `frontend/baby-dashboard/src/hooks/SSEContext.tsx` — SSEProvider + Context (신규)
+  - 단일 EventSource 앱 전체 공유
+  - 지수 백오프 재연결 (3s → 6s → 12s → max 60s)
+- [x] `frontend/baby-dashboard/src/hooks/useSSESubscription.ts` — SSE 구독 hook
+  - `useSSESubscription(handler)` — SSEContext에서 구독/해제
+  - handler ref 패턴으로 불필요한 재구독 방지
+- [x] `frontend/baby-dashboard/src/hooks/useNeuronActivations.ts` — Supabase Realtime 제거
+  - Supabase `channel('brain-activity')` 구독 → `useSSESubscription` 교체
+  - 초기 heatmap: `supabase.rpc(...)` → `GET /api/brain/activation-summary` 교체
+- [x] `frontend/baby-dashboard/src/components/Providers.tsx` — SSEProvider 래퍼 (신규)
+- [x] `frontend/baby-dashboard/src/app/layout.tsx` — `<Providers>` 추가
+- [x] `frontend/baby-dashboard/.env.local` — `NEXT_PUBLIC_FASTAPI_URL=http://localhost:8000` 추가
+- [x] `scripts/migration/phase3_realtime/test_sse_stream.py` — 검증 스크립트
+
+**비판적 검토로 수정된 원래 계획**:
+- ioredis + Next.js `/api/events/route.ts`: 삭제 (FastAPI CORS로 브라우저 직접 연결 가능)
+- pending_question / imagination 채널: Phase 4 이연 (발행자 미이식)
+- useNeuronActivations의 concept/region name 조회 (Supabase): Phase 4 이연
+
+**TypeScript 타입 검사**: `npx tsc --noEmit` → 오류 0개 ✅
+
+**Go/No-Go 기준** (서버 실행 후 검증):
+- [ ] `GET /api/brain/activation-summary` → heatmap + replay 반환
+- [ ] `POST /api/conversation` → Redis `baby-ai:neuron_activation` 채널 발행
+- [ ] 브라우저 EventSource → `baby_state` 이벤트 수신
+
+---
+
+## 2026-03-19 (Phase 2)
+
+### DB Migration Phase 2: Neo4j Backend + FastAPI 기본 구조 완료 ✅
+
+**완료 항목**:
+- [x] `neural/baby/neo4j_db.py` — db.py BrainDatabase 완전 대체 (40개 async 메서드)
+- [x] `neural/baby/redis_client.py` — Redis Pub/Sub + 캐시 래퍼
+- [x] `neural/baby/api_server.py` — lifespan 패턴 + 기본 엔드포인트 추가
+- [x] `neural/baby/conversation_handler.py` — DB-first 대화 파이프라인 구현
+- [x] `scripts/migration/phase2_backend/test_fastapi_endpoints.py` — Phase 2 검증 스크립트
+
+**비판적 검증으로 발견한 수정 사항**:
+- Cypher SET에서 `min()` / `max()` 사용 불가 (집계 함수로 인식됨) → `CASE WHEN`으로 대체
+- MERGE ON CREATE 시 `id: randomUUID()` 별도 SET 필요 (props 딕셔너리 포함 불가)
+- `LLMClient.generate()`는 동기 함수 → `asyncio.to_thread()` 래핑으로 비동기화
+
+**conversation_handler.py 파이프라인**:
+1. `get_baby_state()` → 감정/발달 상태
+2. Gemini 호출 (`asyncio.to_thread`)
+3. `insert_experience()` → Neo4j 저장
+4. `insert_concept()` + `link_experience_concept()` → 개념 연결
+5. `log_emotion()` → EmotionLog 저장
+6. `update_baby_state()` → 상태 업데이트
+7. Redis `PUBLISH` → baby_state + experience 이벤트
+
+**검증 결과 (4/4 PASS)**:
+| 검증 | 결과 |
+|-----|------|
+| POST /api/conversation → Neo4j Experience 생성 | PASS |
+| GET /api/state → BabyState 반환 | PASS |
+| GET /api/brain/concepts → 835개 Concept 반환 | PASS |
+| POST /api/memory/consolidate → 2151개 Experience 강화 | PASS |
+
+---
+
+## 2026-03-19 (Phase 1)
+
+### DB Migration Phase 1: Neo4j 스키마 + 데이터 마이그레이션 완료 ✅
+
+**비판적 검증으로 발견한 수정 사항**:
+- embedding 차원: 계획의 768 → 실측 **1536** (OpenAI text-embedding-3-small)
+- embedding REST 반환 형식: float[] 예상 → 실제 **JSON 문자열** (json.loads 파싱 필수)
+- 실제 데이터 규모: MEMORY.md 기록(~3,577행) → 실측 **11,786행** (Baby AI가 성장함)
+- `concept_brain_mapping` 테이블: `id` 컬럼 없음 (composite key만 존재)
+- HTTP 206 = Partial Content = 정상 (처음에 에러로 오인, 수정)
+- MCP Supabase가 다른 프로젝트(사주 앱) 연결 → REST API 직접 사용으로 우회
+
+**완료 항목**:
+- [x] `scripts/migration/phase1_schema/neo4j_schema.cypher` — DDL (제약조건 12개 + 인덱스 6개 + 벡터 3개)
+- [x] `scripts/migration/phase1_schema/export_supabase.py` — Supabase → JSON (11,786행)
+- [x] `scripts/migration/phase1_schema/import_to_neo4j.py` — JSON → Neo4j MERGE
+- [x] `scripts/migration/phase1_schema/validate_migration.py` — 정합성 검증
+- [x] `.gitignore` — `scripts/migration/migration_data/` 추가
+- [x] **Neo4j 스키마 적용**: 20개 인덱스/제약조건 모두 ONLINE
+- [x] **데이터 임포트 완료**: 11개 노드 레이블 + 4개 관계 타입
+- [x] **벡터 인덱스 3개 ONLINE**: concept_embeddings, experience_embeddings, visual_embeddings
+
+**검증 결과 (5/5 PASS)**:
+| 검증 | 결과 |
+|-----|------|
+| 노드 수 일치 (11개 레이블) | PASS |
+| 관계 수 일치 (4개 타입) | PASS |
+| 임베딩 무결성 (148개 Concept) | PASS |
+| 벡터 인덱스 상태 (3개 ONLINE) | PASS |
+| 벡터 검색 동작 (score=1.0000) | PASS |
+
+**Neo4j 최종 상태**:
+- Nodes: BrainRegion(9) + Concept(820) + Experience(3039) + EmotionLog(1503) + ... = ~8,313
+- Relationships: RELATES_TO(680) + MAPPED_TO(820) + INVOLVES(1060) + CAUSES(3) = 2,563
+- Vector indexes: 1536-dim cosine, 148 concepts + 106 experiences embedded
+
+**다음**: Phase 2 — `neo4j_db.py` + FastAPI 백엔드
+
+---
+
+## 2026-03-19
+
+### DB Migration Phase 0: Neo4j AuraDB Free 연결 ✅
+
+- [x] **Neo4j AuraDB Free 인스턴스 생성** — baby-ai (ID: b76cbc85)
+- [x] **Python neo4j 드라이버 설치** — v6.1.0
+- [x] **연결 문제 진단 및 해결** (3가지 함정 발견)
+  1. `neo4j+s://` → AuraDB Free 단일노드에서 라우팅 테이블 조회 실패 (Windows 11 + AuraDB Free 구조적 한계, Community #74376)
+  2. `bolt+s://[instance].databases.neo4j.io` → writer 노드로 일관되게 라우팅 안 됨
+  3. `database_='b76cbc85'` 직접 지정 → "Database not found" (bolt+s 직접 연결 시)
+- [x] **최종 해결책**: system DB → `SHOW DATABASES WHERE writer=true` → writer 주소 동적 조회 → 직접 연결
+- [x] **검증 완료**: Neo4j 5.27-aura, Cypher 5, Nodes: 0, Indexes: 2
+- [x] **.env 업데이트**: NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE 추가
+- [x] **scripts/test_neo4j_connection.py** 작성 (연결 패턴 문서화 포함)
+
+### DB Migration Phase 0: Upstash Redis 연결 ✅
+
+- [x] **Upstash Redis 인스턴스 생성** — baby-ai-redis, GCP Tokyo (asia-northeast1)
+- [x] **설정**: Eviction OFF, TLS ON, 500K commands/month, 256MB, 50GB bandwidth
+- [x] **Python redis-py 설치** — redis[hiredis]
+- [x] **연결 검증 완료** (3개 테스트 통과)
+  1. SET/GET/DEL: `hello-baby-ai` 정상
+  2. Pub/Sub: `baby-ai:test-channel` → 1 listener, 메시지 수신 성공
+  3. Server INFO: Redis 8.2.0, standalone mode
+- [x] **.env 업데이트**: `REDIS_URL=rediss://...` 추가 (TLS 필수)
+- [x] **scripts/test_redis_connection.py** 작성 (asyncio + Pub/Sub 패턴 포함)
+
+### Phase 0 완료 ✅✅
+
+| 항목 | 상태 | 세부 |
+|------|------|------|
+| Neo4j AuraDB Free | ✅ | b76cbc85, v5.27-aura, Cypher 5 |
+| Upstash Redis | ✅ | baby-ai-redis, v8.2.0, GCP Tokyo |
+
+**다음 (Phase 1)**: Neo4j 스키마 생성 (Cypher DDL, vector indexes, constraints)
+
+---
+
 ## 2026-02-23
 
 ### v30 기억 회상 라이브 테스트 + 전체 진단 ✅
@@ -50,21 +202,9 @@
 ## 2026-02-18
 
 ### conversation-process v27 배포 ✅ (CRITICAL BUG FIX)
-- [x] **Concept isolation bug 수정**: ablation runs 간 개념 오염 방지
-  - 원인: `extractAndSaveConcepts()`이 concept 이름으로 글로벌 검색 → 프로덕션/다른 run의 concept 재사용
-  - 결과: rep=1은 86 concepts, rep=2-5는 16-22 concepts (프로덕션 452개와 name 충돌)
-  - 수정: concept/relation lookup에 `.eq("ablation_run_id", ablationRunId)` 스코핑 추가
+- [x] **Concept isolation bug 수정**: concept 이름으로 글로벌 검색 → 프로덕션 concept 재사용 문제
+  - 수정: concept/relation lookup에 `ablation_run_id` 스코핑 추가
   - `.single()` → `.maybeSingle()` (no-match 시 graceful handling)
-- [x] 기존 ablation 데이터 전량 삭제 (5 runs + 모든 FK 참조)
-- [x] Dry-run 검증 통과 (concept 격리 확인)
-- [x] 20-run ablation 재실행 시작 (background task)
-
-### ICDL 2026 논문 진행 ✅
-- [x] §9.2 수식 정렬 갱신 (F7 이전 분석 오류 수정 - 실제로 이미 일치!)
-- [x] §16 Wordbank CDI 비교 분석 추가
-  - Fenson (2007), McMurray (2007), Day et al. (2025) 참고
-  - BabyBrain vs CDI norms 정규화 비교 프레임워크
-- [x] PARAMETER_TAXONOMY.md 생성 (3-Tier 파라미터 분류)
 - [x] F4 emotion downstream 구현 (v24→v25→v26→v27)
 
 ---
@@ -84,22 +224,9 @@
   - "파동의 원인" (대화 컨텍스트) + "생각 경로" (direct) + "연상 확산" (spreading) 3섹션
   - 영역별 그룹화 + 접기/펼치기
 
-### SCI 논문 Deep Review ✅
-- [x] 6개 병렬 에이전트 실행: ICDL 학회, ISMAR 학회, 수식 검증, Gap 분석, LLM 방어, Ablation 비판
-- [x] PAPER_PLAN.md에 Section 9 (검토 결과) 추가
-- [x] 핵심 발견:
-  - ISMAR 부적합 (AR/MR 필수) → IEEE VIS 2026 대안
-  - 수식 F2 CRITICAL (코드 BFS ≠ 논문 recurrence)
-  - Emotion downstream 미적용, Spreading 피드백 없음
-  - C_raw 베이스라인 필수
-  - 추천: arXiv → VIS 2026 → ICDL 2027
-- [x] 경쟁 논문 확인: Vygotskian Autotelic AI (Colas, Nature MI 2022), CoALA, Voyager, Reflexion
-
 ### 문서 정비 ✅
-- [x] PAPER_PLAN.md: Section 9 추가 (6-Agent Review 결과)
-- [x] MEMORY.md: 논문 검토 결과, v23 상태 반영
-- [x] Task.md: v23 버전, 논문 준비 상태 섹션 추가
-- [x] CHANGELOG.md: 2026-02-10 기록
+- [x] MEMORY.md: v23 상태 반영
+- [x] Task.md: v23 버전 업데이트
 - [x] CLAUDE.md: brain-researcher agent, DB 통계 최신화
 - [x] SQL_task.md: Phase B/C1 마이그레이션 기록
 - [x] ROADMAP.md: Phase C1 완료 + v23 반영

@@ -17,7 +17,7 @@ import {
   Database,
   BookOpen,
 } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 interface CuriosityItem {
   id: string
@@ -69,43 +69,12 @@ export function CuriosityCard({ className = '' }: CuriosityCardProps) {
     setIsLoading(true)
 
     try {
-      // Fetch queue
-      // Using 'as any' because these tables aren't in the generated TypeScript types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: queueData } = await (supabase as any)
-        .from('curiosity_queue')
-        .select('*')
-        .order('priority', { ascending: false })
-        .order('created_at', { ascending: false })
-        .limit(20) as { data: CuriosityItem[] | null }
-
-      if (queueData) setQueue(queueData)
-
-      // Fetch exploration logs
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: logsData } = await (supabase as any)
-        .from('exploration_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10) as { data: ExplorationLog[] | null }
-
-      if (logsData) setExplorationLogs(logsData)
-
-      // Calculate stats
-      if (queueData) {
-        const byStatus: Record<string, number> = {}
-        const bySource: Record<string, number> = {}
-
-        for (const item of queueData) {
-          byStatus[item.status] = (byStatus[item.status] || 0) + 1
-          bySource[item.source] = (bySource[item.source] || 0) + 1
-        }
-
-        setStats({
-          total: queueData.length,
-          byStatus,
-          bySource,
-        })
+      const res = await fetch(`${FASTAPI_URL}/api/curiosity?limit=20`)
+      if (res.ok) {
+        const data = await res.json()
+        if (data.queue) setQueue(data.queue)
+        if (data.exploration_logs) setExplorationLogs(data.exploration_logs)
+        if (data.stats) setStats(data.stats)
       }
     } catch (error) {
       console.error('Error fetching curiosity data:', error)
@@ -161,27 +130,6 @@ export function CuriosityCard({ className = '' }: CuriosityCardProps) {
   // Initial fetch
   useEffect(() => {
     fetchData()
-  }, [fetchData])
-
-  // Realtime subscription
-  useEffect(() => {
-    const channel = supabase
-      .channel('curiosity_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'curiosity_queue' },
-        () => fetchData()
-      )
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'exploration_logs' },
-        () => fetchData()
-      )
-      .subscribe()
-
-    return () => {
-      channel.unsubscribe()
-    }
   }, [fetchData])
 
   const tabs: { key: TabType; label: string; icon: typeof Sparkles }[] = [

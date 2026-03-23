@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
 
 // Types
 interface Strategy {
@@ -45,10 +44,6 @@ interface MetacognitionCardProps {
   className?: string
 }
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export function MetacognitionCard({ className = '' }: MetacognitionCardProps) {
   const [strategies, setStrategies] = useState<Strategy[]>([])
@@ -97,31 +92,6 @@ export function MetacognitionCard({ className = '' }: MetacognitionCardProps) {
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
-
-  // Subscribe to realtime updates
-  useEffect(() => {
-    const channel = supabase
-      .channel('metacognition_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'self_evaluation_logs' },
-        () => {
-          fetchData()
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'strategy_effectiveness' },
-        () => {
-          fetchData()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
   }, [fetchData])
 
   // Format percentage

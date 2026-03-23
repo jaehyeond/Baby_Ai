@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
 import {
   Brain,
   Star,
@@ -51,10 +50,6 @@ interface TextualBackpropCardProps {
   className?: string
 }
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export function TextualBackpropCard({ className = '' }: TextualBackpropCardProps) {
   const [stats, setStats] = useState<FeedbackStats | null>(null)
@@ -103,20 +98,6 @@ export function TextualBackpropCard({ className = '' }: TextualBackpropCardProps
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
-
-  // Setup realtime subscription
-  useEffect(() => {
-    const channel = supabase
-      .channel('feedback_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'response_feedback' }, () => {
-        fetchData()
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
   }, [fetchData])
 
   const handleFeedbackClick = (feedbackId: string) => {
