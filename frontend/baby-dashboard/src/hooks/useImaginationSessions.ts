@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
-import type { ImaginationSession, Json } from '@/lib/database.types'
+
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 // Parsed connection structure from imagination session
 export interface DiscoveredConnection {
@@ -34,6 +34,8 @@ export interface ParsedImaginationSession {
   startedAt: Date | null
   endedAt: Date | null
 }
+
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 // Parse raw thought data
 function parseThought(raw: Json): ImaginationThought {
@@ -69,8 +71,9 @@ function parseConnection(raw: Json): DiscoveredConnection | null {
   return null
 }
 
-// Parse raw session to typed session
-function parseSession(raw: ImaginationSession): ParsedImaginationSession {
+// Parse raw session (from FastAPI) to typed session
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseSession(raw: Record<string, any>): ParsedImaginationSession {
   const thoughts: ImaginationThought[] = Array.isArray(raw.thoughts)
     ? raw.thoughts.map(parseThought)
     : []
@@ -80,7 +83,7 @@ function parseSession(raw: ImaginationSession): ParsedImaginationSession {
     : []
 
   const insights: string[] = Array.isArray(raw.insights)
-    ? raw.insights.map(i => String(i))
+    ? raw.insights.map((i: Json) => String(i))
     : []
 
   const emotionalState: Record<string, number> = typeof raw.emotional_state === 'object' && raw.emotional_state !== null
@@ -94,14 +97,14 @@ function parseSession(raw: ImaginationSession): ParsedImaginationSession {
   return {
     id: raw.id,
     topic: raw.topic,
-    trigger: raw.trigger,
-    imaginationType: raw.imagination_type,
+    trigger: raw.trigger ?? null,
+    imaginationType: raw.imagination_type ?? null,
     thoughts,
     connectionsDiscovered,
     insights,
     emotionalState,
     curiosityLevel: raw.curiosity_level ?? 0,
-    durationMs: raw.duration_ms,
+    durationMs: raw.duration_ms ?? null,
     startedAt: raw.started_at ? new Date(raw.started_at) : null,
     endedAt: raw.ended_at ? new Date(raw.ended_at) : null,
   }
@@ -133,16 +136,11 @@ export function useImaginationSessions(limit: number = 20): UseImaginationSessio
     setError(null)
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error: fetchError } = await (supabase as any)
-        .from('imagination_sessions')
-        .select('*')
-        .order('started_at', { ascending: false })
-        .limit(limit)
+      const res = await fetch(`${FASTAPI_URL}/api/imagination?limit=${limit}`)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
-      if (fetchError) throw fetchError
-
-      const parsedSessions = (data || []).map(parseSession)
+      const data = await res.json()
+      const parsedSessions = (data.sessions || []).map(parseSession)
       setSessions(parsedSessions)
 
       // Auto-select the most recent session
@@ -155,7 +153,8 @@ export function useImaginationSessions(limit: number = 20): UseImaginationSessio
     } finally {
       setIsLoading(false)
     }
-  }, [limit, selectedSession])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit])
 
   useEffect(() => {
     fetchSessions()

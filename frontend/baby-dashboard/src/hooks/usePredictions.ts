@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
-import type { Prediction, Json } from '@/lib/database.types'
+
+const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000'
 
 // Parsed prediction for UI display
 export interface ParsedPrediction {
@@ -30,8 +30,9 @@ export interface ParsedPrediction {
   createdAt: Date | null
 }
 
-// Parse raw prediction row to typed prediction
-function parsePrediction(raw: Prediction): ParsedPrediction {
+// Parse raw prediction row (from FastAPI) to typed prediction
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parsePrediction(raw: Record<string, any>): ParsedPrediction {
   const emotionalImpact: Record<string, number> =
     typeof raw.emotional_impact === 'object' && raw.emotional_impact !== null
       ? Object.fromEntries(
@@ -41,29 +42,25 @@ function parsePrediction(raw: Prediction): ParsedPrediction {
         )
       : {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rawAny = raw as any
-
   return {
     id: raw.id,
-    scenario: raw.scenario,
-    prediction: raw.prediction,
+    scenario: raw.scenario ?? '',
+    prediction: raw.prediction ?? '',
     confidence: raw.confidence ?? 0.5,
-    predictionType: raw.prediction_type,
-    domain: raw.domain,
-    reasoning: raw.reasoning,
-    wasCorrect: raw.was_correct,
+    predictionType: raw.prediction_type ?? null,
+    domain: raw.domain ?? null,
+    reasoning: raw.reasoning ?? null,
+    wasCorrect: raw.was_correct ?? null,
     verifiedAt: raw.verified_at ? new Date(raw.verified_at) : null,
-    actualOutcome: raw.actual_outcome,
-    predictionError: raw.prediction_error,
-    insightGained: raw.insight_gained,
-    // v18: Auto-verification fields
-    verifiableAfter: rawAny.verifiable_after ?? null,
-    autoVerified: rawAny.auto_verified ?? false,
+    actualOutcome: raw.actual_outcome ?? null,
+    predictionError: raw.prediction_error ?? null,
+    insightGained: raw.insight_gained ?? null,
+    verifiableAfter: raw.verifiable_after ?? null,
+    autoVerified: raw.auto_verified ?? false,
     basedOnConcepts: raw.based_on_concepts ?? [],
     basedOnExperiences: raw.based_on_experiences ?? [],
     emotionalImpact,
-    developmentStage: raw.development_stage,
+    developmentStage: raw.development_stage ?? null,
     createdAt: raw.created_at ? new Date(raw.created_at) : null,
   }
 }
@@ -112,16 +109,11 @@ export function usePredictions(limit: number = 50): UsePredictionsReturn {
     setError(null)
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error: fetchError } = await (supabase as any)
-        .from('predictions')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(limit)
+      const res = await fetch(`${FASTAPI_URL}/api/predictions?limit=${limit}`)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
-      if (fetchError) throw fetchError
-
-      const parsedPredictions = (data || []).map(parsePrediction)
+      const data = await res.json()
+      const parsedPredictions = (data.predictions || []).map(parsePrediction)
       setPredictions(parsedPredictions)
     } catch (err) {
       console.error('[usePredictions] Error:', err)
@@ -139,29 +131,19 @@ export function usePredictions(limit: number = 50): UsePredictionsReturn {
   const verifyPrediction = useCallback(
     async (predictionId: string, data: VerifyPredictionData): Promise<boolean> => {
       try {
-        const prediction = predictions.find((p) => p.id === predictionId)
-        if (!prediction) {
-          console.error('[usePredictions] Prediction not found:', predictionId)
-          return false
-        }
-
-        // Calculate prediction error (0 = correct, 1 = incorrect)
         const predictionError = data.wasCorrect ? 0 : 1
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: updateError } = await (supabase as any)
-          .from('predictions')
-          .update({
+        const res = await fetch(`${FASTAPI_URL}/api/predictions/${predictionId}/verify`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             was_correct: data.wasCorrect,
             actual_outcome: data.actualOutcome || null,
             insight_gained: data.insightGained || null,
-            prediction_error: predictionError,
-            verified_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', predictionId)
+          }),
+        })
 
-        if (updateError) throw updateError
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
         // Update local state
         setPredictions((prev) =>
@@ -186,7 +168,7 @@ export function usePredictions(limit: number = 50): UsePredictionsReturn {
         return false
       }
     },
-    [predictions]
+    []
   )
 
   // Filter predictions by verification status
@@ -227,7 +209,6 @@ export function usePredictions(limit: number = 50): UsePredictionsReturn {
       incorrectPredictions.length > 0
         ? incorrectPredictions.reduce((sum, p) => sum + p.confidence, 0) / incorrectPredictions.length
         : 0,
-    // v18: Auto-verification stats
     autoVerified: autoVerifiedPredictions.length,
     manualVerified: manualVerifiedPredictions.length,
   }

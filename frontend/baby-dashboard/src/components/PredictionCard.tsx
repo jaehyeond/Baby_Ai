@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRecentPredictions } from '@/hooks/useWorldModel'
-import type { Prediction } from '@/lib/database.types'
+import type { Prediction } from '@/hooks/useWorldModel'
 
 interface PredictionItemProps {
   prediction: Prediction

@@ -1159,6 +1159,84 @@ async def get_curiosity(limit: int = 20, status: Optional[str] = None):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/api/curiosity")
+async def post_curiosity(request: Request):
+    """
+    호기심 생성/탐색 처리 (useIdleSleep, CuriosityCard 액션용)
+
+    action:
+      generate      - 새 호기심 생성 (CuriosityLog 노드 생성)
+      explore_batch - 대기 중인 호기심 탐색 (status 업데이트)
+      explore       - 단일 호기심 탐색
+    """
+    try:
+        body = await request.json()
+        action = body.get("action", "generate")
+        drv = get_driver()
+
+        if action == "generate":
+            # 현재 Baby 상태에서 호기심 주제 추출 → CuriosityLog 노드 생성
+            db = get_brain_db()
+            state = await db.get_baby_state()
+            # 감정 기반 호기심 주제 생성 (간단한 규칙 기반)
+            dominant_emotion = state.get("dominant_emotion", "curiosity")
+            topics = []
+            async with drv.session(database=_DB_NAME) as s:
+                # 최근 경험에서 탐색되지 않은 개념 추출
+                r = await s.run(
+                    "MATCH (c:Concept) WHERE NOT (c)-[:EXPLORED]->() "
+                    "RETURN c.name AS name, c.category AS category "
+                    "ORDER BY c.strength DESC LIMIT $limit",
+                    limit=body.get("limit", 5),
+                )
+                records = await r.fetch(body.get("limit", 5))
+                for rec in records:
+                    topic = rec["name"] or ""
+                    if not topic:
+                        continue
+                    # CuriosityLog 노드 생성
+                    await s.run(
+                        "CREATE (cl:CuriosityLog {id: randomUUID(), query: $query, "
+                        "query_type: 'concept_exploration', source: 'concept_gap', "
+                        "priority: 0.6, status: 'pending', exploration_count: 0, "
+                        "created_at: datetime()})",
+                        query=topic,
+                    )
+                    topics.append(topic)
+
+            return {"success": True, "action": "generate", "generated": [{"query": t} for t in topics]}
+
+        elif action in ("explore_batch", "explore"):
+            batch_size = body.get("batch_size", 3)
+            async with drv.session(database=_DB_NAME) as s:
+                # 대기 중인 호기심 가져와 상태 업데이트
+                r = await s.run(
+                    "MATCH (cl:CuriosityLog) WHERE cl.status = 'pending' "
+                    "RETURN cl.id AS id, cl.query AS query "
+                    "ORDER BY cl.priority DESC LIMIT $limit",
+                    limit=batch_size,
+                )
+                records = await r.fetch(batch_size)
+                explored = []
+                for rec in records:
+                    await s.run(
+                        "MATCH (cl:CuriosityLog {id: $id}) "
+                        "SET cl.status = 'learned', cl.exploration_count = cl.exploration_count + 1, "
+                        "cl.satisfaction_after = 0.6",
+                        id=rec["id"],
+                    )
+                    explored.append({"query": rec["query"], "success": True})
+
+            return {"success": True, "action": action, "explored": explored}
+
+        else:
+            return {"success": False, "error": f"Unknown action: {action}"}
+
+    except Exception as e:
+        logger.error(f"post_curiosity error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ── Imagination ────────────────────────────────────────────────────────────────
 
 @app.get("/api/imagination")
@@ -1179,6 +1257,102 @@ async def get_imagination(limit: int = 10):
         return {"sessions": result, "total": len(result)}
     except Exception as e:
         logger.error(f"get_imagination error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/imagination")
+async def post_imagination(request: Request):
+    """
+    상상/예측/시뮬레이션 처리 (useIdleSleep 수면 중 상상 단계)
+
+    action:
+      imagine   - 상상 세션 시작 (topic 기반)
+      predict   - 예측 생성
+      simulate  - 목표 시뮬레이션
+      verify    - 예측 검증
+      stats     - 통계 조회
+    """
+    try:
+        body = await request.json()
+        action = body.get("action", "imagine")
+        db = get_brain_db()
+
+        if action == "imagine":
+            topic = body.get("topic", "자유 연상")
+            trigger = body.get("trigger", "idle_sleep")
+            state = await db.get_baby_state()
+            curiosity_level = state.get("curiosity", 0.5)
+            session = await db.start_imagination_session(
+                topic=topic,
+                imagination_type="free_association",
+                curiosity_level=curiosity_level,
+                trigger_event=trigger,
+            )
+            if session:
+                await db.end_imagination_session(
+                    session_id=session.get("id", ""),
+                    insights=["내재적 탐색 완료"],
+                    curiosity_satisfied=curiosity_level + 0.1,
+                )
+            return {
+                "success": True,
+                "action": "imagine",
+                "session": session or {},
+                "imagination_sessions": 1,
+            }
+
+        elif action == "predict":
+            scenario = body.get("scenario", "")
+            prediction_text = f"{scenario}에서 긍정적 결과 예측"
+            pred = await db.insert_prediction(
+                experience_id=None,
+                prediction=prediction_text,
+                confidence=0.6,
+                prediction_type="scenario",
+            )
+            return {"success": True, "action": "predict", "prediction": pred or {}}
+
+        elif action == "simulate":
+            goal = body.get("goal", "자유 탐색")
+            sim = await db.insert_simulation(
+                goal=goal,
+                simulation_type="planning",
+            )
+            if sim:
+                await db.complete_simulation(
+                    simulation_id=sim.get("id", ""),
+                    outcome="completed",
+                    reward_signal=0.6,
+                )
+            return {"success": True, "action": "simulate", "simulation": sim or {}}
+
+        elif action == "verify":
+            prediction_id = body.get("prediction_id")
+            actual_outcome = body.get("actual_outcome", "")
+            if prediction_id:
+                await db.verify_prediction(
+                    prediction_id=prediction_id,
+                    actual_outcome=actual_outcome,
+                    was_correct=True,
+                )
+            return {"success": True, "action": "verify"}
+
+        elif action == "stats":
+            preds = await db.get_recent_predictions(limit=20)
+            correct = sum(1 for p in preds if p.get("was_correct"))
+            return {
+                "success": True,
+                "action": "stats",
+                "total_predictions": len(preds),
+                "correct_predictions": correct,
+                "accuracy": correct / len(preds) if preds else 0,
+            }
+
+        else:
+            return {"success": False, "error": f"Unknown action: {action}"}
+
+    except Exception as e:
+        logger.error(f"post_imagination error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1290,6 +1464,78 @@ async def get_visual_experiences(limit: int = 5):
 # sleep-logs, procedural-memory 로 분리했으므로 기존 엔드포인트 유지.
 # MemoryConsolidationCard fetchData가 호출하는 GET /api/memory/consolidate 응답에
 # sleep_log_count 추가 (MemoryConsolidationCard stats 필드 보완)
+
+
+# ── Simulations ────────────────────────────────────────────────────────────────
+
+@app.get("/api/simulations")
+async def get_simulations(limit: int = 20):
+    """
+    시뮬레이션 목록 조회 (useWorldModel hook용)
+    Neo4j Imagination 노드 중 imagination_type이 simulation/planning인 것 반환
+    """
+    try:
+        db = get_brain_db()
+        sims = await db.get_recent_simulations(limit=limit)
+        return {"simulations": sims or [], "total": len(sims or [])}
+    except Exception as e:
+        logger.error(f"get_simulations error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/causal-models")
+async def get_causal_models(limit: int = 100):
+    """
+    인과관계 모델 조회 (useWorldModel hook causalModels + causalGraph용)
+    Neo4j CAUSES 관계 반환
+    """
+    try:
+        db = get_brain_db()
+        models = await db.get_causal_models(limit=limit)
+        return {"causal_models": models or [], "total": len(models or [])}
+    except Exception as e:
+        logger.error(f"get_causal_models error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Predictions ────────────────────────────────────────────────────────────────
+
+@app.get("/api/predictions")
+async def get_predictions(limit: int = 50):
+    """
+    예측 목록 조회 (usePredictions hook용)
+    Neo4j Prediction 노드 반환
+    """
+    try:
+        db = get_brain_db()
+        preds = await db.get_recent_predictions(limit=limit)
+        return {"predictions": preds or [], "total": len(preds or [])}
+    except Exception as e:
+        logger.error(f"get_predictions error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.patch("/api/predictions/{prediction_id}/verify")
+async def verify_prediction_endpoint(prediction_id: str, request: Request):
+    """
+    예측 검증 (usePredictions.verifyPrediction용)
+    was_correct, actual_outcome, insight_gained 업데이트
+    """
+    try:
+        body = await request.json()
+        was_correct: bool = body.get("was_correct", False)
+        actual_outcome: str = body.get("actual_outcome", "")
+        db = get_brain_db()
+        await db.verify_prediction(
+            prediction_id=prediction_id,
+            actual_outcome=actual_outcome,
+            was_correct=was_correct,
+        )
+        return {"success": True, "prediction_id": prediction_id, "was_correct": was_correct}
+    except Exception as e:
+        logger.error(f"verify_prediction_endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # ── Server Entry Point ────────────────────────────────────────────────────────
 

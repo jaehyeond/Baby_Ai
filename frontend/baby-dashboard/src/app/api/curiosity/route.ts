@@ -1,40 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Supabase Edge Function URL
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://extbfhoktzozgqddjcps.supabase.co'
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { action } = body
 
-    // Route to appropriate Edge Function
-    let functionName: string
-    if (action === 'generate' || action === 'get_queue' || action === 'get_stats') {
-      functionName = 'generate-curiosity'
-    } else if (action === 'explore' || action === 'explore_batch' || action === 'get_status') {
-      functionName = 'autonomous-exploration'
-    } else {
-      return NextResponse.json(
-        { error: 'Unknown action', details: `Action '${action}' is not supported` },
-        { status: 400 }
-      )
-    }
-
-    // Call Supabase Edge Function
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/${functionName}`, {
+    const response = await fetch(`${FASTAPI_URL}/api/curiosity`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error(`[Curiosity API] Edge Function error (${functionName}):`, errorText)
+      console.error('[Curiosity API] FastAPI error:', errorText)
       return NextResponse.json(
         { error: 'Failed to process curiosity request', details: errorText },
         { status: response.status }
@@ -53,25 +33,23 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Get curiosity queue stats
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-curiosity`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({
-        action: 'get_stats',
-      }),
-    })
+    const { searchParams } = new URL(request.url)
+    const limit = searchParams.get('limit') || '20'
+    const status = searchParams.get('status') || ''
+
+    const url = new URL(`${FASTAPI_URL}/api/curiosity`)
+    url.searchParams.set('limit', limit)
+    if (status) url.searchParams.set('status', status)
+
+    const response = await fetch(url.toString())
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('[Curiosity API] Edge Function error:', errorText)
+      console.error('[Curiosity API] FastAPI error:', errorText)
       return NextResponse.json(
-        { error: 'Failed to get curiosity stats' },
+        { error: 'Failed to get curiosity data' },
         { status: response.status }
       )
     }
