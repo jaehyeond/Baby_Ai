@@ -906,12 +906,14 @@ class BrainDatabase:
         MAPPED_TO 조인으로 brain_region_id 포함 반환.
         LIMIT 이후 OPTIONAL MATCH로 Cartesian product 방지.
         """
+        # depth를 Cypher 리터럴로 삽입 (Neo4j는 가변 길이 경로 상한을 파라미터로 받을 수 없음)
+        safe_depth = max(1, min(int(depth), 5))  # 1~5 범위 제한
         async with self.driver.session(database=_DB_NAME) as s:
             result = await s.run(
                 "UNWIND $ids AS start_id "
-                "MATCH (start:Concept {id: start_id})-[r:RELATES_TO*1..2]->(related:Concept) "
+                f"MATCH (start:Concept {{id: start_id}})-[r:RELATES_TO*1..{safe_depth}]->(related:Concept) "
                 "WHERE NOT related.id IN $ids "
-                "WITH related, avg([rel IN r | rel.strength]) AS avg_strength "
+                "WITH related, reduce(s = 0.0, rel IN r | s + coalesce(rel.strength, 0.5)) / size(r) AS avg_strength "
                 "ORDER BY avg_strength DESC LIMIT $limit "
                 "OPTIONAL MATCH (related)-[:MAPPED_TO]->(br:BrainRegion) "
                 "RETURN related, avg_strength, br.id AS brain_region_id",
@@ -927,6 +929,69 @@ class BrainDatabase:
                 }
                 for r in records
             ]
+
+    # ==================== Hebbian Learning ====================
+
+    async def hebbian_update(
+        self,
+        concept_pairs: list[tuple[str, str]],
+        strength_delta: float = 0.05,
+    ) -> int:
+        """Hebbian Learning: 함께 활성화된 개념 쌍의 RELATES_TO 강화/생성
+
+        - ON CREATE: strength=delta, hebb_strength=delta (새 시냅스)
+        - ON MATCH: strength += delta (cap 1.0), hebb_strength += delta (cap 1.0)
+        - canonical ordering (min,max) 으로 방향성 중복 방지
+        """
+        if not concept_pairs:
+            return 0
+        unique_pairs = list({
+            (min(a, b), max(a, b)) for a, b in concept_pairs if a != b
+        })
+        if not unique_pairs:
+            return 0
+        pairs_list = [list(p) for p in unique_pairs]
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "UNWIND $pairs AS pair "
+                "MATCH (a:Concept {id: pair[0]}), (b:Concept {id: pair[1]}) "
+                "MERGE (a)-[r:RELATES_TO]->(b) "
+                "ON CREATE SET r.strength = $delta, r.hebb_strength = $delta, "
+                "  r.source = 'hebbian', r.created_at = $now "
+                "ON MATCH SET "
+                "  r.strength = CASE WHEN coalesce(r.strength, 0.5) + $delta > 1.0 "
+                "    THEN 1.0 ELSE coalesce(r.strength, 0.5) + $delta END, "
+                "  r.hebb_strength = CASE WHEN coalesce(r.hebb_strength, 0) + $delta > 1.0 "
+                "    THEN 1.0 ELSE coalesce(r.hebb_strength, 0) + $delta END "
+                "RETURN count(r) AS updated",
+                pairs=pairs_list,
+                delta=strength_delta,
+                now=_now_iso(),
+            )
+            record = await result.single()
+            return record["updated"] if record else 0
+
+    async def get_hebb_stats(self) -> dict:
+        """Hebbian 학습 통계"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH ()-[r:RELATES_TO]->() "
+                "WHERE r.hebb_strength IS NOT NULL AND r.hebb_strength > 0 "
+                "RETURN count(r) AS hebb_count, "
+                "  avg(r.hebb_strength) AS avg_hebb, "
+                "  max(r.hebb_strength) AS max_hebb"
+            )
+            record = await result.single()
+            result2 = await s.run(
+                "MATCH ()-[r:RELATES_TO]->() RETURN count(r) AS total"
+            )
+            rec2 = await result2.single()
+        return {
+            "total_relates_to": rec2["total"] if rec2 else 0,
+            "hebbian_count": record["hebb_count"] if record else 0,
+            "avg_hebb_strength": round(float(record["avg_hebb"] or 0), 4) if record else 0,
+            "max_hebb_strength": round(float(record["max_hebb"] or 0), 4) if record else 0,
+        }
 
     async def get_brain_regions(self) -> list[dict]:
         """뇌 영역 목록 조회"""
@@ -948,6 +1013,229 @@ class BrainDatabase:
             )
             record = await result.single()
             return record["n"] if record else 0
+
+    # ==================== pending_questions ====================
+
+    async def insert_pending_question(
+        self,
+        question: str,
+        source: str = "conversation",
+        curiosity_log_id: str = None,
+    ) -> dict:
+        """PendingQuestion 노드 생성 (+ 선택적 CuriosityLog GENERATED 관계)"""
+        props = {
+            "question": question,
+            "source": source,
+            "status": "pending",
+            "asked_at": _now_iso(),
+        }
+        async with self.driver.session(database=_DB_NAME) as s:
+            if curiosity_log_id:
+                result = await s.run(
+                    "MATCH (cl:CuriosityLog {id: $cl_id}) "
+                    "CREATE (pq:PendingQuestion {id: randomUUID()}) SET pq += $props "
+                    "CREATE (cl)-[:GENERATED]->(pq) "
+                    "RETURN pq",
+                    cl_id=curiosity_log_id,
+                    props=props,
+                )
+            else:
+                result = await s.run(
+                    "CREATE (pq:PendingQuestion {id: randomUUID()}) SET pq += $props RETURN pq",
+                    props=props,
+                )
+            record = await result.single()
+            return dict(record["pq"]) if record else {}
+
+    async def get_pending_questions(
+        self,
+        status: str = None,
+        limit: int = 20,
+    ) -> list[dict]:
+        """PendingQuestion 목록 조회"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            if status:
+                result = await s.run(
+                    "MATCH (pq:PendingQuestion {status: $status}) "
+                    "RETURN pq ORDER BY pq.asked_at DESC LIMIT $limit",
+                    status=status, limit=limit,
+                )
+            else:
+                result = await s.run(
+                    "MATCH (pq:PendingQuestion) "
+                    "RETURN pq ORDER BY pq.asked_at DESC LIMIT $limit",
+                    limit=limit,
+                )
+            records = await result.fetch(limit)
+            return [dict(r["pq"]) for r in records]
+
+    async def update_question_status(
+        self,
+        question_id: str,
+        status: str,
+    ) -> dict:
+        """PendingQuestion 상태 변경 (pending → dismissed 등)"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (pq:PendingQuestion {id: $id}) "
+                "SET pq.status = $status "
+                "RETURN pq",
+                id=question_id, status=status,
+            )
+            record = await result.single()
+            return dict(record["pq"]) if record else {}
+
+    async def submit_question_answer(
+        self,
+        question_id: str,
+        answer: str,
+        answer_confidence: float = 0.5,
+    ) -> dict:
+        """PendingQuestion 답변 제출"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (pq:PendingQuestion {id: $id}) "
+                "SET pq.answer = $answer, "
+                "  pq.answer_confidence = $conf, "
+                "  pq.answered_at = $now, "
+                "  pq.status = 'answered' "
+                "RETURN pq",
+                id=question_id,
+                answer=answer,
+                conf=answer_confidence,
+                now=_now_iso(),
+            )
+            record = await result.single()
+            return dict(record["pq"]) if record else {}
+
+    # ==================== sleep / memory replay (Phase C3) ====================
+
+    async def replay_recent_memories(
+        self,
+        salience_threshold: float = 0.4,
+        max_experiences: int = 10,
+        hebb_delta: float = 0.02,
+    ) -> dict:
+        """수면 중 기억 재생: 고감정 경험의 개념 네트워크를 재활성화 + offline Hebbian
+
+        Returns:
+            {
+                "reactivated_count": int,
+                "hebbian_updates": int,
+                "activation_events": list[dict],  # SSE 전송용
+                "experiences_replayed": int,
+            }
+        """
+        from itertools import combinations
+
+        async with self.driver.session(database=_DB_NAME) as s:
+            # 1. 고감정 경험 조회 (emotional_salience 높은 순)
+            result = await s.run(
+                "MATCH (e:Experience) "
+                "WHERE e.emotional_salience > $threshold "
+                "RETURN e.id AS exp_id, e.emotional_salience AS salience "
+                "ORDER BY e.emotional_salience DESC LIMIT $limit",
+                threshold=salience_threshold,
+                limit=max_experiences,
+            )
+            experiences = await result.fetch(max_experiences)
+
+        if not experiences:
+            return {
+                "reactivated_count": 0,
+                "hebbian_updates": 0,
+                "activation_events": [],
+                "experiences_replayed": 0,
+            }
+
+        # 2. 각 경험의 INVOLVES → Concept IDs 수집
+        all_concept_ids: list[str] = []
+        activation_events: list[dict] = []
+
+        async with self.driver.session(database=_DB_NAME) as s:
+            for exp in experiences:
+                result = await s.run(
+                    "MATCH (e:Experience {id: $exp_id})-[inv:INVOLVES]->(c:Concept) "
+                    "OPTIONAL MATCH (c)-[:MAPPED_TO]->(br:BrainRegion) "
+                    "RETURN c.id AS concept_id, br.id AS brain_region_id, "
+                    "  inv.relevance AS relevance",
+                    exp_id=exp["exp_id"],
+                )
+                records = await result.fetch(50)
+                for r in records:
+                    cid = r["concept_id"]
+                    if cid and cid not in all_concept_ids:
+                        all_concept_ids.append(cid)
+                    if cid:
+                        activation_events.append({
+                            "concept_id": cid,
+                            "brain_region_id": r["brain_region_id"],
+                            "intensity": round(float(r["relevance"] or 0.5) * 0.7, 3),
+                            "trigger_type": "sleep_replay",
+                        })
+
+        # 3. Spreading activation으로 추가 개념 활성화
+        spread_ids: list[str] = []
+        if all_concept_ids:
+            spread_results = await self.get_spreading_activation(
+                concept_ids=all_concept_ids[:10],  # 상위 10개만
+                depth=1,  # 수면 중은 얕은 전파
+                limit=15,
+            )
+            for sr in spread_results:
+                sid = sr.get("id")
+                if sid and sid not in all_concept_ids:
+                    spread_ids.append(sid)
+                    activation_events.append({
+                        "concept_id": sid,
+                        "brain_region_id": sr.get("brain_region_id"),
+                        "intensity": round(float(sr.get("activation_strength") or 0.3) * 0.5, 3),
+                        "trigger_type": "sleep_replay",
+                    })
+
+        # 4. Hebbian update: 재활성화된 모든 개념 쌍
+        total_hebb = 0
+        combined_ids = all_concept_ids + spread_ids
+        if len(combined_ids) >= 2:
+            pairs = list(combinations(combined_ids, 2))
+            total_hebb = await self.hebbian_update(pairs, strength_delta=hebb_delta)
+
+        return {
+            "reactivated_count": len(combined_ids),
+            "hebbian_updates": total_hebb,
+            "activation_events": activation_events,
+            "experiences_replayed": len(experiences),
+        }
+
+    async def create_sleep_log(
+        self,
+        trigger_type: str = "idle",
+        reinforced_count: int = 0,
+        decayed_count: int = 0,
+        patterns_promoted: int = 0,
+        replay_count: int = 0,
+        duration_ms: int = 0,
+        development_stage: int = 0,
+    ) -> dict:
+        """SleepLog 노드 생성 (기억 통합/재생 기록)"""
+        props = {
+            "trigger_type": trigger_type,
+            "reinforced_count": reinforced_count,
+            "decayed_count": decayed_count,
+            "patterns_promoted": patterns_promoted,
+            "replay_count": replay_count,
+            "duration_ms": duration_ms,
+            "development_stage": development_stage,
+            "success": True,
+            "created_at": _now_iso(),
+        }
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "CREATE (sl:SleepLog {id: randomUUID()}) SET sl += $props RETURN sl",
+                props=props,
+            )
+            record = await result.single()
+            return dict(record["sl"]) if record else {}
 
 
 # ── 싱글톤 팩토리 ────────────────────────────────────────────────────────────

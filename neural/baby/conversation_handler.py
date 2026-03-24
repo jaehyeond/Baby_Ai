@@ -20,6 +20,7 @@ Phase 2에서 의도적으로 제외 (순차 추가 예정):
 import asyncio
 import json
 import logging
+import random
 import re
 from typing import Optional
 
@@ -147,6 +148,27 @@ def _update_emotion_from_response(current_state: dict, response: str) -> dict:
     return emotions
 
 
+def _get_attention_params(emotions: dict) -> dict:
+    """감정 상태 → spreading activation 파라미터 (D2: amygdala attention gate)
+
+    호기심 ↑ → 넓은 탐색 (depth 3, limit 30)
+    두려움 ↑ → 좁은 집중 (depth 1, limit 10)
+    지루함 ↑ → 다양성 추구 (depth 2, limit 25)
+    기본값 → depth 2, limit 20
+    """
+    curiosity = emotions.get("curiosity", 0.5)
+    fear = emotions.get("fear", 0.1)
+    boredom = emotions.get("boredom", 0.1)
+
+    if curiosity > 0.7:
+        return {"depth": 3, "limit": 30}
+    elif fear > 0.5:
+        return {"depth": 1, "limit": 10}
+    elif boredom > 0.6:
+        return {"depth": 2, "limit": 25}
+    return {"depth": 2, "limit": 20}
+
+
 async def handle_conversation(
     message: str,
     context: dict = None,
@@ -240,12 +262,14 @@ async def handle_conversation(
                 logger.warning(f"concept insert/link error for '{concept_name}': {e}")
 
     # ── Step 5.5: Spreading Activation → Redis publish ────────────────────────
+    activations = []
     if saved_concept_ids:
         try:
+            attention = _get_attention_params(new_emotions)
             activations = await db.get_spreading_activation(
                 concept_ids=saved_concept_ids,
-                depth=2,
-                limit=20,
+                depth=attention["depth"],
+                limit=attention["limit"],
             )
             if activations:
                 # neuron_activation 메시지 형식: concept_id, brain_region_id, intensity, trigger_type
@@ -264,6 +288,47 @@ async def handle_conversation(
                     logger.debug(f"Published {len(activation_events)} neuron activations")
         except Exception as e:
             logger.warning(f"spreading activation error: {e}")
+
+    # ── Step 5.6: Hebbian Learning (함께 활성화된 개념 쌍 강화) ──────────────
+    if len(saved_concept_ids) >= 2:
+        try:
+            from itertools import combinations
+            # 직접 공출현: saved_concept_ids 쌍 (delta=0.05)
+            direct_pairs = list(combinations(saved_concept_ids, 2))
+            updated = await db.hebbian_update(direct_pairs, strength_delta=0.05)
+            # 간접 공활성화: saved × activated (delta=0.02)
+            activated_ids = [a.get("id") for a in activations if a.get("id")]
+            if activated_ids:
+                cross_pairs = [
+                    (s, a) for s in saved_concept_ids for a in activated_ids
+                    if s != a
+                ]
+                updated += await db.hebbian_update(cross_pairs, strength_delta=0.02)
+            if updated:
+                logger.debug(f"Hebbian update: {updated} pairs strengthened")
+        except Exception as e:
+            logger.warning(f"hebbian update error: {e}")
+
+    # ── Step 5.7: 내적 시뮬레이션 (D1 — stage >= 3, 30% 확률) ───────────────
+    if stage >= 3 and activations and len(activations) >= 2 and random.random() < 0.3:
+        try:
+            top = sorted(activations, key=lambda a: a.get("activation_strength", 0), reverse=True)[:2]
+            name_a = top[0].get("name")
+            name_b = top[1].get("name")
+            concept_ids = [t.get("id") for t in top if t.get("id")]
+            if name_a and name_b and len(concept_ids) >= 2:
+                scenario = f"만약 {name_a}와(과) {name_b}가 연결된다면?"
+                await db.insert_prediction(
+                    scenario=scenario,
+                    prediction=f"{scenario} → 새로운 이해가 생길 수 있다",
+                    confidence=0.5,
+                    prediction_type="hypothetical",
+                    based_on_concepts=concept_ids,
+                    development_stage=stage,
+                )
+                logger.debug(f"Internal simulation: {scenario}")
+        except Exception as e:
+            logger.warning(f"internal simulation error: {e}")
 
     # ── Step 6: EmotionLog 저장 ───────────────────────────────────────────────
     try:
@@ -301,6 +366,22 @@ async def handle_conversation(
     except Exception as e:
         logger.warning(f"update_baby_state error: {e}")
         updated_state = state
+
+    # ── Step 7.5: 발달 단계 자동 전이 (D3) ─────────────────────────────────────
+    if experience_id and exp_count > 0:
+        _STAGE_THRESHOLDS = {1: 10, 2: 30, 3: 70, 4: 150, 5: 300}
+        next_stage = stage
+        for s_level, threshold in sorted(_STAGE_THRESHOLDS.items()):
+            if exp_count >= threshold and s_level > stage:
+                next_stage = s_level
+        if next_stage > stage:
+            try:
+                prev_stage = stage
+                await db.update_baby_state(development_stage=next_stage)
+                stage = next_stage  # 이후 Step 8에서 새 stage 사용
+                logger.info(f"Development stage advanced: {prev_stage} → {next_stage} (exp_count={exp_count})")
+            except Exception as e:
+                logger.warning(f"stage advance error: {e}")
 
     # ── Step 8: Redis PUBLISH ─────────────────────────────────────────────────
     try:

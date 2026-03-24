@@ -128,6 +128,33 @@ export function useIdleSleep(options: UseIdleSleepOptions = {}): UseIdleSleepRet
         }
       }
 
+      // Phase 1.5: Memory Replay (C3 — 수면 중 기억 재생 + offline Hebbian)
+      console.log('[IdleSleep] Phase 1.5: Memory replay (offline Hebbian)...')
+      try {
+        const replayResponse = await fetch('/api/memory/replay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            salience_threshold: 0.4,
+            max_experiences: 10,
+            hebb_delta: 0.02,
+            trigger_type: 'idle',
+          }),
+        })
+        if (replayResponse.ok) {
+          const replayData = await replayResponse.json()
+          if (replayData.success) {
+            console.log(
+              `[IdleSleep] Memory replay done: ${replayData.experiences_replayed} experiences, ` +
+              `${replayData.reactivated_count} concepts reactivated, ` +
+              `${replayData.hebbian_updates} synapses strengthened`
+            )
+          }
+        }
+      } catch (replayErr) {
+        console.warn('[IdleSleep] Memory replay error (non-critical):', replayErr)
+      }
+
       // Phase 2: Generate New Curiosities (based on gaps found during consolidation)
       console.log('[IdleSleep] Phase 2: Generating curiosities...')
       const curiosityResponse = await fetch('/api/curiosity', {

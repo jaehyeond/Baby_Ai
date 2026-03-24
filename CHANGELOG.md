@@ -5,6 +5,99 @@
 
 ---
 
+## 2026-03-23~24 (Phase C2 + Step 3 PendingQuestion)
+
+### Phase C2: Hebbian Learning 구현 ✅
+
+**핵심**: 함께 활성화된 개념 쌍의 RELATES_TO 관계를 강화/생성하는 Hebbian 학습
+
+**변경 파일**:
+- [x] `neural/baby/neo4j_db.py` — `hebbian_update()`, `get_hebb_stats()` 추가
+  - UNWIND pairs, strength + hebb_strength 동시 갱신 (cap 1.0)
+  - canonical ordering (min,max)으로 방향성 중복 방지
+- [x] `neural/baby/conversation_handler.py` — Step 5.6 Hebbian 블록 삽입
+  - 직접 공출현(delta=0.05) + 간접 공활성화(delta=0.02)
+  - `activations = []` 초기화 추가 (try 블록 밖 안전 처리)
+- [x] `neural/baby/api_server.py` — `GET /api/brain/hebb-stats` 엔드포인트
+
+**설계 결정**: `strength` + `hebb_strength` 둘 다 갱신
+- spreading activation에 즉시 반영 (strength)
+- Hebbian 기여분 감사 추적 (hebb_strength)
+- decay_connections()와 자연스럽게 경쟁 (강화 vs 망각)
+
+### Step 3: PendingQuestion Neo4j 노드 + API ✅
+
+**핵심**: CuriosityLog와 구조적으로 다른 PendingQuestion 노드 신규 생성
+
+**변경 파일**:
+- [x] `neural/baby/neo4j_db.py` — 4개 메서드 (insert/get/update/answer)
+  - `(:CuriosityLog)-[:GENERATED]->(:PendingQuestion)` 관계 지원
+- [x] `neural/baby/api_server.py` — 4개 엔드포인트 + Pydantic 모델
+  - `publish_pending_question()` 활성화 (기존 미사용 → 호출 연결)
+  - GET/POST /api/pending-questions, PATCH /{id}, POST /{id}/answer
+
+**호출 지점 검증**: 6개 새 메서드 모두 엔드포인트에서 호출 확인 ✅
+
+### Vision Neo4j 마이그레이션 — substrate.py 의존 제거 ✅
+
+**핵심**: api_server.py에서 substrate.py(Supabase) 의존 완전 제거
+
+**변경**:
+- [x] `POST /api/vision/process` → Gemini Vision API 직접 호출 + Neo4j Experience 저장
+- [x] `GET /api/vision/stats` → Neo4j Experience(task_type='vision') 카운트
+- [x] `POST /api/process` → conversation_handler.handle_conversation() 위임
+- [x] substrate.py import 0건 확인 (grep 검증 완료)
+
+**검증**: `python -c "from neural.baby.api_server import app"` → Import OK, 46 endpoints
+
+### Phase D1: 내적 시뮬레이션 ✅ + Phase D2: 감정 기반 주의 ✅
+
+**D2 변경**:
+- [x] `neural/baby/neo4j_db.py` — `get_spreading_activation()` depth 하드코딩 버그 수정
+  - `*1..2` → `*1..{safe_depth}` (f-string, 1~5 범위 제한)
+- [x] `neural/baby/conversation_handler.py` — `_get_attention_params()` 함수 추가
+  - 호기심 > 0.7 → depth=3, limit=30 / 두려움 > 0.5 → depth=1, limit=10
+  - Step 5.5에서 감정 기반 동적 spreading activation 파라미터 사용
+
+**D1 변경**:
+- [x] `neural/baby/conversation_handler.py` — Step 5.7 내적 시뮬레이션
+  - stage >= 3 + activations >= 3 + 30% 확률 게이트
+  - 상위 2개 활성화 개념으로 "만약 X와 Y가 연결된다면?" 자동 Prediction 생성
+  - prediction_type="hypothetical", based_on_concepts 포함
+
+### Phase D3: 발달 자동 전이 ✅
+
+**핵심**: 대화 파이프라인 내에서 경험 수 기반 자동 stage 전이
+
+**변경 파일**:
+- [x] `neural/baby/conversation_handler.py` — Step 7.5 stage check 블록
+  - `_STAGE_THRESHOLDS = {1: 10, 2: 30, 3: 70, 4: 150, 5: 300}`
+  - 경험 수 초과 시 `update_baby_state(development_stage=next_stage)` + SSE 알림
+
+**비판적 발견**: world_model.py, substrate.py, development.py, emotions.py의 핵심 로직이
+Neo4j 마이그레이션 이후 conversation_handler.py에서 **단절됨** (6번째 "정의만 되고 호출 안 됨" 패턴)
+→ D3는 development.py 의존 없이 Neo4j 기반으로 직접 구현
+
+### Phase C3: 기억 재생 (Memory Replay) ✅
+
+**핵심**: 수면 중 고감정 경험의 개념 네트워크를 재활성화 + offline Hebbian learning
+
+**변경 파일**:
+- [x] `neural/baby/neo4j_db.py` — `replay_recent_memories()` + `create_sleep_log()`
+  - 고감정 경험 → INVOLVES → 개념 수집 → spreading activation → hebbian_update(delta=0.02)
+  - SleepLog 노드 생성 (기존에 조회만 있고 생성 없었음 → 해결)
+- [x] `neural/baby/api_server.py` — `POST /api/memory/replay` + `ReplayRequest` 모델
+  - `publish_neuron_activation()` import 추가 → SSE로 sleep_replay 이벤트 전송
+- [x] `frontend/baby-dashboard/src/hooks/useIdleSleep.ts` — Phase 1.5에 replay 호출 추가
+  - consolidation 직후, curiosity 생성 전에 실행
+
+**설계 결정**:
+- 수면 중 Hebbian delta=0.02 (대화 중 0.05보다 약한 강화)
+- `trigger_type: "sleep_replay"`로 대화 중 활성화와 구분
+- SleepLog 생성 코드 없음 버그 해결
+
+---
+
 ## 2026-03-19 (Phase 3)
 
 ### DB Migration Phase 3: SSE + Redis Pub/Sub 프론트엔드 연결 완료 ✅

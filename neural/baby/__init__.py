@@ -9,23 +9,15 @@ Baby Neural Substrate - Developmental AI
 - 발달 단계 거침
 
 핵심 컴포넌트:
-- EmotionalCore: 기본 감정 (호기심, 기쁨, 두려움, 놀람)
 - CuriosityEngine: 내재적 동기 (예측 오류 기반)
 - MemorySystem: 기억 시스템 (에피소드/의미/절차)
-- DevelopmentStage: 발달 단계 (신생아 → 유아 → 아기 → 걸음마 → 어린이)
 - SelfModel: 자아 모델 (능력, 선호, 한계 인식)
 
 저장소:
-- Primary: Supabase (pgvector) - Robot_Brain 프로젝트
-- Fallback: 로컬 JSON 파일 (.baby_memory/)
+- Primary: Neo4j AuraDB (neo4j_db.py)
+- Legacy: Supabase (archive/ 디렉토리)
 """
 
-from .emotions import (
-    EmotionalCore,
-    EmotionalState,
-    Emotion,
-    EmotionType,
-)
 from .curiosity import (
     CuriosityEngine,
     CuriositySignal,
@@ -39,35 +31,10 @@ from .memory import (
     ProceduralMemory,
     Experience,
 )
-from .development import (
-    DevelopmentStage,
-    DevelopmentTracker,
-    Milestone,
-)
 from .self_model import (
     SelfModel,
     Capability,
     Preference,
-)
-from .substrate import (
-    BabySubstrate,
-    BabyConfig,
-)
-from .world_model import (
-    WorldModel,
-    PredictionType,
-    SimulationType,
-    ImaginationType,
-    PredictionResult,
-    SimulationResult,
-    ImaginationResult,
-)
-from .emotional_modulator import (
-    EmotionalLearningModulator,
-    Strategy,
-    StrategyDecision,
-    LearningAdjustment,
-    PatternEvaluation,
 )
 # Phase 4: Vision
 from .vision import (
@@ -117,11 +84,6 @@ from .persistence import (
 )
 
 __all__ = [
-    # Emotions
-    "EmotionalCore",
-    "EmotionalState",
-    "Emotion",
-    "EmotionType",
     # Curiosity
     "CuriosityEngine",
     "CuriositySignal",
@@ -133,31 +95,10 @@ __all__ = [
     "SemanticMemory",
     "ProceduralMemory",
     "Experience",
-    # Development
-    "DevelopmentStage",
-    "DevelopmentTracker",
-    "Milestone",
     # Self Model
     "SelfModel",
     "Capability",
     "Preference",
-    # Substrate
-    "BabySubstrate",
-    "BabyConfig",
-    # World Model
-    "WorldModel",
-    "PredictionType",
-    "SimulationType",
-    "ImaginationType",
-    "PredictionResult",
-    "SimulationResult",
-    "ImaginationResult",
-    # Phase 3: Emotional Modulator
-    "EmotionalLearningModulator",
-    "Strategy",
-    "StrategyDecision",
-    "LearningAdjustment",
-    "PatternEvaluation",
     # Phase 4: Vision
     "VisionProcessor",
     "VisualInput",

@@ -40,6 +40,8 @@ from .redis_client import (
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
     CHANNEL_PENDING_QUESTION, CHANNEL_IMAGINATION,
     CHANNEL_EXPERIENCE,
+    publish_pending_question,
+    publish_neuron_activation,
 )
 
 logger = logging.getLogger(__name__)
@@ -110,6 +112,13 @@ class ConsolidateRequest(BaseModel):
     decay_rate: float = 0.01
 
 
+class ReplayRequest(BaseModel):
+    salience_threshold: float = 0.4
+    max_experiences: int = 10
+    hebb_delta: float = 0.02
+    trigger_type: str = "idle"  # "idle" | "manual" | "sleep"
+
+
 class VisionProcessRequest(BaseModel):
     image_data: str
     mime_type: str = "image/jpeg"
@@ -159,6 +168,17 @@ class FeedbackRequest(BaseModel):
     is_helpful: Optional[bool] = None
     is_accurate: Optional[bool] = None
     is_appropriate: Optional[bool] = None
+
+
+class PendingQuestionCreate(BaseModel):
+    question: str
+    source: str = "conversation"
+    curiosity_log_id: Optional[str] = None
+
+
+class PendingQuestionAnswer(BaseModel):
+    answer: str
+    answer_confidence: float = 0.5
 
 
 # ── Health Check ──────────────────────────────────────────────────────────────
@@ -285,6 +305,18 @@ async def get_concept_relations(limit: int = 200):
         return {"relations": relations, "total": len(relations)}
     except Exception as e:
         logger.error(f"get_concept_relations error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/brain/hebb-stats")
+async def get_hebb_stats():
+    """Hebbian 학습 통계 (총 RELATES_TO 수, Hebbian 강화 수, 평균/최대 hebb_strength)"""
+    try:
+        db = get_brain_db()
+        stats = await db.get_hebb_stats()
+        return {"success": True, "stats": stats}
+    except Exception as e:
+        logger.error(f"get_hebb_stats error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -476,6 +508,57 @@ async def consolidate_memory(request: ConsolidateRequest):
         return {"status": "ok", "mode": request.mode, **results}
     except Exception as e:
         logger.error(f"consolidate error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/memory/replay")
+async def memory_replay(request: ReplayRequest):
+    """
+    기억 재생 (Phase C3) — 수면 중 고감정 경험의 개념 네트워크를 재활성화
+
+    1. 고감정 경험 조회 → INVOLVES된 개념 수집
+    2. Spreading activation으로 관련 개념 전파
+    3. Offline Hebbian learning (delta=0.02)
+    4. 재활성화 이벤트를 SSE로 브라우저에 전송 (뇌가 반짝이는 효과)
+    5. SleepLog 기록
+    """
+    import time as _time
+    start_ms = int(_time.time() * 1000)
+
+    try:
+        db = get_brain_db()
+        replay_result = await db.replay_recent_memories(
+            salience_threshold=request.salience_threshold,
+            max_experiences=request.max_experiences,
+            hebb_delta=request.hebb_delta,
+        )
+
+        # SSE로 재활성화 이벤트 브로드캐스트 (뇌 시각화)
+        if replay_result["activation_events"]:
+            await publish_neuron_activation(replay_result["activation_events"])
+
+        # SleepLog 기록
+        duration_ms = int(_time.time() * 1000) - start_ms
+        state = await db.get_baby_state() or {}
+        sleep_log = await db.create_sleep_log(
+            trigger_type=request.trigger_type,
+            replay_count=replay_result["reactivated_count"],
+            reinforced_count=replay_result["hebbian_updates"],
+            duration_ms=duration_ms,
+            development_stage=state.get("development_stage", 0),
+        )
+
+        return {
+            "success": True,
+            "experiences_replayed": replay_result["experiences_replayed"],
+            "reactivated_count": replay_result["reactivated_count"],
+            "hebbian_updates": replay_result["hebbian_updates"],
+            "activation_events_sent": len(replay_result["activation_events"]),
+            "sleep_log_id": sleep_log.get("id"),
+            "duration_ms": duration_ms,
+        }
+    except Exception as e:
+        logger.error(f"memory_replay error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -888,52 +971,79 @@ async def get_feedback_data(action: str = "stats", limit: int = 20, feedback_id:
 
 @app.post("/api/vision/process", response_model=VisionProcessResponse)
 async def process_vision(request: VisionProcessRequest):
-    """이미지 처리 엔드포인트 (기존 유지)"""
+    """이미지 처리 엔드포인트 (substrate → Gemini Vision 직접 호출)"""
     try:
-        from .substrate import get_substrate
+        from .llm_client import get_llm_client
         image_data = base64.b64decode(request.image_data)
-        substrate = get_substrate()
-        result = await substrate.process_image(image_data, request.prompt)
+        prompt = request.prompt or "이 이미지에서 무엇이 보이는지 설명해줘."
 
-        if result.visual_experience:
-            return VisionProcessResponse(
-                visual_experience=result.visual_experience.to_dict(),
-                emotional_changes=result.visual_experience.emotional_response,
-                success=result.success,
-                message="Image processed successfully",
+        # Gemini Vision API 직접 호출
+        llm = get_llm_client()
+        google_client = llm._get_google_client()
+
+        if hasattr(google_client, 'models'):
+            from google.genai import types as genai_types
+            image_part = genai_types.Part.from_bytes(data=image_data, mime_type=request.mime_type)
+            text_part = genai_types.Part.from_text(prompt)
+            response = google_client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[image_part, text_part],
             )
+            description = response.text.strip()
+        else:
+            description = "Vision processing requires google-genai SDK"
+
+        # Neo4j에 VisualExperience 저장 (간단 버전)
+        db = get_brain_db()
+        exp = await db.insert_experience(
+            task=prompt,
+            task_type="vision",
+            output=description,
+            success=bool(description),
+            emotional_salience=0.6,
+            dominant_emotion="curiosity",
+            development_stage=(await db.get_baby_state() or {}).get("development_stage", 0),
+            tags=["vision"],
+        )
+
         return VisionProcessResponse(
-            visual_experience={},
-            emotional_changes={},
-            success=False,
-            message=result.output or "Failed to process image",
+            visual_experience={"description": description, "experience_id": exp.get("id")},
+            emotional_changes={"curiosity": 0.1},
+            success=bool(description),
+            message="Image processed via Gemini Vision",
         )
     except Exception as e:
+        logger.error(f"process_vision error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/vision/stats")
 async def get_vision_stats():
-    """시각 처리 통계 (기존 유지)"""
+    """시각 처리 통계 (Neo4j VisualExperience 기반)"""
     try:
-        from .vision import get_vision_processor
-        return get_vision_processor().get_stats()
+        drv = get_driver()
+        async with drv.session(database=_DB_NAME) as s:
+            r = await s.run(
+                "MATCH (e:Experience {task_type: 'vision'}) "
+                "RETURN count(e) AS total"
+            )
+            rec = await r.single()
+        return {"total_visual_experiences": rec["total"] if rec else 0}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/api/process", response_model=ProcessResponse)
 async def process_task(request: ProcessRequest):
-    """일반 작업 처리 (기존 유지)"""
+    """일반 작업 처리 (conversation_handler 위임)"""
     try:
-        from .substrate import get_substrate
-        substrate = get_substrate()
-        result = await substrate.process(request.task, request.context)
+        from .conversation_handler import handle_conversation
+        result = await handle_conversation(message=request.task, context=request.context)
         return ProcessResponse(
-            output=result.output,
-            success=result.success,
-            emotional_state=result.emotional_state,
-            development_stage=result.development_stage,
+            output=result["output"],
+            success=result["success"],
+            emotional_state=result["emotional_state"],
+            development_stage=result["development_stage"],
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -1234,6 +1344,102 @@ async def post_curiosity(request: Request):
 
     except Exception as e:
         logger.error(f"post_curiosity error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── PendingQuestion ──────────────────────────────────────────────────────────
+
+@app.get("/api/pending-questions")
+async def get_pending_questions_endpoint(status: Optional[str] = None, limit: int = 20):
+    """
+    PendingQuestion 목록 조회
+    - status: pending | answered | dismissed (미지정 시 전체)
+    """
+    try:
+        db = get_brain_db()
+        questions = await db.get_pending_questions(status=status, limit=limit)
+        return {"questions": questions, "total": len(questions)}
+    except Exception as e:
+        logger.error(f"get_pending_questions error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/pending-questions")
+async def create_pending_question(request: PendingQuestionCreate):
+    """
+    PendingQuestion 생성
+    - curiosity_log_id 지정 시 (:CuriosityLog)-[:GENERATED]->(:PendingQuestion) 관계 생성
+    """
+    try:
+        db = get_brain_db()
+        question = await db.insert_pending_question(
+            question=request.question,
+            source=request.source,
+            curiosity_log_id=request.curiosity_log_id,
+        )
+        if not question:
+            raise HTTPException(
+                status_code=404,
+                detail="CuriosityLog not found" if request.curiosity_log_id else "Failed to create question",
+            )
+        # Redis Pub/Sub 발행 (SSE로 브라우저에 전달)
+        await publish_pending_question(question)
+        return {"success": True, "question": question}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"create_pending_question error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.patch("/api/pending-questions/{question_id}")
+async def update_question_status_endpoint(question_id: str, request: Request):
+    """
+    PendingQuestion 상태 변경
+    body: { "status": "dismissed" | "pending" }
+    """
+    try:
+        body = await request.json()
+        new_status = body.get("status")
+        if not new_status:
+            raise HTTPException(status_code=400, detail="status is required")
+        if new_status not in ("pending", "answered", "dismissed"):
+            raise HTTPException(status_code=400, detail="status must be pending, answered, or dismissed")
+
+        db = get_brain_db()
+        updated = await db.update_question_status(question_id, new_status)
+        if not updated:
+            raise HTTPException(status_code=404, detail=f"PendingQuestion {question_id} not found")
+        return {"success": True, "question": updated}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"update_question_status error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/pending-questions/{question_id}/answer")
+async def answer_pending_question(question_id: str, request: PendingQuestionAnswer):
+    """
+    PendingQuestion 답변 제출
+    - status를 'answered'로 변경, answered_at 기록
+    """
+    try:
+        db = get_brain_db()
+        answered = await db.submit_question_answer(
+            question_id=question_id,
+            answer=request.answer,
+            answer_confidence=request.answer_confidence,
+        )
+        if not answered:
+            raise HTTPException(status_code=404, detail=f"PendingQuestion {question_id} not found")
+        # Redis Pub/Sub 발행
+        await publish_pending_question(answered)
+        return {"success": True, "question": answered}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"answer_pending_question error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

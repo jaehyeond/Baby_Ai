@@ -37,7 +37,6 @@ import sys
 
 from .substrate import NeuralSubstrate, SubstrateConfig
 from .visualizer import NeuralVisualizer
-from .baby import BabySubstrate, BabyConfig
 
 
 async def run_substrate_mode(
@@ -74,43 +73,13 @@ async def run_baby_mode(
     max_iterations: int = 3,
     verbose: bool = True,
 ) -> None:
-    """
-    Baby AI 모드 실행
-
-    발달 AI 기능이 통합된 실행:
-    - 감정으로 의사결정
-    - 호기심으로 탐험
-    - 경험에서 학습
-    - 스스로 발달
-    """
-    import os
-
-    # 기억 저장 경로 설정 (프로젝트 루트의 .baby_memory/)
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    memory_path = os.path.join(project_root, ".baby_memory")
-
-    baby = BabySubstrate(BabyConfig(
-        max_iterations=max_iterations,
-        verbose=verbose,
-        memory_path=memory_path,
-    ))
-
-    result = await baby.process(user_request)
-
-    # 기억 저장
-    baby.save()
-
-    # 세션 종료 시 상태 요약
-    if verbose:
-        print("\n" + "=" * 60)
-        print("  BABY AI SESSION SUMMARY")
-        print("=" * 60)
-        state = baby.get_state()
-        print(f"\n  Experiences this session: {state['experience_count']}")
-        print(f"  Development stage: {state['development']['stage']}")
-        print(f"  Dominant emotion: {state['emotional_state']['dominant']}")
-
-    return result
+    """Baby AI 레거시 모드 (아카이브됨) — API 서버 사용 안내"""
+    print("\n" + "=" * 60)
+    print("  [DEPRECATED] --baby 모드는 아카이브되었습니다.")
+    print("  런타임은 API 서버로 이전:")
+    print("    python -m neural.baby.api_server")
+    print("=" * 60)
+    sys.exit(1)
 
 
 async def run_a2a_mode(
