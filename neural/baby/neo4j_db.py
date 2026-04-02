@@ -112,6 +112,7 @@ class BrainDatabase:
         queries = [
             "CREATE INDEX exp_hour IF NOT EXISTS FOR (e:Experience) ON (e.hour_of_day)",
             "CREATE INDEX exp_speaker IF NOT EXISTS FOR (e:Experience) ON (e.speaker_id)",
+            "CREATE INDEX exp_created IF NOT EXISTS FOR (e:Experience) ON (e.created_at)",
             "CREATE INDEX um_speaker IF NOT EXISTS FOR (um:UserModel) ON (um.speaker_id)",
             "CREATE INDEX tp_time_slot IF NOT EXISTS FOR (tp:TemporalPattern) ON (tp.time_slot)",
         ]
@@ -1074,15 +1075,18 @@ class BrainDatabase:
         inferred_emotion: str = "neutral",
         inferred_intent: str = "neutral",
     ) -> None:
-        """Experience -[:INTERACTED_WITH]-> UserModel 관계 생성"""
+        """Experience -[:INTERACTED_WITH]-> UserModel 관계 MERGE (중복 방지)"""
         async with self.driver.session(database=_DB_NAME) as s:
             await s.run(
                 "MATCH (e:Experience {id: $eid}), (u:UserModel {id: $uid}) "
-                "CREATE (e)-[:INTERACTED_WITH {"
-                "  inferred_user_emotion: $emotion, "
-                "  inferred_user_intent: $intent, "
-                "  created_at: $now"
-                "}]->(u)",
+                "MERGE (e)-[r:INTERACTED_WITH]->(u) "
+                "ON CREATE SET "
+                "  r.inferred_user_emotion = $emotion, "
+                "  r.inferred_user_intent = $intent, "
+                "  r.created_at = $now "
+                "ON MATCH SET "
+                "  r.inferred_user_emotion = $emotion, "
+                "  r.inferred_user_intent = $intent",
                 eid=experience_id,
                 uid=user_model_id,
                 emotion=inferred_emotion,
@@ -1219,7 +1223,25 @@ class BrainDatabase:
                 )
                 rec = await r2.single()
                 if rec:
-                    patterns.append(dict(rec["tp"]))
+                    tp_data = dict(rec["tp"])
+                    patterns.append(tp_data)
+                    # EXHIBITS_PATTERN: 관련 Experience → TemporalPattern
+                    await s.run(
+                        "MATCH (tp:TemporalPattern {name: $name, time_slot: $slot}) "
+                        "MATCH (e:Experience)-[:INVOLVES]->(c:Concept {id: $cid}) "
+                        "WHERE e.task_type = 'conversation' AND e.extras IS NOT NULL "
+                        "  AND CASE "
+                        "    WHEN e.extras.hour_of_day >= 6 AND e.extras.hour_of_day < 12 THEN 'morning' "
+                        "    WHEN e.extras.hour_of_day >= 12 AND e.extras.hour_of_day < 17 THEN 'afternoon' "
+                        "    WHEN e.extras.hour_of_day >= 17 AND e.extras.hour_of_day < 21 THEN 'evening' "
+                        "    ELSE 'night' "
+                        "  END = $slot "
+                        "MERGE (e)-[r:EXHIBITS_PATTERN]->(tp) "
+                        "ON CREATE SET r.created_at = datetime()",
+                        name=pattern_name,
+                        slot=slot,
+                        cid=cid,
+                    )
 
             logger.info(f"Temporal patterns detected: {len(patterns)}")
             return patterns
