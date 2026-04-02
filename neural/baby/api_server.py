@@ -56,6 +56,12 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up: initializing Neo4j and Redis...")
     await init_driver()
     init_redis()
+    # E2: 인덱스 보장 (멱등)
+    try:
+        _db = get_brain_db()
+        await _db.ensure_indexes()
+    except Exception as e:
+        logger.warning(f"E2 index creation warning: {e}")
     logger.info("Neo4j + Redis ready")
 
     yield
@@ -504,6 +510,19 @@ async def consolidate_memory(request: ConsolidateRequest):
         if request.mode in ("full", "decay_only"):
             await db.decay_connections(decay_rate=request.decay_rate)
             results["decayed"] = True
+
+        # E2-2: Temporal pattern detection (배치)
+        if request.mode == "full":
+            try:
+                state = await db.get_baby_state() or {}
+                patterns = await db.detect_temporal_patterns(
+                    development_stage=state.get("development_stage", 0)
+                )
+                results["temporal_patterns_detected"] = len(patterns)
+                transitions = await db.compute_transition_probabilities()
+                results["transition_probabilities_updated"] = transitions
+            except Exception as tp_err:
+                logger.warning(f"temporal pattern detection error: {tp_err}")
 
         return {"status": "ok", "mode": request.mode, **results}
     except Exception as e:
@@ -1440,6 +1459,68 @@ async def answer_pending_question(question_id: str, request: PendingQuestionAnsw
         raise
     except Exception as e:
         logger.error(f"answer_pending_question error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── User Models (E2-3: Theory of Mind) ────────────────────────────────────────
+
+@app.get("/api/users")
+async def get_users():
+    """UserModel 목록 조회"""
+    try:
+        drv = get_driver()
+        async with drv.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (u:UserModel) "
+                "RETURN u ORDER BY u.interaction_count DESC"
+            )
+            records = await result.fetch(100)
+        users = [dict(r["u"]) for r in records]
+        return {"users": users, "total": len(users)}
+    except Exception as e:
+        logger.error(f"get_users error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/users/{speaker_id}")
+async def get_user(speaker_id: str):
+    """특정 사용자 상세 + 관심사"""
+    try:
+        db = get_brain_db()
+        ctx = await db.get_user_context(speaker_id)
+        if not ctx:
+            raise HTTPException(status_code=404, detail=f"UserModel not found: {speaker_id}")
+        return ctx
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"get_user error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Temporal Patterns (E2-2) ───────────────────────────────────────────────────
+
+@app.get("/api/temporal-patterns")
+async def get_temporal_patterns():
+    """TemporalPattern 목록 조회 (confidence 내림차순)"""
+    try:
+        drv = get_driver()
+        async with drv.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (tp:TemporalPattern) "
+                "OPTIONAL MATCH (tp)-[:PATTERN_INVOLVES]->(c:Concept) "
+                "WITH tp, collect(c.name) AS concepts "
+                "RETURN tp, concepts ORDER BY tp.confidence DESC"
+            )
+            records = await result.fetch(50)
+        patterns = []
+        for r in records:
+            p = dict(r["tp"])
+            p["involved_concepts"] = r["concepts"]
+            patterns.append(p)
+        return {"patterns": patterns, "total": len(patterns)}
+    except Exception as e:
+        logger.error(f"get_temporal_patterns error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -22,6 +22,7 @@ import json
 import logging
 import random
 import re
+from datetime import datetime, timezone
 from typing import Optional
 
 from .neo4j_db import get_brain_db
@@ -30,12 +31,48 @@ from .llm_client import get_llm_client
 
 logger = logging.getLogger(__name__)
 
+# ── E2-3: 사용자 감정 추론 (규칙 기반, LLM 없이) ────────────────────────────
+USER_EMOTION_KEYWORDS = {
+    "happy":      ["ㅋㅋ", "ㅎㅎ", "좋아", "고마워", "최고", "사랑해", "잘했어"],
+    "frustrated": ["왜 이래", "짜증", "안돼", "틀렸", "다시", "못해"],
+    "sad":        ["슬퍼", "울", "힘들", "외로", "보고싶"],
+    "curious":    ["뭐야", "왜", "어떻게", "알려줘", "궁금"],
+    "angry":      ["화나", "싫어", "하지마", "그만"],
+    "neutral":    [],
+}
+
+
+def infer_user_emotion(message: str) -> str:
+    """키워드 매칭으로 사용자 감정 추론. 매칭 없으면 'neutral'."""
+    scores = {}
+    for emotion, keywords in USER_EMOTION_KEYWORDS.items():
+        scores[emotion] = sum(1 for kw in keywords if kw in message)
+    best = max(scores, key=scores.get)
+    return best if scores[best] > 0 else "neutral"
+
+
+USER_INTENT_PROMPT = (
+    '사용자 메시지의 의도를 분류해줘.\n'
+    '카테고리: teaching, playing, comforting, asking, testing, scolding, praising, neutral\n'
+    '메시지: "{message}"\n'
+    'JSON으로만: {{"intent": "카테고리", "confidence": 0.0~1.0}}'
+)
+
+
+def compute_surprise(expected_patterns: list, current_time_slot: str) -> float:
+    """E2-2: 시간 패턴 기대 vs 현실 비교 → surprise 값"""
+    if not expected_patterns:
+        return 0.1  # 패턴 없으면 약간의 novelty
+    matching = [p for p in expected_patterns if p.get("time_slot") == current_time_slot]
+    return 0.0 if matching else 0.5
+
+
 # 발달 단계별 능력 게이트 (Python 쪽 기준)
 _STAGE_NAMES = {0: "NEWBORN", 1: "INFANT", 2: "BABY", 3: "TODDLER", 4: "CHILD", 5: "YOUTH"}
 
 
-def _build_system_prompt(state: dict) -> str:
-    """BabyState를 기반으로 시스템 프롬프트 구성"""
+def _build_system_prompt(state: dict, user_context: dict = None) -> str:
+    """BabyState를 기반으로 시스템 프롬프트 구성 (E2-3: user_context 포함)"""
     stage = state.get("development_stage", 0)
     stage_name = _STAGE_NAMES.get(stage, "YOUTH")
 
@@ -68,6 +105,21 @@ def _build_system_prompt(state: dict) -> str:
     else:
         stage_guide += "다양한 주제로 깊이 있게 대화할 수 있어. 논리적으로도 생각할 수 있어.\n"
 
+    # 대화 상대 정보 (E2-3)
+    user_info = ""
+    if user_context:
+        user_info = (
+            f"\n[대화 상대 정보]\n"
+            f"이름: {user_context.get('name', '알 수 없음')}\n"
+            f"관계: {user_context.get('relationship', 'unknown')}\n"
+            f"현재 감정: {user_context.get('recent_emotion', 'neutral')}\n"
+        )
+        interests = user_context.get("interests", [])
+        if interests:
+            names = [i["name"] for i in interests[:5]]
+            user_info += f"관심사: {', '.join(names)}\n"
+        user_info += f"대화 횟수: {user_context.get('interaction_count', 0)}회\n"
+
     # 필수 규칙
     rules = (
         "\n[필수 규칙]\n"
@@ -76,7 +128,7 @@ def _build_system_prompt(state: dict) -> str:
         "- 감정을 자연스럽게 표현해.\n"
     )
 
-    return identity + stage_guide + rules
+    return identity + stage_guide + user_info + rules
 
 
 def _extract_concepts_from_response(response: str, user_message: str) -> list[str]:
@@ -193,8 +245,63 @@ async def handle_conversation(
     stage = state.get("development_stage", 0)
     logger.debug(f"BabyState: stage={stage}, dominant={state.get('dominant_emotion')}")
 
+    # ── 시간 정보 (E2-2/E2-3 공용) ──────────────────────────────────────────
+    _now_dt = datetime.now(timezone.utc)
+    _hour = _now_dt.hour
+    _time_of_day = (
+        "morning" if 6 <= _hour < 12 else
+        "afternoon" if 12 <= _hour < 17 else
+        "evening" if 17 <= _hour < 21 else
+        "night"
+    )
+
+    # ── Step 1.5: 사용자 식별 + 감정 추론 (E2-3) ────────────────────────────
+    speaker_id = context.get("speaker_id", "unknown")
+    speaker_name = context.get("speaker_name")
+    user_model = None
+    user_emotion = "neutral"
+    user_intent = "neutral"
+    user_context_data = None
+
+    if speaker_id != "unknown":
+        try:
+            user_model = await db.get_or_create_user_model(
+                speaker_id=speaker_id,
+                speaker_name=speaker_name,
+            )
+            user_emotion = infer_user_emotion(message)
+
+            # Stage >= 4: LLM 의도 추론 (neutral이 아닌 경우만, 비용 절감)
+            if stage >= 4 and user_emotion != "neutral":
+                try:
+                    llm_client = get_llm_client()
+                    intent_resp = await asyncio.to_thread(
+                        llm_client.generate,
+                        prompt=USER_INTENT_PROMPT.format(message=message),
+                        model_key="gemini-2-flash",
+                        temperature=0.1,
+                        max_tokens=64,
+                    )
+                    intent_data = json.loads(intent_resp)
+                    user_intent = intent_data.get("intent", "neutral")
+                except Exception:
+                    pass
+
+            user_context_data = await db.get_user_context(speaker_id)
+        except Exception as e:
+            logger.warning(f"E2-3 user model error: {e}")
+
+    # ── Step 1.5b: 시간 패턴 기대 (E2-2) ────────────────────────────────────
+    temporal_surprise = 0.0
+    if stage >= 3:
+        try:
+            expected_patterns = await db.check_temporal_expectations(_hour)
+            temporal_surprise = compute_surprise(expected_patterns, _time_of_day)
+        except Exception as e:
+            logger.warning(f"temporal expectations error: {e}")
+
     # ── Step 2: LLM 호출 (Gemini) ─────────────────────────────────────────────
-    system_prompt = _build_system_prompt(state)
+    system_prompt = _build_system_prompt(state, user_context=user_context_data)
 
     try:
         llm = get_llm_client()
@@ -215,6 +322,17 @@ async def handle_conversation(
 
     # ── Step 3: 감정 업데이트 ─────────────────────────────────────────────────
     new_emotions = _update_emotion_from_response(state, response_text)
+
+    # E2-2: temporal surprise 반영
+    if temporal_surprise > 0.3:
+        new_emotions["surprise"] = min(1.0, new_emotions.get("surprise", 0.3) + 0.15)
+        new_emotions["curiosity"] = min(1.0, new_emotions.get("curiosity", 0.5) + 0.05)
+    elif temporal_surprise == 0.0 and stage >= 3:
+        new_emotions["joy"] = min(1.0, new_emotions.get("joy", 0.5) + 0.03)
+    # dominant 재계산
+    emotion_vals = {k: v for k, v in new_emotions.items() if k != "dominant_emotion"}
+    new_emotions["dominant_emotion"] = max(emotion_vals, key=emotion_vals.get)
+
     emotional_salience = (
         new_emotions["joy"] * 0.3 +
         new_emotions["curiosity"] * 0.3 +
@@ -234,12 +352,30 @@ async def handle_conversation(
             emotion_snapshot=new_emotions,
             development_stage=stage,
             tags=["conversation"],
+            extras={
+                "speaker_id": speaker_id,
+                "inferred_user_emotion": user_emotion,
+                "inferred_user_intent": user_intent,
+                "hour_of_day": _hour,
+                "time_of_day": _time_of_day,
+            },
         )
         experience_id = exp.get("id")
         logger.debug(f"Experience saved: {experience_id}")
     except Exception as e:
         logger.error(f"insert_experience error: {e}")
         experience_id = None
+
+    # ── Step 4+: Experience ↔ UserModel 연결 (E2-3) ────────────────────────
+    if experience_id and user_model:
+        try:
+            await db.link_experience_user(
+                experience_id, user_model["id"],
+                inferred_emotion=user_emotion,
+                inferred_intent=user_intent,
+            )
+        except Exception as e:
+            logger.warning(f"link_experience_user error: {e}")
 
     # ── Step 5: 개념 추출 + 저장 (MERGE) ──────────────────────────────────────
     saved_concept_ids: list[str] = []
@@ -260,6 +396,13 @@ async def handle_conversation(
                     saved_concept_ids.append(con_id)
             except Exception as e:
                 logger.warning(f"concept insert/link error for '{concept_name}': {e}")
+
+    # ── Step 5.3: 사용자 관심사 업데이트 (E2-3) ────────────────────────────────
+    if user_model and saved_concept_ids:
+        try:
+            await db.update_user_interests(user_model["id"], saved_concept_ids)
+        except Exception as e:
+            logger.warning(f"user interest update error: {e}")
 
     # ── Step 5.5: Spreading Activation → Redis publish ────────────────────────
     activations = []

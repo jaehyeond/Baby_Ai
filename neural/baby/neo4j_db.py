@@ -105,6 +105,21 @@ class BrainDatabase:
     def driver(self):
         return get_driver()
 
+    # ==================== indexes (E2) ====================
+
+    async def ensure_indexes(self) -> None:
+        """E2 필요 인덱스 생성 (IF NOT EXISTS — 멱등)"""
+        queries = [
+            "CREATE INDEX exp_hour IF NOT EXISTS FOR (e:Experience) ON (e.hour_of_day)",
+            "CREATE INDEX exp_speaker IF NOT EXISTS FOR (e:Experience) ON (e.speaker_id)",
+            "CREATE INDEX um_speaker IF NOT EXISTS FOR (um:UserModel) ON (um.speaker_id)",
+            "CREATE INDEX tp_time_slot IF NOT EXISTS FOR (tp:TemporalPattern) ON (tp.time_slot)",
+        ]
+        async with self.driver.session(database=_DB_NAME) as s:
+            for q in queries:
+                await s.run(q)
+        logger.info("E2 indexes ensured")
+
     # ==================== baby_state (싱글톤) ====================
 
     async def get_baby_state(self) -> Optional[dict]:
@@ -1013,6 +1028,248 @@ class BrainDatabase:
             )
             record = await result.single()
             return record["n"] if record else 0
+
+    # ==================== User Model (E2-3: Theory of Mind) ====================
+
+    async def get_or_create_user_model(
+        self,
+        speaker_id: str,
+        speaker_name: str = None,
+        relationship: str = "unknown",
+    ) -> dict:
+        """UserModel MERGE — 없으면 생성, 있으면 interaction_count 증가"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MERGE (u:UserModel {speaker_id: $sid}) "
+                "ON CREATE SET "
+                "  u.id = randomUUID(), "
+                "  u.name = $name, "
+                "  u.relationship = $rel, "
+                "  u.inferred_communication_style = 'neutral', "
+                "  u.avg_emotion_toward_baby = 'neutral', "
+                "  u.recent_emotion = 'neutral', "
+                "  u.interaction_count = 1, "
+                "  u.first_interaction = $now, "
+                "  u.last_interaction = $now, "
+                "  u.created_at = $now, "
+                "  u.development_stage = $stage "
+                "ON MATCH SET "
+                "  u.interaction_count = u.interaction_count + 1, "
+                "  u.last_interaction = $now, "
+                "  u.name = CASE WHEN $name IS NOT NULL THEN $name ELSE u.name END "
+                "RETURN u",
+                sid=speaker_id,
+                name=speaker_name,
+                rel=relationship,
+                now=_now_iso(),
+                stage=0,
+            )
+            record = await result.single()
+            return dict(record["u"]) if record else {}
+
+    async def link_experience_user(
+        self,
+        experience_id: str,
+        user_model_id: str,
+        inferred_emotion: str = "neutral",
+        inferred_intent: str = "neutral",
+    ) -> None:
+        """Experience -[:INTERACTED_WITH]-> UserModel 관계 생성"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            await s.run(
+                "MATCH (e:Experience {id: $eid}), (u:UserModel {id: $uid}) "
+                "CREATE (e)-[:INTERACTED_WITH {"
+                "  inferred_user_emotion: $emotion, "
+                "  inferred_user_intent: $intent, "
+                "  created_at: $now"
+                "}]->(u)",
+                eid=experience_id,
+                uid=user_model_id,
+                emotion=inferred_emotion,
+                intent=inferred_intent,
+                now=_now_iso(),
+            )
+
+    async def update_user_interests(
+        self,
+        user_model_id: str,
+        concept_ids: list[str],
+    ) -> int:
+        """UserModel -[:INTERESTED_IN]-> Concept 관계 MERGE (mention_count 증가)"""
+        if not concept_ids:
+            return 0
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "UNWIND $cids AS cid "
+                "MATCH (u:UserModel {id: $uid}), (c:Concept {id: cid}) "
+                "MERGE (u)-[r:INTERESTED_IN]->(c) "
+                "ON CREATE SET r.mention_count = 1, r.strength = 0.3, r.last_mentioned = $now "
+                "ON MATCH SET "
+                "  r.mention_count = r.mention_count + 1, "
+                "  r.strength = CASE WHEN r.strength + 0.1 > 1.0 THEN 1.0 "
+                "    ELSE r.strength + 0.1 END, "
+                "  r.last_mentioned = $now "
+                "RETURN count(r) AS updated",
+                uid=user_model_id,
+                cids=concept_ids,
+                now=_now_iso(),
+            )
+            record = await result.single()
+            return record["updated"] if record else 0
+
+    async def get_user_context(
+        self,
+        speaker_id: str,
+    ) -> Optional[dict]:
+        """UserModel + 최근 관심사 + 통계 조회 (system prompt 구성용)"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (u:UserModel {speaker_id: $sid}) "
+                "OPTIONAL MATCH (u)-[r:INTERESTED_IN]->(c:Concept) "
+                "WITH u, c, r ORDER BY r.strength DESC LIMIT 10 "
+                "RETURN u, collect(CASE WHEN c IS NOT NULL "
+                "  THEN {name: c.name, strength: r.strength} ELSE null END) AS interests",
+                sid=speaker_id,
+            )
+            record = await result.single()
+            if not record:
+                return None
+            u = dict(record["u"])
+            interests = [i for i in record["interests"] if i is not None]
+            return {
+                "id": u.get("id"),
+                "name": u.get("name"),
+                "speaker_id": u.get("speaker_id"),
+                "relationship": u.get("relationship", "unknown"),
+                "recent_emotion": u.get("recent_emotion", "neutral"),
+                "interaction_count": u.get("interaction_count", 0),
+                "interests": interests,
+            }
+
+    # ==================== Temporal Pattern (E2-2) ====================
+
+    async def detect_temporal_patterns(
+        self,
+        development_stage: int = 0,
+    ) -> list[dict]:
+        """시간대별 반복 개념 조합 탐지. 수면 모드에서 배치 실행.
+
+        조건: 같은 time_slot에서 같은 개념이 3회+ 등장, 2일+ 분포
+        """
+        async with self.driver.session(database=_DB_NAME) as s:
+            # 1) 시간대별 반복 개념 탐지
+            result = await s.run(
+                "MATCH (e:Experience)-[:INVOLVES]->(c:Concept) "
+                "WHERE e.task_type = 'conversation' "
+                "  AND e.extras IS NOT NULL "
+                "WITH e, c, "
+                "  CASE "
+                "    WHEN e.extras.hour_of_day >= 6 AND e.extras.hour_of_day < 12 THEN 'morning' "
+                "    WHEN e.extras.hour_of_day >= 12 AND e.extras.hour_of_day < 17 THEN 'afternoon' "
+                "    WHEN e.extras.hour_of_day >= 17 AND e.extras.hour_of_day < 21 THEN 'evening' "
+                "    ELSE 'night' "
+                "  END AS time_slot "
+                "WITH time_slot, c.name AS concept_name, c.id AS concept_id, "
+                "  count(DISTINCT e) AS occurrence_count, "
+                "  collect(DISTINCT date(datetime(e.created_at))) AS dates "
+                "WHERE occurrence_count >= 3 AND size(dates) >= 2 "
+                "RETURN time_slot, concept_name, concept_id, occurrence_count, "
+                "  size(dates) AS unique_days "
+                "ORDER BY occurrence_count DESC "
+                "LIMIT 20"
+            )
+            rows = await result.fetch(20)
+
+            # 2) 각 결과에 대해 TemporalPattern MERGE + PATTERN_INVOLVES
+            patterns = []
+            for row in rows:
+                slot = row["time_slot"]
+                cname = row["concept_name"]
+                cid = row["concept_id"]
+                count_val = row["occurrence_count"]
+                days = row["unique_days"]
+                confidence = round(min(1.0, count_val / 10.0), 3)
+                pattern_name = f"{slot}_{cname}"
+
+                r2 = await s.run(
+                    "MERGE (tp:TemporalPattern {name: $name, time_slot: $slot}) "
+                    "ON CREATE SET "
+                    "  tp.id = randomUUID(), "
+                    "  tp.pattern_type = 'routine', "
+                    "  tp.occurrence_count = $count, "
+                    "  tp.confidence = $conf, "
+                    "  tp.created_at = datetime(), "
+                    "  tp.development_stage = $stage "
+                    "ON MATCH SET "
+                    "  tp.occurrence_count = $count, "
+                    "  tp.confidence = $conf, "
+                    "  tp.last_occurred = datetime() "
+                    "WITH tp "
+                    "MATCH (c:Concept {id: $cid}) "
+                    "MERGE (tp)-[r:PATTERN_INVOLVES]->(c) "
+                    "SET r.frequency = $freq "
+                    "RETURN tp",
+                    name=pattern_name,
+                    slot=slot,
+                    count=count_val,
+                    conf=confidence,
+                    stage=development_stage,
+                    cid=cid,
+                    freq=round(count_val / max(days, 1), 2),
+                )
+                rec = await r2.single()
+                if rec:
+                    patterns.append(dict(rec["tp"]))
+
+            logger.info(f"Temporal patterns detected: {len(patterns)}")
+            return patterns
+
+    async def check_temporal_expectations(
+        self,
+        current_hour: int,
+    ) -> list[dict]:
+        """현재 시간대 예상 패턴 조회"""
+        time_slot = (
+            "morning" if 6 <= current_hour < 12 else
+            "afternoon" if 12 <= current_hour < 17 else
+            "evening" if 17 <= current_hour < 21 else
+            "night"
+        )
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (tp:TemporalPattern {time_slot: $slot}) "
+                "WHERE tp.confidence > 0.3 "
+                "RETURN tp ORDER BY tp.confidence DESC LIMIT 5",
+                slot=time_slot,
+            )
+            records = await result.fetch(5)
+            return [dict(r["tp"]) for r in records]
+
+    async def compute_transition_probabilities(self) -> int:
+        """같은 날 연속 대화의 패턴 전이 확률 계산 → FOLLOWED_BY 관계 MERGE"""
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (tp1:TemporalPattern)-[:PATTERN_INVOLVES]->(c1:Concept) "
+                "  <-[:INVOLVES]-(e1:Experience) "
+                "MATCH (e2:Experience)-[:INVOLVES]->(c2:Concept) "
+                "  <-[:PATTERN_INVOLVES]-(tp2:TemporalPattern) "
+                "WHERE tp1.id <> tp2.id "
+                "  AND date(datetime(e1.created_at)) = date(datetime(e2.created_at)) "
+                "  AND datetime(e2.created_at) > datetime(e1.created_at) "
+                "  AND duration.between(datetime(e1.created_at), datetime(e2.created_at)).minutes <= 60 "
+                "WITH tp1, tp2, count(*) AS pair_count "
+                "MATCH (e:Experience)-[:INVOLVES]->(:Concept)<-[:PATTERN_INVOLVES]-(tp1) "
+                "WITH tp1, tp2, pair_count, count(DISTINCT e) AS tp1_total "
+                "MERGE (tp1)-[r:FOLLOWED_BY]->(tp2) "
+                "SET r.transition_count = pair_count, "
+                "  r.transition_probability = toFloat(pair_count) / tp1_total, "
+                "  r.created_at = datetime() "
+                "RETURN count(r) AS updated"
+            )
+            record = await result.single()
+            updated = record["updated"] if record else 0
+            logger.info(f"Transition probabilities updated: {updated}")
+            return updated
 
     # ==================== pending_questions ====================
 
