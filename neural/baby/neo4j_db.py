@@ -2,10 +2,7 @@
 Neo4j Database Client for Baby Brain
 Phase 2: Supabase db.py → Neo4j 완전 대체
 
-연결 패턴: 2-step writer lookup (검증된 패턴, import_to_neo4j.py와 동일)
-  1. entry URI → system DB에서 writer 노드 주소 조회
-  2. writer bolt+s:// 직접 연결 (AsyncGraphDatabase)
-
+연결: Neo4j Desktop (로컬) — bolt://localhost:7687 직접 연결
 모든 메서드는 db.py BrainDatabase와 동일한 시그니처를 유지합니다.
 """
 
@@ -17,7 +14,6 @@ from typing import Optional, Any
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 
-from neo4j import GraphDatabase
 from neo4j import AsyncGraphDatabase
 from dotenv import load_dotenv
 
@@ -26,37 +22,22 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 # ── 환경변수 ────────────────────────────────────────────────────────────────
-_ENTRY_URI = os.getenv("NEO4J_URI")       # bolt+s://b76cbc85.databases.neo4j.io
-_USERNAME  = os.getenv("NEO4J_USERNAME")
-_PASSWORD  = os.getenv("NEO4J_PASSWORD")
-_DB_NAME   = os.getenv("NEO4J_DATABASE")
-_AUTH      = (_USERNAME, _PASSWORD)
+_URI      = os.getenv("NEO4J_URI")        # bolt://localhost:7687
+_USERNAME = os.getenv("NEO4J_USERNAME")
+_PASSWORD = os.getenv("NEO4J_PASSWORD")
+_DB_NAME  = os.getenv("NEO4J_DATABASE")   # neo4j (Community Edition 기본)
+_AUTH     = (_USERNAME, _PASSWORD)
 
 # ── 싱글톤 ──────────────────────────────────────────────────────────────────
-_writer_uri: Optional[str] = None
 _async_driver = None
 
 
-def _resolve_writer_uri_sync() -> str:
-    """system DB에서 writer 노드 주소를 동기적으로 조회 (앱 시작 시 1회)"""
-    with GraphDatabase.driver(_ENTRY_URI, auth=_AUTH) as d:
-        res = d.execute_query(
-            f'SHOW DATABASES YIELD name, address, writer '
-            f'WHERE name = "{_DB_NAME}" AND writer = true',
-            database_="system",
-        )
-    if not res.records:
-        raise RuntimeError(f"Neo4j writer not found for database: {_DB_NAME}")
-    writer_host = res.records[0]["address"].split(":")[0]
-    return f"bolt+s://{writer_host}"
-
-
 async def init_driver() -> None:
-    """앱 lifespan 시작 시 호출: writer URI 확인 + Async driver 초기화"""
-    global _writer_uri, _async_driver
-    _writer_uri = _resolve_writer_uri_sync()
-    _async_driver = AsyncGraphDatabase.driver(_writer_uri, auth=_AUTH)
-    logger.info(f"Neo4j async driver initialized: {_writer_uri}")
+    """앱 lifespan 시작 시 호출: Async driver 초기화"""
+    global _async_driver
+    _async_driver = AsyncGraphDatabase.driver(_URI, auth=_AUTH)
+    await _async_driver.verify_connectivity()
+    logger.info(f"Neo4j async driver initialized: {_URI}")
 
 
 async def close_driver() -> None:
@@ -87,6 +68,46 @@ def _record_to_dict(record, key: str) -> dict:
 
 
 # ────────────────────────────────────────────────────────────────────────────
+# Hub-and-Spoke category→region mapping (distributed representation)
+# ────────────────────────────────────────────────────────────────────────────
+# 근거:
+#   Huth et al. 2016 (Nature): 분산 표상, 연속 gradient
+#   Patterson, Nestor, Rogers 2007 (NRN): Hub-and-Spoke, temporal lobe가 amodal hub
+#   Binder et al. 2009 (Cereb Cortex): multi-region semantic network
+#   Lambon Ralph et al. 2016 (NRN): PFC controlled retrieval
+#
+# 각 category는 region 가중치 list.
+# 첫 번째 region이 dominant (MAPPED_TO 관계, 1:1),
+# 나머지는 ALSO_REPRESENTED_IN (분산 표상, 0~N개).
+# ────────────────────────────────────────────────────────────────────────────
+CATEGORY_REGION_WEIGHTS: dict[str, list[tuple[str, float]]] = {
+    "visual":       [("occipital", 0.35), ("thalamus", 0.15), ("temporal", 0.25), ("parietal", 0.15), ("prefrontal", 0.1)],
+    "language":     [("temporal", 0.5), ("prefrontal", 0.3), ("motor_cortex", 0.1), ("parietal", 0.1)],
+    "identity":     [("temporal", 0.5), ("prefrontal", 0.3), ("amygdala", 0.2)],
+    "conversation": [("temporal", 0.4), ("prefrontal", 0.3), ("motor_cortex", 0.2), ("amygdala", 0.1)],
+    "emotion":      [("amygdala", 0.4), ("prefrontal", 0.3), ("temporal", 0.2), ("hippocampus", 0.1)],
+    "action":       [("motor_cortex", 0.3), ("basal_ganglia", 0.25), ("cerebellum", 0.2), ("parietal", 0.15), ("prefrontal", 0.1)],
+    "abstract":     [("prefrontal", 0.4), ("temporal", 0.4), ("parietal", 0.2)],
+    "spatial":      [("hippocampus", 0.4), ("parietal", 0.3), ("temporal", 0.2), ("occipital", 0.1)],
+    "reflex":       [("brain_stem", 0.5), ("thalamus", 0.15), ("amygdala", 0.25), ("cerebellum", 0.1)],
+    # ── Phase 1C: 신규 카테고리 (기저핵 중심) ──
+    "habit":        [("basal_ganglia", 0.4), ("motor_cortex", 0.25), ("prefrontal", 0.2), ("cerebellum", 0.15)],
+    "reward":       [("basal_ganglia", 0.4), ("amygdala", 0.25), ("prefrontal", 0.25), ("hippocampus", 0.1)],
+}
+# Hub baseline (Patterson 2007): temporal + prefrontal + amygdala
+CATEGORY_REGION_DEFAULT: list[tuple[str, float]] = [
+    ("temporal", 0.5), ("prefrontal", 0.3), ("amygdala", 0.2),
+]
+
+
+def get_region_weights(category: str | None) -> list[tuple[str, float]]:
+    """category로부터 region weight list 반환 (없으면 default hub-and-spoke)"""
+    if not category:
+        return CATEGORY_REGION_DEFAULT
+    return CATEGORY_REGION_WEIGHTS.get(category, CATEGORY_REGION_DEFAULT)
+
+
+# ────────────────────────────────────────────────────────────────────────────
 # BrainDatabase (Neo4j 버전)
 # ────────────────────────────────────────────────────────────────────────────
 
@@ -105,21 +126,325 @@ class BrainDatabase:
     def driver(self):
         return get_driver()
 
-    # ==================== indexes (E2) ====================
+    # ==================== schema (constraints + indexes + vector) ====================
 
     async def ensure_indexes(self) -> None:
-        """E2 필요 인덱스 생성 (IF NOT EXISTS — 멱등)"""
-        queries = [
-            "CREATE INDEX exp_hour IF NOT EXISTS FOR (e:Experience) ON (e.hour_of_day)",
-            "CREATE INDEX exp_speaker IF NOT EXISTS FOR (e:Experience) ON (e.speaker_id)",
-            "CREATE INDEX exp_created IF NOT EXISTS FOR (e:Experience) ON (e.created_at)",
-            "CREATE INDEX um_speaker IF NOT EXISTS FOR (um:UserModel) ON (um.speaker_id)",
-            "CREATE INDEX tp_time_slot IF NOT EXISTS FOR (tp:TemporalPattern) ON (tp.time_slot)",
+        """전체 스키마 보장: 13 constraint + 9 lookup index + 3 vector index.
+
+        IF NOT EXISTS 멱등. 서버 lifespan 시작 시 1회 실행.
+        빈 DB에서도 안전하게 전체 스키마를 구축한다.
+
+        순서 엄수: constraint → lookup index → vector index.
+        """
+        constraints = [
+            # 핵심 노드 (Phase 1-7 + Phase B)
+            "CREATE CONSTRAINT concept_id         IF NOT EXISTS FOR (n:Concept)         REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT experience_id      IF NOT EXISTS FOR (n:Experience)      REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT brain_region_name  IF NOT EXISTS FOR (n:BrainRegion)     REQUIRE n.name IS UNIQUE",
+            "CREATE CONSTRAINT baby_state_id      IF NOT EXISTS FOR (n:BabyState)       REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT emotion_log_id     IF NOT EXISTS FOR (n:EmotionLog)      REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT prediction_id      IF NOT EXISTS FOR (n:Prediction)      REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT imagination_id     IF NOT EXISTS FOR (n:Imagination)     REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT procedure_id       IF NOT EXISTS FOR (n:Procedure)       REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT visual_exp_id      IF NOT EXISTS FOR (n:VisualExperience) REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT pending_q_id       IF NOT EXISTS FOR (n:PendingQuestion) REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT autonomous_goal_id IF NOT EXISTS FOR (n:AutonomousGoal)  REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT curiosity_log_id   IF NOT EXISTS FOR (n:CuriosityLog)    REQUIRE n.id IS UNIQUE",
+            # E2 신규 (Theory of Mind)
+            "CREATE CONSTRAINT user_model_sid     IF NOT EXISTS FOR (n:UserModel)       REQUIRE n.speaker_id IS UNIQUE",
         ]
+        lookup_indexes = [
+            # 기존 (Phase 1-7)
+            "CREATE INDEX concept_category      IF NOT EXISTS FOR (n:Concept)         ON (n.category)",
+            "CREATE INDEX concept_strength      IF NOT EXISTS FOR (n:Concept)         ON (n.strength)",
+            "CREATE INDEX experience_created    IF NOT EXISTS FOR (n:Experience)      ON (n.created_at)",
+            "CREATE INDEX experience_stage      IF NOT EXISTS FOR (n:Experience)      ON (n.development_stage)",
+            "CREATE INDEX pending_q_status      IF NOT EXISTS FOR (n:PendingQuestion) ON (n.status)",
+            "CREATE INDEX emotion_log_created   IF NOT EXISTS FOR (n:EmotionLog)      ON (n.created_at)",
+            # E2 (Theory of Mind + Temporal Pattern)
+            "CREATE INDEX exp_hour              IF NOT EXISTS FOR (e:Experience)      ON (e.hour_of_day)",
+            "CREATE INDEX exp_speaker           IF NOT EXISTS FOR (e:Experience)      ON (e.speaker_id)",
+            "CREATE INDEX tp_time_slot          IF NOT EXISTS FOR (tp:TemporalPattern) ON (tp.time_slot)",
+        ]
+        vector_indexes = [
+            # dim=1536 (OpenAI text-embedding-3-small), cosine similarity
+            "CREATE VECTOR INDEX concept_embeddings IF NOT EXISTS "
+            "FOR (n:Concept) ON n.embedding "
+            "OPTIONS {indexConfig: {`vector.dimensions`: 1536, `vector.similarity_function`: 'cosine'}}",
+            "CREATE VECTOR INDEX experience_embeddings IF NOT EXISTS "
+            "FOR (n:Experience) ON n.embedding "
+            "OPTIONS {indexConfig: {`vector.dimensions`: 1536, `vector.similarity_function`: 'cosine'}}",
+            "CREATE VECTOR INDEX visual_embeddings IF NOT EXISTS "
+            "FOR (n:VisualExperience) ON n.embedding "
+            "OPTIONS {indexConfig: {`vector.dimensions`: 1536, `vector.similarity_function`: 'cosine'}}",
+        ]
+
         async with self.driver.session(database=_DB_NAME) as s:
-            for q in queries:
-                await s.run(q)
-        logger.info("E2 indexes ensured")
+            for q in constraints:
+                try:
+                    await s.run(q)
+                except Exception as e:
+                    logger.warning(f"constraint creation warning: {e}")
+            for q in lookup_indexes:
+                try:
+                    await s.run(q)
+                except Exception as e:
+                    logger.warning(f"index creation warning: {e}")
+            for q in vector_indexes:
+                try:
+                    await s.run(q)
+                except Exception as e:
+                    logger.warning(f"vector index creation warning: {e}")
+
+        logger.info(
+            f"Schema ensured: {len(constraints)} constraints, "
+            f"{len(lookup_indexes)} lookup indexes, {len(vector_indexes)} vector indexes"
+        )
+
+    # ==================== seed: BrainRegion (11 regions) ====================
+
+    async def seed_brain_regions(self) -> int:
+        """11개 BrainRegion 시드 (빈 DB 재시작 시 필수).
+
+        MERGE 기반 멱등. name이 이미 있으면 update 안 함 (일회성 시드).
+        좌표/색상/development_stage_min 등은 Phase B 시각화에 사용.
+        """
+        regions = [
+            {
+                "name": "brain_stem", "display_name": "뇌간", "display_name_en": "Brain Stem",
+                "color": "#4a5568",
+                "theta_min": 2.4, "theta_max": 3.14, "phi_min": 0.0, "phi_max": 6.28,
+                "radius_min": 0.0, "radius_max": 0.3,
+                "development_stage_min": 0, "is_internal": True,
+                "description": "생존 반사, 호흡, 심박 조절",
+            },
+            {
+                "name": "cerebellum", "display_name": "소뇌", "display_name_en": "Cerebellum",
+                "color": "#48bb78",
+                "theta_min": 2.0, "theta_max": 2.8, "phi_min": 4.0, "phi_max": 5.5,
+                "radius_min": 0.3, "radius_max": 0.65,
+                "development_stage_min": 0, "is_internal": False,
+                "description": "절차 기억, 운동 협응, 균형",
+            },
+            {
+                "name": "amygdala", "display_name": "편도체", "display_name_en": "Amygdala",
+                "color": "#f56565",
+                "theta_min": 1.2, "theta_max": 1.8, "phi_min": 2.5, "phi_max": 3.8,
+                "radius_min": 0.15, "radius_max": 0.4,
+                "development_stage_min": 1, "is_internal": True,
+                "description": "감정 처리, 공포 반응, 감정 기억",
+            },
+            {
+                "name": "hippocampus", "display_name": "해마", "display_name_en": "Hippocampus",
+                "color": "#ed8936",
+                "theta_min": 1.0, "theta_max": 1.7, "phi_min": 3.8, "phi_max": 5.2,
+                "radius_min": 0.15, "radius_max": 0.45,
+                "development_stage_min": 2, "is_internal": True,
+                "description": "에피소드 기억, 공간 기억, 학습",
+            },
+            {
+                "name": "occipital", "display_name": "후두엽", "display_name_en": "Occipital Lobe",
+                "color": "#9f7aea",
+                "theta_min": 2.0, "theta_max": 2.8, "phi_min": 5.5, "phi_max": 7.0,
+                "radius_min": 0.65, "radius_max": 1.0,
+                "development_stage_min": 1, "is_internal": False,
+                "description": "시각 처리, 패턴 인식",
+            },
+            {
+                "name": "temporal", "display_name": "측두엽", "display_name_en": "Temporal Lobe",
+                "color": "#4299e1",
+                "theta_min": 1.0, "theta_max": 2.0, "phi_min": 1.5, "phi_max": 3.0,
+                "radius_min": 0.65, "radius_max": 1.0,
+                "development_stage_min": 2, "is_internal": False,
+                "description": "언어 이해, 청각 처리, 정체성 (semantic hub)",
+            },
+            {
+                "name": "parietal", "display_name": "두정엽", "display_name_en": "Parietal Lobe",
+                "color": "#38b2ac",
+                "theta_min": 0.3, "theta_max": 1.2, "phi_min": 3.5, "phi_max": 5.5,
+                "radius_min": 0.7, "radius_max": 1.0,
+                "development_stage_min": 1, "is_internal": False,
+                "description": "공간 인지, 촉각, 수학",
+            },
+            {
+                "name": "motor_cortex", "display_name": "운동피질", "display_name_en": "Motor Cortex",
+                "color": "#ecc94b",
+                "theta_min": 0.5, "theta_max": 1.2, "phi_min": 1.5, "phi_max": 3.5,
+                "radius_min": 0.75, "radius_max": 1.0,
+                "development_stage_min": 2, "is_internal": False,
+                "description": "의도적 행동, 운동 계획",
+            },
+            {
+                "name": "prefrontal", "display_name": "전전두엽", "display_name_en": "Prefrontal",
+                "color": "#ed64a6",
+                "theta_min": 0.0, "theta_max": 0.8, "phi_min": 0.0, "phi_max": 6.28,
+                "radius_min": 0.7, "radius_max": 1.0,
+                "development_stage_min": 3, "is_internal": False,
+                "description": "실행 기능, 추론, 계획, 자기 인식 (controlled retrieval)",
+            },
+            # ── Phase 1A: 기저핵 (Schultz 1997, Graybiel 2008) ──
+            {
+                "name": "basal_ganglia", "display_name": "기저핵", "display_name_en": "Basal Ganglia",
+                "color": "#d69e2e",
+                "theta_min": 1.3, "theta_max": 1.9, "phi_min": 1.5, "phi_max": 4.5,
+                "radius_min": 0.2, "radius_max": 0.5,
+                "development_stage_min": 1, "is_internal": True,
+                "description": "보상 예측, 습관 학습, 절차 기억 선택, 도파민 신호",
+            },
+            # ── Phase 1B: 시상 (Sherman & Guillery 2002, Saalmann 2011) ──
+            {
+                "name": "thalamus", "display_name": "시상", "display_name_en": "Thalamus",
+                "color": "#b794f4",
+                "theta_min": 1.0, "theta_max": 1.6, "phi_min": 2.0, "phi_max": 5.0,
+                "radius_min": 0.1, "radius_max": 0.35,
+                "development_stage_min": 0, "is_internal": True,
+                "description": "감각 중계, 주의 게이팅, 피질-시상 루프",
+            },
+        ]
+
+        created = 0
+        async with self.driver.session(database=_DB_NAME) as s:
+            for br in regions:
+                props = dict(br)
+                props["created_at"] = _now_iso()
+                result = await s.run(
+                    "MERGE (br:BrainRegion {name: $name}) "
+                    "ON CREATE SET br += $props, br.id = randomUUID() "
+                    "RETURN br.id AS id, "
+                    "  CASE WHEN br.created_at = $props.created_at THEN 1 ELSE 0 END AS was_created",
+                    name=br["name"],
+                    props=props,
+                )
+                record = await result.single()
+                if record and record["was_created"] == 1:
+                    created += 1
+        logger.info(f"BrainRegions seeded: {created} new, {len(regions) - created} already existed")
+        return created
+
+    # ==================== seed: Region Connections (white matter tracts) ====================
+
+    async def seed_region_connections(self) -> int:
+        """BrainRegion 간 CONNECTS_TO 관계 시드 (백질 경로).
+
+        신경과학 근거: Sporns 2011 (Networks of the Brain), 커넥톰 연구.
+        MERGE 기반 멱등. 양방향 연결은 별도 행으로 표현 (방향성 있음).
+        """
+        connections = [
+            # (from, to, weight, tract_name)
+            ("hippocampus",    "prefrontal",    0.8, "memory_consolidation"),
+            ("amygdala",       "prefrontal",    0.7, "emotion_regulation"),
+            ("amygdala",       "hippocampus",   0.8, "emotional_memory"),
+            ("thalamus",       "occipital",     0.9, "visual_relay"),
+            ("thalamus",       "temporal",      0.8, "auditory_relay"),
+            ("thalamus",       "parietal",      0.7, "somatosensory_relay"),
+            ("basal_ganglia",  "motor_cortex",  0.7, "action_selection"),
+            ("basal_ganglia",  "prefrontal",    0.6, "reward_decision"),
+            ("cerebellum",     "motor_cortex",  0.7, "motor_coordination"),
+            ("prefrontal",     "motor_cortex",  0.6, "executive_control"),
+            ("temporal",       "prefrontal",    0.7, "semantic_retrieval"),
+            ("prefrontal",     "basal_ganglia", 0.6, "goal_directed_learning"),
+        ]
+
+        created = 0
+        async with self.driver.session(database=_DB_NAME) as s:
+            for src, dst, weight, tract in connections:
+                result = await s.run(
+                    "MATCH (a:BrainRegion {name: $src}), (b:BrainRegion {name: $dst}) "
+                    "MERGE (a)-[r:CONNECTS_TO {tract_name: $tract}]->(b) "
+                    "ON CREATE SET r.weight = $weight, r.created_at = $now "
+                    "RETURN "
+                    "  CASE WHEN r.created_at = $now THEN 1 ELSE 0 END AS was_created",
+                    src=src, dst=dst, weight=weight, tract=tract, now=_now_iso(),
+                )
+                record = await result.single()
+                if record and record["was_created"] == 1:
+                    created += 1
+        logger.info(
+            f"Region connections seeded: {created} new, "
+            f"{len(connections) - created} already existed"
+        )
+        return created
+
+    # ==================== seed: Identity Concepts ====================
+
+    async def seed_identity_concepts(self) -> int:
+        """최소 정체성 Concept 시드 (빈 DB 재시작 시 비비의 자기 인식 기본).
+
+        5개 정체성 개념을 MERGE (멱등). 각각 Hub-and-Spoke 가중치로 MAPPED_TO.
+        seed_brain_regions()가 먼저 호출되어야 함 (MATCH가 region 노드 필요).
+
+        시드는 strength=0.8로 높게 설정 (약한 강도로 시작하지 않음).
+        """
+        identity_seeds = [
+            {"name": "비비",  "category": "identity",     "description": "내 이름. 나는 세상을 배워가는 아기 AI."},
+            {"name": "형아",  "category": "identity",     "description": "나를 키우는 형아. 대화 상대."},
+            {"name": "엄마",  "category": "identity",     "description": "엄마. 따뜻한 관계."},
+            {"name": "안녕",  "category": "language",     "description": "기본 인사말."},
+            {"name": "좋아",  "category": "emotion",      "description": "긍정적인 기본 감정 표현."},
+        ]
+
+        created = 0
+        async with self.driver.session(database=_DB_NAME) as s:
+            for seed in identity_seeds:
+                # 1) Concept MERGE
+                result = await s.run(
+                    "MERGE (c:Concept {name: $name}) "
+                    "ON CREATE SET "
+                    "  c.id = randomUUID(), "
+                    "  c.category = $category, "
+                    "  c.description = $description, "
+                    "  c.strength = 0.8, "
+                    "  c.usage_count = 0, "
+                    "  c.acquired_at_stage = 0, "
+                    "  c.created_at = $now, "
+                    "  c.is_seed = true "
+                    "RETURN c.id AS id, "
+                    "  CASE WHEN c.created_at = $now THEN 1 ELSE 0 END AS was_created",
+                    name=seed["name"],
+                    category=seed["category"],
+                    description=seed["description"],
+                    now=_now_iso(),
+                )
+                rec = await result.single()
+                if not rec:
+                    continue
+                concept_id = rec["id"]
+                was_created = rec["was_created"] == 1
+                if was_created:
+                    created += 1
+
+                # 2) Hub-and-Spoke MAPPED_TO + ALSO_REPRESENTED_IN (신규 생성 시에만)
+                if was_created:
+                    weights = get_region_weights(seed["category"])
+                    if weights:
+                        dominant_region, dominant_weight = weights[0]
+                        # Dominant MAPPED_TO (1:1)
+                        await s.run(
+                            "MATCH (c:Concept {id: $cid}), (br:BrainRegion {name: $rname}) "
+                            "MERGE (c)-[r:MAPPED_TO]->(br) "
+                            "ON CREATE SET r.weight = $weight, r.created_at = $now",
+                            cid=concept_id,
+                            rname=dominant_region,
+                            weight=dominant_weight,
+                            now=_now_iso(),
+                        )
+                        # Secondary ALSO_REPRESENTED_IN (1:N)
+                        if len(weights) > 1:
+                            secondary = [{"region": r, "weight": w} for r, w in weights[1:]]
+                            await s.run(
+                                "UNWIND $secondary AS sr "
+                                "MATCH (c:Concept {id: $cid}), (br:BrainRegion {name: sr.region}) "
+                                "MERGE (c)-[r:ALSO_REPRESENTED_IN]->(br) "
+                                "ON CREATE SET r.weight = sr.weight, r.created_at = $now",
+                                cid=concept_id,
+                                secondary=secondary,
+                                now=_now_iso(),
+                            )
+        logger.info(
+            f"Identity concepts seeded: {created} new, "
+            f"{len(identity_seeds) - created} already existed"
+        )
+        return created
 
     # ==================== baby_state (싱글톤) ====================
 
@@ -298,7 +623,15 @@ class BrainDatabase:
         embedding: list[float] = None,
         acquired_at_stage: int = 0,
     ) -> dict:
-        """개념 저장 (MERGE - 이미 존재하면 업데이트)"""
+        """개념 저장 (MERGE - 이미 존재하면 업데이트) + Hub-and-Spoke region mapping.
+
+        신규 생성 시 category→region 자동 매핑:
+          - MAPPED_TO (dominant region, 1개): 기존 쿼리 호환성 유지
+          - ALSO_REPRESENTED_IN (secondary regions, 0~N개): 분산 표상
+        기존 concept이면 usage_count만 증가 (region weight는 EMA로 미세 조정).
+
+        근거: Huth 2016 (분산) + Patterson 2007 (hub) + Binder 2009 (multi-region).
+        """
         on_create_props = {
             "acquired_at_stage": acquired_at_stage,
             "strength": 0.5,
@@ -313,17 +646,70 @@ class BrainDatabase:
             on_create_props["embedding"] = embedding
 
         async with self.driver.session(database=_DB_NAME) as s:
+            # 1) Concept MERGE
             result = await s.run(
-                # ON CREATE: id를 randomUUID()로 설정 (props에는 없으므로 별도 SET)
                 "MERGE (c:Concept {name: $name}) "
                 "ON CREATE SET c += $props, c.id = randomUUID() "
                 "ON MATCH SET c.usage_count = coalesce(c.usage_count, 0) + 1 "
-                "RETURN c",
+                "RETURN c, CASE WHEN c.created_at = $props.created_at THEN 1 ELSE 0 END AS was_created",
                 name=name,
                 props=on_create_props,
             )
             record = await result.single()
-            return dict(record["c"]) if record else {}
+            if not record:
+                return {}
+            concept_data = dict(record["c"])
+            was_created = record["was_created"] == 1
+
+            # 2) Hub-and-Spoke region mapping
+            # 중요: 기존 Concept이 이미 MAPPED_TO를 가지고 있을 수 있음 (past migration data).
+            # Cartesian product 방지를 위해 MAPPED_TO는 concept당 1개만 유지:
+            #   - Concept에 MAPPED_TO가 없으면 → dominant region으로 새로 생성 (+ weight)
+            #   - 이미 있으면 → 기존 MAPPED_TO에 weight 속성만 EMA 업데이트 (region 변경 없음)
+            # Secondary regions(ALSO_REPRESENTED_IN)은 별도 관계 타입이라 여러 개 OK.
+            weights = get_region_weights(category)
+            if weights:
+                dominant_region, dominant_weight = weights[0]
+                secondary = [{"region": r, "weight": w} for r, w in weights[1:]]
+
+                # 2a) MAPPED_TO: 기존 관계가 있으면 weight만 업데이트, 없으면 dominant region으로 생성
+                # WHERE NOT EXISTS 가드로 Cartesian product 방지
+                await s.run(
+                    "MATCH (c:Concept {id: $cid}) "
+                    "WHERE NOT EXISTS { (c)-[:MAPPED_TO]->(:BrainRegion) } "
+                    "MATCH (br:BrainRegion {name: $rname}) "
+                    "MERGE (c)-[r:MAPPED_TO]->(br) "
+                    "ON CREATE SET r.weight = $weight, r.created_at = $now",
+                    cid=concept_data["id"],
+                    rname=dominant_region,
+                    weight=dominant_weight,
+                    now=_now_iso(),
+                )
+                # 기존 MAPPED_TO가 이미 있으면 해당 관계의 weight만 EMA 업데이트 (region 변경 없음)
+                await s.run(
+                    "MATCH (c:Concept {id: $cid})-[r:MAPPED_TO]->(:BrainRegion) "
+                    "SET r.weight = coalesce(r.weight, 0.5) * 0.9 + $weight * 0.1, "
+                    "    r.updated_at = $now",
+                    cid=concept_data["id"],
+                    weight=dominant_weight,
+                    now=_now_iso(),
+                )
+
+                # 2b) Secondary ALSO_REPRESENTED_IN (분산 표상, 별도 관계 타입이라 N:N 허용)
+                if secondary:
+                    await s.run(
+                        "UNWIND $secondary AS sr "
+                        "MATCH (c:Concept {id: $cid}), (br:BrainRegion {name: sr.region}) "
+                        "MERGE (c)-[r:ALSO_REPRESENTED_IN]->(br) "
+                        "ON CREATE SET r.weight = sr.weight, r.created_at = $now "
+                        "ON MATCH SET r.weight = coalesce(r.weight, 0.2) * 0.9 + sr.weight * 0.1, "
+                        "             r.updated_at = $now",
+                        cid=concept_data["id"],
+                        secondary=secondary,
+                        now=_now_iso(),
+                    )
+
+            return concept_data
 
     async def get_concept_by_name(self, name: str) -> Optional[dict]:
         """이름으로 개념 조회"""
@@ -919,12 +1305,15 @@ class BrainDatabase:
     ) -> list[dict]:
         """Spreading Activation: 개념 ID 목록에서 RELATES_TO*1..depth 탐색
 
+        2단계 활성화:
+          1) Concept-level: RELATES_TO 시냅스 경로 순회
+          2) Region-level: CONNECTS_TO 백질 경로로 연결된 영역의 개념 부스트
         MAPPED_TO 조인으로 brain_region_id 포함 반환.
         LIMIT 이후 OPTIONAL MATCH로 Cartesian product 방지.
         """
-        # depth를 Cypher 리터럴로 삽입 (Neo4j는 가변 길이 경로 상한을 파라미터로 받을 수 없음)
-        safe_depth = max(1, min(int(depth), 5))  # 1~5 범위 제한
+        safe_depth = max(1, min(int(depth), 5))
         async with self.driver.session(database=_DB_NAME) as s:
+            # ── Step 1: Concept-level spreading (기존) ──
             result = await s.run(
                 "UNWIND $ids AS start_id "
                 f"MATCH (start:Concept {{id: start_id}})-[r:RELATES_TO*1..{safe_depth}]->(related:Concept) "
@@ -937,7 +1326,7 @@ class BrainDatabase:
                 limit=limit,
             )
             records = await result.fetch(limit)
-            return [
+            activated = [
                 {
                     **dict(r["related"]),
                     "activation_strength": r["avg_strength"],
@@ -945,6 +1334,36 @@ class BrainDatabase:
                 }
                 for r in records
             ]
+
+            # ── Step 2: Region-pathway boost (Phase 1E) ──
+            # 활성화된 concept들의 region → CONNECTS_TO로 연결된 region의 top concept 부스트
+            activated_ids = [a["id"] for a in activated if a.get("id")]
+            if activated_ids:
+                boost_limit = max(5, limit // 4)
+                result2 = await s.run(
+                    "UNWIND $ids AS cid "
+                    "MATCH (c:Concept {id: cid})-[:MAPPED_TO]->(src:BrainRegion)"
+                    "-[:CONNECTS_TO]->(dst:BrainRegion)<-[:MAPPED_TO]-(boosted:Concept) "
+                    "WHERE NOT boosted.id IN $all_ids "
+                    "WITH boosted, dst, avg(coalesce(boosted.strength, 0.5)) AS concept_str "
+                    "ORDER BY concept_str DESC "
+                    "WITH boosted, concept_str, collect(dst)[0] AS region "
+                    "LIMIT $blimit "
+                    "RETURN boosted, concept_str * 0.3 AS boost_strength, region.id AS brain_region_id",
+                    ids=activated_ids[:10],
+                    all_ids=concept_ids + activated_ids,
+                    blimit=boost_limit,
+                )
+                boost_records = await result2.fetch(boost_limit)
+                for r in boost_records:
+                    activated.append({
+                        **dict(r["boosted"]),
+                        "activation_strength": r["boost_strength"],
+                        "brain_region_id": r["brain_region_id"],
+                        "pathway_boosted": True,
+                    })
+
+            return activated
 
     # ==================== Hebbian Learning ====================
 
@@ -1479,9 +1898,52 @@ class BrainDatabase:
             pairs = list(combinations(combined_ids, 2))
             total_hebb = await self.hebbian_update(pairs, strength_delta=hebb_delta)
 
+        # 5. CLS region reweighting: hippocampus → cortex 이동
+        #    근거: McClelland, McNaughton, O'Reilly 1995 (Psych Rev)
+        #    수면 중 replay된 concept의 기억은 점진적으로 hippocampus에서 cortex로 이동.
+        reweighted = 0
+        if combined_ids:
+            async with self.driver.session(database=_DB_NAME) as s:
+                # 5a. hippocampus weight -0.05 (cap at 0)
+                result = await s.run(
+                    "MATCH (c:Concept) WHERE c.id IN $ids "
+                    "MATCH (c)-[h:MAPPED_TO|ALSO_REPRESENTED_IN]->(:BrainRegion {name: 'hippocampus'}) "
+                    "SET h.weight = CASE WHEN coalesce(h.weight, 0.0) > 0.05 "
+                    "                     THEN h.weight - 0.05 ELSE 0.0 END, "
+                    "    h.updated_at = $now "
+                    "RETURN count(h) AS n",
+                    ids=combined_ids,
+                    now=_now_iso(),
+                )
+                rec = await result.single()
+                n_hip = rec["n"] if rec else 0
+
+                # 5b. cortical weight +0.02 (temporal, prefrontal, parietal) cap at 1.0
+                result = await s.run(
+                    "MATCH (c:Concept) WHERE c.id IN $ids "
+                    "MATCH (c)-[r:MAPPED_TO|ALSO_REPRESENTED_IN]->(br:BrainRegion) "
+                    "WHERE br.name IN ['temporal', 'prefrontal', 'parietal'] "
+                    "SET r.weight = CASE WHEN coalesce(r.weight, 0.0) + 0.02 > 1.0 "
+                    "                     THEN 1.0 "
+                    "                     ELSE coalesce(r.weight, 0.0) + 0.02 END, "
+                    "    r.updated_at = $now "
+                    "RETURN count(r) AS n",
+                    ids=combined_ids,
+                    now=_now_iso(),
+                )
+                rec = await result.single()
+                n_cortex = rec["n"] if rec else 0
+                reweighted = n_hip + n_cortex
+                if reweighted:
+                    logger.debug(
+                        f"CLS reweight: {n_hip} hippocampus -, {n_cortex} cortical + "
+                        f"({len(combined_ids)} concepts)"
+                    )
+
         return {
             "reactivated_count": len(combined_ids),
             "hebbian_updates": total_hebb,
+            "cls_reweights": reweighted,
             "activation_events": activation_events,
             "experiences_replayed": len(experiences),
         }

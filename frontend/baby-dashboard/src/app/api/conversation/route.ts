@@ -6,7 +6,14 @@ const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { message } = body
+    const { message, context } = body as {
+      message: string
+      context?: {
+        speaker_id?: string
+        speaker_name?: string
+        [key: string]: unknown
+      }
+    }
 
     if (!message) {
       return NextResponse.json(
@@ -15,10 +22,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // E2-3 (Theory of Mind): speaker_id를 FastAPI conversation_handler Step 1.5로 전달
+    // - speaker_id != "unknown" 일 때만 UserModel 생성 + INTERACTED_WITH 관계
+    // - frontend가 context를 안 주면 'unknown'으로 전달 → 기존 동작 유지 (backward compat)
+    const forwardedContext = {
+      speaker_id: context?.speaker_id ?? 'unknown',
+      speaker_name: context?.speaker_name ?? undefined,
+      ...(context ?? {}),
+    }
+
     const response = await fetch(`${FASTAPI_URL}/api/conversation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, context: forwardedContext }),
     })
 
     if (!response.ok) {

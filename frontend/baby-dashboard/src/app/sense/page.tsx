@@ -172,6 +172,52 @@ function transformVisualExperience(row: Record<string, unknown>): VisualExperien
   }
 }
 
+// E2-3 Speaker 편집용 인라인 컴포넌트
+function SpeakerEditor({
+  initialId,
+  initialName,
+  onSave,
+  onCancel,
+}: {
+  initialId: string
+  initialName: string
+  onSave: (id: string, name: string) => void
+  onCancel: () => void
+}) {
+  const [id, setId] = useState(initialId)
+  const [name, setName] = useState(initialName)
+  return (
+    <div className="flex items-center gap-2 w-full">
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="이름 (예: 형아)"
+        className="flex-1 px-2 py-1 bg-slate-900/60 border border-slate-700 rounded text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-violet-400"
+      />
+      <input
+        type="text"
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        placeholder="ID (예: brother)"
+        className="flex-1 px-2 py-1 bg-slate-900/60 border border-slate-700 rounded text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-violet-400"
+      />
+      <button
+        onClick={() => onSave(id, name)}
+        className="px-2 py-1 bg-violet-500/20 text-violet-300 rounded text-xs hover:bg-violet-500/30 transition-colors"
+      >
+        저장
+      </button>
+      <button
+        onClick={onCancel}
+        className="px-2 py-1 text-slate-400 hover:text-slate-200 text-xs transition-colors"
+      >
+        취소
+      </button>
+    </div>
+  )
+}
+
 export default function SensePage() {
   const [activeTab, setActiveTab] = useState<SenseTab>('camera')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -185,6 +231,44 @@ export default function SensePage() {
   const [messages, setMessages] = useState<ConversationMessage[]>([])
   const [conversationLoading, setConversationLoading] = useState(false)
   const [conversationError, setConversationError] = useState<string | null>(null)
+
+  // E2-3 (Theory of Mind): speaker 식별
+  // localStorage에 저장되어 다음 방문에도 자동 로드. 기본값 'self' / '나'.
+  // - speaker_id !== 'unknown' 이어야 Step 1.5에서 UserModel 생성됨
+  // - 여러 사람(엄마/형아 등) 테스트는 UI에서 이름 바꿔 저장
+  const [speakerId, setSpeakerId] = useState<string>('self')
+  const [speakerName, setSpeakerName] = useState<string>('나')
+  const [showSpeakerEdit, setShowSpeakerEdit] = useState(false)
+
+  // localStorage에서 speaker 로드 (SSR 안전: useEffect 안에서만)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('baby-ai:speaker')
+      if (raw) {
+        const parsed = JSON.parse(raw) as { id?: string; name?: string }
+        if (parsed.id) setSpeakerId(parsed.id)
+        if (parsed.name) setSpeakerName(parsed.name)
+      }
+    } catch {
+      // localStorage 접근 실패 (프라이빗 모드 등) — 기본값 유지
+    }
+  }, [])
+
+  const saveSpeaker = useCallback((id: string, name: string) => {
+    const trimmedId = (id || '').trim() || 'self'
+    const trimmedName = (name || '').trim() || '나'
+    setSpeakerId(trimmedId)
+    setSpeakerName(trimmedName)
+    try {
+      localStorage.setItem(
+        'baby-ai:speaker',
+        JSON.stringify({ id: trimmedId, name: trimmedName })
+      )
+    } catch {
+      // ignore
+    }
+    setShowSpeakerEdit(false)
+  }, [])
 
   // Fetch recent visual experiences
   useEffect(() => {
@@ -295,6 +379,8 @@ export default function SensePage() {
       ))
 
       // Now send the transcript to conversation API
+      // E2-3: speakerRef.current를 사용 (stale closure 우회)
+      const { id: _sid, name: _sname } = speakerRef.current
       const conversationResponse = await fetch('/api/conversation', {
         method: 'POST',
         headers: {
@@ -302,6 +388,7 @@ export default function SensePage() {
         },
         body: JSON.stringify({
           message: transcript,
+          context: { speaker_id: _sid, speaker_name: _sname },
         }),
       })
 
@@ -372,7 +459,9 @@ export default function SensePage() {
     setMessages(prev => [...prev, userMessage])
 
     try {
-      debugLog('Calling /api/conversation...')
+      // E2-3: speakerRef.current를 사용 (stale closure 우회)
+      const { id: _sid, name: _sname } = speakerRef.current
+      debugLog(`Calling /api/conversation as speaker="${_sname}" (${_sid})`)
       const response = await fetch('/api/conversation', {
         method: 'POST',
         headers: {
@@ -380,6 +469,7 @@ export default function SensePage() {
         },
         body: JSON.stringify({
           message: text,
+          context: { speaker_id: _sid, speaker_name: _sname },
         }),
       })
 
@@ -507,6 +597,13 @@ export default function SensePage() {
   // Keep stable ref for use in stale closures (handleAudioSubmit, handleSendText have [] deps)
   const wakeWordRef = useRef(wakeWord)
   useEffect(() => { wakeWordRef.current = wakeWord }, [wakeWord])
+
+  // E2-3: speaker state도 같은 이유로 ref 유지 필요
+  // handleSendText, handleAudioSubmit이 [] deps라 초기 렌더링의 'self'/'나'에 갇힘 → ref로 우회
+  const speakerRef = useRef({ id: speakerId, name: speakerName })
+  useEffect(() => {
+    speakerRef.current = { id: speakerId, name: speakerName }
+  }, [speakerId, speakerName])
 
   const tabs: { key: SenseTab; label: string; icon: typeof Camera; disabled?: boolean }[] = [
     { key: 'camera', label: '카메라', icon: Camera },
@@ -747,8 +844,34 @@ export default function SensePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="h-[600px]"
+                className="h-[600px] flex flex-col gap-2"
               >
+                {/* E2-3 Speaker badge: 대화 상대 식별 */}
+                <div className="flex items-center justify-between px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-xl text-sm">
+                  {!showSpeakerEdit ? (
+                    <>
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="text-slate-400">대화 상대:</span>
+                        <span className="font-medium text-slate-100">{speakerName}</span>
+                        <span className="text-slate-500 text-xs">({speakerId})</span>
+                      </div>
+                      <button
+                        onClick={() => setShowSpeakerEdit(true)}
+                        className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                      >
+                        변경
+                      </button>
+                    </>
+                  ) : (
+                    <SpeakerEditor
+                      initialId={speakerId}
+                      initialName={speakerName}
+                      onSave={saveSpeaker}
+                      onCancel={() => setShowSpeakerEdit(false)}
+                    />
+                  )}
+                </div>
                 <ConversationView
                   messages={messages}
                   isLoading={conversationLoading}
@@ -756,7 +879,7 @@ export default function SensePage() {
                   onSendText={handleSendText}
                   onSendAudio={handleSendAudio}
                   onClearConversation={handleClearConversation}
-                  className="h-full"
+                  className="flex-1"
                 />
               </motion.div>
             )}

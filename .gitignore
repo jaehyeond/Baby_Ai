@@ -77,3 +77,9 @@ scripts/ablation_logs/*.log
 
 # DB Migration - exported Supabase data
 scripts/migration/migration_data/
+
+# ML Benchmark - model cache, results, and binaries
+neural/ml/models_cache/
+neural/ml/test_images/
+neural/ml/results_output/
+neural/ml/tools/

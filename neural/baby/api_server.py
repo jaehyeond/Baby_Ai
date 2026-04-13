@@ -56,12 +56,15 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up: initializing Neo4j and Redis...")
     await init_driver()
     init_redis()
-    # E2: 인덱스 보장 (멱등)
+    # 스키마 + 시드 (멱등, 빈 DB 재시작 시 전체 재구축)
     try:
         _db = get_brain_db()
         await _db.ensure_indexes()
+        await _db.seed_brain_regions()
+        await _db.seed_region_connections()
+        await _db.seed_identity_concepts()
     except Exception as e:
-        logger.warning(f"E2 index creation warning: {e}")
+        logger.warning(f"schema/seed warning: {e}")
     logger.info("Neo4j + Redis ready")
 
     yield
@@ -287,24 +290,35 @@ async def get_concepts(limit: int = 100, category: Optional[str] = None):
 
 @app.get("/api/brain/concept-relations")
 async def get_concept_relations(limit: int = 200):
-    """Concept 간 RELATES_TO 관계 목록 (brain 시각화용)"""
+    """Concept 간 RELATES_TO 관계 목록 (brain 시각화용).
+
+    Frontend (useBrainData.ts RawConceptRelation)가 기대하는 필드:
+      - id, from_concept_id, to_concept_id, strength, relation_type, evidence_count
+    evidence_count가 누락되면 synapseMap에 NaN이 전파되어 THREE.js BufferGeometry가 깨진다.
+    """
     try:
         async with get_driver().session(database=_DB_NAME) as s:
             result = await s.run(
                 "MATCH (src:Concept)-[r:RELATES_TO]->(tgt:Concept) "
-                "RETURN src.id AS from_concept_id, tgt.id AS to_concept_id, "
+                "RETURN "
+                "  coalesce(r.id, toString(elementId(r))) AS id, "
+                "  src.id AS from_concept_id, "
+                "  tgt.id AS to_concept_id, "
                 "  coalesce(r.strength, 0.5) AS strength, "
-                "  coalesce(r.relation_type, 'related') AS relation_type "
+                "  coalesce(r.relation_type, 'related') AS relation_type, "
+                "  coalesce(r.evidence_count, 1) AS evidence_count "
                 "ORDER BY r.strength DESC LIMIT $limit",
                 limit=limit,
             )
             records = await result.fetch(limit)
             relations = [
                 {
+                    "id": rec["id"],
                     "from_concept_id": rec["from_concept_id"],
                     "to_concept_id": rec["to_concept_id"],
                     "strength": round(float(rec["strength"]), 3),
                     "relation_type": rec["relation_type"],
+                    "evidence_count": int(rec["evidence_count"]),
                 }
                 for rec in records
             ]

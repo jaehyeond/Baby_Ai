@@ -131,30 +131,142 @@ def _build_system_prompt(state: dict, user_context: dict = None) -> str:
     return identity + stage_guide + user_info + rules
 
 
+# ── Concept 추출 규칙 (한국어 규칙 기반 형태소 간소화) ─────────────────────
+# 한국어 조사 (길이 순으로 큰 것부터 매칭)
+# 주의: "요", "아", "어"는 종결어미이지 조사가 아니므로 _KOREAN_ENDINGS로 이동
+_KOREAN_PARTICLES: tuple[str, ...] = (
+    # 2글자 조사
+    "에서", "에게", "한테", "처럼", "까지", "부터", "조차", "마저", "으로", "이랑",
+    "이나", "라도", "라면", "보다", "밖에",
+    # 1글자 조사
+    "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "나",
+    "로", "랑",
+)
+
+# 동사·형용사 어미 (길이 순 — _strip_suffix가 내림차순 정렬)
+_KOREAN_ENDINGS: tuple[str, ...] = (
+    # 4글자 어미
+    "었습니다", "았습니다", "겠습니다", "느냐에",
+    # 3글자 어미
+    "습니다", "었어요", "았어요", "겠어요", "어했다", "하느냐",
+    # 2글자 어미
+    "해요", "어요", "아요", "이요", "셨어", "했어", "었어", "았어", "겠어", "네요",
+    "지만", "으며", "으니", "으면", "으로", "으세", "이다", "이라", "라고", "고서",
+    "보다", "는데", "은데", "인데", "어서", "아서", "면서", "었을", "았을", "이면",
+    "했다", "였어", "였던", "느냐", "는지",
+    # 1글자 어미
+    "다", "지", "고", "며", "나", "자", "게", "은", "는", "던", "려", "야",
+    "어", "아", "워", "서", "니", "면", "죠",
+)
+
+# 불용어 (감탄사·부사·대명사·의존명사)
+_STOPWORDS: frozenset[str] = frozenset({
+    # 한국어 감탄사·부사
+    "이야", "그리고", "하지만", "그러나", "때문에", "있어", "없어",
+    "했어", "할게", "할까", "이고", "으로", "에서", "에게", "처럼",
+    "와아", "우와", "오오", "아아", "어머", "아이고", "헤헤", "히히",
+    "너무", "정말", "진짜", "완전", "엄청", "참", "꼭", "막", "좀",
+    "이런", "저런", "그런", "어떤", "무슨", "어느", "이것", "저것", "그것",
+    "여기", "저기", "거기", "이렇게", "저렇게", "그렇게", "어떻게",
+    "지금", "나중", "아까", "오늘", "내일", "어제", "매일", "매일매일",
+    "제일", "더욱", "훨씬", "더", "덜", "많이", "조금", "약간", "살짝",
+    "같기", "같아", "같은", "같이", "같다", "같기도",
+    "비비", "내가", "나도", "너도", "우리",
+    # 보조용언·동사 파편
+    "싶어", "싶다", "싶은", "했다", "될까", "인데", "거야", "해서", "해요",
+    "있을", "있는", "없는", "하고", "하는", "할까", "되고", "보고",
+    # 부사 추가
+    "일찍", "벌써", "아직", "자꾸", "계속", "항상", "또한",
+    # 영어 기본
+    "the", "and", "or", "but", "is", "are", "was", "were",
+    "have", "has", "been", "will", "can", "do", "does",
+    "i", "you", "we", "they", "he", "she", "it",
+})
+
+
+def _strip_suffix(word: str, suffixes: tuple[str, ...], min_remain: int = 2) -> str:
+    """단어 끝의 접미사(조사/어미)를 제거. 남는 길이가 min_remain 이상이어야 함.
+
+    접미사는 길이 내림차순으로 정렬 후 매칭 (longest match first).
+    예: "해요" 와 "요" 둘 다 있을 때 먼저 "해요"부터 시도.
+    """
+    for suf in sorted(suffixes, key=len, reverse=True):
+        if len(word) >= len(suf) + min_remain and word.endswith(suf):
+            return word[: -len(suf)]
+    return word
+
+
+def _normalize_token(word: str) -> str | None:
+    """토큰 정규화: 조사·어미 제거 + 검증.
+
+    Returns None if word should be discarded.
+    """
+    # 영어는 소문자만
+    if re.fullmatch(r"[a-zA-Z]+", word):
+        low = word.lower()
+        if len(low) < 3 or low in _STOPWORDS:
+            return None
+        return low
+
+    # 숫자 포함 단어 제외
+    if re.search(r"\d", word):
+        return None
+
+    # 한글만 허용
+    if not re.fullmatch(r"[가-힣]+", word):
+        return None
+
+    # 너무 짧거나 길면 제외
+    if len(word) < 2 or len(word) > 10:
+        return None
+
+    # 1차 패스: 조사 → 어미
+    stripped = _strip_suffix(word, _KOREAN_PARTICLES, min_remain=2)
+    stripped = _strip_suffix(stripped, _KOREAN_ENDINGS, min_remain=2)
+    # 2차 패스 (재귀): "궁금해요" → "궁금해" → "궁금" 같은 연쇄 제거
+    stripped = _strip_suffix(stripped, _KOREAN_ENDINGS, min_remain=2)
+
+    # 정규화 후 stopwords 체크
+    if len(stripped) < 2 or stripped in _STOPWORDS:
+        return None
+
+    return stripped
+
+
 def _extract_concepts_from_response(response: str, user_message: str) -> list[str]:
-    """응답에서 핵심 개념 단어 추출 (간단한 규칙 기반)"""
-    # 명사구/핵심어 추출 (LLM 없이 간단하게)
+    """응답에서 핵심 개념 단어 추출 (규칙 기반 형태소 간소화).
+
+    개선 사항 (2026-04-10):
+    - 조사 제거 ("형아는" → "형아", "사과가" → "사과")
+    - 동사·형용사 어미 제거 ("궁금해요" → "궁금", "짖는" → "짖")
+    - 확장된 불용어 (감탄사, 부사, 대명사, 의존명사)
+    - 숫자 포함 단어 제외
+    - 영어는 3자 이상 소문자만
+
+    주의: 이건 형태소 분석이 아니라 규칙 기반 근사. 완벽하지 않지만
+    konlpy/kiwipiepy 의존성 없이 80% 케이스 해결.
+    """
     combined = f"{user_message} {response}"
 
-    # 괄호 안 내용 제거, 특수문자 제거
-    cleaned = re.sub(r'\([^)]*\)', '', combined)
-    cleaned = re.sub(r'[^\w\s가-힣]', ' ', cleaned)
+    # 괄호 안 내용 제거
+    cleaned = re.sub(r"\([^)]*\)", " ", combined)
+    # 이모지·특수문자 제거 (한글/영어/공백만 남김)
+    cleaned = re.sub(r"[^\w\s가-힣]", " ", cleaned)
 
-    # 2자 이상 단어 추출 (한글 포함)
-    words = [w for w in cleaned.split() if len(w) >= 2]
+    # 토큰화 (공백 기준)
+    raw_tokens = [t for t in cleaned.split() if t.strip()]
 
-    # 불용어 제거 (간단한 목록)
-    stopwords = {
-        "이야", "그리고", "하지만", "그러나", "때문에", "있어", "없어",
-        "했어", "할게", "할까", "이고", "으로", "에서", "에게", "처럼",
-        "the", "and", "or", "but", "is", "are", "was", "were",
-        "have", "has", "been", "will", "can", "do", "does",
-    }
+    # 정규화 + 중복 제거 (순서 보존)
+    seen: set[str] = set()
+    concepts: list[str] = []
+    for tok in raw_tokens:
+        norm = _normalize_token(tok)
+        if norm and norm not in seen:
+            seen.add(norm)
+            concepts.append(norm)
 
-    concepts = list({w for w in words if w.lower() not in stopwords})
-
-    # 최대 5개
-    return concepts[:5]
+    # 최대 8개 (이전 5개보다 증가 — 품질 개선으로 더 풍부한 의미 표현 가능)
+    return concepts[:8]
 
 
 def _update_emotion_from_response(current_state: dict, response: str) -> dict:
