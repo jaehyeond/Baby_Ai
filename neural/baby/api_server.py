@@ -141,6 +141,33 @@ class VisionProcessResponse(BaseModel):
     message: Optional[str] = None
 
 
+# ── A4.3: Quest 3S Passthrough → Concept 직접 수신 ─────────────────────────────
+class QuestImageMeta(BaseModel):
+    width: int
+    height: int
+    camera: Optional[str] = None
+
+
+class QuestConceptsRequest(BaseModel):
+    timestamp: str
+    source: str = "quest_passthrough"
+    model: str = "SmolVLM-500M-Q8"
+    image_meta: Optional[QuestImageMeta] = None
+    vlm_response: str
+    concepts_raw: list[str]
+    inference_ms: Optional[int] = None
+    jpeg_path: Optional[str] = None
+
+
+class QuestConceptsResponse(BaseModel):
+    experience_id: Optional[str]
+    concepts_inserted: int
+    concepts_existing: int
+    total_unique_in_db: int
+    success: bool
+    message: Optional[str] = None
+
+
 class ProcessRequest(BaseModel):
     task: str
     context: Optional[dict] = None
@@ -1063,6 +1090,118 @@ async def get_vision_stats():
             rec = await r.single()
         return {"total_visual_experiences": rec["total"] if rec else 0}
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── A4.3: Quest Passthrough Concepts ──────────────────────────────────────────
+# Quest 3S 온디바이스 SmolVLM이 추출한 Concept을 Baby AI Neo4j에 직접 수신.
+# 대안 B: Concept 노드 통합 (별도 라벨 X), source 메타로 분리 추적.
+#   - insert_concept(category="visual") → occipital region 자동 매핑
+#   - 후처리 Cypher: c.sources 배열에 source 추가, c.quest_observation_count++,
+#                     c.last_quest_seen
+# Experience: task_type="vision", tags=["quest_passthrough"], extras=메타
+@app.post("/api/vision/quest-concepts", response_model=QuestConceptsResponse)
+async def post_quest_concepts(request: QuestConceptsRequest):
+    """Quest 3S 온디바이스 VLM이 추출한 concept을 Neo4j에 저장."""
+    try:
+        db = get_brain_db()
+        drv = get_driver()
+
+        # 1) Experience 노드 생성 — task_type="vision"으로 기존 통계 호환
+        baby_state = await db.get_baby_state() or {}
+        dev_stage = baby_state.get("development_stage", 0)
+        extras_meta = {
+            "source": request.source,
+            "model": request.model,
+            "inference_ms": request.inference_ms,
+            "image_meta": request.image_meta.model_dump() if request.image_meta else None,
+            "jpeg_path": request.jpeg_path,
+            "device_timestamp": request.timestamp,
+        }
+        exp = await db.insert_experience(
+            task=f"quest_passthrough_observation@{request.timestamp}",
+            task_type="vision",
+            output=request.vlm_response,
+            success=bool(request.concepts_raw),
+            emotional_salience=0.4,  # 수동적 관찰 — 대화보다 낮게
+            dominant_emotion="curiosity",
+            development_stage=dev_stage,
+            tags=["quest_passthrough", "vision"],
+            extras=extras_meta,
+        )
+        exp_id = exp.get("id")
+        if not exp_id:
+            raise HTTPException(status_code=500, detail="Experience 생성 실패")
+
+        # 2) Concept 루프 — insert_concept (멱등 MERGE) + Quest 메타 후처리
+        concepts_inserted = 0
+        concepts_existing = 0
+        for raw_name in request.concepts_raw:
+            name = raw_name.strip().lower()
+            if not name:
+                continue
+
+            # 2a) 신규 여부를 미리 확인 (MERGE 후에는 구분 불가)
+            existed = await db.get_concept_by_name(name)
+            was_new = existed is None
+
+            # 2b) MERGE Concept (visual category → occipital hub)
+            concept = await db.insert_concept(
+                name=name,
+                category="visual",
+                description=None,
+                acquired_at_stage=dev_stage,
+            )
+            cid = concept.get("id")
+            if not cid:
+                continue
+
+            # 2c) Quest 메타 후처리 — sources 배열, quest_observation_count, last_quest_seen
+            async with drv.session(database=_DB_NAME) as s:
+                await s.run(
+                    "MATCH (c:Concept {id: $cid}) "
+                    "SET c.sources = CASE "
+                    "      WHEN c.sources IS NULL THEN [$src] "
+                    "      WHEN $src IN c.sources THEN c.sources "
+                    "      ELSE c.sources + $src END, "
+                    "    c.quest_observation_count = coalesce(c.quest_observation_count, 0) + 1, "
+                    "    c.last_quest_seen = $now",
+                    cid=cid,
+                    src=request.source,
+                    now=request.timestamp,
+                )
+
+            # 2d) Experience -[:INVOLVES]-> Concept
+            await db.link_experience_concept(
+                experience_id=exp_id,
+                concept_id=cid,
+                confidence=0.5,
+            )
+
+            if was_new:
+                concepts_inserted += 1
+            else:
+                concepts_existing += 1
+
+        # 3) DB 전체 unique concept 수 (관측 통계용)
+        async with drv.session(database=_DB_NAME) as s:
+            r = await s.run("MATCH (c:Concept) RETURN count(c) AS total")
+            rec = await r.single()
+        total_unique = rec["total"] if rec else 0
+
+        return QuestConceptsResponse(
+            experience_id=exp_id,
+            concepts_inserted=concepts_inserted,
+            concepts_existing=concepts_existing,
+            total_unique_in_db=total_unique,
+            success=True,
+            message=f"Quest observation saved: {concepts_inserted} new + {concepts_existing} existing concepts",
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"post_quest_concepts error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

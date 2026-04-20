@@ -17,7 +17,9 @@ import android.os.HandlerThread
 import android.util.Log
 import android.app.Activity
 import android.util.Size
+import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -41,9 +43,17 @@ class MainActivity : Activity() {
         private const val EXTRA_PROMPT = "prompt"
         private const val EXTRA_RUN_DIAG = "run_diag"  // smoke + binary test
         private const val EXTRA_N_TOKENS = "n_tokens"
+        private const val EXTRA_REPEAT_PENALTY = "repeat_penalty"
+        private const val EXTRA_TOP_K = "top_k"
+        private const val EXTRA_TEMP = "temp"
+        private const val EXTRA_MODEL = "model"  // "256M" or "500M"
+        private const val EXTRA_INTERVAL_MS = "interval_ms"  // 라운드 간 sleep
+        // A4.3: PC FastAPI base URL — 비어있으면 POST 비활성화 (로컬 전용 모드)
+        private const val EXTRA_PC_URL = "pc_url"
     }
 
     private lateinit var logView: TextView
+    private lateinit var conceptView: TextView
     private lateinit var cameraManager: CameraManager
     private var cameraDevice: CameraDevice? = null
     private var captureSession: CameraCaptureSession? = null
@@ -56,7 +66,16 @@ class MainActivity : Activity() {
     private var runDiag: Boolean = true
     private var prompt: String = "Describe what you see briefly."
     private var nTokens: Int = 64
+    private var repeatPenalty: Float = 1.0f
+    private var topK: Int = 40
+    private var temp: Float = 0.1f
+    private var modelVariant: String = "256M"
+    private var intervalMs: Long = 500L
     private var roundIdx: Int = 0
+    private var pcUrl: String = ""  // A4.3: 빈 문자열이면 POST 비활성화
+
+    // A4.2: concept 누적
+    private val conceptCounts = mutableMapOf<String, Int>()
     private val roundStats = mutableListOf<RoundStat>()
 
     // Pre-resolved paths (set once)
@@ -65,6 +84,9 @@ class MainActivity : Activity() {
     private var nativeDir: String = ""
 
     @Volatile private var lastJpegPath: String? = null
+    @Volatile private var lastJpegWidth: Int = 0
+    @Volatile private var lastJpegHeight: Int = 0
+    @Volatile private var lastCameraId: String? = null
 
     data class RoundStat(
         val round: Int,
@@ -88,21 +110,54 @@ class MainActivity : Activity() {
         runDiag = intent.getBooleanExtra(EXTRA_RUN_DIAG, false)
         prompt = intent.getStringExtra(EXTRA_PROMPT) ?: "Describe what you see briefly."
         nTokens = intent.getIntExtra(EXTRA_N_TOKENS, 64)
+        repeatPenalty = intent.getFloatExtra(EXTRA_REPEAT_PENALTY, 1.0f)
+        topK = intent.getIntExtra(EXTRA_TOP_K, 40)
+        temp = intent.getFloatExtra(EXTRA_TEMP, 0.1f)
+        modelVariant = intent.getStringExtra(EXTRA_MODEL) ?: "256M"
+        intervalMs = intent.getIntExtra(EXTRA_INTERVAL_MS, 500).toLong().coerceAtLeast(0L)
+        pcUrl = intent.getStringExtra(EXTRA_PC_URL)?.trimEnd('/') ?: ""
+
+        // A4.2: 상단 Concept 패널 + 하단 로그 스크롤
+        conceptView = TextView(this).apply {
+            textSize = 13f
+            setPadding(24, 16, 24, 16)
+            setBackgroundColor(0xFF1A1A2A.toInt())
+            setTextColor(0xFFFFD700.toInt())  // gold
+            text = "Concepts (0): (waiting...)"
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
 
         logView = TextView(this).apply {
-            textSize = 14f
-            setPadding(24, 24, 24, 24)
+            textSize = 11f
+            setPadding(24, 16, 24, 24)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        val scrollView = ScrollView(this).apply { addView(logView) }
-        setContentView(scrollView)
+        val scrollView = ScrollView(this).apply {
+            addView(logView)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                1f  // weight = 나머지 공간
+            )
+        }
+
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(conceptView)
+            addView(scrollView)
+        }
+        setContentView(root)
 
         log("=== Passthrough Test Phase A3.5 ===")
         log("Build: ${android.os.Build.MODEL} / ${android.os.Build.VERSION.RELEASE}")
-        log("Config: rounds=$targetRounds, n=$nTokens, diag=$runDiag")
+        log("Config: rounds=$targetRounds, n=$nTokens, model=$modelVariant, interval=${intervalMs}ms, diag=$runDiag")
+        log("Sampling: repeat_penalty=$repeatPenalty, top_k=$topK, temp=$temp")
         log("Prompt: \"$prompt\"")
 
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -219,6 +274,9 @@ class MainActivity : Activity() {
                 .maxByOrNull { it.width.toLong() * it.height.toLong() }
                 ?: jpegSizes.first()
 
+            lastJpegWidth = pickedSize.width
+            lastJpegHeight = pickedSize.height
+            lastCameraId = cameraId
             imageReader = ImageReader.newInstance(
                 pickedSize.width, pickedSize.height, ImageFormat.JPEG, 1
             ).apply {
@@ -306,8 +364,8 @@ class MainActivity : Activity() {
         }
 
         val modelsDir = File(getExternalFilesDir(null), "models")
-        val model = File(modelsDir, "SmolVLM-256M-Instruct-Q8_0.gguf")
-        val mmproj = File(modelsDir, "mmproj-SmolVLM-256M-Instruct-Q8_0.gguf")
+        val model = File(modelsDir, "SmolVLM-${modelVariant}-Instruct-Q8_0.gguf")
+        val mmproj = File(modelsDir, "mmproj-SmolVLM-${modelVariant}-Instruct-Q8_0.gguf")
         if (!model.exists() || !mmproj.exists()) {
             log("ERROR: model missing")
             return
@@ -323,7 +381,9 @@ class MainActivity : Activity() {
             "--image", jpegPath,
             "-p", prompt,
             "-n", nTokens.toString(),
-            "--temp", "0.1"
+            "--temp", temp.toString(),
+            "--repeat-penalty", repeatPenalty.toString(),
+            "--top-k", topK.toString()
         )
         val env = mapOf("LD_LIBRARY_PATH" to nativeDir)
         val t0 = System.currentTimeMillis()
@@ -359,12 +419,54 @@ class MainActivity : Activity() {
         log("   batt=${currentRoundBattery}→${batteryEnd}% temp=${currentRoundTemp/10.0}→${tempEnd/10.0}°C")
         log("   out: ${stat.output.take(200)}")
 
-        // 다음 라운드
+        // A4.2: Concept 추출 + 누적 + UI 갱신
+        if (r.status == "OK" && r.stdout.isNotBlank()) {
+            val newTokens = ConceptExtractor.extract(r.stdout)
+            val roundNew = mutableListOf<String>()  // 이번 라운드에 처음 본 것
+            for (tok in newTokens) {
+                val before = conceptCounts[tok] ?: 0
+                conceptCounts[tok] = before + 1
+                if (before == 0) roundNew.add(tok)
+            }
+            log("   concepts new=${roundNew.size} total=${conceptCounts.size} [${roundNew.take(8).joinToString()}]")
+            updateConceptView()
+
+            // A4.3: PC FastAPI로 concept 전송 (pcUrl 비어있으면 자동 skip)
+            if (pcUrl.isNotBlank()) {
+                val uniqueConcepts = newTokens.distinct()
+                val res = QuestUploader.upload(
+                    baseUrl = pcUrl,
+                    vlmResponse = r.stdout.trim(),
+                    conceptsRaw = uniqueConcepts,
+                    inferenceMs = elapsed,
+                    imageWidth = lastJpegWidth,
+                    imageHeight = lastJpegHeight,
+                    camera = lastCameraId,
+                    jpegPath = jpegPath,
+                    modelName = "SmolVLM-${modelVariant}-Q8"
+                )
+                if (res.success) {
+                    log("   POST→PC OK: ${res.responseBody.take(180)}")
+                } else {
+                    log("   POST→PC FAIL: status=${res.httpStatus} err=${res.errorMessage}")
+                }
+            }
+        }
+
+        // 다음 라운드 — interval_ms 사용
         if (roundIdx < targetRounds) {
-            backgroundHandler?.postDelayed({ startRound(roundIdx + 1) }, 500)
+            backgroundHandler?.postDelayed({ startRound(roundIdx + 1) }, intervalMs.coerceAtLeast(300L))
         } else {
             printSummary()
         }
+    }
+
+    private fun updateConceptView() {
+        // 빈도 높은 순으로 상위 표시 (더 많이 관찰된 = 더 중요)
+        val sorted = conceptCounts.entries.sortedByDescending { it.value }
+        val topStr = sorted.take(30).joinToString(", ") { "${it.key}(${it.value})" }
+        val text = "Concepts (${conceptCounts.size} unique, ${conceptCounts.values.sum()} obs):\n$topStr"
+        runOnUiThread { conceptView.text = text }
     }
 
     private fun printSummary() {
@@ -409,8 +511,34 @@ class MainActivity : Activity() {
             log("  R${it.round}: ${it.inferenceMs}ms cpu=${it.cpuTotalMs}ms clip=${it.clipMs}ms tokens=${it.tokensGenerated} tps=${"%.1f".format(it.tps)} batt=${it.batteryEnd}% temp=${it.tempEnd/10.0}°C")
         }
 
+        // A4.2: Concept 요약
+        log("")
+        log("=== Concepts ===")
+        val sorted = conceptCounts.entries.sortedByDescending { it.value }
+        log("total unique: ${conceptCounts.size}, total obs: ${conceptCounts.values.sum()}")
+        log("top 20: ${sorted.take(20).joinToString(", ") { "${it.key}(${it.value})" }}")
+
         // 결과를 파일로 저장 (ADB pull용)
         saveSummaryFile()
+        saveConceptFile()
+    }
+
+    private fun saveConceptFile() {
+        try {
+            val dir = File(getExternalFilesDir(null), "results")
+            if (!dir.exists()) dir.mkdirs()
+            val ts = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+            val file = File(dir, "concepts_${ts}.tsv")
+            val sorted = conceptCounts.entries.sortedByDescending { it.value }
+            file.writeText(buildString {
+                appendLine("# rounds=$targetRounds, model=$modelVariant, n=$nTokens")
+                appendLine("concept\tcount")
+                sorted.forEach { (k, v) -> appendLine("$k\t$v") }
+            })
+            log("Concepts saved: ${file.absolutePath}")
+        } catch (e: Exception) {
+            log("saveConceptFile error: ${e.message}")
+        }
     }
 
     private fun saveSummaryFile() {
