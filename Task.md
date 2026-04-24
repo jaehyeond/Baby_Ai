@@ -28,7 +28,17 @@
 
 ---
 
-## 📊 현재 시스템 상태 (2026-02-23)
+## 📊 현재 시스템 상태 (2026-02-23 / DB 통계 2026-04-24 부분 갱신)
+
+> ⚠️ Edge Functions/Frontend Routes 섹션은 2026-02-23 기준. Neo4j 통계만 최신.
+> 전체 갱신은 다음 큰 마일스톤 시 일괄 수행 예정.
+
+### Neo4j 통계 (2026-04-24 실측)
+- Concept: **925** (820 → 925, +105 누적; 마지막 16개는 Quest 출처)
+- Experience: **3068** (3039 → 3068, +29 누적; 마지막 6개 quest_passthrough)
+- BrainRegion: 11 (occipital, thalamus, temporal, parietal, prefrontal, motor_cortex, hippocampus, amygdala, cerebellum, basal_ganglia, brain_stem)
+- Quest 출처 메타: `c.sources=["quest_passthrough"]`, `c.quest_observation_count`, `c.last_quest_seen`
+
 
 ### Edge Functions (13개 - 모두 ACTIVE)
 
@@ -164,6 +174,86 @@
   - `src/hooks/usePredictions.ts` - 예측 데이터 페칭 + 검증 로직
   - `src/components/PredictionVerifyPanel.tsx` - 예측 검증 패널
   - `src/app/brain/page.tsx` - Brain 페이지에 패널 토글 추가 (상상/예측)
+
+### Phase A4.3: Quest 3S 온디바이스 VLM → Neo4j 통합 ✅ (2026-04-24)
+
+**목표**: Quest 3S APK가 SmolVLM-500M으로 패스스루 영상 실시간 분석 → Concept 추출 → PC FastAPI → Baby AI Neo4j 영구 저장.
+
+**전체 파이프라인** (검증 완료):
+```
+Quest 3S Camera 50 (1280×960 JPEG, 167ms)
+  → SmolVLM-500M-Q8 추론 (5.5s avg, 35 TPS)
+  → ConceptExtractor (~10 unique/round)
+  → HttpURLConnection POST 127.0.0.1:8000  (USB 터널)
+  → FastAPI /api/vision/quest-concepts
+  → Neo4j: insert_experience + insert_concept(visual)×N + 후처리 Cypher
+  → Concept 노드: c.sources=["quest_passthrough"], c.quest_observation_count, c.last_quest_seen
+  → 자동 region 매핑: occipital (35%) + thalamus/temporal/parietal/prefrontal (분산 표상)
+```
+
+**핵심 결정**:
+- **대안 B 채택**: 별도 라벨 X, 통합 `:Concept` + `c.sources` 필드 (대화에서 본 desk = Quest에서 본 desk 통합 학습)
+- **adb reverse over USB**: 학교 EAP Wi-Fi 우회. PC `127.0.0.1:8000` ↔ Quest `127.0.0.1:8000` USB 터널.
+- **HttpURLConnection 채택**: OkHttp 의존성 0 — APK 9.0MB 유지
+
+**E2E 결과** (5 rounds):
+- 누적 학습 검증: computer (qcnt 6, ucnt 5), monitor (5/4), text (4/3), keyboard (3/2)
+- 같은 장면 반복 → R1 10 신규, R2~5 대부분 매치 (통합 학습 동작)
+- 배터리 4% 소모, 온도 무변동
+
+**관련 파일**:
+- `neural/baby/api_server.py` — `POST /api/vision/quest-concepts` + Pydantic 모델
+- `quest-passthrough-test/app/src/main/java/com/babyai/passthroughtest/QuestUploader.kt` — 신규 (HTTP client)
+- `quest-passthrough-test/app/src/main/java/com/babyai/passthroughtest/MainActivity.kt` — `pc_url` intent extra + POST 호출
+- `quest-passthrough-test/app/src/main/AndroidManifest.xml` — INTERNET + cleartext
+
+**관련 메모리**: `memory/a4.3_completed.md`, `memory/passthrough_api_research.md`, `memory/dev_patterns.md`
+
+### Phase A4.4: Color→Object Descriptor Binding ✅ (2026-04-24)
+
+**목표**: VLM 응답에서 "yellow bottle" 같은 색상-객체 수식 관계를 Neo4j 관계로 저장. 색상 concept을 독립 유지하되 binding으로 연결 (V4+IT 분리표상 + binding problem 해결).
+
+**offline precision 검증** (구현 전): A4.3에서 쌓인 36 quest_passthrough Experience의 vlm_response 재처리 → 34 pair, strict precision 94.1%, recall ~86%, FP 1건. GO 판정.
+
+**구조**:
+```
+(yellow:Concept)-[:RELATES_TO {
+    relation_type: "describes_color",
+    aspect: "color",
+    strength: 0.5→1.0 (+0.05/obs),
+    evidence_count, observation_count,
+    sources: ["quest_passthrough", ...],
+    first_seen, last_seen
+}]->(bottle:Concept)
+```
+
+- 기존 RELATES_TO 라벨 재사용 → frontend concept-relations API + sleep decay 자동 반영
+- 방향성 보존 (descriptor → object), Hebbian canonical ordering 안 함
+- aspect 필드로 미래 material/size/shape 확장 준비
+
+**파서 규칙** (MVP):
+- COLOR 셋 19종 + STOPWORDS_AFTER_COLOR 필터
+- "COLOR + 바로 다음 단어(len≥2, non-stopword, non-color)" → pair
+- 다층 방어: Kotlin len≥3 필터 + Python skip 전략으로 실질 FP 2.9%
+
+**변경 파일**:
+- `neural/baby/concept_binding.py` **신규** — 순수 함수 파서
+- `neural/baby/neo4j_db.py` — `link_descriptor_to_object()` 메서드 추가
+- `neural/baby/api_server.py` — `post_quest_concepts`에 binding 블록 + Response 필드 3개
+
+**Smoke test 검증** (3 POST):
+- created=2 (yellow→bottle, yellow→liquid)
+- reinforced=2 (strength 0.5→0.55, evidence 1→2)  
+- created=1 (white→keys)
+- Concept 969→969 (오염 없음), smoke source 태그는 Cypher로 cleanup
+
+**범위 밖 (A4.5+)**:
+- be-copula ("keyboard is white")
+- 공접 처리 ("blue and gray keys" 중 blue 누락)
+- VLM 환각 사용자 정정 (예: 실제 고체를 "liquid"로 쓴 케이스)
+- POS tagger 도입 — material/size/shape 동시 설계 시 통합 검토
+
+**관련 메모리**: `memory/a4.4_completed.md`
 
 ---
 

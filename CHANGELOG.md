@@ -5,6 +5,147 @@
 
 ---
 
+## 2026-04-24 (Phase A4.4 — Color→Object Descriptor Binding)
+
+### 핵심 성과 ✅
+
+VLM 응답의 "yellow bottle" 같은 색상-객체 인접 패턴을 파싱하여 Neo4j에 `(yellow)-[:RELATES_TO {relation_type:"describes_color"}]->(bottle)` 관계로 저장. Baby AI가 색상과 객체를 분리된 개념으로 유지하면서도 **binding 관계로 연결**하는 뇌과학적 표상(V4 vs IT) 구조 확립.
+
+### 설계 결정 — offline 검증 기반
+
+A4.3에서 누적된 36개 quest_passthrough Experience의 `vlm_response`를 파서로 재처리하여 **구현 전 precision 측정**:
+- 34 candidate pair, 12 unique
+- Strict precision **94.1%** (32/34), recall ≈ 86%
+- FP 1건(`white→square`) — decay로 자연 정리 수용
+
+**제1원칙 정합성 검토**: 색상 concept을 삭제(필터링)하지 않고 **관계로 분리**. V4(색상) ⟷ IT(객체) 분리 표상 + binding problem (Treisman) 해결 방식과 일치.
+
+### 채택한 구조
+
+- **저장 위치**: 기존 `RELATES_TO` 라벨 재사용 + `relation_type="describes_<aspect>"` 속성
+- **aspect 필드**: 미래 material/size/shape 확장 준비
+- **방향성**: descriptor → object (형용사가 명사를 수식하는 feedforward)
+- **ON CREATE/MATCH**: strength 0.5→cap 1.0 (Hebbian-style), evidence_count++, sources 배열 멱등 추가
+- frontend 시각화(`/api/brain/concept-relations`)에 자동 포함 — 관찰 가능성 확보
+
+### 변경 파일 (3개)
+
+**PC 측**:
+- `neural/baby/concept_binding.py` **신규** (86 LoC) — COLOR 셋(19) + stopword 셋 + `extract_color_bindings(text)` 순수 함수. DB 의존 0, 대화 경로 재사용 가능.
+- `neural/baby/neo4j_db.py` — `link_descriptor_to_object()` 메서드 추가 (+70 LoC). RELATES_TO 멱등 MERGE + 방향성 보존 + sources/observation_count/evidence_count 관리.
+- `neural/baby/api_server.py` — `post_quest_concepts` 에 2e) 블록 삽입: 파서 호출 → name_to_id 맵 lookup → `link_descriptor_to_object` 호출. `QuestConceptsResponse`에 `bindings_created/reinforced/skipped` 3 필드 추가.
+
+### 검증 (3 POST smoke test)
+
+| POST | 문장 | 결과 |
+|---|---|---|
+| #1 | "yellow bottle of yellow liquid" | bindings_created=**2** (yellow→bottle, yellow→liquid) |
+| #2 | 동일 문장 재시도 | bindings_reinforced=**2**, strength 0.50→0.55, evidence 1→2 ✅ |
+| #3 | "white keys and touchpad" | bindings_created=**1** (white→keys) ✅ |
+
+최종 DB 상태: describes_color 관계 3개 (yellow→bottle, yellow→liquid, white→keys). Concept 오염 없음 (969→969). smoke_test source 태그는 Cypher로 정리.
+
+### 파서 규칙 (MVP)
+
+1. COLOR (19종) 토큰 뒤 바로 다음 단어가
+2. STOPWORDS_AFTER_COLOR 아니고
+3. COLOR 아니고
+4. 길이 2+ (acronym `hp` 허용 — A4.3 대비 완화)
+이면 `(color, noun, "color")` pair 생성.
+
+**다층 방어**: Kotlin ConceptExtractor 길이 3+ 필터가 payload 단계에서 `hp` 같은 acronym을 차단 → Python 파서가 `white→hp` 후보를 뽑아도 `name_to_id` 맵에 없어 자동 skip. 실질 DB 오염률 FP 2.9%.
+
+### 범위 밖 (A4.5 이후)
+
+- be-copula 구조 (`"keyboard is white"`)
+- 공접 처리 (`"blue and gray keys"` — blue 누락)
+- material/size/shape 확장 (aspect 필드는 준비됨)
+- POS tagger 도입 (연속 형용사 구분 — `white square keys` FP 해결)
+- 사용자 ground truth 정정 기능 (VLM 환각 보정, 예: "yellow liquid"는 실제 고체)
+
+### 주의
+
+- 현 VLM(SmolVLM-500M)이 실제 고체(비타민 통)를 "liquid"로 환각 — Baby AI는 VLM 출력 그대로 학습 (철학적 일관성). ground truth 정정은 A4.5+.
+- Kotlin ConceptExtractor 길이 필터를 2로 완화할 경우 FP 방어 재평가 필요.
+
+### 관련 메모리
+
+- `memory/a4.4_completed.md` **신규** — 검증 Cypher + 파서 규칙 + smoke test 결과
+- `memory/a4.3_completed.md` — baseline (36 exp 실측, 969 concept)
+
+---
+
+## 2026-04-24 (Phase A4.3 — Quest → PC FastAPI → Neo4j E2E)
+
+### 핵심 성과 ✅
+
+Quest 3S APK가 SmolVLM-500M 추론 후 추출한 Concept을 PC FastAPI로 POST → Neo4j에 저장하는 전체 파이프라인이 1+5 rounds E2E로 검증 완료.
+
+**Concept 909 → 925 (+16 신규), Experience 3062 → 3068 (+6 quest_passthrough)**
+
+### 변경 파일
+
+**PC 측** (`neural/baby/api_server.py`):
+- 추가: Pydantic 모델 `QuestImageMeta`, `QuestConceptsRequest`, `QuestConceptsResponse`
+- 추가: `POST /api/vision/quest-concepts` endpoint
+  - `insert_experience(task_type="vision", tags=["quest_passthrough","vision"], extras={...})`
+  - `insert_concept(category="visual")` 루프 — 자동으로 occipital region 매핑
+  - 후처리 Cypher: `c.sources` 배열 (멱등 추가), `c.quest_observation_count++`, `c.last_quest_seen`
+  - `link_experience_concept` (INVOLVES, confidence=0.5)
+- emotional_salience=0.4 (수동 관찰 — 대화 0.5~0.6보다 낮음)
+
+**Quest 측** (`quest-passthrough-test/`):
+- `app/src/main/AndroidManifest.xml`: `INTERNET`, `ACCESS_NETWORK_STATE` 권한 + `usesCleartextTraffic="true"`
+- `app/src/main/java/com/babyai/passthroughtest/QuestUploader.kt` 신규 — HttpURLConnection + org.json (의존성 0)
+- `app/src/main/java/com/babyai/passthroughtest/MainActivity.kt`: `pc_url` intent extra + 캡처 메타 추적 + POST 호출
+
+### 핸드오프 계획 → 실제 구현 정정
+
+| 계획 (2026-04-20) | 실제 (2026-04-24) | 사유 |
+|---|---|---|
+| `upsert_vision_concept()` 신규 메서드 | 추가 안 함, `insert_concept(category="visual")` 재사용 | 기존 메서드가 MERGE+멱등+region mapping 모두 수행 |
+| `source` (단수) | `c.sources` (배열) | 같은 Concept이 대화+Quest 양쪽 출처 가능 |
+| OkHttp 의존성 | HttpURLConnection 표준 라이브러리 | APK 크기 최소화 |
+| 별도 라벨 `:VisionConcept` | 통합 `:Concept` + `c.sources` 필드 (대안 B 채택) | 사용자 결정 — Baby AI 통합 학습 |
+
+### E2E 결과 (5 rounds)
+
+성능: avg 5509ms (min 4525, max 5831, std 493), 배터리 100%→96% (4% drop), 온도 35°C 무변동
+
+누적 학습 (같은 책상+컴퓨터 장면):
+- R1: 10 신규
+- R2: 0 신규 + 4 매치
+- R3: 0 신규 + 5 매치
+- R4: 2 신규 + 2 매치
+- R5: 0 신규 + 4 매치
+
+가장 많이 본: computer (qcnt 6), monitor (5), text (4), keyboard (3), webpage (3)
+모든 Quest concept이 `:MAPPED_TO occipital` (해부학적으로 정확)
+
+### 핵심 결정 — adb reverse over USB
+
+학교망 `sgwlan_secure` (WPA2-Enterprise EAP)에서 Quest 인증 실패 반복 → EAP 디버깅 비효율.
+
+**해결**: `adb reverse tcp:8000 tcp:8000` → Quest는 `http://127.0.0.1:8000` 호출 → USB 터널로 PC localhost 도달.
+
+장점: Wi-Fi/방화벽/NAT 모두 우회. PC 방화벽 인바운드 설정 불필요. 가장 안정.
+한계: USB 케이블 길이 한계 (이동 학습은 A4.4 이후 핫스팟 또는 EAP 인증서 필요)
+
+### 검증된 사실 / 새 함정
+
+- `usesCleartextTraffic="true"` 필수 (Android 14 기본 차단)
+- APK 재설치 후 권한 재부여 필수 (`pm grant ... CAMERA`, `pm grant ... HEADSET_CAMERA`)
+- `usage_count`는 신규 시 0 초기화, ON MATCH에서만 증가 (qcnt 6 / ucnt 5는 정상)
+- FastAPI `extras`는 `json.dumps`로 직렬화 — 조회 시 deserialize 필요
+
+### 관련 메모리
+
+- `memory/a4.3_completed.md` — 운영 명령 + 검증 Cypher (재현용)
+- `memory/dev_patterns.md` — adb reverse 황금 패턴, 권한 재부여 함정
+- `memory/passthrough_api_research.md` — A4.0~A4.3 연속 일지
+
+---
+
 ## 2026-03-23~24 (Phase C2 + Step 3 PendingQuestion)
 
 ### Phase C2: Hebbian Learning 구현 ✅

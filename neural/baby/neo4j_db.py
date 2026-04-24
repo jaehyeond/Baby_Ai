@@ -1406,6 +1406,74 @@ class BrainDatabase:
             record = await result.single()
             return record["updated"] if record else 0
 
+    async def link_descriptor_to_object(
+        self,
+        descriptor_concept_id: str,
+        object_concept_id: str,
+        aspect: str,
+        source: str,
+        observation_ts: str,
+        weight_init: float = 0.5,
+        weight_delta: float = 0.05,
+    ) -> dict:
+        """Descriptor→Object 속성 바인딩 관계 upsert (Phase A4.4).
+
+        방향성 있는 RELATES_TO 관계 (relation_type=f"describes_{aspect}") 를
+        descriptor → object 방향으로 생성/강화한다.
+
+        - ON CREATE: strength=weight_init, observation_count=1, sources=[source]
+        - ON MATCH: strength += weight_delta (cap 1.0), observation_count++,
+          sources 배열에 source 멱등 추가
+        - aspect: "color" | "material" | "size" | ...  (미래 확장)
+
+        주의: Hebbian 과 달리 방향성 보존 (canonical ordering 안 함).
+        """
+        if descriptor_concept_id == object_concept_id:
+            return {}
+        relation_type = f"describes_{aspect}"
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (d:Concept {id: $did}), (o:Concept {id: $oid}) "
+                "MERGE (d)-[r:RELATES_TO {relation_type: $rtype}]->(o) "
+                "ON CREATE SET "
+                "  r.strength = $w_init, "
+                "  r.evidence_count = 1, "
+                "  r.observation_count = 1, "
+                "  r.aspect = $aspect, "
+                "  r.sources = [$src], "
+                "  r.first_seen = $now, "
+                "  r.last_seen = $now, "
+                "  r.created_at = $now "
+                "ON MATCH SET "
+                "  r.strength = CASE WHEN coalesce(r.strength, 0.5) + $w_delta > 1.0 "
+                "    THEN 1.0 ELSE coalesce(r.strength, 0.5) + $w_delta END, "
+                "  r.evidence_count = coalesce(r.evidence_count, 0) + 1, "
+                "  r.observation_count = coalesce(r.observation_count, 0) + 1, "
+                "  r.sources = CASE "
+                "    WHEN r.sources IS NULL THEN [$src] "
+                "    WHEN $src IN r.sources THEN r.sources "
+                "    ELSE r.sources + $src END, "
+                "  r.last_seen = $now "
+                "RETURN r.strength AS strength, r.observation_count AS obs_count, "
+                "       r.sources AS sources",
+                did=descriptor_concept_id,
+                oid=object_concept_id,
+                rtype=relation_type,
+                aspect=aspect,
+                src=source,
+                w_init=weight_init,
+                w_delta=weight_delta,
+                now=observation_ts,
+            )
+            record = await result.single()
+            if not record:
+                return {}
+            return {
+                "strength": float(record["strength"]),
+                "observation_count": int(record["obs_count"]),
+                "sources": list(record["sources"] or []),
+            }
+
     async def get_hebb_stats(self) -> dict:
         """Hebbian 학습 통계"""
         async with self.driver.session(database=_DB_NAME) as s:

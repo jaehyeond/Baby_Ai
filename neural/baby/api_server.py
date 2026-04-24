@@ -35,6 +35,7 @@ import base64
 import uvicorn
 
 from .neo4j_db import init_driver, close_driver, get_brain_db, get_driver, _DB_NAME
+from .concept_binding import extract_color_bindings
 from .redis_client import (
     init_redis, close_redis, get_redis,
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
@@ -164,6 +165,9 @@ class QuestConceptsResponse(BaseModel):
     concepts_inserted: int
     concepts_existing: int
     total_unique_in_db: int
+    bindings_created: int = 0
+    bindings_reinforced: int = 0
+    bindings_skipped: int = 0
     success: bool
     message: Optional[str] = None
 
@@ -1136,6 +1140,7 @@ async def post_quest_concepts(request: QuestConceptsRequest):
         # 2) Concept 루프 — insert_concept (멱등 MERGE) + Quest 메타 후처리
         concepts_inserted = 0
         concepts_existing = 0
+        name_to_id: dict[str, str] = {}
         for raw_name in request.concepts_raw:
             name = raw_name.strip().lower()
             if not name:
@@ -1155,6 +1160,7 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             cid = concept.get("id")
             if not cid:
                 continue
+            name_to_id[name] = cid
 
             # 2c) Quest 메타 후처리 — sources 배열, quest_observation_count, last_quest_seen
             async with drv.session(database=_DB_NAME) as s:
@@ -1183,6 +1189,33 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             else:
                 concepts_existing += 1
 
+        # 2e) Phase A4.4 — descriptor→object binding (color 우선).
+        # 규칙: COLOR 토큰 뒤 바로 다음 단어가 수식 대상(인접 규칙).
+        # 양쪽 concept이 이번 라운드에 저장된 경우만 관계 생성 (skip 전략).
+        bindings_created = 0
+        bindings_reinforced = 0
+        bindings_skipped = 0
+        for desc_name, obj_name, aspect in extract_color_bindings(request.vlm_response):
+            desc_id = name_to_id.get(desc_name)
+            obj_id = name_to_id.get(obj_name)
+            if not desc_id or not obj_id:
+                bindings_skipped += 1
+                continue
+            result = await db.link_descriptor_to_object(
+                descriptor_concept_id=desc_id,
+                object_concept_id=obj_id,
+                aspect=aspect,
+                source=request.source,
+                observation_ts=request.timestamp,
+            )
+            if not result:
+                bindings_skipped += 1
+                continue
+            if result.get("observation_count") == 1:
+                bindings_created += 1
+            else:
+                bindings_reinforced += 1
+
         # 3) DB 전체 unique concept 수 (관측 통계용)
         async with drv.session(database=_DB_NAME) as s:
             r = await s.run("MATCH (c:Concept) RETURN count(c) AS total")
@@ -1194,8 +1227,16 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             concepts_inserted=concepts_inserted,
             concepts_existing=concepts_existing,
             total_unique_in_db=total_unique,
+            bindings_created=bindings_created,
+            bindings_reinforced=bindings_reinforced,
+            bindings_skipped=bindings_skipped,
             success=True,
-            message=f"Quest observation saved: {concepts_inserted} new + {concepts_existing} existing concepts",
+            message=(
+                f"Quest observation saved: {concepts_inserted} new + "
+                f"{concepts_existing} existing concepts; "
+                f"bindings: {bindings_created} new + {bindings_reinforced} reinforced "
+                f"+ {bindings_skipped} skipped"
+            ),
         )
 
     except HTTPException:
