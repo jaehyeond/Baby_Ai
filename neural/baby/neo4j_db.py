@@ -1377,6 +1377,11 @@ class BrainDatabase:
         - ON CREATE: strength=delta, hebb_strength=delta (새 시냅스)
         - ON MATCH: strength += delta (cap 1.0), hebb_strength += delta (cap 1.0)
         - canonical ordering (min,max) 으로 방향성 중복 방지
+
+        A4.5 격리: MERGE 패턴에 ``{source:'hebbian'}`` 속성을 포함시켜
+        다른 의미 관계 (``relation_type='describes_color'`` 등) 와 충돌하지 않도록 함.
+        속성 없는 MERGE 는 임의의 RELATES_TO 와 매치되어 의미가 다른 관계의
+        속성을 덮어쓸 수 있다 — 실측으로 확인된 동작 (2026-04-24 controlled exp).
         """
         if not concept_pairs:
             return 0
@@ -1390,9 +1395,9 @@ class BrainDatabase:
             result = await s.run(
                 "UNWIND $pairs AS pair "
                 "MATCH (a:Concept {id: pair[0]}), (b:Concept {id: pair[1]}) "
-                "MERGE (a)-[r:RELATES_TO]->(b) "
+                "MERGE (a)-[r:RELATES_TO {source: 'hebbian'}]->(b) "
                 "ON CREATE SET r.strength = $delta, r.hebb_strength = $delta, "
-                "  r.source = 'hebbian', r.created_at = $now "
+                "  r.created_at = $now "
                 "ON MATCH SET "
                 "  r.strength = CASE WHEN coalesce(r.strength, 0.5) + $delta > 1.0 "
                 "    THEN 1.0 ELSE coalesce(r.strength, 0.5) + $delta END, "

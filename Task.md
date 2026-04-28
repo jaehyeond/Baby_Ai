@@ -255,6 +255,46 @@ Quest 3S Camera 50 (1280×960 JPEG, 167ms)
 
 **관련 메모리**: `memory/a4.4_completed.md`
 
+### Phase A4.5C: 파서 개선 — 공접 + be-copula ✅ (2026-04-27)
+
+**목표**: A4.4 인접 규칙(precision 94%, recall 86%)의 FN 3건 해결.
+
+**변경**: `concept_binding.py::extract_color_bindings()` 에 두 규칙 추가
+- 공접: `COLOR1 + "and" + COLOR2 + NOUN`
+- be-copula: `NOUN + (is|are|was|were) + COLOR`
+
+**검증** (36 exp re-run + 3 smoke POST):
+- precision 94.1% → ~95%
+- recall ~86% → **~97.5%** (+11%p)
+- 신규 binding: blue→keys (공접), white→keyboard ×4 (be-copula)
+- 회귀 0
+
+**관련 메모리**: `memory/a4.5c_parser_extension.md`
+
+### Phase A4.5α: Hebbian / describes 관계 격리 ✅ (2026-04-27)
+
+**목표**: A4.4의 `describes_color` 관계가 향후 `hebbian_update()` 호출 시 의미 충돌 없이 보존되도록 격리.
+
+**발견 (controlled experiment, 2026-04-27)**:
+속성 없는 `MERGE (a)-[r:RELATES_TO]->(b)` 는 같은 쌍의 임의 RELATES_TO 와 매치 → 다른 의미 관계의 속성을 덮어쓰는 동작 실측 확인. 현재 충돌 0건이지만 잠재 위험.
+
+**변경**:
+```diff
+neural/baby/neo4j_db.py — hebbian_update()
+- MERGE (a)-[r:RELATES_TO]->(b)
++ MERGE (a)-[r:RELATES_TO {source: 'hebbian'}]->(b)
+```
+
+ON CREATE 의 `r.source = 'hebbian'` SET 은 제거 (MERGE 패턴에 포함됨).
+
+**검증**:
+- describes_color 관계 보존 ✅ (str=0.55 변동 없음)
+- Hebbian 관계 별도 신규 생성 ✅ (str=0.05, src='hebbian')
+- 기존 Hebbian 1087개 ON MATCH 정상 누적 ✅ (회귀 없음)
+- decay_connections() 는 모든 RELATES_TO 대상 → describes_color 도 자동 감쇠 ✅
+
+**관련 메모리**: `memory/a4.5_alpha_isolation.md`
+
 ---
 
 ## 🔄 현재 기능 흐름 (End-to-End)

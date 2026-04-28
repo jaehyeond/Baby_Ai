@@ -48,7 +48,17 @@ def _tokenize(text: str) -> list[str]:
 
 
 def extract_color_bindings(text: str) -> list[tuple[str, str, str]]:
-    """문장에서 color→object 인접 binding 후보를 추출.
+    """문장에서 color→object binding 후보를 추출.
+
+    적용 규칙 (A4.5C):
+      1. **인접** (A4.4 기본): ``COLOR + NOUN`` — 가장 확실, precision 우선
+      2. **공접** (A4.5C): ``COLOR1 + "and" + COLOR2 + NOUN`` — COLOR1도 NOUN 수식
+      3. **be-copula** (A4.5C): ``NOUN + (is|are|was|were) + COLOR`` — COLOR가 NOUN 수식
+
+    제외 케이스 (MVP 범위 밖):
+      - 3단 공접 ``red, blue, and green keys`` (현재 데이터 0건)
+      - 거리-2 ``bottle of yellow liquid`` 의 bottle 추정 (의도적 보수)
+      - 형용사 + COLOR ``big and yellow ball`` (POS tagger 필요)
 
     Returns:
         ``(descriptor, obj_name, aspect)`` 튜플 리스트. 중복 가능(호출자가 집계).
@@ -56,19 +66,54 @@ def extract_color_bindings(text: str) -> list[tuple[str, str, str]]:
     tokens = _tokenize(text)
     pairs: list[tuple[str, str, str]] = []
     n = len(tokens)
+
+    def _is_valid_object(tok: str) -> bool:
+        """수식 대상 명사 후보로 적격한지."""
+        return (
+            tok not in STOPWORDS_AFTER_COLOR
+            and tok not in COLOR_WORDS
+            and len(tok) >= 2
+        )
+
     for i, tok in enumerate(tokens):
         if tok not in COLOR_WORDS:
             continue
-        if i + 1 >= n:
+
+        # 규칙 1: 인접 COLOR + NOUN
+        if i + 1 < n:
+            nxt = tokens[i + 1]
+            if _is_valid_object(nxt):
+                pairs.append((tok, nxt, "color"))
+
+        # 규칙 2: 공접 COLOR1 + "and" + COLOR2 + NOUN
+        # 첫 COLOR(tok) 입장에서 "and COLOR2 NOUN" 패턴 검사.
+        if i + 3 < n and tokens[i + 1] == "and" and tokens[i + 2] in COLOR_WORDS:
+            shared = tokens[i + 3]
+            if _is_valid_object(shared):
+                pairs.append((tok, shared, "color"))
+
+    # 규칙 3: be-copula NOUN + (is|are|was|were) + COLOR
+    # COLOR 위치에서 거꾸로 보기.
+    COPULAS = {"is", "are", "was", "were"}
+    for i, tok in enumerate(tokens):
+        if tok not in COLOR_WORDS:
             continue
-        nxt = tokens[i + 1]
-        if nxt in STOPWORDS_AFTER_COLOR:
+        if i < 2:
             continue
-        if nxt in COLOR_WORDS:
+        if tokens[i - 1] not in COPULAS:
             continue
-        if len(nxt) < 2:
-            continue
-        pairs.append((tok, nxt, "color"))
+        # i-1 = copula, i-2 부터 거슬러 올라가 첫 비-stopword 명사 후보
+        for j in range(i - 2, -1, -1):
+            cand = tokens[j]
+            if cand in STOPWORDS_AFTER_COLOR:
+                continue  # the/a/an/this 등은 건너뜀
+            if cand in COLOR_WORDS:
+                break  # 다른 색상이면 중단 ("blue and red are colors" 같은 메타 문장)
+            if len(cand) < 2:
+                continue
+            pairs.append((tok, cand, "color"))
+            break
+
     return pairs
 
 

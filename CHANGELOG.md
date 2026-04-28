@@ -5,6 +5,129 @@
 
 ---
 
+## 2026-04-27 (Phase A4.5C — 파서 개선: 공접 + be-copula)
+
+### 핵심 성과 ✅
+
+`concept_binding.py::extract_color_bindings()` 에 두 규칙 추가:
+- **공접**: `COLOR1 + "and" + COLOR2 + NOUN` → COLOR1도 NOUN 수식 (예: "blue and gray keys" → blue→keys, gray→keys)
+- **be-copula**: `NOUN + (is|are|was|were) + COLOR` → COLOR가 NOUN 수식 (예: "The keyboard is white" → white→keyboard)
+
+### offline 검증 (36 quest_passthrough Experience 재실행)
+
+| 지표 | A4.4 | A4.5C | 변화 |
+|---|---|---|---|
+| Total pair instances | 35 | **40** | +5 |
+| Unique pair types | 13 | **15** | +2 |
+| Strict precision | 94.1% | **~95%** | ↑ |
+| Recall (추정) | ~86% | **~97.5%** | **+11%p** |
+
+신규 진짜 binding:
+- `blue → keys` (exp #4, 공접 규칙)
+- `white → keyboard` × 4건 (exp #23/25/27/30, be-copula)
+
+미해결 케이스 1건 (`white → square` FP, exp #29) — POS tagger 도입 없이 해결 불가, MVP 수용.
+
+### Smoke test 검증 (3 POST)
+
+1. **인접**: `"A yellow bottle on the desk."` → yellow→bottle reinforced ✅
+2. **공접**: `"white keys and blue and gray keys"` → 3 binding (white/blue/gray → keys), blue+gray 신규 ✅
+3. **be-copula**: `"The keyboard is white"` → white→keyboard 신규 ✅
+
+### 변경 파일
+
+- `neural/baby/concept_binding.py::extract_color_bindings()` — 규칙 2 (공접), 규칙 3 (be-copula) 추가, 헬퍼 `_is_valid_object()` 도입
+
+### DB 최종 상태
+
+describes_color 관계 **6개**:
+- yellow → bottle (str=0.60, obs=3)
+- white → keys (str=0.55, obs=2)
+- yellow → liquid (str=0.55, obs=2)
+- **white → keyboard (str=0.50, obs=1)** ← be-copula 신규
+- **blue → keys (str=0.50, obs=1)** ← 공접 신규
+- **gray → keys (str=0.50, obs=1)** ← 공접 신규
+
+### 의도적 보수 (MVP 범위 밖)
+
+- 3단 공접 `red, blue, and green keys` (현재 데이터 0건)
+- 형용사 + COLOR `big and yellow ball` (POS tagger 필요)
+- 거리-2 binding `bottle of yellow liquid` 의 bottle 추정 (의도적 — VLM 의도 따라 yellow→liquid 만 잡음)
+- 문장 분할 (`split('.')`) — 현재 데이터에서 cross-sentence 오류 0건
+
+### 관련 메모리
+
+- `memory/a4.5c_parser_extension.md` (신규)
+
+---
+
+## 2026-04-27 (Phase A4.5α — Hebbian / describes 관계 격리)
+
+### 핵심 성과 ✅
+
+`hebbian_update()` 의 MERGE 패턴에 ``{source: 'hebbian'}`` 속성을 추가하여 다른 의미 관계 (특히 A4.4 의 ``describes_color``) 와의 충돌 위험을 제거. 같은 concept 쌍에 Hebbian 관계와 describes 관계가 별도로 병존 가능.
+
+### 발견 경위 (controlled experiment)
+
+A4.5 우선순위 분석 단계에서 `decay_connections()` 와 `hebbian_update()` 가 A4.4 의 새 binding 관계와 어떻게 상호작용하는지 점검. **decay 는 정상**. 하지만 Hebbian 의 속성 없는 MERGE 가 다음 동작을 보임 (실측):
+
+- 시뮬: `(yellow)-[:RELATES_TO {relation_type:'describes_color'}]->(bottle)` 존재 시
+- `MERGE (a)-[r:RELATES_TO]->(b)` 실행
+- → 기존 describes_color 관계가 **매치되어** ON MATCH 발동
+- → describes_color 관계의 `strength` 가 +0.05 더 증가 (의도 외)
+- → describes_color 관계에 `source='hebbian'`, `hebb_strength` 속성이 **덮어씌워짐**
+- → 하나의 관계가 "describes 와 Hebbian 둘 다" 라고 주장하는 모순 상태
+
+현재 DB 에는 충돌 0건 (Quest 경로 concept 과 대화 Hebbian 호출 pair 가 우연히 겹치지 않음) 이지만 잠재 폭탄.
+
+### 변경 (1 라인 효과)
+
+`neural/baby/neo4j_db.py` 의 `hebbian_update()`:
+
+```diff
+- MERGE (a)-[r:RELATES_TO]->(b)
+- ON CREATE SET r.strength = $delta, r.hebb_strength = $delta,
+-   r.source = 'hebbian', r.created_at = $now
++ MERGE (a)-[r:RELATES_TO {source: 'hebbian'}]->(b)
++ ON CREATE SET r.strength = $delta, r.hebb_strength = $delta,
++   r.created_at = $now
+```
+
+`r.source = 'hebbian'` 의 ON CREATE SET 은 제거 (MERGE 패턴에 이미 포함되어 자동 부여). 멱등성 유지.
+
+### 검증
+
+**Controlled experiment (재수행)**:
+- Before: `yellow→bottle` 사이 describes_color 1개 (str=0.55)
+- `hebbian_update([(yellow_id, bottle_id)])` 호출
+- After: 2개 관계 병존:
+  - describes_color: **str=0.55 보존** ✅ (변경 없음)
+  - hebbian (rt=NULL, src='hebbian'): str=0.05 신규 ✅
+- 격리 성공 — 한 쌍에 의미가 다른 두 관계가 별도 존재
+
+**회귀 테스트**:
+- 기존 Hebbian 관계 1087개 중 임의 선택 → `hebbian_update` 재호출
+- ON MATCH 정상 발동: strength 0.02 → 0.07 (delta=0.05)
+- canonical ordering (min,max) 정상 작동
+- **기존 데이터 100% 호환**
+
+### 부가 검증
+
+- `decay_connections()` 는 `MATCH ()-[r:RELATES_TO]->()` 로 모든 RELATES_TO 대상 → describes_color 도 자동 감쇠 ✅
+- decay 와 ON MATCH 강화는 Hebbian-style balance 형성 — 반복 관찰되는 binding 만 생존, 일회성은 소멸 (인간 기억 메커니즘과 일치)
+
+### 변경 파일
+
+- `neural/baby/neo4j_db.py` `hebbian_update()` — MERGE 패턴 수정 + 격리 의도 docstring 추가
+
+### 부작용 / 주의
+
+- **frontend 시각화**: 같은 concept 쌍에 Hebbian + describes 두 관계가 보임. 이미 다른 pair 에 multi-edge 존재하므로 (예: AI→사람 6개) 새 행동 아님.
+- **spreading activation**: 같은 쌍을 두 번 traverse 가능. 잠재 over-activation. A4.5+ 에서 distinct 처리 검토 필요.
+- 기존 describes_color 관계 3개 (yellow→bottle, yellow→liquid, white→keys) **변경 없음**.
+
+---
+
 ## 2026-04-24 (Phase A4.4 — Color→Object Descriptor Binding)
 
 ### 핵심 성과 ✅
