@@ -35,7 +35,7 @@ Claude 기반 A2A(Agent-to-Agent) 멀티에이전트 시스템. Google의 A2A �
 
 ### 절대 규칙
 - **"정의만 되고 호출 안 됨" 방지**: 새 테이블/함수/Edge Function 추가 시 반드시 호출 지점 확인
-- **conversation-process 수정 시**: 현재 v23 기준으로 작업. CHANGELOG에서 최신 변경 확인 필수
+- **conversation_handler 수정 시**: 현재 **v30** 기준으로 작업 (FastAPI `neural/baby/conversation_handler.py` — 옛 Deno Edge Function `conversation-process` 완전 대체됨). CHANGELOG에서 최신 변경 확인 필수.
 - **이미 완료된 Phase 재작업 금지**: Task.md "✅ 완료된 Phase" 섹션 확인
 
 ---
@@ -162,9 +162,9 @@ pytest
 
 ### 실행 순서 (순차 필수)
 ```
-1. DB (스키마/Edge Function) → 검증
-2. Backend (Python 코드) → 검증
-3. Frontend (컴포넌트/hooks) → Backend 인터페이스 확정 후
+1. DB (Cypher / Neo4j 스키마) → 검증
+2. Backend (Python FastAPI 모듈 — `neural/baby/`) → 검증
+3. Frontend (Next.js 컴포넌트/hooks) → Backend 인터페이스 확정 후
 4. Lead: 통합 → 빌드 테스트 → git commit
 ```
 
@@ -178,6 +178,8 @@ pytest
 ## 🔴 Known Issues & Lessons Learned
 
 > 코드 수정 시 발생한 문제와 해결책을 기록합니다. 같은 실수를 반복하지 않기 위함.
+>
+> ⚠️ **2025-01~02 항목들은 Supabase + Edge Function 시절 기록입니다.** 시스템은 2026-03 마이그레이션으로 FastAPI + Neo4j + Redis 로 전환됨 (`conversation_handler v30`). 옛 패턴(useRef stabilization, semantic_concepts 조회 등) 자체는 React/일반 학습 가치가 있으나, "Edge Function" / "Supabase" 단어가 등장해도 **현재 시스템과 직결되지 않음**. 최신 작업 패턴은 `memory/` 디렉토리(`a4.5_alpha_isolation.md`, `a4.5c_parser_extension.md` 등)와 CHANGELOG.md 최상단을 우선 참조.
 
 ### 2025-01-29: useIdleSleep.ts 무한 루프
 
@@ -234,20 +236,28 @@ const resetIdleTimer = useCallback(() => {
 
 ## 🧠 Brain DB 구조 요약
 
-### ⚠️ Neo4j 노드 통계 (2026-03-19 실측 — Supabase 완전 대체됨)
-| 노드 | 수량 | 용도 |
-|------|------|------|
-| Concept | 820 | 개념/지식 (뉴런) |
-| Experience | 3039 | 경험 기억 (해마) |
-| EmotionLog | 1503 | 감정 기록 (편도체) |
-| CuriosityLog | 811 | 호기심 |
-| SleepLog | 2716 | 수면 기록 |
-| Procedure | 102 | 절차 기억 (소뇌) |
-| AutonomousGoal | 146 | 자율 목표 |
-| BrainRegion | 9 | 뇌 영역 (Phase B) |
+### ⚠️ Neo4j 노드 통계 (수치는 stale 가능 — 작업 시 FastAPI 로 verify)
+> 실측: `curl http://127.0.0.1:8000/api/state` (experience_count) / `/api/brain/concepts?limit=1` (total)
+> 마지막 갱신: 2026-04-28
 
-### Neo4j 관계
-- RELATES_TO: 680 (시냅스), MAPPED_TO: 820, INVOLVES: 1060, CAUSES: 3
+| 노드 | 수량 (2026-04-28) | 용도 |
+|------|------|------|
+| Concept | **970** | 개념/지식 (뉴런) |
+| Experience | **3062** | 경험 기억 (해마) |
+| EmotionLog | ~1503 (2026-03-19) | 감정 기록 (편도체) |
+| CuriosityLog | ~811 (2026-03-19) | 호기심 |
+| SleepLog | ~2716 (2026-03-19) | 수면 기록 |
+| Procedure | ~102 (2026-03-19) | 절차 기억 (소뇌) |
+| AutonomousGoal | ~146 (2026-03-19) | 자율 목표 |
+| BrainRegion | **11** (2026-04-10: +basal_ganglia, +thalamus) | 뇌 영역 (Phase B) |
+
+### Neo4j 관계 (수치 stale 가능)
+- RELATES_TO: **1770** (2026-04-27 실측, Hebbian 1087 + 도메인 관계 + describes_color 6)
+- MAPPED_TO: ~970 (Concept 1:1 매핑)
+- ALSO_REPRESENTED_IN: 분산 표상 (Concept당 N:N)
+- INVOLVES: ~1060+ (Experience→Concept)
+- CONNECTS_TO: 12 백질 경로 (BrainRegion 간)
+- CAUSES: 3
 
 ### Conversation Pipeline (FastAPI conversation_handler.py v30, 최신)
 - `neural/baby/conversation_handler.py` — Deno Edge Function 완전 대체
@@ -310,21 +320,23 @@ Experience ─── INVOLVES ─── Concept ─── RELATES_TO ─── C
 "수면 모드와 메타인지는 외부 LLM 없이 내부 알고리즘으로 구현"
 ```
 
-### LLM 사용 현황 정리
+### LLM 사용 현황 정리 (2026-03 마이그레이션 후 — FastAPI + Neo4j 기준)
 
-| 영역 | Edge Function | LLM 사용 | 설명 |
-|------|---------------|----------|------|
+| 영역 | 위치 | LLM 사용 | 설명 |
+|------|------|----------|------|
 | **🌞 깨어있을 때** | | | |
-| 대화 | `conversation-process` | ✅ Gemini | 사용자 상호작용 |
-| 비전 | `vision-process` | ✅ Gemini | 이미지 분석 |
-| 호기심 탐색 | `autonomous-exploration` | ✅ Gemini | 웹 검색 및 학습 |
-| 호기심 생성 | `generate-curiosity` | ✅ Gemini | 질문 생성 |
+| 대화 | `neural/baby/conversation_handler.py` (v30) | ✅ Gemini | 사용자 상호작용 |
+| 비전 (PC API) | `api_server.py::POST /api/vision/process` | ✅ Gemini | 이미지 분석 |
+| 비전 (Quest 온디바이스) | `quest-passthrough-test/` APK | ✅ SmolVLM-500M | passthrough 카메라 |
+| 비전 (Quest 클라우드, A4.5D 예정) | (예정) `api_server.py::POST /api/vision/quest-image` | ✅ Gemini Vision | JPEG 업로드 + 추론 |
+| 호기심 탐색 | (Phase 8 영역, 마이그레이션 진행 중) | ✅ Gemini | 웹 검색 및 학습 |
+| 호기심 생성 | (Phase A 영역) | ✅ Gemini | 질문 생성 |
 | **🌙 수면 모드** | | | |
-| 기억 통합 | `memory-consolidation` | ❌ 미사용 | DB 연산만 |
+| 기억 통합 | `api_server.py::POST /api/memory/consolidate` | ❌ 미사용 | DB 연산만 |
 | **📊 내부 학습** | | | |
-| 메타인지 | DB 함수 | ❌ 미사용 | 통계 기반 |
-| 시냅스 강화/약화 | DB 함수 | ❌ 미사용 | 규칙 기반 |
-| 패턴 승격 | DB 함수 | ❌ 미사용 | 클러스터링 |
+| 메타인지 | Cypher / Python | ❌ 미사용 | 통계 기반 |
+| 시냅스 강화/약화 | `neo4j_db.py::hebbian_update`, `decay_connections` | ❌ 미사용 | 규칙 기반 |
+| 패턴 승격 | Cypher | ❌ 미사용 | 클러스터링 |
 
 ### 설계 철학
 

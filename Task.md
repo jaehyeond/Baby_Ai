@@ -255,6 +255,33 @@ Quest 3S Camera 50 (1280×960 JPEG, 167ms)
 
 **관련 메모리**: `memory/a4.4_completed.md`
 
+### 🗺️ 로드맵 (2026-04-28 갱신)
+
+교수님 피드백 (온디바이스 집착 지적) + 사용자 비전 (Quest XR 끝단) 반영. 아키텍처 결정: **Brain = backend, 모든 인터페이스 = clients**. 로봇도 client (transplant 아님).
+
+```
+A4.5α ✅ Hebbian / describes 격리 (2026-04-27)
+A4.5C ✅ 파서 개선 — 공접 + be-copula (2026-04-27)
+A4.5D 🆕 클라우드 VLM 옵션 추가 + 비교 실험
+       └ Gemini Vision 백엔드, Quest는 JPEG 업로드만
+       └ 온디바이스(SmolVLM) 모드는 폐기 X, optional 보존
+A4.6   Live UI Phase 1~4 (PC dashboard orb)
+       └ Phase 1 (백엔드 SSE) — 별도 세션 진행 예정
+       └ Phase 2~4 — R3F orb + state hook + particle
+A5     클라우드 backend (Railway/Fly.io + AuraDB Free)
+A5.5   Quest spatial — Hand tracking + MRUK
+       └ 검지 raycast → attention 신호
+       └ MRUK 객체 dimensions → describes_size 관계
+A6     Quest XR 공간 UI (passthrough 위 floating orb/파티클)
+       └ A4.6의 R3F orb를 prototype 삼음 (shader 컨셉 공유)
+A7+    로봇 client / 발달인지 연구 / 논문
+       └ 로봇 = 또 다른 client (Brain backend 그대로 재사용)
+```
+
+**관련 메모리** (새 세션 필수 읽기):
+- `memory/architecture_brain_clients.md` — Brain=backend 원칙
+- `memory/roadmap_2026-04-28.md` — 위 로드맵 상세 + 미해결 결정
+
 ### Phase A4.5C: 파서 개선 — 공접 + be-copula ✅ (2026-04-27)
 
 **목표**: A4.4 인접 규칙(precision 94%, recall 86%)의 FN 3건 해결.
