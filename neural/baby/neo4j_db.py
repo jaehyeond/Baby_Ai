@@ -1371,6 +1371,7 @@ class BrainDatabase:
         self,
         concept_pairs: list[tuple[str, str]],
         strength_delta: float = 0.05,
+        source: str = "hebbian",
     ) -> int:
         """Hebbian Learning: 함께 활성화된 개념 쌍의 RELATES_TO 강화/생성
 
@@ -1378,10 +1379,15 @@ class BrainDatabase:
         - ON MATCH: strength += delta (cap 1.0), hebb_strength += delta (cap 1.0)
         - canonical ordering (min,max) 으로 방향성 중복 방지
 
-        A4.5 격리: MERGE 패턴에 ``{source:'hebbian'}`` 속성을 포함시켜
+        A4.5 격리: MERGE 패턴에 ``{source: <param>}`` 속성을 포함시켜
         다른 의미 관계 (``relation_type='describes_color'`` 등) 와 충돌하지 않도록 함.
         속성 없는 MERGE 는 임의의 RELATES_TO 와 매치되어 의미가 다른 관계의
         속성을 덮어쓸 수 있다 — 실측으로 확인된 동작 (2026-04-24 controlled exp).
+
+        source 파라미터 (Phase Q1, 2026-05-08):
+        - "hebbian"      : conversation 직접/간접 co-activation (기존, default)
+        - "visual_cooc"  : Quest passthrough 같은 frame 시각 동시발생
+        - 추가 source 도입 시 baseline에서 source별 분리 분석.
         """
         if not concept_pairs:
             return 0
@@ -1395,7 +1401,7 @@ class BrainDatabase:
             result = await s.run(
                 "UNWIND $pairs AS pair "
                 "MATCH (a:Concept {id: pair[0]}), (b:Concept {id: pair[1]}) "
-                "MERGE (a)-[r:RELATES_TO {source: 'hebbian'}]->(b) "
+                "MERGE (a)-[r:RELATES_TO {source: $source}]->(b) "
                 "ON CREATE SET r.strength = $delta, r.hebb_strength = $delta, "
                 "  r.created_at = $now "
                 "ON MATCH SET "
@@ -1406,6 +1412,7 @@ class BrainDatabase:
                 "RETURN count(r) AS updated",
                 pairs=pairs_list,
                 delta=strength_delta,
+                source=source,
                 now=_now_iso(),
             )
             record = await result.single()

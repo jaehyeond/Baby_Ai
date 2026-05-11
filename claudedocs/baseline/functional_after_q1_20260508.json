@@ -1,0 +1,179 @@
+{
+  "tag": "after_q1",
+  "timestamp": "2026-05-07T15:17:26.024019+00:00",
+  "tests": {
+    "identity_reach": {
+      "비비": {
+        "exists": true,
+        "degree": 168,
+        "reachable_in_6hop": 17,
+        "sampled": 50,
+        "reach_ratio": 0.34,
+        "avg_hop": 2.0588235294117645,
+        "max_hop": 4
+      },
+      "AI": {
+        "exists": true,
+        "degree": 145,
+        "reachable_in_6hop": 19,
+        "sampled": 50,
+        "reach_ratio": 0.38,
+        "avg_hop": 2.052631578947368,
+        "max_hop": 4
+      },
+      "사용자": {
+        "exists": true,
+        "degree": 47,
+        "reachable_in_6hop": 17,
+        "sampled": 50,
+        "reach_ratio": 0.34,
+        "avg_hop": 2.176470588235294,
+        "max_hop": 4
+      },
+      "개발자": {
+        "exists": true,
+        "degree": 51,
+        "reachable_in_6hop": 15,
+        "sampled": 50,
+        "reach_ratio": 0.3,
+        "avg_hop": 2.1333333333333333,
+        "max_hop": 4
+      }
+    },
+    "spreading_reach_k3": {
+      "k_hop": 3,
+      "total_concepts": 970,
+      "samples": 30,
+      "avg_reach": 57.03333333333333,
+      "median_reach": 0,
+      "max_reach": 304,
+      "min_reach": 0,
+      "avg_reach_ratio": 0.058797250859106524,
+      "samples_top5": [
+        {
+          "seed": "사용자",
+          "reach": 304
+        },
+        {
+          "seed": "신남",
+          "reach": 289
+        },
+        {
+          "seed": "변환",
+          "reach": 274
+        },
+        {
+          "seed": "딸랑딸랑 소리",
+          "reach": 262
+        },
+        {
+          "seed": "손",
+          "reach": 249
+        }
+      ],
+      "samples_bottom5": [
+        {
+          "seed": "로마숫자를",
+          "reach": 0
+        },
+        {
+          "seed": "태어나다",
+          "reach": 0
+        },
+        {
+          "seed": "공룡",
+          "reach": 0
+        },
+        {
+          "seed": "말하기",
+          "reach": 0
+        },
+        {
+          "seed": "동시에",
+          "reach": 0
+        }
+      ]
+    },
+    "color_binding": {
+      "standalone_color_concepts": [
+        {
+          "name": "white",
+          "degree": 2,
+          "usage": 12,
+          "qcnt": 13
+        },
+        {
+          "name": "yellow",
+          "degree": 2,
+          "usage": 20,
+          "qcnt": 21
+        },
+        {
+          "name": "blue",
+          "degree": 1,
+          "usage": 2,
+          "qcnt": 3
+        },
+        {
+          "name": "빨강",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 0
+        },
+        {
+          "name": "초록",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 0
+        },
+        {
+          "name": "green",
+          "degree": 0,
+          "usage": 0,
+          "qcnt": 1
+        },
+        {
+          "name": "black",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 2
+        }
+      ],
+      "n_describes_color_edges": 6,
+      "n_bound_objects": 4,
+      "binding_samples": [
+        {
+          "color": "white",
+          "count": 1,
+          "obj": "keyboard"
+        },
+        {
+          "color": "yellow",
+          "count": 3,
+          "obj": "bottle"
+        },
+        {
+          "color": "white",
+          "count": 2,
+          "obj": "keys"
+        },
+        {
+          "color": "blue",
+          "count": 1,
+          "obj": "keys"
+        },
+        {
+          "color": "gray",
+          "count": 1,
+          "obj": "keys"
+        },
+        {
+          "color": "yellow",
+          "count": 2,
+          "obj": "liquid"
+        }
+      ],
+      "verdict": "binding working - 6 describes_color edges across 4 objects, 0 standalone color hubs (acceptable)"
+    }
+  }
+}

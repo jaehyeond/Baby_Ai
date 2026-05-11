@@ -1,0 +1,136 @@
+{
+  "tag": "initial_2026-05-07",
+  "timestamp": "2026-05-07T13:05:10.730599+00:00",
+  "tests": {
+    "identity_reach": {
+      "비비": {
+        "exists": true,
+        "degree": 168,
+        "reachable_in_6hop": 19,
+        "sampled": 50,
+        "reach_ratio": 0.38,
+        "avg_hop": 1.6842105263157894,
+        "max_hop": 3
+      },
+      "baby": {
+        "exists": false
+      },
+      "엄마": {
+        "exists": true,
+        "degree": 0,
+        "reachable_in_6hop": 0,
+        "sampled": 50,
+        "reach_ratio": 0.0,
+        "avg_hop": null,
+        "max_hop": null
+      },
+      "mom": {
+        "exists": false
+      }
+    },
+    "spreading_reach_k3": {
+      "k_hop": 3,
+      "total_concepts": 970,
+      "samples": 30,
+      "avg_reach": 109.43333333333334,
+      "median_reach": 20,
+      "max_reach": 304,
+      "min_reach": 0,
+      "avg_reach_ratio": 0.11281786941580757,
+      "samples_top5": [
+        {
+          "seed": "사용자",
+          "reach": 304
+        },
+        {
+          "seed": "놀이",
+          "reach": 297
+        },
+        {
+          "seed": "질문",
+          "reach": 296
+        },
+        {
+          "seed": "자고",
+          "reach": 287
+        },
+        {
+          "seed": "비밀 질문",
+          "reach": 276
+        }
+      ],
+      "samples_bottom5": [
+        {
+          "seed": "확인하는",
+          "reach": 0
+        },
+        {
+          "seed": "피보나치",
+          "reach": 0
+        },
+        {
+          "seed": "해님",
+          "reach": 0
+        },
+        {
+          "seed": "finger",
+          "reach": 0
+        },
+        {
+          "seed": "검출하는",
+          "reach": 0
+        }
+      ]
+    },
+    "color_binding": {
+      "standalone_color_concepts": [
+        {
+          "name": "white",
+          "degree": 2,
+          "usage": 12,
+          "qcnt": 13
+        },
+        {
+          "name": "yellow",
+          "degree": 2,
+          "usage": 20,
+          "qcnt": 21
+        },
+        {
+          "name": "blue",
+          "degree": 1,
+          "usage": 2,
+          "qcnt": 3
+        },
+        {
+          "name": "빨강",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 0
+        },
+        {
+          "name": "초록",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 0
+        },
+        {
+          "name": "green",
+          "degree": 0,
+          "usage": 0,
+          "qcnt": 1
+        },
+        {
+          "name": "black",
+          "degree": 0,
+          "usage": 1,
+          "qcnt": 2
+        }
+      ],
+      "n_with_color_attribute": 0,
+      "color_attr_samples": [],
+      "n_describes_color_edges": 0,
+      "verdict": "no strong color hubs - could mean either successful binding or low color exposure"
+    }
+  }
+}

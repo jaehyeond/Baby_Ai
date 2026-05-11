@@ -35,7 +35,7 @@ import base64
 import uvicorn
 
 from .neo4j_db import init_driver, close_driver, get_brain_db, get_driver, _DB_NAME
-from .concept_binding import extract_color_bindings
+from .concept_binding import extract_color_bindings, select_visual_cooc_concepts
 from .redis_client import (
     init_redis, close_redis, get_redis,
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
@@ -1215,6 +1215,30 @@ async def post_quest_concepts(request: QuestConceptsRequest):
                 bindings_created += 1
             else:
                 bindings_reinforced += 1
+
+        # 2g) Phase Q1 — visual co-occurrence Hebbian (같은 frame 객체 쌍 강화).
+        # 근거: Quest 42 Experience 진단(2026-05-08)에서 636 same-exp pair 중
+        #       577개(91%)가 RELATES_TO 미생성. 시각 시냅스 누락이 고립 원인의 일부.
+        # 격리: source='visual_cooc' (conversation 'hebbian'과 분리).
+        # Filter: 색상/위치/메타 토큰 제외 (concept_binding.VISUAL_COOC_EXCLUDE).
+        # delta=0.03 (conv 직접 0.05 vs 간접 0.02 사이).
+        cooc_updated = 0
+        try:
+            cooc_ids = select_visual_cooc_concepts(name_to_id)
+            if len(cooc_ids) >= 2:
+                from itertools import combinations
+                cooc_pairs = list(combinations(cooc_ids, 2))
+                cooc_updated = await db.hebbian_update(
+                    cooc_pairs,
+                    strength_delta=0.03,
+                    source="visual_cooc",
+                )
+                logger.debug(
+                    f"visual_cooc Hebbian: {len(cooc_pairs)} pairs from "
+                    f"{len(cooc_ids)} concepts → {cooc_updated} updated"
+                )
+        except Exception as e:
+            logger.warning(f"visual_cooc Hebbian error: {e}")
 
         # 3) DB 전체 unique concept 수 (관측 통계용)
         async with drv.session(database=_DB_NAME) as s:

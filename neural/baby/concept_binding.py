@@ -36,6 +36,42 @@ STOPWORDS_AFTER_COLOR: frozenset[str] = frozenset({
     "has", "have", "had",
 })
 
+# Phase Q1 (visual co-occurrence Hebbian) — 시각 동시발생 시 RELATES_TO 대상에서 제외할 토큰.
+# 근거 (2026-05-08 진단): Quest 42 Experience TOP-25 분석에서 색상/위치/속성 부사가 noise 후보.
+# - 색상은 별도 describes_color 관계로 처리됨 → visual_cooc에 포함하면 의미 중복.
+# - "next/left/standard/layout/branded" 등은 객체 아닌 메타 서술.
+VISUAL_COOC_EXCLUDE: frozenset[str] = frozenset({
+    # 위치/방향 부사
+    "next", "left", "right", "up", "down", "above", "below", "near", "far",
+    # 일반 속성/상태
+    "standard", "layout", "branded", "background", "close", "open",
+    # 메타 (이미지 표현 자체)
+    "text", "symbol", "symbols", "image", "picture", "scene", "view",
+})
+
+
+def select_visual_cooc_concepts(name_to_id: dict[str, str]) -> list[str]:
+    """visual co-occurrence Hebbian 대상 concept_id 리스트.
+
+    Filter:
+    1) 색상 단어 제외 (COLOR_WORDS — describes_color로 별도 처리됨)
+    2) noise 단어 제외 (VISUAL_COOC_EXCLUDE)
+    3) 길이 < 2 토큰 제외
+
+    name_to_id: 같은 frame에 추출된 {name: concept_id} 매핑.
+    """
+    selected: list[str] = []
+    for name, cid in name_to_id.items():
+        n = name.strip().lower()
+        if len(n) < 2:
+            continue
+        if n in COLOR_WORDS:
+            continue
+        if n in VISUAL_COOC_EXCLUDE:
+            continue
+        selected.append(cid)
+    return selected
+
 _PUNCT_RE = re.compile(r"[.,!?;:\"'()\[\]]")
 _WS_RE = re.compile(r"\s+")
 
