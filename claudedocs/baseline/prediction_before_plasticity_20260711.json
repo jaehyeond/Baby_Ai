@@ -1,0 +1,20 @@
+{
+  "n_test_evaluated": 300,
+  "MRR": 0.1557,
+  "hit@1": 0.0467,
+  "hit@5": 0.2167,
+  "hit@10": 0.4233,
+  "mean_rank": 31.1,
+  "median_rank": 12.0,
+  "avg_candidates": 487.0,
+  "random_expected_rank": 244.1,
+  "lift_vs_random": 7.86,
+  "tag": "before_plasticity",
+  "timestamp": "2026-07-11T13:28:21.869931+00:00",
+  "n_nodes": 518,
+  "n_edges": 2085,
+  "predictor": "Personalized PageRank spreading-activation (HippoRAG식)",
+  "seed": 42,
+  "test_fraction": 0.2,
+  "ppr_alpha": 0.85
+}

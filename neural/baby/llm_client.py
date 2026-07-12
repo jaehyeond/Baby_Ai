@@ -84,9 +84,12 @@ AVAILABLE_MODELS = {
     # Fallback models (현재 실제 사용 가능)
     "gemini-2-flash": ModelConfig(
         provider=ModelProvider.GOOGLE,
-        model_id="gemini-2.0-flash",
+        # 2026-07-10: gemini-2.0-flash가 Google에서 deprecated(404) → 브레인 mute 사고.
+        # version-deprecation 재발 방지 위해 'gemini-flash-latest'(항상 최신 flash 별칭) 사용.
+        # config key 'gemini-2-flash'는 호출부(conversation_handler 등) 호환 위해 유지.
+        model_id="gemini-flash-latest",
         tier=ModelTier.FLASH,
-        description="Gemini 2.0 Flash - 빠른 처리 (Fallback)",
+        description="Gemini Flash (latest 별칭) - 빠른 처리 (기본/Fallback)",
         input_cost_per_1m=0.10,
         output_cost_per_1m=0.40,
     ),
@@ -251,7 +254,7 @@ class LLMClient:
         client = self._get_google_client()
 
         if hasattr(client, 'GenerativeModel'):
-            model = client.GenerativeModel("gemini-2.0-flash")
+            model = client.GenerativeModel("gemini-flash-latest")
         else:
             model = client.models
 
@@ -267,7 +270,7 @@ class LLMClient:
             return response.text
         else:
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-flash-latest",
                 contents=full_prompt,
             )
             return response.text

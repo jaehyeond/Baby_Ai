@@ -21,6 +21,8 @@ Phase 2: Neo4j + Redis lifespan + 기본 엔드포인트
 """
 
 import asyncio
+import os
+import hmac
 import json
 import logging
 import time
@@ -41,8 +43,18 @@ from .redis_client import (
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
     CHANNEL_PENDING_QUESTION, CHANNEL_IMAGINATION,
     CHANNEL_EXPERIENCE,
+    # M1 (2026-05-11) — 관찰/학습 라이프사이클 채널
+    CHANNEL_VLM, CHANNEL_GEMINI, CHANNEL_SLEEP,
+    CHANNEL_BINDING, CHANNEL_CONCEPT, CHANNEL_STAGE,
+    CHANNEL_ADGR,
     publish_pending_question,
     publish_neuron_activation,
+    # M1 helpers
+    publish_vlm_start, publish_vlm_end,
+    publish_gemini_start, publish_gemini_end,
+    publish_sleep_start, publish_sleep_end,
+    publish_binding_created, publish_concept_learned,
+    publish_stage_transition,
 )
 
 logger = logging.getLogger(__name__)
@@ -158,6 +170,13 @@ class QuestConceptsRequest(BaseModel):
     concepts_raw: list[str]
     inference_ms: Optional[int] = None
     jpeg_path: Optional[str] = None
+    # ── Phase 4 embodiment (감각운동 신호, 모두 선택) ──────────────────────────
+    # head_pose: 헤드셋 6DoF 자세. 권장 [px,py,pz, qx,qy,qz,qw] (위치m + 쿼터니언).
+    #   프레임 간 pose delta = 움직임 → "돌리면 X가 보인다" 감각운동 예측을 성립시킴
+    #   (embodied_prediction.py 2026-07-12: 정적 장면은 popularity가 천장 → 움직임 필수).
+    # depth_bins: coarse depth 히스토그램(예: [near, mid, far] 정규화 비율) — 공간 구조 신호.
+    head_pose: Optional[list[float]] = None
+    depth_bins: Optional[list[float]] = None
 
 
 class QuestConceptsResponse(BaseModel):
@@ -168,6 +187,8 @@ class QuestConceptsResponse(BaseModel):
     bindings_created: int = 0
     bindings_reinforced: int = 0
     bindings_skipped: int = 0
+    frame_linked: bool = False          # 직전 프레임과 NEXT_FRAME 연결 여부
+    pose_delta: Optional[float] = None  # 직전 프레임 대비 head-pose 이동량
     success: bool
     message: Optional[str] = None
 
@@ -443,13 +464,72 @@ async def conversation(request: ConversationRequest):
     1. BabyState 조회 → 감정 상태
     2. conversation_handler 호출
     3. Experience Neo4j 저장 확인
+
+    M1 SSE: conversation_handler v30 미수정 제약으로, 단계 전이는 endpoint에서
+    호출 전/후 development_stage 비교로 검출. conversation_handler:625-639의
+    내부 승급 로직은 그대로 두고 결과만 관찰.
     """
     try:
         from .conversation_handler import handle_conversation
+
+        # M1 SSE: stage 전이 감지를 위해 호출 전 BabyState 스냅샷
+        prev_stage: Optional[int] = None
+        try:
+            db = get_brain_db()
+            _prev_state = await db.get_baby_state() or {}
+            prev_stage = _prev_state.get("development_stage", 0)
+        except Exception as pre_err:
+            logger.warning(f"prev stage snapshot error: {pre_err}")
+
+        # STEP 0 identity (2026-07, docs/IDENTITY_ACCESS_CONTROL.md): owner token 검증
+        # + owner 사칭 차단. endpoint-level 이라 conversation_handler v30 미변경.
+        ctx = dict(request.context or {})
+        claimed_sid = ctx.get("speaker_id", "unknown")
+        owner_token = ctx.pop("owner_token", None)  # 비밀은 downstream에 전달 안 함
+        # 상수시간 비교(타이밍 공격 방지) + OWNER_SECRET 미설정 시 fail-closed
+        _expected_secret = os.getenv("OWNER_SECRET") or ""
+        trusted = (
+            bool(owner_token)
+            and bool(_expected_secret)
+            and hmac.compare_digest(str(owner_token), _expected_secret)
+        )
+        try:
+            claim_clearance = await get_brain_db().resolve_speaker_clearance(claimed_sid)
+        except Exception as id_err:
+            logger.warning(f"[identity] clearance resolve error: {id_err}")
+            claim_clearance = "public"
+        if claim_clearance == "owner" and not trusted:
+            ctx["speaker_id"] = "guest"  # owner 사칭(토큰 없음) → guest 강등
+            logger.warning(
+                f"[identity] impersonation blocked: claimed owner '{claimed_sid}' "
+                f"without valid token -> downgraded to 'guest'"
+            )
+        effective_clearance = "owner" if (claim_clearance == "owner" and trusted) else "public"
+        logger.info(
+            f"[identity] claimed={claimed_sid} effective={ctx.get('speaker_id')} "
+            f"trusted={trusted} clearance={effective_clearance}"
+        )
+
         result = await handle_conversation(
             message=request.message,
-            context=request.context or {},
+            context=ctx,
         )
+
+        # M1 SSE: stage 전이 검출 (handler 내부 update_baby_state 결과 사용)
+        try:
+            next_stage = result.get("development_stage")
+            if prev_stage is not None and next_stage is not None and next_stage > prev_stage:
+                _state_after = (await get_brain_db().get_baby_state()) or {}
+                await publish_stage_transition({
+                    "prev_stage": prev_stage,
+                    "next_stage": next_stage,
+                    "experience_count": _state_after.get("experience_count"),
+                    "trigger": "conversation",
+                    "experience_id": result.get("experience_id"),
+                })
+        except Exception as pub_err:
+            logger.warning(f"publish_stage_transition error: {pub_err}")
+
         return ConversationResponse(**result)
     except ImportError:
         # conversation_handler 미구현 시 fallback
@@ -589,6 +669,19 @@ async def memory_replay(request: ReplayRequest):
     import time as _time
     start_ms = int(_time.time() * 1000)
 
+    # M1 SSE: 수면 모드 진입 알림 (frontend orb purple)
+    # 주: 본 endpoint는 M3 sleep_orchestrator의 일부가 됨 (replay stage).
+    # 그 시점에는 sleep_orchestrator에서 sleep.start를 emit하므로 여기 publish는 중복 제거.
+    try:
+        await publish_sleep_start({
+            "trigger_type": request.trigger_type,
+            "salience_threshold": request.salience_threshold,
+            "max_experiences": request.max_experiences,
+            "stage": "replay",  # M3에서 추가될 onset/downscale/abstract와 구분
+        })
+    except Exception as pub_err:
+        logger.warning(f"publish_sleep_start error: {pub_err}")
+
     try:
         db = get_brain_db()
         replay_result = await db.replay_recent_memories(
@@ -612,6 +705,20 @@ async def memory_replay(request: ReplayRequest):
             development_stage=state.get("development_stage", 0),
         )
 
+        # M1 SSE: 수면 모드 종료 (정상)
+        try:
+            await publish_sleep_end({
+                "trigger_type": request.trigger_type,
+                "success": True,
+                "experiences_replayed": replay_result["experiences_replayed"],
+                "reactivated_count": replay_result["reactivated_count"],
+                "hebbian_updates": replay_result["hebbian_updates"],
+                "sleep_log_id": sleep_log.get("id"),
+                "duration_ms": duration_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_sleep_end error: {pub_err}")
+
         return {
             "success": True,
             "experiences_replayed": replay_result["experiences_replayed"],
@@ -623,6 +730,16 @@ async def memory_replay(request: ReplayRequest):
         }
     except Exception as e:
         logger.error(f"memory_replay error: {e}")
+        # M1 SSE: 수면 모드 종료 (에러)
+        try:
+            await publish_sleep_end({
+                "trigger_type": request.trigger_type,
+                "success": False,
+                "error": str(e),
+                "duration_ms": int(_time.time() * 1000) - start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_sleep_end (error path) error: {pub_err}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -633,9 +750,20 @@ async def event_stream(request: Request):
     """
     SSE 스트림 - Redis Pub/Sub 채널 구독
 
-    구독 채널:
+    구독 채널 (기존):
       baby-ai:baby_state, baby-ai:neuron_activation,
       baby-ai:pending_question, baby-ai:imagination, baby-ai:experience
+
+    M1 추가 (2026-05-11):
+      baby-ai:vlm     - Quest VLM 추론 라이프사이클
+      baby-ai:gemini  - Gemini Vision 추론 라이프사이클
+      baby-ai:sleep   - 수면 모드 진입/종료
+      baby-ai:binding - 새 descriptor↔object binding
+      baby-ai:concept - 신규 Concept 학습
+      baby-ai:stage   - development_stage 전이
+
+    M3 예약 (helper 미구현, 채널만 구독):
+      baby-ai:adgr    - pruning/concept.proposal/concept.spawned
     """
     async def generator() -> AsyncGenerator[str, None]:
         redis = get_redis()
@@ -648,6 +776,15 @@ async def event_stream(request: Request):
                 CHANNEL_PENDING_QUESTION,
                 CHANNEL_IMAGINATION,
                 CHANNEL_EXPERIENCE,
+                # M1 신규 채널
+                CHANNEL_VLM,
+                CHANNEL_GEMINI,
+                CHANNEL_SLEEP,
+                CHANNEL_BINDING,
+                CHANNEL_CONCEPT,
+                CHANNEL_STAGE,
+                # M3 예약 채널 (M1에서는 구독만, publish는 M3에서 추가)
+                CHANNEL_ADGR,
             )
             last_ping = time.time()
 
@@ -1036,10 +1173,23 @@ async def get_feedback_data(action: str = "stats", limit: int = 20, feedback_id:
 @app.post("/api/vision/process", response_model=VisionProcessResponse)
 async def process_vision(request: VisionProcessRequest):
     """이미지 처리 엔드포인트 (substrate → Gemini Vision 직접 호출)"""
+    import time as _time
+    gem_start_ms = int(_time.time() * 1000)
     try:
         from .llm_client import get_llm_client
         image_data = base64.b64decode(request.image_data)
         prompt = request.prompt or "이 이미지에서 무엇이 보이는지 설명해줘."
+
+        # M1 SSE: Gemini 추론 시작 알림 (fire-and-forget)
+        try:
+            await publish_gemini_start({
+                "model": "gemini-2.0-flash",
+                "prompt_len": len(prompt),
+                "image_bytes": len(image_data),
+                "mime_type": request.mime_type,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_gemini_start error: {pub_err}")
 
         # Gemini Vision API 직접 호출
         llm = get_llm_client()
@@ -1070,6 +1220,18 @@ async def process_vision(request: VisionProcessRequest):
             tags=["vision"],
         )
 
+        # M1 SSE: Gemini 추론 정상 종료
+        try:
+            await publish_gemini_end({
+                "model": "gemini-2.0-flash",
+                "success": bool(description),
+                "experience_id": exp.get("id"),
+                "description_len": len(description) if description else 0,
+                "duration_ms": int(_time.time() * 1000) - gem_start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_gemini_end error: {pub_err}")
+
         return VisionProcessResponse(
             visual_experience={"description": description, "experience_id": exp.get("id")},
             emotional_changes={"curiosity": 0.1},
@@ -1078,6 +1240,16 @@ async def process_vision(request: VisionProcessRequest):
         )
     except Exception as e:
         logger.error(f"process_vision error: {e}")
+        # M1 SSE: Gemini 추론 에러 종료 (frontend 멈춤 방지)
+        try:
+            await publish_gemini_end({
+                "model": "gemini-2.0-flash",
+                "success": False,
+                "error": str(e),
+                "duration_ms": int(_time.time() * 1000) - gem_start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_gemini_end (error path) error: {pub_err}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1107,6 +1279,23 @@ async def get_vision_stats():
 @app.post("/api/vision/quest-concepts", response_model=QuestConceptsResponse)
 async def post_quest_concepts(request: QuestConceptsRequest):
     """Quest 3S 온디바이스 VLM이 추출한 concept을 Neo4j에 저장."""
+    import time as _time
+    vlm_start_ms = int(_time.time() * 1000)
+
+    # M1 SSE: Quest 온디바이스 VLM 추론 시작 알림
+    # 주: VLM 추론 자체는 Quest APK에서 이미 끝났고 여기는 결과 수신.
+    # frontend orb는 본 endpoint 진입을 "관찰 사이클 시작"으로 시각화.
+    try:
+        await publish_vlm_start({
+            "source": request.source,
+            "model": request.model,
+            "concepts_raw_count": len(request.concepts_raw) if request.concepts_raw else 0,
+            "device_inference_ms": request.inference_ms,
+            "timestamp": request.timestamp,
+        })
+    except Exception as pub_err:
+        logger.warning(f"publish_vlm_start error: {pub_err}")
+
     try:
         db = get_brain_db()
         drv = get_driver()
@@ -1121,6 +1310,8 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             "image_meta": request.image_meta.model_dump() if request.image_meta else None,
             "jpeg_path": request.jpeg_path,
             "device_timestamp": request.timestamp,
+            "head_pose": request.head_pose,
+            "depth_bins": request.depth_bins,
         }
         exp = await db.insert_experience(
             task=f"quest_passthrough_observation@{request.timestamp}",
@@ -1136,6 +1327,24 @@ async def post_quest_concepts(request: QuestConceptsRequest):
         exp_id = exp.get("id")
         if not exp_id:
             raise HTTPException(status_code=500, detail="Experience 생성 실패")
+
+        # 1b) Phase 4 embodiment — head_pose 를 1급 속성으로 저장(프레임 delta 계산용) +
+        #     직전 프레임과 NEXT_FRAME 시퀀스 연결. pose 없으면 시간 순서만 연결.
+        frame_linked = False
+        pose_delta = None
+        try:
+            if request.head_pose or request.depth_bins:
+                async with drv.session(database=_DB_NAME) as s:
+                    await s.run(
+                        "MATCH (e:Experience {id: $id}) "
+                        "SET e.head_pose = $pose, e.depth_bins = $depth",
+                        id=exp_id, pose=request.head_pose, depth=request.depth_bins,
+                    )
+            seq = await db.link_vision_frame_sequence(exp_id, cur_pose=request.head_pose)
+            frame_linked = bool(seq.get("linked"))
+            pose_delta = seq.get("pose_delta")
+        except Exception as seq_err:
+            logger.warning(f"vision frame sequence link error: {seq_err}")
 
         # 2) Concept 루프 — insert_concept (멱등 MERGE) + Quest 메타 후처리
         concepts_inserted = 0
@@ -1186,6 +1395,18 @@ async def post_quest_concepts(request: QuestConceptsRequest):
 
             if was_new:
                 concepts_inserted += 1
+                # M1 SSE: 신규 Concept 학습 알림 (frontend Brain map은 새 노드 표시)
+                try:
+                    await publish_concept_learned({
+                        "concept_id": cid,
+                        "name": name,
+                        "category": "visual",
+                        "source": request.source,
+                        "acquired_at_stage": dev_stage,
+                        "experience_id": exp_id,
+                    })
+                except Exception as pub_err:
+                    logger.warning(f"publish_concept_learned error: {pub_err}")
             else:
                 concepts_existing += 1
 
@@ -1213,6 +1434,19 @@ async def post_quest_concepts(request: QuestConceptsRequest):
                 continue
             if result.get("observation_count") == 1:
                 bindings_created += 1
+                # M1 SSE: 신규 descriptor↔object binding 알림 (frontend는 시냅스 표시)
+                try:
+                    await publish_binding_created({
+                        "descriptor_concept_id": desc_id,
+                        "object_concept_id": obj_id,
+                        "descriptor_name": desc_name,
+                        "object_name": obj_name,
+                        "aspect": aspect,
+                        "source": request.source,
+                        "experience_id": exp_id,
+                    })
+                except Exception as pub_err:
+                    logger.warning(f"publish_binding_created error: {pub_err}")
             else:
                 bindings_reinforced += 1
 
@@ -1246,6 +1480,22 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             rec = await r.single()
         total_unique = rec["total"] if rec else 0
 
+        # M1 SSE: VLM 처리 사이클 정상 종료
+        try:
+            await publish_vlm_end({
+                "source": request.source,
+                "success": True,
+                "experience_id": exp_id,
+                "concepts_inserted": concepts_inserted,
+                "concepts_existing": concepts_existing,
+                "bindings_created": bindings_created,
+                "bindings_reinforced": bindings_reinforced,
+                "total_unique_in_db": total_unique,
+                "duration_ms": int(_time.time() * 1000) - vlm_start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_vlm_end error: {pub_err}")
+
         return QuestConceptsResponse(
             experience_id=exp_id,
             concepts_inserted=concepts_inserted,
@@ -1254,6 +1504,8 @@ async def post_quest_concepts(request: QuestConceptsRequest):
             bindings_created=bindings_created,
             bindings_reinforced=bindings_reinforced,
             bindings_skipped=bindings_skipped,
+            frame_linked=frame_linked,
+            pose_delta=pose_delta,
             success=True,
             message=(
                 f"Quest observation saved: {concepts_inserted} new + "
@@ -1264,9 +1516,29 @@ async def post_quest_concepts(request: QuestConceptsRequest):
         )
 
     except HTTPException:
+        # M1 SSE: HTTPException 경로 (예: exp_id 없음)
+        try:
+            await publish_vlm_end({
+                "source": request.source,
+                "success": False,
+                "error": "HTTPException",
+                "duration_ms": int(_time.time() * 1000) - vlm_start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_vlm_end (HTTPException path) error: {pub_err}")
         raise
     except Exception as e:
         logger.error(f"post_quest_concepts error: {e}")
+        # M1 SSE: 예외 경로 (frontend orb 멈춤 방지)
+        try:
+            await publish_vlm_end({
+                "source": request.source,
+                "success": False,
+                "error": str(e),
+                "duration_ms": int(_time.time() * 1000) - vlm_start_ms,
+            })
+        except Exception as pub_err:
+            logger.warning(f"publish_vlm_end (error path) error: {pub_err}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

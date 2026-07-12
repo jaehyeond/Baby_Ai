@@ -1,0 +1,63 @@
+{
+  "tag": "phase1_cv",
+  "timestamp": "2026-07-12T05:28:14.221069+00:00",
+  "n_events": 256,
+  "n_concepts": 483,
+  "recurring_concepts": 142,
+  "temporal_split_evaluable_pairs": 3,
+  "predictor": "directed Personalized PageRank (양방향 평균)",
+  "eval": "15-fold repeated random-split CV, held-out co-activation pairs",
+  "seed": 42,
+  "default_params": {
+    "a_co": 0.06,
+    "a_plus": 0.06,
+    "a_minus": 0.03,
+    "tau_hours": 12.0,
+    "w_sat": 1.0,
+    "elig_eps": 0.02,
+    "homeo_target": 4.0,
+    "old_delta": 0.05
+  },
+  "result": {
+    "k_folds": 15,
+    "n_pooled_pairs": 899,
+    "old_rule": {
+      "n": 899,
+      "MRR": 0.2254,
+      "hit@1": 0.0267,
+      "hit@5": 0.1613,
+      "hit@10": 0.3014,
+      "mean_rank": 36.8,
+      "median_rank": 20.5,
+      "avg_candidates": 391.0,
+      "random_expected_rank": 196.2,
+      "lift_vs_random": 5.33
+    },
+    "new_rule": {
+      "n": 899,
+      "MRR": 0.1725,
+      "hit@1": 0.01,
+      "hit@5": 0.0679,
+      "hit@10": 0.1502,
+      "mean_rank": 47.7,
+      "median_rank": 32,
+      "avg_candidates": 391.0,
+      "random_expected_rank": 196.2,
+      "lift_vs_random": 4.12
+    },
+    "lift_old": 5.33,
+    "lift_new": 4.12,
+    "delta_lift": -1.21,
+    "delta_mrr": -0.0529,
+    "fold_delta_lift_mean": -1.401,
+    "fold_delta_lift_std": 0.936,
+    "paired": {
+      "n_paired": 899,
+      "new_better": 219,
+      "new_worse": 667,
+      "ties": 13,
+      "sign_test_p": 0.0,
+      "wilcoxon_p": 0.0
+    }
+  }
+}

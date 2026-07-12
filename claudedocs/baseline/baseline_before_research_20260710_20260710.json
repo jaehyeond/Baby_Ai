@@ -1,0 +1,747 @@
+{
+  "tag": "before_research_20260710",
+  "timestamp": "2026-07-10T10:07:30.337439+00:00",
+  "neo4j_uri": "bolt://localhost:7687",
+  "neo4j_db": "neo4j",
+  "exclude_frozen": false,
+  "edge_source_distribution": {
+    "<null>": 689,
+    "hebbian": 1087,
+    "visual_cooc": 173
+  },
+  "structural": {
+    "counts": {
+      "n_nodes": 978,
+      "n_edges": 1793,
+      "avg_degree": 3.6666666666666665,
+      "n_isolated": 473,
+      "density": 0.0037529853292391675
+    },
+    "degree_distribution": {
+      "min": 0,
+      "max": 102,
+      "mean": 3.6666666666666665,
+      "median": 1.0,
+      "p90": 11,
+      "p99": 38,
+      "histogram": {
+        "0": 473,
+        "1": 171,
+        "3": 36,
+        "2": 88,
+        "10": 3,
+        "5": 16,
+        "8": 7,
+        "9": 10,
+        "7": 6,
+        "4": 51,
+        "63": 1,
+        "30": 2,
+        "28": 22,
+        "31": 3,
+        "34": 2,
+        "53": 1,
+        "18": 8,
+        "22": 4,
+        "6": 17,
+        "12": 5,
+        "20": 2,
+        "17": 4,
+        "38": 2,
+        "15": 4,
+        "14": 2,
+        "29": 6,
+        "13": 2,
+        "39": 1,
+        "11": 11,
+        "102": 1,
+        "92": 1,
+        "36": 1,
+        "40": 1,
+        "41": 2,
+        "26": 7,
+        "23": 1,
+        "21": 2,
+        "35": 1,
+        "16": 1
+      }
+    },
+    "power_law": {
+      "alpha_estimate": 1.1466316325190702,
+      "r_squared": 0.727653899391287,
+      "p_value": 1.0418594096690364e-11,
+      "n_unique_degrees": 38,
+      "interpretation": "heavy-tailed but unstable mean (alpha=1.15 < 2)"
+    },
+    "hubs_top30": [
+      {
+        "name": "비비",
+        "category": "이름",
+        "degree": 102,
+        "usage": 3812,
+        "qcnt": 0
+      },
+      {
+        "name": "AI",
+        "category": "agent",
+        "degree": 92,
+        "usage": 1606,
+        "qcnt": 0
+      },
+      {
+        "name": "공부",
+        "category": "행위",
+        "degree": 63,
+        "usage": 967,
+        "qcnt": 0
+      },
+      {
+        "name": "놀이",
+        "category": "활동",
+        "degree": 53,
+        "usage": 436,
+        "qcnt": 0
+      },
+      {
+        "name": "검색",
+        "category": "행위",
+        "degree": 41,
+        "usage": 1063,
+        "qcnt": 0
+      },
+      {
+        "name": "안녕하세요",
+        "category": "conversation",
+        "degree": 41,
+        "usage": 3,
+        "qcnt": 0
+      },
+      {
+        "name": "날짜",
+        "category": "시간",
+        "degree": 40,
+        "usage": 965,
+        "qcnt": 0
+      },
+      {
+        "name": "사용자",
+        "category": "person",
+        "degree": 39,
+        "usage": 475,
+        "qcnt": 0
+      },
+      {
+        "name": "알려주세요",
+        "category": "요청",
+        "degree": 38,
+        "usage": 53,
+        "qcnt": 0
+      },
+      {
+        "name": "개발자",
+        "category": "인물",
+        "degree": 38,
+        "usage": 1898,
+        "qcnt": 0
+      },
+      {
+        "name": "등에 업히기",
+        "category": "행위",
+        "degree": 36,
+        "usage": 51,
+        "qcnt": 0
+      },
+      {
+        "name": "keyboard",
+        "category": "visual",
+        "degree": 35,
+        "usage": 35,
+        "qcnt": 36
+      },
+      {
+        "name": "형",
+        "category": "관계",
+        "degree": 34,
+        "usage": 988,
+        "qcnt": 0
+      },
+      {
+        "name": "기억",
+        "category": "cognitive_ability",
+        "degree": 34,
+        "usage": 828,
+        "qcnt": 0
+      },
+      {
+        "name": "실수",
+        "category": "추상적 개념",
+        "degree": 31,
+        "usage": 106,
+        "qcnt": 0
+      },
+      {
+        "name": "인터넷",
+        "category": "사물",
+        "degree": 31,
+        "usage": 626,
+        "qcnt": 0
+      },
+      {
+        "name": "영화",
+        "category": "콘텐츠",
+        "degree": 31,
+        "usage": 153,
+        "qcnt": 0
+      },
+      {
+        "name": "테스트",
+        "category": "frozen_knowledge",
+        "degree": 30,
+        "usage": 53,
+        "qcnt": 0
+      },
+      {
+        "name": "안녕",
+        "category": "인사말",
+        "degree": 30,
+        "usage": 55,
+        "qcnt": 0
+      },
+      {
+        "name": "형아",
+        "category": "인물",
+        "degree": 29,
+        "usage": 104,
+        "qcnt": 0
+      },
+      {
+        "name": "최종",
+        "category": "conversation",
+        "degree": 29,
+        "usage": 0,
+        "qcnt": 0
+      },
+      {
+        "name": "꺄아",
+        "category": "conversation",
+        "degree": 29,
+        "usage": 0,
+        "qcnt": 0
+      },
+      {
+        "name": "테스트라",
+        "category": "conversation",
+        "degree": 29,
+        "usage": 0,
+        "qcnt": 0
+      },
+      {
+        "name": "두근두근",
+        "category": "conversation",
+        "degree": 29,
+        "usage": 0,
+        "qcnt": 0
+      },
+      {
+        "name": "설레요",
+        "category": "conversation",
+        "degree": 29,
+        "usage": 0,
+        "qcnt": 0
+      },
+      {
+        "name": "로고",
+        "category": "사물",
+        "degree": 28,
+        "usage": 1,
+        "qcnt": 0
+      },
+      {
+        "name": "무서운 이야기",
+        "category": "이야기",
+        "degree": 28,
+        "usage": 2,
+        "qcnt": 0
+      },
+      {
+        "name": "사람",
+        "category": "person",
+        "degree": 28,
+        "usage": 109,
+        "qcnt": 0
+      },
+      {
+        "name": "캐비닛",
+        "category": "사물",
+        "degree": 28,
+        "usage": 1,
+        "qcnt": 0
+      },
+      {
+        "name": "신발",
+        "category": "사물",
+        "degree": 28,
+        "usage": 2,
+        "qcnt": 0
+      }
+    ],
+    "modularity": {
+      "modularity": 0.4341076114999923,
+      "n_communities": 19,
+      "gcc_size": 334,
+      "gcc_ratio": 0.34151329243353784,
+      "n_components": 509,
+      "community_sizes_top10": [
+        72,
+        65,
+        39,
+        33,
+        31,
+        22,
+        18,
+        8,
+        8,
+        6
+      ],
+      "interpretation": "moderate — some structure but blurry boundaries"
+    },
+    "path_length": {
+      "samples": 200,
+      "reachable": 200,
+      "avg": 3.16,
+      "median": 3.0,
+      "max": 8,
+      "interpretation": "small-world range (healthy)"
+    },
+    "betweenness_top20": [
+      {
+        "name": "AI",
+        "category": "agent",
+        "betweenness": 0.4202,
+        "degree": 92
+      },
+      {
+        "name": "비비",
+        "category": "이름",
+        "betweenness": 0.354314,
+        "degree": 102
+      },
+      {
+        "name": "기억력",
+        "category": "인지 능력",
+        "betweenness": 0.097188,
+        "degree": 13
+      },
+      {
+        "name": "날짜",
+        "category": "시간",
+        "betweenness": 0.087347,
+        "degree": 40
+      },
+      {
+        "name": "공부",
+        "category": "행위",
+        "betweenness": 0.084006,
+        "degree": 63
+      },
+      {
+        "name": "검색",
+        "category": "행위",
+        "betweenness": 0.064179,
+        "degree": 41
+      },
+      {
+        "name": "날씨",
+        "category": "추상적 개념",
+        "betweenness": 0.060834,
+        "degree": 12
+      },
+      {
+        "name": "서울",
+        "category": "location",
+        "betweenness": 0.049056,
+        "degree": 8
+      },
+      {
+        "name": "개발자",
+        "category": "인물",
+        "betweenness": 0.047377,
+        "degree": 38
+      },
+      {
+        "name": "기억",
+        "category": "cognitive_ability",
+        "betweenness": 0.043256,
+        "degree": 34
+      },
+      {
+        "name": "안녕하세요",
+        "category": "conversation",
+        "betweenness": 0.043176,
+        "degree": 41
+      },
+      {
+        "name": "말",
+        "category": "언어",
+        "betweenness": 0.042461,
+        "degree": 6
+      },
+      {
+        "name": "사용자",
+        "category": "person",
+        "betweenness": 0.042056,
+        "degree": 39
+      },
+      {
+        "name": "특별시",
+        "category": "행정구역",
+        "betweenness": 0.039437,
+        "degree": 8
+      },
+      {
+        "name": "놀이",
+        "category": "활동",
+        "betweenness": 0.036921,
+        "degree": 53
+      },
+      {
+        "name": "형",
+        "category": "관계",
+        "betweenness": 0.03345,
+        "degree": 34
+      },
+      {
+        "name": "박재현",
+        "category": "person",
+        "betweenness": 0.033328,
+        "degree": 22
+      },
+      {
+        "name": "호기심",
+        "category": "emotion",
+        "betweenness": 0.025706,
+        "degree": 5
+      },
+      {
+        "name": "먹다",
+        "category": "행위",
+        "betweenness": 0.02415,
+        "degree": 4
+      },
+      {
+        "name": "월",
+        "category": "시간",
+        "betweenness": 0.023925,
+        "degree": 7
+      }
+    ]
+  },
+  "semantic": {
+    "identity_concepts": [
+      {
+        "name": "비비",
+        "category": "이름",
+        "degree": 168,
+        "strength": 0.96813216492917
+      },
+      {
+        "name": "엄마",
+        "category": "인간",
+        "degree": 0,
+        "strength": 0.60036378701305
+      }
+    ],
+    "quest_breakdown": {
+      "n_quest_concepts": 60,
+      "avg_degree": 5.750000000000001,
+      "samples": [
+        {
+          "deg": 23,
+          "name": "computer",
+          "qcnt": 12
+        },
+        {
+          "deg": 21,
+          "name": "monitor",
+          "qcnt": 9
+        },
+        {
+          "deg": 3,
+          "name": "webpage",
+          "qcnt": 3
+        },
+        {
+          "deg": 1,
+          "name": "green",
+          "qcnt": 2
+        },
+        {
+          "deg": 0,
+          "name": "background",
+          "qcnt": 2
+        },
+        {
+          "deg": 2,
+          "name": "white",
+          "qcnt": 13
+        },
+        {
+          "deg": 0,
+          "name": "text",
+          "qcnt": 4
+        },
+        {
+          "deg": 0,
+          "name": "grey",
+          "qcnt": 1
+        },
+        {
+          "deg": 3,
+          "name": "table",
+          "qcnt": 1
+        },
+        {
+          "deg": 0,
+          "name": "left",
+          "qcnt": 4
+        },
+        {
+          "deg": 5,
+          "name": "code",
+          "qcnt": 2
+        },
+        {
+          "deg": 35,
+          "name": "keyboard",
+          "qcnt": 36
+        },
+        {
+          "deg": 14,
+          "name": "bottle",
+          "qcnt": 22
+        },
+        {
+          "deg": 6,
+          "name": "vitamin",
+          "qcnt": 4
+        },
+        {
+          "deg": 4,
+          "name": "pad",
+          "qcnt": 2
+        }
+      ]
+    },
+    "category_distribution": {
+      "frozen_knowledge": 151,
+      "conversation": 87,
+      "visual": 69,
+      "감정": 57,
+      "행위": 54,
+      "사물": 28,
+      "추상적 개념": 26,
+      "활동": 19,
+      "행동": 18,
+      "상태": 17,
+      "시간": 15,
+      "정보": 15,
+      "속성": 15,
+      "음식": 14,
+      "person": 11,
+      "인공지능": 11,
+      "개념": 9,
+      "소리": 8,
+      "천체": 8,
+      "user_preference": 7,
+      "인지": 7,
+      "감각": 7,
+      "사건": 7,
+      "색깔": 7,
+      "사람": 7,
+      "도구": 7,
+      "기술": 6,
+      "장소": 6,
+      "인물": 6,
+      "기능": 5,
+      "현상": 5,
+      "능력": 5,
+      "지리": 5,
+      "국가": 5,
+      "인사": 5,
+      "심리": 4,
+      "action": 4,
+      "동물": 4,
+      "자연": 4,
+      "학습": 3,
+      "장난감": 3,
+      "동작": 3,
+      "learned": 3,
+      "이야기": 3,
+      "대상": 3,
+      "단어": 3,
+      "언어": 3,
+      "ability": 3,
+      "abstract concept": 3,
+      "user_relationship": 3,
+      "요청": 3,
+      "날씨": 3,
+      "지식": 3,
+      "경험": 3,
+      "emotion": 3,
+      "기상": 3,
+      "물리": 2,
+      "user_experience": 2,
+      "콘텐츠": 2,
+      "생물": 2,
+      "물질": 2,
+      "운동": 2,
+      "생명 현상": 2,
+      "신체 부위": 2,
+      "Mathematical Operation": 2,
+      "Number": 2,
+      "Process": 2,
+      "기기": 2,
+      "물리적 객체": 2,
+      "냄새": 2,
+      "생물학": 2,
+      "수학 연산": 2,
+      "월": 2,
+      "일": 2,
+      "과일": 2,
+      "역할": 2,
+      "물리량": 2,
+      "소프트웨어": 2,
+      "user_info": 2,
+      "성별": 2,
+      "관계": 2,
+      "인사말": 2,
+      "신체": 2,
+      "교통수단": 2,
+      "감탄사": 2,
+      "thing": 2,
+      "도형": 2,
+      "온도": 2,
+      "놀이": 2,
+      "지명": 2,
+      "communication": 2,
+      "생리 현상": 2,
+      "일반": 2,
+      "AI": 2,
+      "개체": 2,
+      "system": 1,
+      "딸랑이": 1,
+      "수식": 1,
+      "사회적 관습": 1,
+      "평가": 1,
+      "문제": 1,
+      "아이디어": 1,
+      "감정/소망": 1,
+      "객체": 1,
+      "칭호": 1,
+      "결과": 1,
+      "지시": 1,
+      "색상": 1,
+      "피드백": 1,
+      "인지오류": 1,
+      "attribute": 1,
+      "방법": 1,
+      "정신 활동": 1,
+      "object": 1,
+      "나라": 1,
+      "형용사": 1,
+      "reason": 1,
+      "화법": 1,
+      "제약": 1,
+      "문장부호": 1,
+      "location": 1,
+      "task": 1,
+      "물건": 1,
+      "대화 방식": 1,
+      "인성/태도": 1,
+      "감각/평가": 1,
+      "프로젝트 이름": 1,
+      "의미 해석": 1,
+      "질문": 1,
+      "수학": 1,
+      "정보검색 엔진": 1,
+      "사용자": 1,
+      "예술": 1,
+      "감정/평가": 1,
+      "AI_상태": 1,
+      "데이터 포맷": 1,
+      "정보 검색": 1,
+      "사회적 관계": 1,
+      "AI 챗봇": 1,
+      "도구/지식": 1,
+      "인식": 1,
+      "음식점": 1,
+      "인터넷": 1,
+      "검색어": 1,
+      "매체": 1,
+      "문학": 1,
+      "AI 기능": 1,
+      "음악": 1,
+      "물체": 1,
+      "도시": 1,
+      "오류": 1,
+      "행정구역": 1,
+      "인지 능력": 1,
+      "기업": 1,
+      "신체기관": 1,
+      "오류/작동_불능": 1,
+      "힘": 1,
+      "방향": 1,
+      "생명": 1,
+      "계절": 1,
+      "에너지": 1,
+      "행성": 1,
+      "나이": 1,
+      "relationship": 1,
+      "인간": 1,
+      "신체부위": 1,
+      "프로세스": 1,
+      "커뮤니케이션": 1,
+      "오물": 1,
+      "이름": 1,
+      "agent": 1,
+      "인지 활동": 1,
+      "건강": 1,
+      "Operation": 1,
+      "악기": 1,
+      "불명확": 1,
+      "감정표현": 1,
+      "부품": 1,
+      "탈것": 1,
+      "특성": 1,
+      "Person": 1,
+      "창작물": 1,
+      "천문 현상": 1,
+      "응원": 1,
+      "가상 기계": 1,
+      "목적": 1,
+      "식물학": 1,
+      "표현": 1,
+      "작업": 1,
+      "노래": 1,
+      "눈": 1,
+      "음향": 1,
+      "상태변화": 1,
+      "여행": 1,
+      "시대": 1,
+      "교통 수단": 1,
+      "플랫폼": 1,
+      "cognitive_ability": 1,
+      "학문": 1
+    },
+    "region_distribution": {
+      "prefrontal": 561,
+      "occipital": 106,
+      "temporal": 93,
+      "motor_cortex": 80,
+      "amygdala": 66,
+      "parietal": 19,
+      "cerebellum": 6,
+      "brain_stem": 4
+    }
+  }
+}

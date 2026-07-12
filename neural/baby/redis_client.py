@@ -9,6 +9,15 @@ Phase 2: Pub/Sub + 캐시 래퍼
   baby-ai:imagination        - 상상 세션 이벤트
   baby-ai:experience         - 새 경험 저장됨
 
+  # Phase M1 (2026-05-11) — 관찰/학습 라이프사이클 이벤트
+  baby-ai:vlm                - Quest passthrough VLM 추론 시작/종료
+  baby-ai:gemini             - Gemini Vision 추론 시작/종료
+  baby-ai:sleep              - 수면 모드 진입/종료, replay 진행
+  baby-ai:binding            - 새 descriptor↔object binding 생성
+  baby-ai:concept            - 신규 Concept 학습
+  baby-ai:stage              - development_stage 전이
+  baby-ai:adgr               - ADGR pruning/proposal/spawned (M3 예약, helper는 M3에서 추가)
+
 연결: Upstash Redis (TLS, rediss://)
 드라이버: redis.asyncio (hiredis 백엔드)
 """
@@ -33,6 +42,15 @@ CHANNEL_NEURON_ACTIVATION = "baby-ai:neuron_activation"
 CHANNEL_PENDING_QUESTION  = "baby-ai:pending_question"
 CHANNEL_IMAGINATION       = "baby-ai:imagination"
 CHANNEL_EXPERIENCE        = "baby-ai:experience"
+
+# Phase M1 (2026-05-11) — 관찰/학습 라이프사이클 채널
+CHANNEL_VLM     = "baby-ai:vlm"
+CHANNEL_GEMINI  = "baby-ai:gemini"
+CHANNEL_SLEEP   = "baby-ai:sleep"
+CHANNEL_BINDING = "baby-ai:binding"
+CHANNEL_CONCEPT = "baby-ai:concept"
+CHANNEL_STAGE   = "baby-ai:stage"
+CHANNEL_ADGR    = "baby-ai:adgr"  # M3 예약 (helper 미구현)
 
 # 싱글톤
 _redis_client: Optional[aioredis.Redis] = None
@@ -124,6 +142,59 @@ async def publish_experience(experience: dict) -> None:
             "development_stage": experience.get("development_stage"),
         },
     })
+
+
+# ── Phase M1 (2026-05-11): 관찰/학습 라이프사이클 publish helper ──────────────
+# 모두 fire-and-forget 패턴. 발행 실패가 본 처리 로직을 깨지 않도록
+# 호출부에서 try/except로 감싸는 것이 호출 규칙 (api_server.py 기존 패턴 일치).
+
+async def publish_vlm_start(meta: dict) -> None:
+    """Quest passthrough VLM 추론 시작 (post_quest_concepts 진입)"""
+    await publish(CHANNEL_VLM, {"type": "vlm.processing.start", "data": meta})
+
+
+async def publish_vlm_end(meta: dict) -> None:
+    """Quest passthrough VLM 추론 종료 (post_quest_concepts return 직전)"""
+    await publish(CHANNEL_VLM, {"type": "vlm.processing.end", "data": meta})
+
+
+async def publish_gemini_start(meta: dict) -> None:
+    """Gemini Vision 추론 시작 (process_vision LLM 호출 직전)"""
+    await publish(CHANNEL_GEMINI, {"type": "gemini.processing.start", "data": meta})
+
+
+async def publish_gemini_end(meta: dict) -> None:
+    """Gemini Vision 추론 종료 (process_vision return 직전)"""
+    await publish(CHANNEL_GEMINI, {"type": "gemini.processing.end", "data": meta})
+
+
+async def publish_sleep_start(meta: dict) -> None:
+    """수면 모드 진입 (memory_replay 진입 또는 M3 sleep_orchestrator 진입)"""
+    await publish(CHANNEL_SLEEP, {"type": "sleep.start", "data": meta})
+
+
+async def publish_sleep_end(meta: dict) -> None:
+    """수면 모드 종료 (memory_replay sleep_log 생성 직후 또는 M3 종료)"""
+    await publish(CHANNEL_SLEEP, {"type": "sleep.end", "data": meta})
+
+
+async def publish_binding_created(binding: dict) -> None:
+    """새 descriptor↔object binding 생성 (observation_count == 1 분기)"""
+    await publish(CHANNEL_BINDING, {"type": "binding.created", "data": binding})
+
+
+async def publish_concept_learned(concept: dict) -> None:
+    """신규 Concept 학습 (insert_concept에서 was_new=True 분기)"""
+    await publish(CHANNEL_CONCEPT, {"type": "concept.learned", "data": concept})
+
+
+async def publish_stage_transition(payload: dict) -> None:
+    """development_stage 전이 (api_server.py /api/conversation endpoint 레벨)
+
+    payload: {prev_stage, next_stage, experience_count, trigger?}
+    conversation_handler v30 미수정 제약 때문에 endpoint에서 before/after 비교로 검출.
+    """
+    await publish(CHANNEL_STAGE, {"type": "stage.transition", "data": payload})
 
 
 # ── 캐시 헬퍼 ───────────────────────────────────────────────────────────────

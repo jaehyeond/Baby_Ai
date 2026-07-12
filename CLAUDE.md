@@ -1,3 +1,7 @@
+@AGENTS.md
+
+> 🔖 위 `@AGENTS.md` = Codex와 **공용 크로스툴 마스터**(현재 상태·재개 체크포인트·불변 원칙·하이브리드 규율). **세션 재개/현재 상태는 거기서 확인.** 아래는 Claude Code 상세 규약(skills·subagents·세션 프로토콜 등).
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.

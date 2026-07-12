@@ -5,6 +5,68 @@
 
 ---
 
+## 2026-07-12 (Phase 1 가소성 실험 — 자기학습 신호 발견 + 프런티어 리서치 종합)
+
+> 상세: `claudedocs/baseline/PHASE1_PLASTICITY_FINDINGS.md`, `RESEARCH_SYNTHESIS_2026-07-12.md`.
+> Claude auto-memory: `phase1_plasticity_result_2026-07`(정정본), `program_roadmap_2026-07`(Phase 1 갱신).
+
+### 완료 ✅ (검증됨)
+- **프런티어 리서치 6각 fan-out + 종합** (dynamic workflow, 652K tokens, citation 교차검증): STDP-on-graph, 항상성, 예측오차 게이팅, eval 방법론, 로컬코어 sleep-distill, gap 분석 → `claudedocs/baseline/RESEARCH_SYNTHESIS_2026-07-12.md`.
+- **Phase 1 가소성 3-실험 (LLM-free, `scripts/baseline/`)**:
+  1. `plasticity_experiment.py` (정적 랜덤분할, 동일후보 채점·20-fold CV·paired): 순진한 가소성(STDP/항상성/양성전용 PE게이팅) 전부 가산빈도 baseline(lift 5.34) **못 이김** — 정적지표가 빈도 보상.
+  2. `prequential_experiment.py` (test-then-train + EdgeBank baseline + ECE + time-shuffle 반증): **Rescorla-Wagner 음성증거 규칙**(w_ab→P(b|a) 보정)이 빈도(0.494)·암기(0.426)를 **유의·강건**하게 이김(MRR **0.510**, paired 484/282 p≈0, 다중시드 최악도 초과), ECE 0.038, 우위는 **time-shuffle서 붕괴=진짜 시간적 학습**. → **Phase 1 자기학습 신호 성립.**
+  3. `trainable_head_experiment.py` (학습가능 임베딩 head, 온라인 SGD, gap#1 리허설): MRR 0.415 < 규칙, 곡선기울기 음수 → **518노드 규모선 파라미터 코어가 스칼라 못 이김**(리서치 scale caveat 실증).
+- **정정**: 초기 "가설 반증"은 틀린 지표(정적)×틀린 규칙(양성전용) 탓 → measure-first + 리서치 교차검증으로 정정. RW 음성증거가 정답 메커니즘.
+
+### 함의 (로드맵 실증 재정렬)
+- Phase 1 죽은 길 아님(RW=싸고 진짜, 보정 w_ab=Phase2 예측오차 신호원). 효과 완만(+3.5%).
+- **순서 재정렬**: 학습코어(Phase 2)는 현 규모서 손해 → **밀도(Phase 4 embodiment) 먼저/병행 → 그 다음 로컬 코어.**
+- **비가역 보류(사용자 확인 후)**: 방향성 엣지 마이그레이션(RELATES_TO 무향→w_fwd/w_bwd, ~4170엣지) + RW 프로덕션 반영. 라이브 그래프·프로덕션 규칙 미변경(오프라인 검증만).
+
+### 산출물
+- `scripts/baseline/{plasticity,prequential,trainable_head}_experiment.py` (재사용 A/B 하니스)
+- `claudedocs/baseline/{PHASE1_PLASTICITY_FINDINGS,RESEARCH_SYNTHESIS_2026-07-12}.md` + `{plasticity,prequential,trainable}_*_20260712.json`
+
+### 완료 ✅ (오후: Phase 4 embodiment 파이프라인 착수·준비완료)
+> 상세: `claudedocs/baseline/EMBODIMENT_PIPELINE_2026-07-12.md`, `docs/QUEST_APK_CONTRACT.md`, auto-memory `embodiment_pipeline_2026-07`.
+- **승격 근거**: 3-실험(언어/학습head/embodiment) 전부 "데이터 밀도+다양성+움직임=바인딩 제약" 실증 → **Phase 4를 Phase 2 앞으로 승격**.
+- **measure-first**: `quest-concepts`(A4.3) 엔드포인트 이미 작동·올바름. 45 vision 프레임(밀집 5.4객체/프레임, <10s 시퀀스), pose/depth 0, 2026-05-12 이후 스트리밍 없음(제약=수량).
+- **`scripts/baseline/embodied_prediction.py`**: embodied next-frame 예측(북극성 지표). 정적 데스크 장면서 graph_spread가 **popularity baseline 못 이김**(R@10_new 0.51 vs 0.55) → 정적·무동작이라 구조 예측 여지 없음 = **pose/depth(움직임) 필요성의 증거 기반 정당화**.
+- **파이프라인 확장(비파괴·검증)**: `api_server.py` quest-concepts에 `head_pose`/`depth_bins` 선택캡처(하위호환) + `neo4j_db.link_vision_frame_sequence`로 `(:Experience)-[:NEXT_FRAME {dt_sec,pose_delta}]->` 시퀀스 링크(synthetic 프레임 Cypher end-to-end 검증) + `scripts/maintenance/backfill_frame_sequence.py`(멱등·`--rollback`)로 기존 45프레임→**36 NEXT_FRAME 엣지·9시퀀스** backfill. 두 파일 py_compile OK.
+- **막힘(사용자·기기)**: Quest 프레임 생성=하드웨어-인-더-루프. APK가 head_pose/depth 전송(`docs/QUEST_APK_CONTRACT.md`)+다양한 장면 대량 세션 수집 필요. 수집 후 `embodied_prediction.py` 재측정=embodied 자기학습 신호 판정.
+- 라이브 그래프 비파괴(신규 엣지·선택속성만), conversation_handler·프로덕션 규칙 미변경.
+
+---
+
+## 2026-07-11 (Identity/Access-Control + LLM 복구 + 자기학습 프로그램 로드맵)
+
+> 전략·로드맵 상세는 Claude auto-memory: `program_roadmap_2026-07`(최상위), `self_learning_architecture_2026-07`(북극성), `beyond_api_llm_strategy_2026-07`, `identity_access_control_2026-07`.
+
+### 완료 ✅ (검증됨)
+- **decay_connections 버그 수정** (`neural/baby/neo4j_db.py:1240`): 이전 `cutoff=_now_iso()`+`last_accessed IS NULL`이 매 consolidate마다 미접근 Experience 전체를 감쇠 → `coalesce(last_accessed, created_at) < now-stale_days(14)`로 선택적 감쇠. synthetic node proof로 **런타임 검증**(fresh Experience: OLD=감쇠 / NEW=보호). `timedelta` import.
+- **before baseline**: `scripts/baseline/measure_baseline.py --tag before_research_20260710` → `claudedocs/baseline/`. 개념 978, RELATES_TO 1793, 고립 **48.4%**, power-law α **1.15**, modularity Q **0.434**.
+- **Identity & Access-Control** (`docs/IDENTITY_ACCESS_CONTROL.md` 신규):
+  - STEP1-2: `:Person{owner_pjh, 박재현, role:owner}` 허브 + 별칭 4개(개발자/사용자/형/엄마) `ALIAS_OF` + UserModel(mom/brother) `IDENTIFIED_BY`. `scripts/maintenance/seed_owner_identity.py`(idempotent·비파괴·`--rollback`·dry-run). **mom/brother=테스트 페르소나 확정**.
+  - STEP0+4: owner token(`.env OWNER_SECRET`) + **owner 사칭 차단**(endpoint에서 owner speaker_id인데 토큰 없으면 guest 강등, `hmac.compare_digest` 상수시간) + `resolve_speaker_clearance`/`access_tier` 필터(`get_user_context`). **conversation_handler v30 0 수정** — endpoint+db층만. 사칭→guest 로그 + 직접호출 검증.
+- **brain LLM 복구**: `gemini-2.0-flash`(404 deprecated)로 브레인 mute였음 → `gemini-flash-latest`(별칭, version-deprecation 재발 방지) `llm_client.py` 3곳. 실 대화 응답 확인.
+- **Phase 1 자기학습 계측 착수**: `scripts/baseline/measure_prediction.py` 신규(PPR spreading-activation link-prediction, held-out 엣지). baseline `before_plasticity`: 무작위 대비 예측 lift **7.86×**(MRR 0.156, hit@10 42%, mean_rank 31/487) = "그래프가 실제로 더 잘 예측하게 되는가(=자기학습)"를 재는 척도 확보. 가소성 규칙 개선 전/후 이 값을 비교. + 자기학습 프런티어 서베이는 Bandi 볼트(`강화학습/`)에 저장.
+
+### 변경 파일
+- `neural/baby/neo4j_db.py` (decay 수정 · `resolve_speaker_clearance` · `get_user_context` 필터)
+- `neural/baby/api_server.py` (owner token 인식/사칭차단 · `import os,hmac`)
+- `neural/baby/llm_client.py` (모델 → gemini-flash-latest)
+- `.env` (OWNER_SECRET), `scripts/maintenance/seed_owner_identity.py`(신규), `docs/IDENTITY_ACCESS_CONTROL.md`(신규)
+
+### 결정 / 방향
+- **"API 탈피 = 자기학습 전환"은 같은 한 수** (frozen API→로컬 trainable 코어). 진짜 자기학습=경험이 코어 파라미터를 바꿈; 현 frozen-LLM+graph는 자기학습 아님(Voyager 천장).
+- **최상위 프로그램 로드맵 수립**: 자기성장 아기 뇌 Phase 0~5, **장기 ~1.5~3년**, 마일스톤=예측오차 곡선 하강.
+- **다음 진입점: Phase 1** — 진짜 가소성 규칙(STDP+감쇠+항상성+PE게이팅) + 예측오차 계측(LLM-free).
+
+### ⚠️ 미해결
+- LLM 톤 변화(신형 flash, 영어·감정값 노출) · OpenAI fallback quota 429 · `last_accessed` 속성 전 Experience 부재(reinforce_memory 미반영 의심) · degraded no-LLM fallback 미구현.
+
+---
+
 ## 2026-04-27 (Phase A4.5C — 파서 개선: 공접 + be-copula)
 
 ### 핵심 성과 ✅

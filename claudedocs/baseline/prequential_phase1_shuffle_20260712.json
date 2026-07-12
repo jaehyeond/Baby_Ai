@@ -1,0 +1,165 @@
+{
+  "tag": "phase1",
+  "timestamp": "2026-07-12T05:49:01.067360+00:00",
+  "n_events": 256,
+  "shuffle": true,
+  "config": {
+    "warmup": 40,
+    "edgebank_window": 60,
+    "neg_k": 12,
+    "eta_rw": 0.15,
+    "recency": 0.01
+  },
+  "results": {
+    "edgebank": {
+      "arm": "edgebank",
+      "n_scored": 1724,
+      "MRR": 0.3006,
+      "hit@1": 0.1798,
+      "hit@5": 0.4101,
+      "hit@10": 0.4832,
+      "mean_rank": 84.4,
+      "avg_candidates": 336.0,
+      "lift_vs_random": 2.0,
+      "prequential_curve": [
+        0.3103,
+        0.3279,
+        0.2877,
+        0.3631,
+        0.3249,
+        0.2346,
+        0.2446,
+        0.2052,
+        0.2196,
+        0.4645,
+        0.1715,
+        0.4595
+      ],
+      "curve_slope_late_minus_early": -0.0139,
+      "ECE": null
+    },
+    "additive": {
+      "arm": "additive",
+      "n_scored": 1724,
+      "MRR": 0.4585,
+      "hit@1": 0.3335,
+      "hit@5": 0.5864,
+      "hit@10": 0.6821,
+      "mean_rank": 23.1,
+      "avg_candidates": 336.0,
+      "lift_vs_random": 7.29,
+      "prequential_curve": [
+        0.3823,
+        0.3878,
+        0.4201,
+        0.4492,
+        0.5157,
+        0.6103,
+        0.3433,
+        0.3672,
+        0.3407,
+        0.5723,
+        0.4503,
+        0.5454
+      ],
+      "curve_slope_late_minus_early": -0.0244,
+      "ECE": null
+    },
+    "rw": {
+      "arm": "rw",
+      "n_scored": 1724,
+      "MRR": 0.4587,
+      "hit@1": 0.3364,
+      "hit@5": 0.5876,
+      "hit@10": 0.6932,
+      "mean_rank": 23.0,
+      "avg_candidates": 336.0,
+      "lift_vs_random": 7.31,
+      "prequential_curve": [
+        0.4042,
+        0.3939,
+        0.4327,
+        0.4566,
+        0.5072,
+        0.5719,
+        0.3478,
+        0.3652,
+        0.3603,
+        0.583,
+        0.4543,
+        0.5384
+      ],
+      "curve_slope_late_minus_early": -0.0196,
+      "ECE": 0.0454
+    },
+    "rw_recency": {
+      "arm": "rw_recency",
+      "n_scored": 1724,
+      "MRR": 0.4562,
+      "hit@1": 0.3411,
+      "hit@5": 0.5754,
+      "hit@10": 0.6821,
+      "mean_rank": 23.5,
+      "avg_candidates": 336.0,
+      "lift_vs_random": 7.17,
+      "prequential_curve": [
+        0.4011,
+        0.3986,
+        0.3998,
+        0.4602,
+        0.5125,
+        0.5476,
+        0.3349,
+        0.3478,
+        0.3536,
+        0.592,
+        0.461,
+        0.5605
+      ],
+      "curve_slope_late_minus_early": -0.0117,
+      "ECE": 0.0503
+    }
+  },
+  "paired": {
+    "rw_vs_additive": {
+      "n": 1724,
+      "b_better": 433,
+      "b_worse": 371,
+      "ties": 920,
+      "sign_p": 0.03139
+    },
+    "rw_vs_edgebank": {
+      "n": 1724,
+      "b_better": 1024,
+      "b_worse": 314,
+      "ties": 386,
+      "sign_p": 0.0
+    },
+    "additive_vs_edgebank": {
+      "n": 1724,
+      "b_better": 997,
+      "b_worse": 326,
+      "ties": 401,
+      "sign_p": 0.0
+    }
+  },
+  "rw_multiseed": {
+    "mean": 0.4594,
+    "std": 0.0009,
+    "min": 0.4585,
+    "seeds": [
+      0.4587,
+      0.4613,
+      0.459,
+      0.4595,
+      0.4585,
+      0.4592
+    ],
+    "robust_over_additive": false
+  },
+  "verdict": {
+    "rw_beats_edgebank": true,
+    "rw_beats_additive": true,
+    "rw_curve_rising": false
+  }
+}

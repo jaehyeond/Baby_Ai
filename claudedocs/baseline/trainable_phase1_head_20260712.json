@@ -1,0 +1,147 @@
+{
+  "tag": "phase1_head",
+  "timestamp": "2026-07-12T05:55:26.588335+00:00",
+  "n_events": 256,
+  "shuffle": false,
+  "config": {
+    "dim": 32,
+    "lr": 0.2,
+    "neg_k": 8,
+    "sgd_steps": 3,
+    "l2": 0.0001
+  },
+  "head": {
+    "arm": "trainable_head",
+    "n_scored": 1710,
+    "MRR": 0.4185,
+    "hit@1": 0.2649,
+    "hit@5": 0.6035,
+    "hit@10": 0.7409,
+    "mean_rank": 17.1,
+    "lift_vs_random": 8.86,
+    "prequential_curve": [
+      0.306,
+      0.4169,
+      0.3711,
+      0.4534,
+      0.367,
+      0.0342,
+      null,
+      0.1729,
+      0.2752,
+      0.4147,
+      0.5801,
+      0.4282
+    ],
+    "curve_slope_late_minus_early": -0.0653
+  },
+  "head_multiseed": {
+    "mean": 0.4148,
+    "std": 0.0151,
+    "seeds": [
+      0.4185,
+      0.4154,
+      0.4336,
+      0.3915
+    ]
+  },
+  "reference": {
+    "edgebank": {
+      "arm": "edgebank",
+      "n_scored": 1710,
+      "MRR": 0.4255,
+      "hit@1": 0.2971,
+      "hit@5": 0.5661,
+      "hit@10": 0.6333,
+      "mean_rank": 36.0,
+      "avg_candidates": 302.0,
+      "lift_vs_random": 4.21,
+      "prequential_curve": [
+        0.2287,
+        0.3284,
+        0.2318,
+        0.3177,
+        0.2591,
+        0.0084,
+        null,
+        0.1107,
+        0.2375,
+        0.3246,
+        0.6151,
+        0.7775
+      ],
+      "curve_slope_late_minus_early": 0.0725,
+      "ECE": null
+    },
+    "additive": {
+      "arm": "additive",
+      "n_scored": 1710,
+      "MRR": 0.4938,
+      "hit@1": 0.3778,
+      "hit@5": 0.6205,
+      "hit@10": 0.7275,
+      "mean_rank": 16.6,
+      "avg_candidates": 302.0,
+      "lift_vs_random": 9.14,
+      "prequential_curve": [
+        0.3136,
+        0.387,
+        0.2792,
+        0.3556,
+        0.3538,
+        0.0084,
+        null,
+        0.3575,
+        0.3009,
+        0.4557,
+        0.6572,
+        0.7921
+      ],
+      "curve_slope_late_minus_early": 0.0908,
+      "ECE": null
+    },
+    "rw": {
+      "arm": "rw",
+      "n_scored": 1710,
+      "MRR": 0.5121,
+      "hit@1": 0.3977,
+      "hit@5": 0.6392,
+      "hit@10": 0.7497,
+      "mean_rank": 15.4,
+      "avg_candidates": 302.0,
+      "lift_vs_random": 9.8,
+      "prequential_curve": [
+        0.3572,
+        0.4089,
+        0.2924,
+        0.3836,
+        0.3858,
+        0.0084,
+        null,
+        0.3559,
+        0.3241,
+        0.4645,
+        0.6706,
+        0.8094
+      ],
+      "curve_slope_late_minus_early": 0.0732,
+      "ECE": 0.0392
+    }
+  },
+  "paired_head_vs_additive": {
+    "n": 1710,
+    "b_better": 546,
+    "b_worse": 803,
+    "ties": 361,
+    "sign_p": 0.0
+  },
+  "paired_head_vs_rw": {
+    "n": 1710,
+    "b_better": 473,
+    "b_worse": 826,
+    "ties": 411,
+    "sign_p": 0.0
+  },
+  "verdict_head_beats_rw": false,
+  "verdict_head_beats_additive": false
+}

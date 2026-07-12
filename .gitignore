@@ -1,5 +1,11 @@
 # 환경변수 (API 키 보호)
 .env
+# 백업/파생 env — secret 유출 방지 (2026-07-12 GitHub push protection 계기)
+.env.bak*
+.env.*.bak
+.env.backup
+*.bak
+# (주의: .env.example 은 플레이스홀더 템플릿이라 추적 유지 — 위 패턴에 안 걸림)
 
 # Python
 __pycache__/

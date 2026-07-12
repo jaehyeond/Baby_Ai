@@ -11,7 +11,7 @@ import json
 import asyncio
 import logging
 from typing import Optional, Any
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from contextlib import asynccontextmanager
 
 from neo4j import AsyncGraphDatabase
@@ -1237,22 +1237,31 @@ class BrainDatabase:
 
     # ==================== Utility ====================
 
-    async def decay_connections(self, decay_rate: float = 0.01) -> None:
-        """모든 RELATES_TO 관계 강도 감쇠 (시간 기반 망각)"""
+    async def decay_connections(self, decay_rate: float = 0.01, stale_days: int = 14) -> None:
+        """모든 RELATES_TO 관계 강도 감쇠 (시간 기반 망각).
+
+        RELATES_TO는 전역 곱셈 감쇠(SHY downscaling 의도, 유지).
+        Experience는 stale_days 동안 접근(없으면 생성)되지 않은 오래된 것만 선택적으로 감쇠.
+        버그 수정 2026-07-10: 이전 `cutoff=_now_iso()` + `last_accessed IS NULL` 조합은
+        매 consolidate마다 미접근 Experience(방금 생성한 것 포함) 전체를 감쇠시켰음.
+        last_accessed는 reinforce_memory에서만 기록되므로 created_at으로 coalesce.
+        (stale 기준 14일: Yang 2009, adgr_v1_sleep_plan.md 수치 근거표와 정렬)
+        """
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=stale_days)).isoformat()
         async with self.driver.session(database=_DB_NAME) as s:
             await s.run(
                 "MATCH ()-[r:RELATES_TO]->() "
                 "SET r.strength = r.strength * (1.0 - $rate)",
                 rate=decay_rate,
             )
-            # Experience 강도도 감쇠
+            # Experience 강도 감쇠: 최근 활동(접근 없으면 생성 시각) 기준 오래된 것만
             await s.run(
                 "MATCH (e:Experience) "
-                "WHERE e.last_accessed < $cutoff OR e.last_accessed IS NULL "
+                "WHERE coalesce(e.last_accessed, e.created_at) < $cutoff "
                 "SET e.strength = CASE WHEN coalesce(e.strength, 0.5) - $rate < 0.0 THEN 0.0 "
                 "                      ELSE coalesce(e.strength, 0.5) - $rate END",
                 rate=decay_rate,
-                cutoff=_now_iso(),  # 실제 운영 시 cutoff 계산 필요
+                cutoff=cutoff,
             )
 
     async def get_stats(self) -> dict:
@@ -1272,6 +1281,67 @@ class BrainDatabase:
                     "patterns_count": record["pat_count"],
                 }
             return {"experiences_count": 0, "concepts_count": 0, "patterns_count": 0}
+
+    # ==================== Embodiment: 프레임 시퀀스 (Phase 4) ====================
+
+    async def link_vision_frame_sequence(
+        self,
+        cur_exp_id: str,
+        cur_pose: list[float] | None = None,
+        max_gap_sec: float = 30.0,
+    ) -> dict:
+        """직전 vision 프레임과 현재 프레임을 (:Experience)-[:NEXT_FRAME]->(:Experience) 로
+        연결하고 head-pose delta(움직임 크기)를 기록한다 (embodiment 감각운동 스트림).
+
+        근거: embodied_prediction.py(2026-07-12) — 정적 장면에선 next-frame≈current-frame이라
+        구조적 예측이 popularity를 못 이김. **머리 움직임(pose delta)**이 있어야 "돌리면 X가
+        보인다"는 진짜 감각운동 예측이 성립. 프레임 간 시간·움직임을 엣지에 새겨 STDP/recency가
+        exploit할 시간구조를 만든다.
+
+        - 직전 프레임 = cur 이전, max_gap_sec 이내의 가장 최근 task_type='vision' Experience.
+          (그 이상 벌어지면 다른 세션 → 연결 안 함.)
+        - pose delta: 양 프레임 모두 pose 있으면 L2 거리, 아니면 null.
+        - 멱등: 같은 (prev,cur) 쌍은 MERGE.
+        """
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (cur:Experience {id: $cid}) "
+                "MATCH (prev:Experience) "
+                "WHERE prev.task_type = 'vision' AND prev.id <> $cid "
+                "  AND prev.created_at < cur.created_at "
+                "  AND duration.inSeconds(datetime(prev.created_at), "
+                "        datetime(cur.created_at)).seconds <= $gap "
+                "WITH cur, prev ORDER BY prev.created_at DESC LIMIT 1 "
+                "MERGE (prev)-[r:NEXT_FRAME]->(cur) "
+                "ON CREATE SET r.created_at = $now, "
+                "  r.dt_sec = duration.inSeconds(datetime(prev.created_at), "
+                "               datetime(cur.created_at)).seconds "
+                "RETURN prev.id AS prev_id, prev.head_pose AS prev_pose, r.dt_sec AS dt",
+                cid=cur_exp_id,
+                gap=max_gap_sec,
+                now=_now_iso(),
+            )
+            rec = await result.single()
+            if not rec:
+                return {"linked": False, "prev_id": None, "pose_delta": None}
+
+            pose_delta = None
+            prev_pose = rec["prev_pose"]
+            if cur_pose and prev_pose and len(cur_pose) == len(prev_pose):
+                pose_delta = float(
+                    sum((a - b) ** 2 for a, b in zip(cur_pose, prev_pose)) ** 0.5
+                )
+                await s.run(
+                    "MATCH (prev:Experience {id: $pid})-[r:NEXT_FRAME]->(cur:Experience {id: $cid}) "
+                    "SET r.pose_delta = $pd",
+                    pid=rec["prev_id"], cid=cur_exp_id, pd=pose_delta,
+                )
+            return {
+                "linked": True,
+                "prev_id": rec["prev_id"],
+                "dt_sec": rec["dt"],
+                "pose_delta": pose_delta,
+            }
 
     # ==================== 확장: Memory Recall (Phase 2 신규) ====================
 
@@ -1624,15 +1694,22 @@ class BrainDatabase:
         self,
         speaker_id: str,
     ) -> Optional[dict]:
-        """UserModel + 최근 관심사 + 통계 조회 (system prompt 구성용)"""
+        """UserModel + 최근 관심사 + 통계 조회 (system prompt 구성용).
+
+        접근제어(2026-07 identity): access_tier='owner_private' Concept는
+        owner clearance에서만 회상된다. clearance는 speaker_id→:Person role로 도출.
+        신뢰(토큰 검증)는 endpoint 책임 — 여기 도달하는 speaker_id는 이미 강등 반영됨.
+        """
+        clearance = await self.resolve_speaker_clearance(speaker_id)
         async with self.driver.session(database=_DB_NAME) as s:
             result = await s.run(
                 "MATCH (u:UserModel {speaker_id: $sid}) "
                 "OPTIONAL MATCH (u)-[r:INTERESTED_IN]->(c:Concept) "
+                "  WHERE coalesce(c.access_tier, 'public') = 'public' OR $clearance = 'owner' "
                 "WITH u, c, r ORDER BY r.strength DESC LIMIT 10 "
                 "RETURN u, collect(CASE WHEN c IS NOT NULL "
                 "  THEN {name: c.name, strength: r.strength} ELSE null END) AS interests",
-                sid=speaker_id,
+                sid=speaker_id, clearance=clearance,
             )
             record = await result.single()
             if not record:
@@ -1648,6 +1725,24 @@ class BrainDatabase:
                 "interaction_count": u.get("interaction_count", 0),
                 "interests": interests,
             }
+
+    async def resolve_speaker_clearance(self, speaker_id: str) -> str:
+        """speaker_id의 접근 등급: 'owner' | 'public' (identity graph 기준).
+
+        owner = :Person{role:'owner'}가 IDENTIFIED_BY 하는 speaker, 또는 primary alias.
+        신뢰(토큰)는 endpoint 책임 — 여기선 identity graph만 본다.
+        docs/IDENTITY_ACCESS_CONTROL.md STEP 4.
+        """
+        if speaker_id in ("self", "나", "박재현", "owner_pjh"):
+            return "owner"
+        async with self.driver.session(database=_DB_NAME) as s:
+            r = await s.run(
+                "MATCH (p:Person {role:'owner'})-[:IDENTIFIED_BY]->(u:UserModel {speaker_id:$sid}) "
+                "RETURN count(p) AS n",
+                sid=speaker_id,
+            )
+            rec = await r.single()
+            return "owner" if rec and rec["n"] > 0 else "public"
 
     # ==================== Temporal Pattern (E2-2) ====================
 

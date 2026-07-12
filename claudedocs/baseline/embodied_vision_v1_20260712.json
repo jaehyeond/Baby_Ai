@@ -1,0 +1,30 @@
+{
+  "tag": "vision_v1",
+  "timestamp": "2026-07-12T13:41:57.528746+00:00",
+  "n_frames": 45,
+  "n_sessions": 7,
+  "n_usable_sessions": 3,
+  "n_transitions": 36,
+  "vocab_size": 69,
+  "graph_nodes": 519,
+  "predictors": {
+    "persistence": {
+      "recall@5_all": 0.388,
+      "recall@5_new": 0.0,
+      "recall@10_all": 0.469,
+      "recall@10_new": 0.0
+    },
+    "popularity": {
+      "recall@5_all": 0.187,
+      "recall@5_new": 0.357,
+      "recall@10_all": 0.274,
+      "recall@10_new": 0.546
+    },
+    "graph_spread": {
+      "recall@5_all": 0.166,
+      "recall@5_new": 0.328,
+      "recall@10_all": 0.254,
+      "recall@10_new": 0.511
+    }
+  }
+}
