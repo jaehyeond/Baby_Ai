@@ -3,9 +3,11 @@
 > **크로스툴 단일 진입점.** Codex는 이 파일을 자동 로드한다. Claude Code는 `CLAUDE.md` 최상단의 `@AGENTS.md`로 임포트한다.
 > ⚠️ **Claude auto-memory(`C:\Users\SOGANG\.claude\projects\E--A2A\memory\`)는 Claude 전용 — Codex는 못 읽는다.** Codex는 아래 "상세 문서"의 경로를 직접 열어라. **세션 인계는 반드시 이 파일 + repo 공유 파일을 통해서만** 한다.
 
-## 🔖 현재 상태 / 재개 (2026-07-12 체크포인트)
+## 🔖 현재 상태 / 재개 (2026-07-13 체크포인트)
 **"이어서 하자"면 여기부터.**
-- **완료(검증)**: decay fix · identity/access-control · LLM 복구 · 자기학습 로드맵 · **Phase 1 가소성 실험 완료(2026-07-12)**.
+- **🔴 보안(2026-07-13 처리완료)**: `.env.bak-20260512`(실키) push 차단됨 → secret 있던 커밋 `40ed387`→`5cfe1a5`로 amend(unpushed라 안전) + `.gitignore` `.env.bak*` 보강. **키 원격 미도달, push 이제 통과.** 디스크 .env.bak은 gitignore됨(삭제/이동 권고). git 작업 전 `.env*` 백업이 안 딸려가는지 항상 확인.
+- **Gap#6 모니터링 상시화 완료(2026-07-13)**: `scripts/monitoring/brain_health_monitor.py`(4지표: prediction/collapse/forgetting/plasticity → `claudedocs/monitoring/brain_health.jsonl` append + alert). **consolidate(수면) 훅**(`_spawn_health_monitor`)으로 자동 실행. baseline 🟢(lift 7.86, isolated 0.38, recall 0.70).
+- **완료(검증)**: decay fix · identity/access-control · LLM 복구 · 자기학습 로드맵 · **Phase 1 가소성 실험(2026-07-12)** · embodiment 파이프라인 · Gap#6 모니터링.
 - **Phase 1 결과 = 자기학습 신호 발견(정정본)**. 상세: `claudedocs/baseline/PHASE1_PLASTICITY_FINDINGS.md`, `RESEARCH_SYNTHESIS_2026-07-12.md`. 하니스: `scripts/baseline/{plasticity,prequential}_experiment.py`.
   - ① **정적 랜덤분할**: 순진한 가소성(STDP/항상성/양성전용 PE게이팅)이 가산빈도 baseline(lift 5.34)을 **못 이김**(정적지표는 빈도 보상 → 가산 Hebbian이 천장). = 초기 "반증".
   - ② **리서치 정정**(프런티어 6각 fan-out): 틀린 규칙×틀린 지표였음. 빠진 조각=**Rescorla-Wagner 음성증거**(a 켜지고 후보 b 안 켜지면 w_ab를 깎음 → w_ab=P(b|a) **보정확률**). 지표=**prequential(예측→채점→학습) + EdgeBank(암기) baseline**.
@@ -14,7 +16,7 @@
 - **⑤ embodiment 파이프라인 착수·준비완료(2026-07-12)** ([[embodiment_pipeline_2026-07]], `claudedocs/baseline/EMBODIMENT_PIPELINE_2026-07-12.md`): 3-실험 전부 "데이터 밀도+움직임=바인딩 제약" 실증 → **Phase 4를 Phase 2 앞으로 승격**. `quest-concepts` 엔드포인트 이미 작동(45프레임·밀집). `embodied_prediction.py`=정적장면서 graph가 popularity 못 이김(R@10_new 0.51<0.55)=움직임 필수 증거. **확장(비파괴·검증)**: `api_server.py`에 `head_pose`/`depth_bins` 선택캡처 + `neo4j_db.link_vision_frame_sequence`로 `NEXT_FRAME{dt_sec,pose_delta}` 시퀀스 링크(synthetic Cypher 검증) + `backfill_frame_sequence.py`로 기존 45프레임→36엣지·9시퀀스. 계약 `docs/QUEST_APK_CONTRACT.md`.
 - **다음 스텝 (밀도 먼저 — 사용자·기기 의존)**:
   - **최우선 = Quest 데이터 수집**: APK가 `head_pose`/`depth_bins` 전송하도록 업데이트(`docs/QUEST_APK_CONTRACT.md`: Unity `InputTracking` pose + depth 히스토그램) + **다양한 장면서 머리 움직이며 대량 세션 스트리밍**(정적 반복 금물=popularity 천장). 수집 후 `python scripts/baseline/embodied_prediction.py` 재측정=embodied 신호 판정.
-  - (가역·병행) Gap#6 모니터링 상시화(예측오차·forgetting·collapse).
+  - ✅ (완료 2026-07-13) Gap#6 모니터링 상시화 — `scripts/monitoring/brain_health_monitor.py` + consolidate 훅.
   - (보류) Gap#1 학습 head·Phase2 로컬코어 = 스트림 커진 뒤.
   - (비가역·**사용자 확인 후**) 방향성 엣지 마이그레이션 + RW 프로덕션 `hebbian_update` 반영.
 - **전제**: Neo4j(Baby_Robotics, bolt 7687) 켜기. embodiment 확장은 라이브 그래프 비파괴(신규 엣지·선택속성만)·conversation_handler 미변경. 실 ingest 테스트엔 uvicorn 필요.

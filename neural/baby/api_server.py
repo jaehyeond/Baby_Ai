@@ -608,6 +608,23 @@ async def get_consolidate_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _spawn_health_monitor() -> None:
+    """Gap#6 brain health 모니터를 detached 서브프로세스로 실행 (비차단, 실패 무해).
+    consolidate(수면) 훅에서 호출 → `claudedocs/monitoring/brain_health.jsonl` 에 append.
+    RESEARCH_SYNTHESIS_2026-07-12 §3 gap#6. 스크립트 부재/오류 시 조용히 skip."""
+    try:
+        import subprocess, sys as _sys, os as _os
+        root = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+        script = _os.path.join(root, "scripts", "monitoring", "brain_health_monitor.py")
+        if _os.path.exists(script):
+            subprocess.Popen(
+                [_sys.executable, script], cwd=root,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+    except Exception as e:
+        logger.warning(f"health monitor spawn skipped: {e}")
+
+
 @app.post("/api/memory/consolidate")
 async def consolidate_memory(request: ConsolidateRequest):
     """
@@ -648,6 +665,10 @@ async def consolidate_memory(request: ConsolidateRequest):
                 results["transition_probabilities_updated"] = transitions
             except Exception as tp_err:
                 logger.warning(f"temporal pattern detection error: {tp_err}")
+
+            # Gap#6: 수면(consolidate) 마다 brain health 스냅샷을 백그라운드로 기록 (상시화).
+            # Neo4j 가 확실히 켜져있는 시점 + 생물학적으로 적절(수면 중 모니터링). 비차단·guarded.
+            _spawn_health_monitor()
 
         return {"status": "ok", "mode": request.mode, **results}
     except Exception as e:

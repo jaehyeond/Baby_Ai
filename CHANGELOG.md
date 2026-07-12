@@ -5,6 +5,23 @@
 
 ---
 
+## 2026-07-13 (🔴 보안: secret 제거 + Gap#6 모니터링 상시화)
+
+### 🔴 보안 조치 ✅ (GitHub push protection 계기)
+- **원인**: `.env.bak-20260512`(Anthropic+OpenAI 실키)가 `.gitignore` `.env.bak*` 누락으로 커밋 `40ed387`에 딸려 들어감. push 시도 시 GitHub secret scanning 차단.
+- **범위 확정(measure-first)**: secret은 **오직 unpushed 커밋 1개(`40ed387`)에만**. 초기 커밋은 `.env.example`(플레이스홀더)만 — **키는 원격 도달 이력 없음**.
+- **조치**: `git rm --cached .env.bak-20260512` + `.gitignore` 보강(`.env.bak*`,`.env.*.bak`,`*.bak`) + `git commit --amend`로 tip 재작성(`40ed387`→`5cfe1a5`, unpushed라 안전, 나머지 29파일 보존).
+- **검증**: push 범위=secret 없는 단일 커밋 `5cfe1a5` · `.env.bak` 미추적 · gitignore 차단 확인 · HEAD 트리 실키 패턴 0. **이제 push 통과.** (디스크의 .env.bak은 gitignore됨; 삭제/이동 권고. 키는 원격 미도달이라 로테이션은 선택.)
+
+### Gap#6 brain health 모니터링 상시화 ✅
+> `scripts/monitoring/brain_health_monitor.py` + `README.md`. RESEARCH_SYNTHESIS §3 gap#6.
+- **4 지표 시계열**(`claudedocs/monitoring/brain_health.jsonl`, append): ① prediction(link-pred lift/MRR) ② collapse(degree Gini·가중치 엔트로피·고립률·최대허브) ③ forgetting(고정 probe 30 recall@10 vs baseline) ④ plasticity(synthetic 연상 주입→회상→rollback, 비파괴). 임계 breach 시 🔴 alert.
+- **baseline(2026-07-12)**: 840 concept(518 connected)/2085 edge, lift 7.86, isolated 0.383, gini 0.65, W-entropy 0.867, forgetting recall 0.70, plasticity ✅ → 🟢 전부 정상. 결정론적, 추세(Δ) 표시.
+- **상시화 = consolidate(수면) 훅**: `/api/memory/consolidate`(full) 종료 시 `_spawn_health_monitor()`가 모니터를 detached 백그라운드 실행(비차단·guarded). Neo4j 확실히 켜진 시점 + 생물학적 적절. (수동/야간 schtasks는 README.)
+- `api_server.py` py_compile OK, 비파괴(consolidate 실패에 영향 없음).
+
+---
+
 ## 2026-07-12 (Phase 1 가소성 실험 — 자기학습 신호 발견 + 프런티어 리서치 종합)
 
 > 상세: `claudedocs/baseline/PHASE1_PLASTICITY_FINDINGS.md`, `RESEARCH_SYNTHESIS_2026-07-12.md`.

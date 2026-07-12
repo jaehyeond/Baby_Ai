@@ -7,6 +7,9 @@
 *.bak
 # (주의: .env.example 은 플레이스홀더 템플릿이라 추적 유지 — 위 패턴에 안 걸림)
 
+# Gap#6 모니터링 런타임 시계열 (consolidate마다 append → 커밋 노이즈 방지; 스크립트/README는 추적)
+claudedocs/monitoring/brain_health.jsonl
+
 # Python
 __pycache__/
 *.py[cod]
