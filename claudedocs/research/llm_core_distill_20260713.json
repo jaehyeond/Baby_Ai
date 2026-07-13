@@ -1,0 +1,10 @@
+{
+  "mode": "forget_online",
+  "a_peak": 0.4315,
+  "a_final": 0.421,
+  "b_before": 0.2691,
+  "b_final": 0.444,
+  "a_forgot": false,
+  "seed": 42,
+  "timestamp": "2026-07-13T06:56:18.044725+00:00"
+}

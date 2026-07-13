@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "n_concepts": 518,
+  "n_edges": 2241,
+  "n_test": 236,
+  "base_mrr": 0.0887,
+  "after_mrr": 0.1277,
+  "gain": 0.039,
+  "identity_base": 0.0752,
+  "identity_after": 0.2221,
+  "identity_gain": 0.1469,
+  "base_poor_count": 211,
+  "base_poor_mrr": 0.0567,
+  "base_poor_after": 0.0939,
+  "loss_first": 8.663,
+  "loss_last": 3.222,
+  "lora_trainable_M": 1.081,
+  "steps": 400,
+  "seed": 44,
+  "timestamp": "2026-07-13T07:10:29.447803+00:00"
+}

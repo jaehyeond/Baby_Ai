@@ -9,6 +9,9 @@
 
 # Gap#6 모니터링 런타임 시계열 (consolidate마다 append → 커밋 노이즈 방지; 스크립트/README는 추적)
 claudedocs/monitoring/brain_health.jsonl
+# Phase 2 로컬 코어 — 학습된 LoRA 어댑터(바이너리, 성장) + 성장 시계열 (소스 아님)
+models/local_core_adapter/
+claudedocs/monitoring/local_core_growth.jsonl
 
 # Python
 __pycache__/

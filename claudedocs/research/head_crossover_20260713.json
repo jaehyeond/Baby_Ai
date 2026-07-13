@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-07-12T19:50:39.396211+00:00",
+  "config": {
+    "K_neg": 60,
+    "cap": 48,
+    "dim": 48,
+    "warmup": 60,
+    "eval_frac": 0.25,
+    "note": "bounded-capacity: graph cap=48 vs head dim=48"
+  },
+  "cells": [
+    {
+      "N": 1000,
+      "scenes": 4,
+      "n_scored": 7087,
+      "edgebank": 0.7096,
+      "additive": 0.718,
+      "rw": 0.7234,
+      "head": 0.7177,
+      "best_graph": 0.7234,
+      "head_minus_graph": -0.0057,
+      "head_vs_graph_pct": -0.8
+    },
+    {
+      "N": 4000,
+      "scenes": 5,
+      "n_scored": 29533,
+      "edgebank": 0.7822,
+      "additive": 0.7963,
+      "rw": 0.8045,
+      "head": 0.8396,
+      "best_graph": 0.8045,
+      "head_minus_graph": 0.0351,
+      "head_vs_graph_pct": 4.4
+    },
+    {
+      "N": 16000,
+      "scenes": 20,
+      "n_scored": 118623,
+      "edgebank": 0.7901,
+      "additive": 0.797,
+      "rw": 0.8411,
+      "head": 0.9117,
+      "best_graph": 0.8411,
+      "head_minus_graph": 0.0706,
+      "head_vs_graph_pct": 8.4
+    },
+    {
+      "N": 48000,
+      "scenes": 60,
+      "n_scored": 361347,
+      "edgebank": 0.8014,
+      "additive": 0.8097,
+      "rw": 0.8615,
+      "head": 0.9436,
+      "best_graph": 0.8615,
+      "head_minus_graph": 0.0821,
+      "head_vs_graph_pct": 9.5
+    }
+  ],
+  "complete": false
+}

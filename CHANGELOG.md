@@ -13,6 +13,42 @@
 - **조치**: `git rm --cached .env.bak-20260512` + `.gitignore` 보강(`.env.bak*`,`.env.*.bak`,`*.bak`) + `git commit --amend`로 tip 재작성(`40ed387`→`5cfe1a5`, unpushed라 안전, 나머지 29파일 보존).
 - **검증**: push 범위=secret 없는 단일 커밋 `5cfe1a5` · `.env.bak` 미추적 · gitignore 차단 확인 · HEAD 트리 실키 패턴 0. **이제 push 통과.** (디스크의 .env.bak은 gitignore됨; 삭제/이동 권고. 키는 원격 미도달이라 로테이션은 선택.)
 
+### 합성 스케일링 연구 ✅ (다음 연구 — 데이터 벽 우회)
+> `scripts/research/{synth_world,scaling_study}.py`, `claudedocs/research/SCALING_STUDY_2026-07-13.md`.
+- 데이터 밀도가 바인딩 제약(3회 확인)이라, 실제 45프레임 통계에 **캘리브레이션(~13% dev)한 합성 embodied world**로 스택 스케일 거동 규명. 기존 `run_arm`/`run_head` 재사용(합성 events 동일 포맷).
+- **핵심 발견: RW 자기학습 우위 = 밀도 아니라 다양성 주도** — 다양성 축(N=2048): 단일장면 −0.5%→4장면 +3.7%→16 +4.7%→32 **+9.5%**. 밀도 축(scenes=8): N 256→4096서 6.8%→4.3% 완만 감소. 메커니즘: 장면↑→marginal과 다른 조건부 P(b\|a) 多→보정된 RW가 일반화로 빈도카운터 이김.
+- Q2 학습코어(head)는 N≤4096 전부 그래프 못 이김 → **Phase2 로컬코어 시기상조 재확인**. Q3 움직임이 embodied 예측 약하게 도움.
+- **→ 데이터 수집 스펙 변경**: "많은 프레임" 아닌 **"많은 다른 장면"**(`QUEST_APK_CONTRACT.md` 반영).
+
+### Head-crossover probe ✅ (Q2 후속 — 결정적 반전)
+> `scripts/research/head_crossover_probe.py`, `claudedocs/research/head_crossover_20260713.json`, SCALING_STUDY 문서 Q2 후속.
+- 두 병목 해결로 대규모 재측정: **sampled-negative 랭킹**(O(K) 고정) + **degree-cap 그래프**(허브 O(V²) 회피, matched-capacity cap48 vs dim48). 4 arm 동일 스트림 paired, N≤48k.
+- **결정적 반전**: 학습 파라미터 코어가 그래프를 **N≈2~4천서 역전**, 우위 단조증가(−0.8%→**+9.5%@48k**; head MRR 0.72→0.94 vs 그래프 0.86 정체 = 용량한계 그래프 vs 분산 임베딩 CLS 구도).
+- **원인 = 항상성**: 초기 "코어 열위"(이 probe + `trainable_head_experiment` 모두)는 **임베딩 발산(overflow) 아티팩트**. norm-clip(=synaptic scaling) 넣으면 코어 이김(+2.4~5.8%, clip∈{2,4,8,16} robust), 빼면 짐(−0.8%) — **causal 확인**. = 리서치 mandate(homeostasis 필수) 실증.
+- **함의**: **Phase 2 유망성 상향** — "그래프가 근본적으로 낫다"는 틀림(그건 항상성 없는 코어). 규모+다양성+weight-homeostasis면 코어가 이김. 단 크로스오버 N은 matched-capacity 규정·합성 데이터 의존 → 실 Quest 재확인 필요. Phase 2 착수 시 **weight-homeostasis day-1 필수**.
+
+### Phase 2 Sleep-Distill 프로토타입 + adversarial 검증 ✅
+> `scripts/research/sleep_distill{_prototype,_v2}.py`, `claudedocs/research/PHASE2_SLEEP_DISTILL_2026-07-13.md`, workflow wf_e658bb65.
+- head_crossover 후속. CLS wake-sleep 축소검증: 그래프=해마(wake 흡수, 코어 frozen), 임베딩코어=신피질(sleep에 그래프 replay로만 학습). Phase 2 "가중치만으로 예측오차 하강 + CLS 안티망각" 주장 검증.
+- **v1 4-claim workflow 적대검증**(6 ablation + 4 skeptic + synthesis): A 가중치-자기학습(그래프 frozen, held-out MRR 상승) **CONFIRMED**(고정 early_probe control로 확인 — 과대주장 차단); B replay>raw **REFUTED**(정상스트림선 online 우위, 3독립시드 2승); C 안티망각 **too-weak**(v1엔 망각 스트레서 없음); D no-collapse **REFUTED**(mean-norm은 clip으로 자명→effective rank 필요).
+- **v2 순차태스크 안티망각**(v1 지적 반영): Task A→B 어휘 disjoint(분포이동), B학습 후 A-test 유지 측정 + frozen negative pool + stable rank + 다중시드. **결과: online 파국적 망각(−0.318) vs sleep_replay 유지(+0.034) vs sleep_off(구조없어 학습X)** = **CLS 안티망각 성립**(3시드, 분리폭 5×std).
+- **화해**: replay 이점 = 정상 스트림선 무(B refuted 맞음), **비정상(평생학습)에서 결정적**(McClelland 1995 CLS 일치).
+- **결론**: Phase 2 primitive(경험이 가중치 바꿔 예측오차↓) + CLS 안티망각 **둘 다 축소규모 실증**. caveat: stable rank≈2(collapse 감시), 합성데이터, 임베딩 대역(진짜 Phase2=로컬 LLM+LoRA). **weight-homeostasis(norm-clip) 필수** 재확인.
+
+### Phase 2 실물화 — LLM+LoRA 코어 ✅ (장난감 임베딩 → 진짜 로컬 LLM)
+> `scripts/research/llm_core_distill.py`, `claudedocs/research/llm_core_distill_20260713.json`, PHASE2_SLEEP_DISTILL 문서 "실물화".
+- **환경**: RTX 4070 SUPER 12GB 확인 → `.venv`에 torch 2.6+cu124 · transformers 5.13 · peft 0.19 설치. Qwen2.5-0.5B fp16 = 1GB VRAM.
+- **개념정리(사용자 Q "LLM+LoRA가 뭐고 API 대체?")**: 로컬 LLM+LoRA = **학습가능 신피질**(네 GPU, 가중치 네 것, 경험으로 바뀜) = **장난감 임베딩 코어의 실물화**. Gemini API = frozen **언어 입출력 도구**(다른 상자) → **대화 API 대체가 아니라 공존**. LoRA = 495M 통째 대신 어댑터 1.08M(0.22%)만 학습.
+- **결과1 자기학습(실 LLM)**: "아기 방들" 실단어 co-occurrence를 LoRA sleep-distill → base link-MRR 0.176 → **0.382**(Δ+0.207, retrieval無, loss 9.95→2.62) = **진짜 LLM 가중치만으로 예측오차↓**.
+- **결과2 안티망각**: online(replay無) Task-A 유지(Δ−0.01) = **파국망각 없음**. LoRA는 어댑터만+base frozen이라 **본질적으로 덜 잊음**(vs 장난감 코어 full-train −0.335). → **정직한 수정**: sleep-replay의 안티망각 역할이 실 LLM+LoRA선 **덜 절박**(프로토타입 시사보다 완화). 단 2태스크·소어휘 쉬움 → 재확인 필요.
+- **다음**: 실 Neo4j co-occ(비비·엄마)로 재현 → 실 파이프라인(그래프 replay→야간 LoRA) 연결.
+
+### Phase 2 실 데이터 검증 + 살아있는 코어 ✅ (연구 → 살아있는 시스템)
+> `scripts/research/{llm_real_distill,sleep_distill_job}.py`, PHASE2_SLEEP_DISTILL 문서.
+- **실 데이터 검증**: 합성 실단어(base 0.176=Qwen 이미 앎=사전지식 복구 의심)를 넘어 **실 Neo4j 그래프**(518c/2241e, 비비·엄마·형)로. **base Qwen 아기연상 거의 모름**(link-MRR 0.089~0.095, chance 4배). LoRA sleep-distill 후 **identity 쌍(Qwen 불가지) 0.081→0.176 평균(Δ+0.094≈2.2배, 3시드 견고, 전체 gain의 4배)** = **아기가 자기 정체성·관계를 가중치로 학습 = 실 데이터 자기학습 첫 실측**. 전체 magnitude modest(데이터 희소=병목).
+- **살아있는 로컬 코어**: `sleep_distill_job.py` — LoRA 어댑터 디스크 **영속**(`models/local_core_adapter/`, gitignore) → 실행마다 이어학습 누적. **run1 0.089→0.123, run2 학습전 0.123(=run1 학습후 정확일치=기억유지)→0.152.** MRR 야간마다 성장 = **아기 뇌가 매일 밤 조금씩 자람.** 성장 시계열 `claudedocs/monitoring/local_core_growth.jsonl`.
+- **⇒ 자기학습 체인 end-to-end 검증 완료**(Phase 1 가소성 → Phase 2 코어 → 실 데이터 특이연상 학습 → 영속 누적). 유일 병목=데이터 밀도. **다음: (A) Quest 다양장면 or (B) sleep_distill_job 라이브 트리거 연결.**
+
 ### Gap#6 brain health 모니터링 상시화 ✅
 > `scripts/monitoring/brain_health_monitor.py` + `README.md`. RESEARCH_SYNTHESIS §3 gap#6.
 - **4 지표 시계열**(`claudedocs/monitoring/brain_health.jsonl`, append): ① prediction(link-pred lift/MRR) ② collapse(degree Gini·가중치 엔트로피·고립률·최대허브) ③ forgetting(고정 probe 30 recall@10 vs baseline) ④ plasticity(synthetic 연상 주입→회상→rollback, 비파괴). 임계 breach 시 🔴 alert.

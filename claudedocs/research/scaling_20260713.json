@@ -1,0 +1,204 @@
+{
+  "timestamp": "2026-07-12T19:20:21.776334+00:00",
+  "calibration_note": "synth_world ~13% mean-dev vs real 45-frame stats",
+  "grid": [
+    [
+      256,
+      8,
+      2.0
+    ],
+    [
+      1024,
+      8,
+      2.0
+    ],
+    [
+      4096,
+      8,
+      2.0
+    ],
+    [
+      2048,
+      1,
+      2.0
+    ],
+    [
+      2048,
+      4,
+      2.0
+    ],
+    [
+      2048,
+      16,
+      2.0
+    ],
+    [
+      2048,
+      32,
+      2.0
+    ]
+  ],
+  "cells": [
+    {
+      "N": 256,
+      "n_scenes": 8,
+      "motion": 2.0,
+      "vocab": 128,
+      "objs_per_frame": 5.99,
+      "singleton_frac": 0.25,
+      "edgebank_mrr": 0.48,
+      "additive_mrr": 0.5341,
+      "rw_mrr": 0.5706,
+      "head_mrr": 0.5487,
+      "rw_vs_additive": 0.0365,
+      "rw_vs_additive_pct": 6.8,
+      "head_vs_graph": -0.0219,
+      "embodied": {
+        "graph_recall@10_new": 0.334,
+        "popularity_recall@10_new": 0.304,
+        "graph_minus_pop": 0.029,
+        "graph_hi_motion": 0.379,
+        "graph_lo_motion": 0.288,
+        "n": 210
+      }
+    },
+    {
+      "N": 1024,
+      "n_scenes": 8,
+      "motion": 2.0,
+      "vocab": 395,
+      "objs_per_frame": 6.12,
+      "singleton_frac": 0.4,
+      "edgebank_mrr": 0.4976,
+      "additive_mrr": 0.5556,
+      "rw_mrr": 0.5858,
+      "head_mrr": 0.5371,
+      "rw_vs_additive": 0.0302,
+      "rw_vs_additive_pct": 5.4,
+      "head_vs_graph": -0.0487,
+      "embodied": {
+        "graph_recall@10_new": 0.272,
+        "popularity_recall@10_new": 0.224,
+        "graph_minus_pop": 0.048,
+        "graph_hi_motion": 0.282,
+        "graph_lo_motion": 0.262,
+        "n": 926
+      }
+    },
+    {
+      "N": 4096,
+      "n_scenes": 8,
+      "motion": 2.0,
+      "vocab": 1369,
+      "objs_per_frame": 6.15,
+      "singleton_frac": 0.47,
+      "edgebank_mrr": 0.4912,
+      "additive_mrr": 0.538,
+      "rw_mrr": 0.5609,
+      "head_mrr": 0.5218,
+      "rw_vs_additive": 0.0229,
+      "rw_vs_additive_pct": 4.3,
+      "head_vs_graph": -0.0391,
+      "embodied": {
+        "graph_recall@10_new": 0.226,
+        "popularity_recall@10_new": 0.196,
+        "graph_minus_pop": 0.031,
+        "graph_hi_motion": 0.218,
+        "graph_lo_motion": 0.235,
+        "n": 3792
+      }
+    },
+    {
+      "N": 2048,
+      "n_scenes": 1,
+      "motion": 2.0,
+      "vocab": 589,
+      "objs_per_frame": 6.05,
+      "singleton_frac": 0.47,
+      "edgebank_mrr": 0.6205,
+      "additive_mrr": 0.6473,
+      "rw_mrr": 0.644,
+      "head_mrr": 0.5712,
+      "rw_vs_additive": -0.0033,
+      "rw_vs_additive_pct": -0.5,
+      "head_vs_graph": -0.0761,
+      "embodied": {
+        "graph_recall@10_new": 0.755,
+        "popularity_recall@10_new": 0.751,
+        "graph_minus_pop": 0.004,
+        "graph_hi_motion": 0.783,
+        "graph_lo_motion": 0.728,
+        "n": 1887
+      }
+    },
+    {
+      "N": 2048,
+      "n_scenes": 4,
+      "motion": 2.0,
+      "vocab": 660,
+      "objs_per_frame": 6.13,
+      "singleton_frac": 0.43,
+      "edgebank_mrr": 0.5463,
+      "additive_mrr": 0.5837,
+      "rw_mrr": 0.6054,
+      "head_mrr": 0.5462,
+      "rw_vs_additive": 0.0217,
+      "rw_vs_additive_pct": 3.7,
+      "head_vs_graph": -0.0592,
+      "embodied": {
+        "graph_recall@10_new": 0.352,
+        "popularity_recall@10_new": 0.297,
+        "graph_minus_pop": 0.055,
+        "graph_hi_motion": 0.334,
+        "graph_lo_motion": 0.37,
+        "n": 1895
+      }
+    },
+    {
+      "N": 2048,
+      "n_scenes": 16,
+      "motion": 2.0,
+      "vocab": 866,
+      "objs_per_frame": 6.06,
+      "singleton_frac": 0.42,
+      "edgebank_mrr": 0.4667,
+      "additive_mrr": 0.5089,
+      "rw_mrr": 0.5326,
+      "head_mrr": 0.5126,
+      "rw_vs_additive": 0.0237,
+      "rw_vs_additive_pct": 4.7,
+      "head_vs_graph": -0.02,
+      "embodied": {
+        "graph_recall@10_new": 0.224,
+        "popularity_recall@10_new": 0.208,
+        "graph_minus_pop": 0.016,
+        "graph_hi_motion": 0.226,
+        "graph_lo_motion": 0.223,
+        "n": 1905
+      }
+    },
+    {
+      "N": 2048,
+      "n_scenes": 32,
+      "motion": 2.0,
+      "vocab": 969,
+      "objs_per_frame": 6.09,
+      "singleton_frac": 0.35,
+      "edgebank_mrr": 0.5232,
+      "additive_mrr": 0.5065,
+      "rw_mrr": 0.5545,
+      "head_mrr": 0.526,
+      "rw_vs_additive": 0.048,
+      "rw_vs_additive_pct": 9.5,
+      "head_vs_graph": -0.0285,
+      "embodied": {
+        "graph_recall@10_new": 0.233,
+        "popularity_recall@10_new": 0.22,
+        "graph_minus_pop": 0.013,
+        "graph_hi_motion": 0.213,
+        "graph_lo_motion": 0.253,
+        "n": 1838
+      }
+    }
+  ]
+}

@@ -46,9 +46,14 @@ payload.depth_bins = ComputeDepthHistogram();  // float[]{near,mid,far}, 합=1
 (pose delta)** 이 있어야 "왼쪽으로 돌리면 X가 보인다"는 진짜 감각운동 예측이 성립한다. 즉
 pose/depth 없이는 embodied 자기학습을 **측정조차 할 수 없다.**
 
-## 데이터 수집 요청 (사용자 액션)
-- 다양한 장면(방/책상/야외/사람)에서 **머리를 움직이며** N개 세션 스트리밍 → 프레임 스트림을
-  orders-of-magnitude 확장. 정적 한 장면 반복이 아니라 **장면 다양성 + 움직임**이 핵심
-  (popularity가 천장이 되지 않도록).
-- 수집 후: `python scripts/baseline/embodied_prediction.py` 재측정 → graph_spread 가 popularity를
-  넘고 pose-조건부 예측이 성립하는지 확인 = embodied 자기학습 신호.
+## 데이터 수집 요청 (사용자 액션) — **다양성 최우선**
+> 근거: 합성 스케일링 연구(`claudedocs/research/SCALING_STUDY_2026-07-13.md`)가 정량화 —
+> 자기학습 신호(RW 음성증거의 빈도 대비 우위)를 결정적으로 만드는 건 **프레임 수(밀도)가 아니라
+> 서로 다른 장면 수(다양성)**. 우위: 단일장면 −0.5% → 4장면 +3.7% → 16장면 +4.7% → 32장면 **+9.5%**.
+> 밀도만 늘리면(같은 장면 더 오래) 우위는 오히려 완만히 감소.
+
+- **최우선 = 장면 다양성**: 한 데스크 장면 반복 ✗. **방·주방·거실·야외·사람·이동 등 서로 다른 맥락**을
+  많이(수십 장면+) 수집 ✓. 각 장면 안에서 **머리를 움직이며**(pose delta) 촬영.
+- 밀도(장면당 프레임 수)는 2차 — 각 장면 수백 프레임이면 충분, 그보다 **새 장면 추가**가 더 가치.
+- 수집 후: `python scripts/baseline/embodied_prediction.py` 재측정 → graph_spread가 popularity를 넘고
+  pose-조건부 예측이 성립하는지 = embodied 자기학습 신호. (`prequential_experiment.py`로 RW 우위도 재확인.)

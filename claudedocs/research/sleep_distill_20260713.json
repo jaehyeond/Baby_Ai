@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-07-13T02:49:34.448820+00:00",
+  "config": {
+    "N": 12000,
+    "scenes": 15,
+    "cycles": 8,
+    "replay_episodes": 400,
+    "episode_size": 6,
+    "cap": 48,
+    "dim": 48,
+    "max_norm": 4.0
+  },
+  "result": {
+    "N": 12000,
+    "scenes": 15,
+    "n_test": 400,
+    "cycles": [
+      {
+        "cycle": 1,
+        "seen": 595,
+        "graph_mrr": 0.5276,
+        "sleep_core_mrr": 0.4124,
+        "online_core_mrr": 0.2768,
+        "forgetting_early_mrr": 0.3834,
+        "core_norm": 2.442
+      },
+      {
+        "cycle": 2,
+        "seen": 1000,
+        "graph_mrr": 0.6268,
+        "sleep_core_mrr": 0.4942,
+        "online_core_mrr": 0.4093,
+        "forgetting_early_mrr": 0.4511,
+        "core_norm": 2.504
+      },
+      {
+        "cycle": 3,
+        "seen": 1365,
+        "graph_mrr": 0.6724,
+        "sleep_core_mrr": 0.5749,
+        "online_core_mrr": 0.552,
+        "forgetting_early_mrr": 0.5662,
+        "core_norm": 2.487
+      },
+      {
+        "cycle": 4,
+        "seen": 1795,
+        "graph_mrr": 0.714,
+        "sleep_core_mrr": 0.6406,
+        "online_core_mrr": 0.5689,
+        "forgetting_early_mrr": 0.623,
+        "core_norm": 2.425
+      },
+      {
+        "cycle": 5,
+        "seen": 2179,
+        "graph_mrr": 0.7271,
+        "sleep_core_mrr": 0.623,
+        "online_core_mrr": 0.5584,
+        "forgetting_early_mrr": 0.6089,
+        "core_norm": 2.395
+      },
+      {
+        "cycle": 6,
+        "seen": 2587,
+        "graph_mrr": 0.7619,
+        "sleep_core_mrr": 0.6424,
+        "online_core_mrr": 0.6651,
+        "forgetting_early_mrr": 0.5988,
+        "core_norm": 2.372
+      },
+      {
+        "cycle": 7,
+        "seen": 2954,
+        "graph_mrr": 0.7701,
+        "sleep_core_mrr": 0.6954,
+        "online_core_mrr": 0.6545,
+        "forgetting_early_mrr": 0.6597,
+        "core_norm": 2.361
+      },
+      {
+        "cycle": 8,
+        "seen": 3358,
+        "graph_mrr": 0.8084,
+        "sleep_core_mrr": 0.71,
+        "online_core_mrr": 0.6358,
+        "forgetting_early_mrr": 0.7008,
+        "core_norm": 2.339
+      }
+    ]
+  },
+  "summary": {
+    "sleep_core_first": 0.4124,
+    "sleep_core_last": 0.71,
+    "sleep_core_slope": 0.1372,
+    "graph_last": 0.8084,
+    "online_last": 0.6358,
+    "sleep_beats_graph_last": false,
+    "sleep_vs_online_gap": -0.0742,
+    "forgetting_first": 0.3834,
+    "forgetting_last": 0.7008,
+    "core_norm_last": 2.339
+  }
+}

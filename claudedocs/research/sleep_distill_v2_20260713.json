@@ -1,0 +1,663 @@
+{
+  "timestamp": "2026-07-13T03:03:11.556095+00:00",
+  "config": {
+    "N": 6000,
+    "scenes_per_task": 10,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "cycles_per_task": 4,
+    "replay_ep": 400,
+    "dim": 48,
+    "max_norm": 4.0,
+    "k_neg": 60
+  },
+  "aggregate": {
+    "online": {
+      "A_peak": 0.513,
+      "A_final": 0.178,
+      "A_delta": -0.3353,
+      "A_delta_std": 0.0296
+    },
+    "sleep_rep": {
+      "A_peak": 0.562,
+      "A_final": 0.608,
+      "A_delta": 0.0461,
+      "A_delta_std": 0.0437
+    },
+    "sleep_off": {
+      "A_peak": 0.071,
+      "A_final": 0.064,
+      "A_delta": -0.0074,
+      "A_delta_std": 0.0085
+    }
+  },
+  "anti_forgetting": true,
+  "sleep_rep_stable_rank": 1.89,
+  "runs": [
+    {
+      "seed": 42,
+      "log": [
+        {
+          "cycle": 1,
+          "task": "A",
+          "seen": 476,
+          "online_A": 0.2798,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.3205,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0759,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.95
+        },
+        {
+          "cycle": 2,
+          "task": "A",
+          "seen": 858,
+          "online_A": 0.3484,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.511,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.081,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.94,
+          "online_srank": 1.9
+        },
+        {
+          "cycle": 3,
+          "task": "A",
+          "seen": 1203,
+          "online_A": 0.4892,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.523,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0764,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.92,
+          "online_srank": 1.92
+        },
+        {
+          "cycle": 4,
+          "task": "A",
+          "seen": 1551,
+          "online_A": 0.5386,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5786,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0761,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.89
+        },
+        {
+          "cycle": 5,
+          "task": "B",
+          "seen": 2074,
+          "online_A": 0.3168,
+          "online_B": 0.3349,
+          "sleep_rep_A": 0.5733,
+          "sleep_rep_B": 0.3197,
+          "sleep_off_A": 0.0585,
+          "sleep_off_B": 0.0763,
+          "sleep_rep_srank": 1.88,
+          "online_srank": 1.78
+        },
+        {
+          "cycle": 6,
+          "task": "B",
+          "seen": 2459,
+          "online_A": 0.2309,
+          "online_B": 0.4681,
+          "sleep_rep_A": 0.6462,
+          "sleep_rep_B": 0.4652,
+          "sleep_off_A": 0.0668,
+          "sleep_off_B": 0.0803,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.78
+        },
+        {
+          "cycle": 7,
+          "task": "B",
+          "seen": 2819,
+          "online_A": 0.1833,
+          "online_B": 0.5004,
+          "sleep_rep_A": 0.6299,
+          "sleep_rep_B": 0.5014,
+          "sleep_off_A": 0.0635,
+          "sleep_off_B": 0.0656,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.79
+        },
+        {
+          "cycle": 8,
+          "task": "B",
+          "seen": 3177,
+          "online_A": 0.1563,
+          "online_B": 0.6395,
+          "sleep_rep_A": 0.6329,
+          "sleep_rep_B": 0.4882,
+          "sleep_off_A": 0.0635,
+          "sleep_off_B": 0.0817,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.79
+        }
+      ],
+      "online_A": [
+        0.5386,
+        0.1563,
+        -0.3823
+      ],
+      "sleep_rep_A": [
+        0.5786,
+        0.6329,
+        0.0543
+      ],
+      "sleep_off_A": [
+        0.0761,
+        0.0635,
+        -0.0126
+      ]
+    },
+    {
+      "seed": 43,
+      "log": [
+        {
+          "cycle": 1,
+          "task": "A",
+          "seen": 495,
+          "online_A": 0.2983,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.373,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.1429,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.92,
+          "online_srank": 1.9
+        },
+        {
+          "cycle": 2,
+          "task": "A",
+          "seen": 866,
+          "online_A": 0.4305,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5032,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0886,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.97,
+          "online_srank": 1.93
+        },
+        {
+          "cycle": 3,
+          "task": "A",
+          "seen": 1244,
+          "online_A": 0.5032,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5066,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0896,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.96,
+          "online_srank": 1.95
+        },
+        {
+          "cycle": 4,
+          "task": "A",
+          "seen": 1647,
+          "online_A": 0.4525,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.4954,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.073,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.93,
+          "online_srank": 1.93
+        },
+        {
+          "cycle": 5,
+          "task": "B",
+          "seen": 2133,
+          "online_A": 0.2458,
+          "online_B": 0.4852,
+          "sleep_rep_A": 0.5484,
+          "sleep_rep_B": 0.3599,
+          "sleep_off_A": 0.064,
+          "sleep_off_B": 0.0908,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.82
+        },
+        {
+          "cycle": 6,
+          "task": "B",
+          "seen": 2498,
+          "online_A": 0.1837,
+          "online_B": 0.4667,
+          "sleep_rep_A": 0.5159,
+          "sleep_rep_B": 0.3643,
+          "sleep_off_A": 0.0732,
+          "sleep_off_B": 0.0747,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.83
+        },
+        {
+          "cycle": 7,
+          "task": "B",
+          "seen": 2866,
+          "online_A": 0.1471,
+          "online_B": 0.5434,
+          "sleep_rep_A": 0.5998,
+          "sleep_rep_B": 0.4068,
+          "sleep_off_A": 0.0724,
+          "sleep_off_B": 0.0686,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.83
+        },
+        {
+          "cycle": 8,
+          "task": "B",
+          "seen": 3220,
+          "online_A": 0.1264,
+          "online_B": 0.6279,
+          "sleep_rep_A": 0.5992,
+          "sleep_rep_B": 0.4689,
+          "sleep_off_A": 0.0649,
+          "sleep_off_B": 0.0664,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.82
+        }
+      ],
+      "online_A": [
+        0.4525,
+        0.1264,
+        -0.3261
+      ],
+      "sleep_rep_A": [
+        0.4954,
+        0.5992,
+        0.1038
+      ],
+      "sleep_off_A": [
+        0.073,
+        0.0649,
+        -0.0081
+      ]
+    },
+    {
+      "seed": 44,
+      "log": [
+        {
+          "cycle": 1,
+          "task": "A",
+          "seen": 517,
+          "online_A": 0.3715,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.4705,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.1224,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.92,
+          "online_srank": 1.93
+        },
+        {
+          "cycle": 2,
+          "task": "A",
+          "seen": 881,
+          "online_A": 0.4069,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.4468,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0845,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.95,
+          "online_srank": 1.95
+        },
+        {
+          "cycle": 3,
+          "task": "A",
+          "seen": 1240,
+          "online_A": 0.4333,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5329,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0495,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.95,
+          "online_srank": 1.91
+        },
+        {
+          "cycle": 4,
+          "task": "A",
+          "seen": 1637,
+          "online_A": 0.5632,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5825,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0828,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.94,
+          "online_srank": 1.91
+        },
+        {
+          "cycle": 5,
+          "task": "B",
+          "seen": 2122,
+          "online_A": 0.3614,
+          "online_B": 0.4259,
+          "sleep_rep_A": 0.5666,
+          "sleep_rep_B": 0.247,
+          "sleep_off_A": 0.0915,
+          "sleep_off_B": 0.0889,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.81
+        },
+        {
+          "cycle": 6,
+          "task": "B",
+          "seen": 2503,
+          "online_A": 0.3093,
+          "online_B": 0.4933,
+          "sleep_rep_A": 0.5988,
+          "sleep_rep_B": 0.3917,
+          "sleep_off_A": 0.0879,
+          "sleep_off_B": 0.0565,
+          "sleep_rep_srank": 1.91,
+          "online_srank": 1.81
+        },
+        {
+          "cycle": 7,
+          "task": "B",
+          "seen": 2889,
+          "online_A": 0.2611,
+          "online_B": 0.496,
+          "sleep_rep_A": 0.6063,
+          "sleep_rep_B": 0.4623,
+          "sleep_off_A": 0.0758,
+          "sleep_off_B": 0.0683,
+          "sleep_rep_srank": 1.92,
+          "online_srank": 1.8
+        },
+        {
+          "cycle": 8,
+          "task": "B",
+          "seen": 3254,
+          "online_A": 0.2598,
+          "online_B": 0.5366,
+          "sleep_rep_A": 0.5849,
+          "sleep_rep_B": 0.5393,
+          "sleep_off_A": 0.0647,
+          "sleep_off_B": 0.05,
+          "sleep_rep_srank": 1.9,
+          "online_srank": 1.8
+        }
+      ],
+      "online_A": [
+        0.5632,
+        0.2598,
+        -0.3034
+      ],
+      "sleep_rep_A": [
+        0.5825,
+        0.5849,
+        0.0024
+      ],
+      "sleep_off_A": [
+        0.0828,
+        0.0647,
+        -0.0181
+      ]
+    },
+    {
+      "seed": 45,
+      "log": [
+        {
+          "cycle": 1,
+          "task": "A",
+          "seen": 518,
+          "online_A": 0.2765,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.4097,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.064,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.87,
+          "online_srank": 1.9
+        },
+        {
+          "cycle": 2,
+          "task": "A",
+          "seen": 920,
+          "online_A": 0.4247,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.4562,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.043,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.87,
+          "online_srank": 1.88
+        },
+        {
+          "cycle": 3,
+          "task": "A",
+          "seen": 1344,
+          "online_A": 0.4643,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5273,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0686,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.86,
+          "online_srank": 1.88
+        },
+        {
+          "cycle": 4,
+          "task": "A",
+          "seen": 1722,
+          "online_A": 0.5423,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5419,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0663,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.85,
+          "online_srank": 1.87
+        },
+        {
+          "cycle": 5,
+          "task": "B",
+          "seen": 2217,
+          "online_A": 0.2948,
+          "online_B": 0.4301,
+          "sleep_rep_A": 0.6036,
+          "sleep_rep_B": 0.3301,
+          "sleep_off_A": 0.0562,
+          "sleep_off_B": 0.0699,
+          "sleep_rep_srank": 1.85,
+          "online_srank": 1.78
+        },
+        {
+          "cycle": 6,
+          "task": "B",
+          "seen": 2592,
+          "online_A": 0.2384,
+          "online_B": 0.4694,
+          "sleep_rep_A": 0.611,
+          "sleep_rep_B": 0.4213,
+          "sleep_off_A": 0.0717,
+          "sleep_off_B": 0.0732,
+          "sleep_rep_srank": 1.85,
+          "online_srank": 1.78
+        },
+        {
+          "cycle": 7,
+          "task": "B",
+          "seen": 2979,
+          "online_A": 0.2165,
+          "online_B": 0.5643,
+          "sleep_rep_A": 0.5605,
+          "sleep_rep_B": 0.483,
+          "sleep_off_A": 0.0558,
+          "sleep_off_B": 0.0495,
+          "sleep_rep_srank": 1.86,
+          "online_srank": 1.79
+        },
+        {
+          "cycle": 8,
+          "task": "B",
+          "seen": 3335,
+          "online_A": 0.1871,
+          "online_B": 0.5689,
+          "sleep_rep_A": 0.6215,
+          "sleep_rep_B": 0.5757,
+          "sleep_off_A": 0.0606,
+          "sleep_off_B": 0.0644,
+          "sleep_rep_srank": 1.87,
+          "online_srank": 1.8
+        }
+      ],
+      "online_A": [
+        0.5423,
+        0.1871,
+        -0.3552
+      ],
+      "sleep_rep_A": [
+        0.5419,
+        0.6215,
+        0.0796
+      ],
+      "sleep_off_A": [
+        0.0663,
+        0.0606,
+        -0.0057
+      ]
+    },
+    {
+      "seed": 46,
+      "log": [
+        {
+          "cycle": 1,
+          "task": "A",
+          "seen": 470,
+          "online_A": 0.2847,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.368,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.09,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.95,
+          "online_srank": 1.92
+        },
+        {
+          "cycle": 2,
+          "task": "A",
+          "seen": 873,
+          "online_A": 0.4052,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5491,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0858,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.96,
+          "online_srank": 1.96
+        },
+        {
+          "cycle": 3,
+          "task": "A",
+          "seen": 1268,
+          "online_A": 0.3784,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.5121,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0911,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.93,
+          "online_srank": 1.9
+        },
+        {
+          "cycle": 4,
+          "task": "A",
+          "seen": 1609,
+          "online_A": 0.4701,
+          "online_B": 0.0323,
+          "sleep_rep_A": 0.6129,
+          "sleep_rep_B": 0.0323,
+          "sleep_off_A": 0.0583,
+          "sleep_off_B": 0.0323,
+          "sleep_rep_srank": 1.91,
+          "online_srank": 1.92
+        },
+        {
+          "cycle": 5,
+          "task": "B",
+          "seen": 2114,
+          "online_A": 0.2953,
+          "online_B": 0.2679,
+          "sleep_rep_A": 0.5738,
+          "sleep_rep_B": 0.4782,
+          "sleep_off_A": 0.066,
+          "sleep_off_B": 0.0895,
+          "sleep_rep_srank": 1.88,
+          "online_srank": 1.81
+        },
+        {
+          "cycle": 6,
+          "task": "B",
+          "seen": 2472,
+          "online_A": 0.255,
+          "online_B": 0.4022,
+          "sleep_rep_A": 0.6157,
+          "sleep_rep_B": 0.5355,
+          "sleep_off_A": 0.0699,
+          "sleep_off_B": 0.0679,
+          "sleep_rep_srank": 1.87,
+          "online_srank": 1.8
+        },
+        {
+          "cycle": 7,
+          "task": "B",
+          "seen": 2849,
+          "online_A": 0.2005,
+          "online_B": 0.5438,
+          "sleep_rep_A": 0.6159,
+          "sleep_rep_B": 0.6058,
+          "sleep_off_A": 0.0682,
+          "sleep_off_B": 0.0583,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.81
+        },
+        {
+          "cycle": 8,
+          "task": "B",
+          "seen": 3217,
+          "online_A": 0.1606,
+          "online_B": 0.6408,
+          "sleep_rep_A": 0.6032,
+          "sleep_rep_B": 0.6327,
+          "sleep_off_A": 0.0656,
+          "sleep_off_B": 0.064,
+          "sleep_rep_srank": 1.89,
+          "online_srank": 1.81
+        }
+      ],
+      "online_A": [
+        0.4701,
+        0.1606,
+        -0.3095
+      ],
+      "sleep_rep_A": [
+        0.6129,
+        0.6032,
+        -0.0097
+      ],
+      "sleep_off_A": [
+        0.0583,
+        0.0656,
+        0.0073
+      ]
+    }
+  ]
+}
