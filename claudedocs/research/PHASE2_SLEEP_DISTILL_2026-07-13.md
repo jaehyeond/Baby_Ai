@@ -135,3 +135,46 @@ Phase 1 가소성(RW) → Phase 2 코어(스케일서 그래프 역전, 항상�
 연결**(그래프 replay→야간 LoRA, 경험 쌓이며 코어 성장). 연구 프로토타입 → 살아있는 시스템 전환.
 
 산출 추가: `scripts/research/llm_real_distill.py`, `claudedocs/research/llm_real_distill_20260713.json`.
+
+---
+
+# (B) 라이브 트리거 연결 (2026-07-13): 코어가 "밤마다" 자동 성장
+
+> `scripts/research/sleep_distill_job.py` + `neural/baby/api_server.py` `_spawn_local_core_distill()`.
+> 연구 job을 실 시스템에 연결 — 아기가 대화/관찰할 때 그래프가 차고, 코어는 야간 통합으로 자동 성장.
+
+## 설계 (무거운 GPU 학습이라 안전 우선)
+- **하루 1회 게이팅 + 락**: job `--daily-gate` → 오늘 이미 돌았으면 즉시 skip(4.9s, 모델 로드 X),
+  동시실행은 원자적 lock(`models/.distill.lock`)으로 차단, hard-kill 대비 **stale-lock TTL 2h**.
+- **실패 안전**: Neo4j 다운 시 traceback 없이 clean skip(exit 0) + 마커 미기록(=다음에 재시도).
+  성공(그래프 학습)했을 때만 "오늘 완료" 마킹.
+- **consolidate(수면) 훅**: `/api/memory/consolidate`(full) 종료 시 `_spawn_local_core_distill()`가
+  job을 **detached 서브프로세스**로 spawn(비차단·guarded, consolidate에 영향 0). Neo4j 확실히 켜진
+  시점이라 견고. 단 GPU 학습이라 **기본 OFF**.
+
+## 켜는 법 (opt-in)
+```bash
+# 방법 1 — 수면 훅 (권장): 서버 실행 시 env
+LOCAL_CORE_DISTILL=1 python -m neural.baby.api_server --port 8000
+#   → 브레인이 잘 때(consolidate) 하루 1회 코어가 자동 학습·성장. Neo4j 켜져 있어야 함.
+
+# 방법 2 — 야간 스케줄 (서버 무관, Neo4j 켜져 있을 때만 유효)
+schtasks /create /tn "BabyLocalCoreDistill" /sc daily /st 03:00 \
+  /tr "E:\A2A\our-a2a-project\.venv\Scripts\python.exe E:\A2A\our-a2a-project\scripts\research\sleep_distill_job.py --daily-gate --steps 200"
+
+# 수동 1회 (테스트)
+python scripts/research/sleep_distill_job.py --daily-gate --steps 200
+python scripts/research/sleep_distill_job.py --fresh          # 어댑터 초기화
+```
+
+## 검증 (2026-07-13)
+- 누적 성장: run1 0.089→0.123, run2 0.123(=run1 학습후 정확일치=기억유지)→0.152. 어댑터 영속(4.5MB).
+- 게이팅: 같은 날 2회차 즉시 skip(4.9s). Neo4j 다운 시 clean skip(exit 0). 락 finally 해제 + stale TTL.
+- 프로덕션 안전: 훅 기본 OFF, 비차단 Popen, 실패 격리. **adversarial review(wf_42f17ed5)가 enable-path
+  결함 3개 발견→수정**: OOM clean 처리(try/except+VRAM 프리플라이트), retry-storm 방지(`.last_attempt`
+  30분 backoff), 락 무조건 획득(수동 실행 충돌→어댑터 손상 방지). backoff·OOM·락 전부 재테스트 통과.
+
+## 상태 / 남은 것
+- **완료**: 코어 학습·누적·영속·게이팅·훅·실패안전 전부 구현·테스트. **자율 가능분 종료.**
+- **사용자 액션**: (a) 실제로 켜려면 `LOCAL_CORE_DISTILL=1` + Neo4j 상시 가동, (b) 데이터 밀도 병목은
+  Quest 다양장면 수집으로만 풀림(하드웨어). (c) collapse(effective rank) 장기 감시 권장.

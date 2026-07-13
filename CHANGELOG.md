@@ -47,7 +47,14 @@
 > `scripts/research/{llm_real_distill,sleep_distill_job}.py`, PHASE2_SLEEP_DISTILL 문서.
 - **실 데이터 검증**: 합성 실단어(base 0.176=Qwen 이미 앎=사전지식 복구 의심)를 넘어 **실 Neo4j 그래프**(518c/2241e, 비비·엄마·형)로. **base Qwen 아기연상 거의 모름**(link-MRR 0.089~0.095, chance 4배). LoRA sleep-distill 후 **identity 쌍(Qwen 불가지) 0.081→0.176 평균(Δ+0.094≈2.2배, 3시드 견고, 전체 gain의 4배)** = **아기가 자기 정체성·관계를 가중치로 학습 = 실 데이터 자기학습 첫 실측**. 전체 magnitude modest(데이터 희소=병목).
 - **살아있는 로컬 코어**: `sleep_distill_job.py` — LoRA 어댑터 디스크 **영속**(`models/local_core_adapter/`, gitignore) → 실행마다 이어학습 누적. **run1 0.089→0.123, run2 학습전 0.123(=run1 학습후 정확일치=기억유지)→0.152.** MRR 야간마다 성장 = **아기 뇌가 매일 밤 조금씩 자람.** 성장 시계열 `claudedocs/monitoring/local_core_growth.jsonl`.
-- **⇒ 자기학습 체인 end-to-end 검증 완료**(Phase 1 가소성 → Phase 2 코어 → 실 데이터 특이연상 학습 → 영속 누적). 유일 병목=데이터 밀도. **다음: (A) Quest 다양장면 or (B) sleep_distill_job 라이브 트리거 연결.**
+- **⇒ 자기학습 체인 end-to-end 검증 완료**(Phase 1 가소성 → Phase 2 코어 → 실 데이터 특이연상 학습 → 영속 누적). 유일 병목=데이터 밀도.
+
+### Phase 2 (B) 라이브 트리거 연결 ✅ (코어가 밤마다 자동 성장)
+> `scripts/research/sleep_distill_job.py` (`--daily-gate`) + `neural/baby/api_server.py` `_spawn_local_core_distill()`. PHASE2_SLEEP_DISTILL 문서 "(B)".
+- **consolidate(수면) 훅**: `/api/memory/consolidate`(full) 종료 시 job을 detached 서브프로세스로 spawn = 브레인이 잘 때 코어 자동 통합·성장.
+- **안전(무거운 GPU 학습이라 우선)**: **하루 1회 게이팅**(마커 파일)+**원자적 락**(O_EXCL)+**stale-lock TTL 2h**(hard-kill 대비 영구잔존 방지). Neo4j 다운 시 **traceback 없이 clean skip(exit 0)+마커 미기록**(재시도). 성공 시만 "오늘 완료" 마킹. 훅 **기본 OFF**(env `LOCAL_CORE_DISTILL=1` opt-in). 비차단 Popen·실패 격리(consolidate 영향 0).
+- **adversarial review**(workflow wf_42f17ed5, 4 dim). default-OFF 안전 확정 + **enable-path 결함 3개 발견→수정**: (1) OOM 미처리(traceback DEVNULL로 숨음)→GPU 학습 try/except+VRAM 프리플라이트로 clean skip. (2) 실패 시 retry-storm(마커 미기록→매 consolidate 재시도)→`.last_attempt` + 30분 backoff. (3) 락이 `--daily-gate`만 보호(수동 실행 충돌→어댑터 손상)→**락 무조건 획득**+release 가드. **테스트 통과**: 같은날 즉시 skip(4.9s)·Neo4j다운 clean exit0·backoff skip(9s<1800)·누적성장 0.089→0.123→0.152·락 정상해제.
+- **켜기**: `LOCAL_CORE_DISTILL=1 python -m neural.baby.api_server` (+Neo4j 상시) or `schtasks` 야간. **⇒ 살아있는 로컬 코어 라이브화 완료. 유일 병목=데이터 밀도(Quest 다양장면 수집, 하드웨어).**
 
 ### Gap#6 brain health 모니터링 상시화 ✅
 > `scripts/monitoring/brain_health_monitor.py` + `README.md`. RESEARCH_SYNTHESIS §3 gap#6.

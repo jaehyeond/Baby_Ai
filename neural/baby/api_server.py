@@ -625,6 +625,27 @@ def _spawn_health_monitor() -> None:
         logger.warning(f"health monitor spawn skipped: {e}")
 
 
+def _spawn_local_core_distill() -> None:
+    """Phase 2 살아있는 로컬 코어(sleep_distill_job)를 수면 훅서 detached 실행.
+    **기본 OFF** — env `LOCAL_CORE_DISTILL=1` 일 때만(무거운 GPU 학습이라 opt-in).
+    job 자체가 `--daily-gate`로 하루 1회+락 → 매 consolidate마다 안 돎, 실제 학습은 밤 1회.
+    비차단·guarded (consolidate에 영향 0). PHASE2_SLEEP_DISTILL 문서 참조."""
+    try:
+        import os as _os
+        if _os.getenv("LOCAL_CORE_DISTILL", "0") != "1":
+            return
+        import subprocess, sys as _sys
+        root = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+        script = _os.path.join(root, "scripts", "research", "sleep_distill_job.py")
+        if _os.path.exists(script):
+            subprocess.Popen(
+                [_sys.executable, script, "--daily-gate", "--steps", "200"], cwd=root,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+    except Exception as e:
+        logger.warning(f"local core distill spawn skipped: {e}")
+
+
 @app.post("/api/memory/consolidate")
 async def consolidate_memory(request: ConsolidateRequest):
     """
@@ -669,6 +690,8 @@ async def consolidate_memory(request: ConsolidateRequest):
             # Gap#6: 수면(consolidate) 마다 brain health 스냅샷을 백그라운드로 기록 (상시화).
             # Neo4j 가 확실히 켜져있는 시점 + 생물학적으로 적절(수면 중 모니터링). 비차단·guarded.
             _spawn_health_monitor()
+            # Phase 2: 살아있는 로컬 코어 야간 통합 (env LOCAL_CORE_DISTILL=1 opt-in, 하루1회 게이팅).
+            _spawn_local_core_distill()
 
         return {"status": "ok", "mode": request.mode, **results}
     except Exception as e:

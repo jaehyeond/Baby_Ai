@@ -54,61 +54,147 @@ def run_count():
     return sum(1 for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip())
 
 
+# 마커/락은 models/ 에 (CKPT rmtree(--fresh)에 안 지워지게). adversarial review wf_42f17ed5 반영.
+MDIR = ROOT / "models"
+MARKER = MDIR / ".last_run_date"     # 성공 완료일 (하루 1회)
+ATTEMPT = MDIR / ".last_attempt"     # 마지막 시도 시각 (실패 후 retry-storm 방지 backoff)
+LOCK = MDIR / ".distill.lock"
+STALE_SEC = 2 * 3600                 # hard-kill 잔존 락 stale 판정
+BACKOFF_SEC = 30 * 60               # 시도 실패 후 재시도 최소 간격 (storm 방지)
+
+
+def should_skip_daily():
+    """--daily-gate: 오늘 이미 성공 or 최근 시도(backoff) 있으면 skip 사유 반환, 아니면 None."""
+    today = datetime.now().strftime("%Y-%m-%d")
+    if MARKER.exists() and MARKER.read_text(encoding="utf-8").strip() == today:
+        return f"오늘({today}) 이미 완료"
+    if ATTEMPT.exists():
+        try:
+            age = datetime.now().timestamp() - ATTEMPT.stat().st_mtime
+            if age < BACKOFF_SEC:
+                return f"최근 시도({int(age)}s<{BACKOFF_SEC}) backoff"
+        except Exception:
+            pass
+    return None
+
+
+def acquire_lock():
+    """항상(수동/훅 무관) GPU 학습 동시실행 차단. stale TTL 자가치유. fd or None."""
+    MDIR.mkdir(parents=True, exist_ok=True)
+    if LOCK.exists():
+        try:
+            if datetime.now().timestamp() - LOCK.stat().st_mtime > STALE_SEC:
+                print(f"[lock] stale 락 제거"); LOCK.unlink()
+        except Exception:
+            pass
+    try:
+        return os.open(str(LOCK), os.O_CREAT | os.O_EXCL | os.O_WRONLY)  # 원자적
+    except FileExistsError:
+        return None
+
+
+def release_lock(fd):
+    if fd is None:                       # 우리가 안 잡았으면 남의 락 건드리지 않음
+        return
+    try:
+        os.close(fd)
+        if LOCK.exists():
+            LOCK.unlink()
+    except Exception:
+        pass
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--steps", type=int, default=200)
     ap.add_argument("--fresh", action="store_true")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--daily-gate", action="store_true", help="하루 1회+backoff (라이브 훅용)")
     args = ap.parse_args()
+    # 1) daily-gate: 오늘 완료/최근 시도면 모델 로드 전에 즉시 skip
+    if args.daily_gate:
+        reason = should_skip_daily()
+        if reason:
+            print(f"[gate] {reason} → skip"); return
+    # 2) 락은 항상 획득 (수동 실행도 훅 실행과 GPU 충돌 방지)
+    lock_fd = acquire_lock()
+    if lock_fd is None:
+        print("[lock] 다른 distill 실행 중 → skip"); return
+    try:
+        MDIR.mkdir(parents=True, exist_ok=True)
+        ATTEMPT.write_text(datetime.now().isoformat(), encoding="utf-8")   # 시도 기록(backoff)
+        ok = _main_run(args)
+        if args.daily_gate and ok:       # 성공(학습 완료)했을 때만 오늘 완료 마킹
+            MARKER.write_text(datetime.now().strftime("%Y-%m-%d"), encoding="utf-8")
+    finally:
+        release_lock(lock_fd)
+
+
+def _main_run(args) -> bool:
     if args.fresh and CKPT.exists():
         shutil.rmtree(CKPT)
+
+    # Neo4j 그래프 먼저 (없으면 학습할 게 없음). 다운 시 traceback 없이 clean skip.
+    try:
+        edges, adj, cat = fetch_graph()
+    except Exception as e:
+        print(f"[distill] Neo4j 연결 실패 → skip (야간 학습엔 Neo4j 켜져 있어야 함): "
+              f"{type(e).__name__}")
+        return False
+    if not edges:
+        print("[distill] 그래프에 엣지 없음 → skip"); return False
+
+    # VRAM 프리플라이트: 여유 부족하면 OOM 전에 clean defer (retriable; backoff가 storm 방지)
+    try:
+        if DEV == "cuda":
+            free, _tot = torch.cuda.mem_get_info()
+            if free < 2.5e9:
+                print(f"[distill] VRAM 여유 {free/1e9:.1f}GB<2.5 → 이번 defer"); return False
+    except Exception:
+        pass
 
     rng = random.Random(args.seed)
     tok = AutoTokenizer.from_pretrained(MODEL)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-
-    edges, adj, cat = fetch_graph()
     all_nodes = sorted(adj.keys())
-    ev_rng = random.Random(1)
-    test = edges[:250]
-    test = [(a, b, w) for (a, b, w) in test if a in adj and b in adj]
+    test = [(a, b, w) for (a, b, w) in edges[:250] if a in adj and b in adj]
 
-    model, resumed = load_core(fresh=args.fresh)
-    run_i = run_count() + 1
-    print(f"=== SLEEP-DISTILL JOB (살아있는 로컬 코어) — run #{run_i} ===")
-    print(f"  코어: {'✅ 어댑터 이어받음(누적)' if resumed else '🆕 fresh LoRA'} | "
-          f"그래프 {len(all_nodes)} concept / {len(edges)} edge")
-
-    before = eval_pairs(model, tok, test, all_nodes, random.Random(1))
-    mrr_before = mrr(before)
-    id_before = mrr([p for p in before if p["identity"]])
-    print(f"  학습 전 link-MRR {mrr_before} (identity {id_before})  ← 직전 코어 상태")
-
-    eps = episodes_from_graph(adj, [n for n in adj if adj[n]], 400, rng)
-    losses = distill(model, tok, eps, args.steps)
-
-    after = eval_pairs(model, tok, test, all_nodes, random.Random(1))
-    mrr_after = mrr(after)
-    id_after = mrr([p for p in after if p["identity"]])
-    print(f"  학습 후 link-MRR {mrr_after} (identity {id_after})  Δ{round(mrr_after-mrr_before,4):+}")
-
-    model.save_pretrained(str(CKPT))
-    print(f"  💾 어댑터 저장 → {CKPT.relative_to(ROOT)}")
-
-    row = {"run": run_i, "timestamp": datetime.now(timezone.utc).isoformat(),
-           "resumed": resumed, "n_edges": len(edges),
-           "mrr_before": mrr_before, "mrr_after": mrr_after,
-           "identity_before": id_before, "identity_after": id_after,
-           "loss_first": round(losses[0], 3), "loss_last": round(losses[-1], 3),
-           "steps": args.steps}
-    with LOG.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(row, ensure_ascii=False) + "\n")
-    if run_i >= 2:
-        prev = [json.loads(l) for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip()][-2]
-        print(f"\n  ♻️ 영속 확인: run#{run_i} 학습전 MRR {mrr_before} vs run#{run_i-1} 학습후 {prev['mrr_after']} "
-              f"→ {'✅ 기억 유지(코어 누적)' if mrr_before >= prev['mrr_after']*0.9 else '⚠️ 유지 약함'}")
-    print(f"\n[log] {LOG.relative_to(ROOT)} (누적 {run_i} runs)")
+    try:   # GPU 학습: OOM/CUDA 오류도 clean skip (Neo4j 경로와 동형; DEVNULL로 traceback 숨는 것 방지)
+        model, resumed = load_core(fresh=args.fresh)
+        run_i = run_count() + 1
+        print(f"=== SLEEP-DISTILL JOB (살아있는 로컬 코어) — run #{run_i} ===")
+        print(f"  코어: {'✅ 어댑터 이어받음(누적)' if resumed else '🆕 fresh LoRA'} | "
+              f"그래프 {len(all_nodes)} concept / {len(edges)} edge")
+        before = eval_pairs(model, tok, test, all_nodes, random.Random(1))
+        mrr_before = mrr(before); id_before = mrr([p for p in before if p["identity"]])
+        print(f"  학습 전 link-MRR {mrr_before} (identity {id_before})  ← 직전 코어 상태")
+        eps = episodes_from_graph(adj, [n for n in adj if adj[n]], 400, rng)
+        losses = distill(model, tok, eps, args.steps)
+        after = eval_pairs(model, tok, test, all_nodes, random.Random(1))
+        mrr_after = mrr(after); id_after = mrr([p for p in after if p["identity"]])
+        print(f"  학습 후 link-MRR {mrr_after} (identity {id_after})  Δ{round(mrr_after-mrr_before,4):+}")
+        model.save_pretrained(str(CKPT))
+        print(f"  💾 어댑터 저장 → {CKPT.relative_to(ROOT)}")
+        row = {"run": run_i, "timestamp": datetime.now(timezone.utc).isoformat(),
+               "resumed": resumed, "n_edges": len(edges),
+               "mrr_before": mrr_before, "mrr_after": mrr_after,
+               "identity_before": id_before, "identity_after": id_after,
+               "loss_first": round(losses[0], 3), "loss_last": round(losses[-1], 3),
+               "steps": args.steps}
+        with LOG.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        if run_i >= 2:
+            prev = [json.loads(l) for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip()][-2]
+            print(f"\n  ♻️ 영속 확인: run#{run_i} 학습전 MRR {mrr_before} vs run#{run_i-1} 학습후 "
+                  f"{prev['mrr_after']} → {'✅ 기억 유지(코어 누적)' if mrr_before >= prev['mrr_after']*0.9 else '⚠️ 유지 약함'}")
+        print(f"\n[log] {LOG.relative_to(ROOT)} (누적 {run_i} runs)")
+        return True
+    except torch.cuda.OutOfMemoryError:
+        torch.cuda.empty_cache()
+        print("[distill] CUDA OOM → skip (GPU 여유 생기면 backoff 후 재시도)"); return False
+    except Exception as e:
+        print(f"[distill] 학습 오류 → skip: {type(e).__name__}: {e}"); return False
 
 
 if __name__ == "__main__":
