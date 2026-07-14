@@ -8,8 +8,8 @@
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: Phase 3 [B] 운영 검증** — 합성 learning-progress 규칙과 endpoint/Neo4j 라이브 배선 완료. 다음은 실제 반복 대화에서 `/api/curiosity` 및 progress 신호 빈도·품질 관찰.
-> **이번 세션 완료(검증)**: turn 전 그래프 예측→turn 후 실제 Concept 비교 · concept/region error EMA · learning-progress gate→통합 우선순위/CuriosityLog 연결. `conversation_handler.py` v30 미변경, 7 tests passed, rollback synthetic Neo4j 검증 완료. 상세 `CHANGELOG.md` 최상단.
+> **현재 진입점: Phase 3 [B-3] 운영 표본 확대** — [B-2]에서 endpoint/DB 정확일치 cue 정규화 완료. `비비와 형의 관계...` 실제 1턴 저장 cue가 `비비,형,관계,말해줘`로 개선되고 `형의`는 cue에서 제외됨. 다음은 **다양한 관계/사물 문장으로 gate 빈도와 질문 품질 관찰**이며, 그 전 threshold 조정 금지.
+> **이번 세션 완료(검증)**: `build_curiosity_cue_terms()` 추가, explicit 한 글자 허용/substring fallback 2글자 제한, cue/이웃 쿼리 분리로 고차수 cue 독점 해결. 관련 21 tests+py_compile+라이브 Neo4j snapshot+실제 Gemini 1턴 통과. `conversation_handler.py` blob `054d974…` 무변경. Redis v4/SSE도 정상. 상세 `CHANGELOG.md` 최상단.
 
 ---
 

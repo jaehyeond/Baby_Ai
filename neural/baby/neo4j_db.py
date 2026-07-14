@@ -1598,10 +1598,11 @@ class BrainDatabase:
     ) -> Optional[dict]:
         """Snapshot graph predictions before a conversation turn is learned.
 
-        Concept names already present in the message are cues.  Their strongest
-        graph neighbours are the prequential prediction.  The snapshot is kept
-        in memory by the endpoint and scored only after the handler has linked
-        the turn's actually observed concepts.
+        Exact names supplied by the endpoint are cues.  One-character names are
+        allowed only in that explicit list; the legacy message-substring fallback
+        keeps its two-character floor.  Their strongest graph neighbours are the
+        prequential prediction.  The snapshot is kept in memory by the endpoint
+        and scored only after the handler has linked the turn's observed concepts.
         """
         normalized = (message or "").strip().casefold()
         if not normalized:
@@ -1614,61 +1615,58 @@ class BrainDatabase:
 
         cue_limit = max(1, min(int(cue_limit), 10))
         prediction_limit = max(1, min(int(prediction_limit), 20))
-        row_limit = cue_limit * prediction_limit
         async with self.driver.session(database=_DB_NAME) as s:
-            result = await s.run(
+            cue_result = await s.run(
                 "MATCH (cue:Concept) "
                 "WHERE cue.name IS NOT NULL "
-                "  AND size(trim(toString(cue.name))) >= 2 "
                 "  AND ((size($cue_terms) > 0 "
                 "        AND toLower(trim(toString(cue.name))) IN $cue_terms) "
                 "    OR (size($cue_terms) = 0 "
+                "        AND size(trim(toString(cue.name))) >= 2 "
                 "        AND $message CONTAINS toLower(trim(toString(cue.name))))) "
-                "WITH cue ORDER BY size(toString(cue.name)) DESC, "
+                "WITH cue ORDER BY "
+                "  CASE WHEN size($cue_terms) > 0 "
+                "    THEN coalesce(cue.strength, 0.0) ELSE 0.0 END DESC, "
+                "  size(toString(cue.name)) DESC, "
                 "  coalesce(cue.strength, 0.0) DESC LIMIT $cue_limit "
-                "WITH collect(cue) AS cues UNWIND cues AS cue "
-                "OPTIONAL MATCH (cue)-[rel:RELATES_TO]-(candidate:Concept) "
-                "WHERE candidate IS NULL OR NOT candidate IN cues "
-                "RETURN cue.id AS cue_id, cue.name AS cue_name, "
-                "  candidate.id AS candidate_id, candidate.name AS candidate_name, "
-                "  coalesce(rel.hebb_strength, rel.strength, 0.0) AS score "
-                "ORDER BY score DESC LIMIT $row_limit",
+                "RETURN cue.id AS cue_id, cue.name AS cue_name",
                 message=normalized,
                 cue_terms=normalized_terms,
                 cue_limit=cue_limit,
-                row_limit=row_limit,
             )
-            records = await result.fetch(row_limit)
+            cue_records = await cue_result.fetch(cue_limit)
 
-        cues: list[dict] = []
-        cue_seen: set[str] = set()
-        predictions_by_id: dict[str, dict] = {}
-        for record in records:
-            cue_id = record["cue_id"]
-            if cue_id and cue_id not in cue_seen:
-                cue_seen.add(cue_id)
-                cues.append({"id": cue_id, "name": record["cue_name"]})
+            cues = [
+                {"id": record["cue_id"], "name": record["cue_name"]}
+                for record in cue_records
+                if record["cue_id"]
+            ]
+            if not cues:
+                return None
 
-            candidate_id = record["candidate_id"]
-            if not candidate_id or candidate_id in cue_seen:
-                continue
-            score = float(record["score"] or 0.0)
-            previous = predictions_by_id.get(candidate_id)
-            if previous is None or score > previous["score"]:
-                predictions_by_id[candidate_id] = {
-                    "id": candidate_id,
-                    "name": record["candidate_name"],
-                    "score": score,
-                }
+            cue_ids = [item["id"] for item in cues]
+            prediction_result = await s.run(
+                "MATCH (cue:Concept)-[rel:RELATES_TO]-(candidate:Concept) "
+                "WHERE cue.id IN $cue_ids AND NOT candidate.id IN $cue_ids "
+                "WITH candidate, "
+                "  max(coalesce(rel.hebb_strength, rel.strength, 0.0)) AS score "
+                "RETURN candidate.id AS candidate_id, "
+                "  candidate.name AS candidate_name, score "
+                "ORDER BY score DESC LIMIT $prediction_limit",
+                cue_ids=cue_ids,
+                prediction_limit=prediction_limit,
+            )
+            prediction_records = await prediction_result.fetch(prediction_limit)
 
-        if not cues:
-            return None
-
-        predictions = sorted(
-            predictions_by_id.values(),
-            key=lambda item: item["score"],
-            reverse=True,
-        )[:prediction_limit]
+        predictions = [
+            {
+                "id": record["candidate_id"],
+                "name": record["candidate_name"],
+                "score": float(record["score"] or 0.0),
+            }
+            for record in prediction_records
+            if record["candidate_id"]
+        ]
         return {
             "cue_concepts": cues,
             "predicted_concepts": predictions,

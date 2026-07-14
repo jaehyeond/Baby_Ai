@@ -5,7 +5,7 @@
 
 ---
 
-## 2026-07-14 (Phase 3 [B] 예측오차 루프 검증·라이브 배선 + Neo4j 운영 확인)
+## 2026-07-14 (Phase 3 [B] 예측오차 루프 검증·라이브 배선 + 실 대화 운영 확인)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`, auto-memory `program_roadmap`(Phase 3)·`db_migration_status`.
 
@@ -13,11 +13,18 @@
 - **Phase 3 [B] 예측오차 루프 첫 조각** (`scripts/research/curiosity_loop.py`): 합성 노이즈-지배 세계서 3정책(random/surprise/progress) 비교. **① learning-progress 호기심이 random보다 학습 가속**(AUC 0.752>0.733, 초반 뚜렷). **② raw surprise는 noisy-TV에 95% 갇힘**(파국). **결정적 설계규칙: 루프는 learning-progress(예측오차 감소율)로 닫아야 함, raw surprise 금지.** 이득 modest·regime 의존(균등환경선 이득 없었음=정직).
 - **[B] 라이브 배선 완료** (`neural/baby/live_curiosity.py`, `neo4j_db.py`, `api_server.py`): 대화 handler 호출 전 알려진 cue의 그래프 연관개념을 snapshot하고, 호출 후 `Experience-[:INVOLVES]->Concept` 실제값과 비교. concept/BrainRegion별 error EMA와 learning-progress를 저장하고 **progress만** `integration_priority` 및 기존 `CuriosityLog` 큐에 연결(raw surprise는 관측값만). 최소 3관측+threshold 0.02 gate, deterministic CuriosityLog id로 동시/반복 중복 방지. `conversation_handler.py` v30 변경 없음.
 - **검증**: `tests/test_live_curiosity.py` **7 passed**(순수 수학+endpoint prepare→handle→record 호출순서). 실제 Baby_Robotics에 rollback synthetic 노드로 error `1.0→0→0`, progress `0→0.4→0.24`, gate `false→false→true`, integration priority `0.546`, `source=learning_progress` 로그 생성 검증; 동일 타깃 2회 기록에도 로그 1개. synthetic 데이터 전부 삭제.
+- **실 대화 운영검증**: push된 `DB_Renewal`의 local/remote HEAD가 `e46af26`으로 일치하고 worktree clean인 상태에서 FastAPI를 기동했다. 동일 실제 Gemini 대화 3턴에서 Experience error `1.0→0.667→0.5`, progress `0→0.133→0.147`, integration priority `0.748→0.801→0.807`, gate `false→false→true`를 관찰했고, 3턴째 `CuriosityLog(source=learning_progress)`가 생성되어 `/api/curiosity?limit=200&status=pending`에 노출됨을 확인했다.
+- **초기 부분 통과 판정**: FastAPI→Gemini→Neo4j→learning-progress 호기심 경로는 실제로 닫혔다. 그러나 당시 `.env`의 Upstash Redis 호스트가 더 이상 해석되지 않아 publish/SSE는 guarded failure였다. 또한 단일 반복 문장만 검증했고 첫 질문이 `관계↔세상`으로 일반적이었다. `비비`는 handler stopword, `형의`는 1글자 어간 제한 때문에 identity cue가 되지 않은 것이 원인 후보다. threshold는 변경하지 않았다.
+- **Redis v4 신규 구축·전체 이벤트 경로 복구**: `baby_ai_robot_v4`(Upstash Free, GCP Tokyo, TLS)의 새 `rediss://` URL을 `.env`에만 설정. 비밀값을 출력하지 않은 상태로 PING, 임시 키 SET/GET/DELETE, Pub/Sub 왕복 모두 통과. FastAPI `/health`=`healthy`, `/api/events` HTTP 200+`text/event-stream`, 시험 이벤트 payload 일치. 이어 실제 Gemini 대화 1회에서 Neo4j Experience 생성과 SSE `neuron_activation→baby_state→experience` 수신, Experience ID 일치까지 확인했다. 서버 로그 Redis 오류 0건. 테스트 키는 삭제하고 서버·임시 파일은 종료 시 정리.
+- **[B-2] cue 품질 개선 완료** (`live_curiosity.py`, `api_server.py`, `neo4j_db.py`): handler의 concept 생성 규칙은 유지하면서 endpoint 전용 `build_curiosity_cue_terms()`로 `비비와→비비`, `형의→형`을 기존 Concept 정확일치 후보로 복원. 조사 제거 전 표면형(`형의`)은 후보에서 제외하고, 한 글자 cue는 explicit list에서만 허용해 broad substring 회귀를 차단했다. 추가로 기존 단일 Cypher 결과의 전역 LIMIT 때문에 고차수 `비비` 이웃만 남고 다른 cue가 사라지는 결함을 발견해, **cue 확정 쿼리와 고유 이웃 예측 쿼리를 분리**했다. strength 우선 상위 cue를 고른다.
+- **[B-2] 검증**: handler 원출력 `형의,관계,문장,말해줘` → endpoint 후보 `비비,형,관계,문장,말해줘` → 라이브 Neo4j cue `비비,형,관계,말해줘`. 실제 Gemini 1턴 Experience에도 동일 cue 저장, `형의` 제외 확인. 첫 관측 error `1.0`, progress `0`, gate `false`는 설계 일치. 정규화/오탐/endpoint 실전달/다중-cue 보존을 포함해 `pytest tests neural/test_neural.py -q` **21 passed**, py_compile 통과. `conversation_handler.py` hash `054d974…` 무변경.
 - **Neo4j 인스턴스 복구·데이터 무결성 확인**: 세션 내 "다운"은 Desktop 2.x 인스턴스 STOP이 원인(데이터 문제 X). Start 후 **991 Concept·비비 자아허브 181연결·NEXT_FRAME 등 온전** 확인. 뇌 시각화 경로 확립(`http://localhost:7474/browser/` + path 쿼리). db_migration_status에 운영 gotcha 기록.
 - **Vercel/프론트 판단**: baby-dashboard는 로컬 백엔드(localhost:8000) 의존 → Vercel 클라우드 프론트가 접근 불가 → **Vercel 지금 불필요**, dev는 프론트 로컬 실행. 공개 데모 시점에만 (백엔드 터널 필요).
 
 ### 다음 작업
-- **[B] 운영 검증**: FastAPI+실 대화를 켜고 동일/연관 개념 반복 후 `/api/curiosity`와 Experience/Concept progress 속성을 관찰. 이번 검증은 synthetic Neo4j까지이며 Gemini 실 대화 호출은 수행하지 않음. 데이터가 얇으면 gate 빈도가 낮을 수 있으므로 실측 전 threshold 조정 금지.
+- **[B-1] 인프라 복구 ✅**: `baby_ai_robot_v4` 신규 생성, `.env` 갱신, Pub/Sub·`/api/events`·실 대화 SSE 재검증 완료.
+- **[B-2] cue 품질 개선 ✅**: endpoint/DB 정확일치 정규화, 다중 cue 보존, 실제 1턴 검증 완료. `conversation_handler.py` v30 미변경.
+- **[B-3] 운영 표본 확대**: 다양한 관계/사물 문장으로 gate 빈도와 질문 품질을 관찰한 뒤에만 threshold 조정 여부를 판단한다.
 - 대안: 살아있는 코어 실가동(`LOCAL_CORE_DISTILL=1`+서버) · Quest 다양장면 수집([A], 데이터 병목).
 
 ---

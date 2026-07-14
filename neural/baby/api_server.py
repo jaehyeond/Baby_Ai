@@ -38,6 +38,7 @@ import uvicorn
 
 from .neo4j_db import init_driver, close_driver, get_brain_db, get_driver, _DB_NAME
 from .concept_binding import extract_color_bindings, select_visual_cooc_concepts
+from .live_curiosity import build_curiosity_cue_terms
 from .redis_client import (
     init_redis, close_redis, get_redis,
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
@@ -518,7 +519,11 @@ async def conversation(request: ConversationRequest):
         # conversation path must remain available when the signal is sparse.
         curiosity_snapshot = None
         try:
-            cue_terms = _extract_concepts_from_response("", request.message)
+            extracted_terms = _extract_concepts_from_response("", request.message)
+            cue_terms = build_curiosity_cue_terms(
+                request.message,
+                extracted_terms=extracted_terms,
+            )
             curiosity_snapshot = await get_brain_db().prepare_curiosity_prediction(
                 request.message,
                 cue_terms=cue_terms,

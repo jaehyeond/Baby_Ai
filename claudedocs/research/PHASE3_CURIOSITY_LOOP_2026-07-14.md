@@ -62,5 +62,48 @@
   `source=learning_progress`, `query_type=concept_relation` 로그를 그대로 노출.
 - 검증: `tests/test_live_curiosity.py` 7 passed. rollback synthetic Neo4j 3턴에서 error `1→0→0`,
   progress `0→0.4→0.24`, gate `false→false→true`, integration priority `0.546`; 동일 타깃 로그 중복 없음.
-- 남은 검증: FastAPI 전체 스택과 실제 반복 대화를 통한 신호 빈도/질 평가. Gemini 실 호출은 이번 구현
-  검증에서 수행하지 않았으며, 실측 전 threshold를 조정하지 않는다.
+- 구현 검증 시점에는 Gemini 실 호출을 수행하지 않았으며, 아래 운영검증에서도 threshold는 조정하지 않았다.
+
+## 실 대화 운영검증 (2026-07-14)
+- **사전조건 확인**: `DB_Renewal` local/remote HEAD `e46af26` 일치, worktree clean, Neo4j 7687 UP,
+  FastAPI 8000은 직접 기동 후 `/health` healthy. 실제 대화 전 Experience count 3069.
+- **실험**: `비비와 형의 관계를 한 문장으로 말해줘.`를 동일 guest context에서 실제 Gemini 경로로 3회 반복.
+- **결과**:
+
+| turn | prediction error | learning progress | integration priority | gate |
+|---:|---:|---:|---:|---|
+| 1 | 1.000 | 0.000 | 0.748 | false |
+| 2 | 0.667 | 0.133 | 0.801 | false |
+| 3 | 0.500 | 0.147 | 0.807 | true |
+
+- 3턴째 `CuriosityLog` `be9e608a-0a17-55e0-af09-2b778d8697a5`가
+  `source=learning_progress`, `status=pending`으로 생성됐고 `/api/curiosity?limit=200&status=pending`에서 확인했다.
+- **판정**: FastAPI→Gemini→Neo4j→learning-progress→CuriosityLog 루프는 실제 경로에서도 작동한다.
+  raw surprise가 아니라 오차 감소량으로 3관측째 gate되는 설계도 관측값과 일치한다.
+- **당시 인프라 한계**: 첫 운영검증 때 `.env`의 Upstash Redis 호스트 DNS 해석이 실패해 Redis publish와
+  SSE 경로는 검증 실패했다. 예외가 대화를 중단시키지는 않았지만 당시에는 전체 스택 성공이 아니었다.
+- **후속 Redis 복구**: 신규 `baby_ai_robot_v4`(GCP Tokyo, TLS)를 생성하고 `.env`에 새 URL을 설정했다.
+  PING·임시 키 SET/GET/DELETE·Pub/Sub 왕복, `/health`, `/api/events` 시험 payload, 실제 Gemini 대화의
+  `neuron_activation→baby_state→experience` SSE 및 Experience ID 일치를 모두 확인했다. Redis 오류 로그 0건.
+- **질 한계**: 생성 질문은 `관계와(과) 세상의 관계를 더 알아보자`로 너무 일반적이었다. 현재 parser에서
+  `비비`는 stopword이고 `형의`는 1글자 어간 `형`으로 축약되지 않아 identity cue가 사라진 것이 원인 후보다.
+  단일 문장 3회 표본이므로 threshold는 유지한다.
+
+## [B-2] cue 품질 개선 (2026-07-14)
+- **보호 경계**: `conversation_handler.py` v30은 변경하지 않았다(blob `054d974…`). handler의 Concept 생성과
+  호기심 cue 후보 생성은 목적이 다르므로 endpoint 전용 `build_curiosity_cue_terms()`를 추가했다.
+- **정규화**: 사용자 메시지의 한국어 조사 표면형을 기존 Concept 정확일치 후보로만 복원한다.
+  `비비와→비비`, `형의→형`; replacement 전 `형의`는 후보에서 제외한다. 한 글자 cue는 explicit 후보일 때만
+  허용하고, cue list가 없을 때의 message substring fallback은 기존 2글자 제한을 유지한다.
+- **추가 root cause와 수정**: 기존 Cypher는 cue와 이웃을 한 결과셋에 넣고 전역 LIMIT을 적용해 고차수
+  `비비`의 이웃이 결과를 독점했다. cue 상위 N개를 먼저 확정한 뒤, 그 ID들의 고유 이웃을 별도 집계하도록
+  두 쿼리로 분리했다. explicit 후보에서는 기존 graph strength 우선으로 identity hub를 앞세운다.
+- **검증 사다리**:
+  1. handler 원출력: `형의, 관계, 문장, 말해줘`
+  2. endpoint 후보: `비비, 형, 관계, 문장, 말해줘`
+  3. 라이브 read-only snapshot cue: `비비, 형, 관계, 말해줘`
+  4. 실제 Gemini 1턴 Experience cue: `비비, 형, 관계, 말해줘` (`형의` 없음)
+  5. `pytest tests neural/test_neural.py -q` 21 passed, py_compile 통과
+- 실제 outcome Concept에는 보호된 handler 규칙 때문에 `형의/형은/형이`가 여전히 남는다. B-2는 이를 새로
+  만들거나 고치지 않고, 호기심 snapshot의 알려진 identity cue만 안전하게 복원한다.
+- **다음 [B-3]**: 다양한 관계/사물 문장으로 gate 빈도와 생성 질문 품질을 관찰한 뒤 threshold 조정 여부 판단.
