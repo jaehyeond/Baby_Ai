@@ -470,7 +470,10 @@ async def conversation(request: ConversationRequest):
     내부 승급 로직은 그대로 두고 결과만 관찰.
     """
     try:
-        from .conversation_handler import handle_conversation
+        from .conversation_handler import (
+            _extract_concepts_from_response,
+            handle_conversation,
+        )
 
         # M1 SSE: stage 전이 감지를 위해 호출 전 BabyState 스냅샷
         prev_stage: Optional[int] = None
@@ -510,10 +513,42 @@ async def conversation(request: ConversationRequest):
             f"trusted={trusted} clearance={effective_clearance}"
         )
 
+        # Phase 3 [B]: prequential graph prediction BEFORE the handler stores
+        # concepts and applies Hebbian learning.  Failure is non-blocking: the
+        # conversation path must remain available when the signal is sparse.
+        curiosity_snapshot = None
+        try:
+            cue_terms = _extract_concepts_from_response("", request.message)
+            curiosity_snapshot = await get_brain_db().prepare_curiosity_prediction(
+                request.message,
+                cue_terms=cue_terms,
+            )
+        except Exception as curiosity_pre_err:
+            logger.warning(f"curiosity prediction snapshot error: {curiosity_pre_err}")
+
         result = await handle_conversation(
             message=request.message,
             context=ctx,
         )
+
+        # Score the pre-learning prediction against concepts linked by the
+        # handler.  Raw surprise is observed, while only learning-progress may
+        # affect consolidation priority or open a CuriosityLog target.
+        try:
+            curiosity_signal = await get_brain_db().record_curiosity_outcome(
+                curiosity_snapshot,
+                result.get("experience_id"),
+            )
+            if curiosity_signal.get("status") == "recorded":
+                logger.info(
+                    "[curiosity] error=%.3f progress=%.3f gated=%s target=%s",
+                    curiosity_signal["prediction_error"],
+                    curiosity_signal["learning_progress"],
+                    curiosity_signal["gated"],
+                    curiosity_signal.get("target_id"),
+                )
+        except Exception as curiosity_post_err:
+            logger.warning(f"curiosity outcome scoring error: {curiosity_post_err}")
 
         # M1 SSE: stage 전이 검출 (handler 내부 update_baby_state 결과 사용)
         try:
@@ -651,7 +686,7 @@ async def consolidate_memory(request: ConsolidateRequest):
     """
     기억 강화/약화 (수면 모드 대체)
 
-    - reinforce: emotional_salience > 0.3인 Experience 강화
+    - reinforce: emotional_salience + learning-progress 우선순위가 높은 Experience 강화
     - decay: 모든 RELATES_TO 관계 강도 감쇠
     """
     try:
@@ -659,16 +694,22 @@ async def consolidate_memory(request: ConsolidateRequest):
         results = {}
 
         if request.mode in ("full", "reinforce_only"):
-            # emotional_salience 높은 기억 강화
+            # Phase 3 [B]: raw prediction error는 강화에 쓰지 않는다. 오직
+            # learning-progress로 확장된 integration_priority만 사용한다.
             async with get_driver().session(database=_DB_NAME) as s:
                 r = await s.run(
-                    "MATCH (e:Experience) WHERE e.emotional_salience > 0.3 "
-                    "SET e.strength = CASE WHEN coalesce(e.strength, 0.5) + 0.05 > 1.0 THEN 1.0 "
-                    "                      ELSE coalesce(e.strength, 0.5) + 0.05 END "
-                    "RETURN count(e) AS n"
+                    "MATCH (e:Experience) "
+                    "WHERE coalesce(e.integration_priority, e.emotional_salience, 0.0) > 0.3 "
+                    "WITH e, 0.05 + 0.05 * coalesce(e.learning_progress, 0.0) AS delta "
+                    "SET e.strength = CASE WHEN coalesce(e.strength, 0.5) + delta > 1.0 "
+                    "                      THEN 1.0 ELSE coalesce(e.strength, 0.5) + delta END "
+                    "RETURN count(e) AS n, "
+                    "  sum(CASE WHEN coalesce(e.curiosity_gated, false) THEN 1 ELSE 0 END) "
+                    "    AS curiosity_prioritized"
                 )
                 rec = await r.single()
                 results["reinforced"] = rec["n"] if rec else 0
+                results["curiosity_prioritized"] = rec["curiosity_prioritized"] if rec else 0
 
         if request.mode in ("full", "decay_only"):
             await db.decay_connections(decay_rate=request.decay_rate)

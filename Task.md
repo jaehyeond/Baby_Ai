@@ -1,15 +1,15 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-23 (본문) · **2026-07-11 배너 추가**
+**최종 업데이트**: 2026-02-23 (본문) · **2026-07-14 배너 갱신**
 
 ---
 
-## ⚡ 2026-07-11 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
+## ⚡ 2026-07-14 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **다음 진입점: Phase 1** — 진짜 가소성 규칙(STDP+감쇠+항상성+PE게이팅) + 예측오차 계측(LLM-free).
-> **이번 세션 완료(검증)**: decay 버그 fix · identity/access-control(:Person 허브 + owner token 사칭차단 + access tier) · LLM 복구(gemini-flash-latest) · before baseline(고립48.4%·α1.15). 상세 CHANGELOG.
+> **현재 진입점: Phase 3 [B] 운영 검증** — 합성 learning-progress 규칙과 endpoint/Neo4j 라이브 배선 완료. 다음은 실제 반복 대화에서 `/api/curiosity` 및 progress 신호 빈도·품질 관찰.
+> **이번 세션 완료(검증)**: turn 전 그래프 예측→turn 후 실제 Concept 비교 · concept/region error EMA · learning-progress gate→통합 우선순위/CuriosityLog 연결. `conversation_handler.py` v30 미변경, 7 tests passed, rollback synthetic Neo4j 검증 완료. 상세 `CHANGELOG.md` 최상단.
 
 ---
 

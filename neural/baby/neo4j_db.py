@@ -10,12 +10,21 @@ import os
 import json
 import asyncio
 import logging
+import uuid
 from typing import Optional, Any
 from datetime import datetime, timezone, timedelta
 from contextlib import asynccontextmanager
 
 from neo4j import AsyncGraphDatabase
 from dotenv import load_dotenv
+
+from .live_curiosity import (
+    compute_integration_priority,
+    compute_prediction_error,
+    select_curiosity_target,
+    should_open_curiosity_gate,
+    update_learning_progress,
+)
 
 load_dotenv()
 
@@ -1576,6 +1585,278 @@ class BrainDatabase:
             "hebbian_count": record["hebb_count"] if record else 0,
             "avg_hebb_strength": round(float(record["avg_hebb"] or 0), 4) if record else 0,
             "max_hebb_strength": round(float(record["max_hebb"] or 0), 4) if record else 0,
+        }
+
+    # ==================== Phase 3: live learning-progress curiosity ====================
+
+    async def prepare_curiosity_prediction(
+        self,
+        message: str,
+        cue_terms: Optional[list[str]] = None,
+        cue_limit: int = 4,
+        prediction_limit: int = 8,
+    ) -> Optional[dict]:
+        """Snapshot graph predictions before a conversation turn is learned.
+
+        Concept names already present in the message are cues.  Their strongest
+        graph neighbours are the prequential prediction.  The snapshot is kept
+        in memory by the endpoint and scored only after the handler has linked
+        the turn's actually observed concepts.
+        """
+        normalized = (message or "").strip().casefold()
+        if not normalized:
+            return None
+        normalized_terms = list(dict.fromkeys(
+            str(term).strip().casefold()
+            for term in (cue_terms or [])
+            if str(term).strip()
+        ))
+
+        cue_limit = max(1, min(int(cue_limit), 10))
+        prediction_limit = max(1, min(int(prediction_limit), 20))
+        row_limit = cue_limit * prediction_limit
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (cue:Concept) "
+                "WHERE cue.name IS NOT NULL "
+                "  AND size(trim(toString(cue.name))) >= 2 "
+                "  AND ((size($cue_terms) > 0 "
+                "        AND toLower(trim(toString(cue.name))) IN $cue_terms) "
+                "    OR (size($cue_terms) = 0 "
+                "        AND $message CONTAINS toLower(trim(toString(cue.name))))) "
+                "WITH cue ORDER BY size(toString(cue.name)) DESC, "
+                "  coalesce(cue.strength, 0.0) DESC LIMIT $cue_limit "
+                "WITH collect(cue) AS cues UNWIND cues AS cue "
+                "OPTIONAL MATCH (cue)-[rel:RELATES_TO]-(candidate:Concept) "
+                "WHERE candidate IS NULL OR NOT candidate IN cues "
+                "RETURN cue.id AS cue_id, cue.name AS cue_name, "
+                "  candidate.id AS candidate_id, candidate.name AS candidate_name, "
+                "  coalesce(rel.hebb_strength, rel.strength, 0.0) AS score "
+                "ORDER BY score DESC LIMIT $row_limit",
+                message=normalized,
+                cue_terms=normalized_terms,
+                cue_limit=cue_limit,
+                row_limit=row_limit,
+            )
+            records = await result.fetch(row_limit)
+
+        cues: list[dict] = []
+        cue_seen: set[str] = set()
+        predictions_by_id: dict[str, dict] = {}
+        for record in records:
+            cue_id = record["cue_id"]
+            if cue_id and cue_id not in cue_seen:
+                cue_seen.add(cue_id)
+                cues.append({"id": cue_id, "name": record["cue_name"]})
+
+            candidate_id = record["candidate_id"]
+            if not candidate_id or candidate_id in cue_seen:
+                continue
+            score = float(record["score"] or 0.0)
+            previous = predictions_by_id.get(candidate_id)
+            if previous is None or score > previous["score"]:
+                predictions_by_id[candidate_id] = {
+                    "id": candidate_id,
+                    "name": record["candidate_name"],
+                    "score": score,
+                }
+
+        if not cues:
+            return None
+
+        predictions = sorted(
+            predictions_by_id.values(),
+            key=lambda item: item["score"],
+            reverse=True,
+        )[:prediction_limit]
+        return {
+            "cue_concepts": cues,
+            "predicted_concepts": predictions,
+            "captured_at": _now_iso(),
+        }
+
+    async def record_curiosity_outcome(
+        self,
+        snapshot: Optional[dict],
+        experience_id: Optional[str],
+        *,
+        ema_alpha: float = 0.4,
+        gate_threshold: float = 0.02,
+        min_observations: int = 3,
+    ) -> dict:
+        """Score a pre-turn prediction and persist its learning-progress signal.
+
+        Raw prediction error is recorded for observability, but only positive
+        reduction of the error EMA can raise integration priority or create a
+        CuriosityLog target.
+        """
+        if not snapshot or not experience_id:
+            return {"status": "skipped", "reason": "missing_snapshot_or_experience"}
+
+        cues = [item for item in snapshot.get("cue_concepts", []) if item.get("id")]
+        predictions = [
+            item for item in snapshot.get("predicted_concepts", []) if item.get("id")
+        ]
+        cue_ids = [item["id"] for item in cues]
+        predicted_ids = [item["id"] for item in predictions]
+        if not cue_ids:
+            return {"status": "skipped", "reason": "no_known_cues"}
+
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (e:Experience {id: $experience_id}) "
+                "OPTIONAL MATCH (e)-[:INVOLVES]->(actual:Concept) "
+                "RETURN coalesce(e.emotional_salience, 0.5) AS salience, "
+                "  collect({id: actual.id, name: actual.name}) AS actual_concepts",
+                experience_id=experience_id,
+            )
+            record = await result.single()
+            if not record:
+                return {"status": "skipped", "reason": "experience_not_found"}
+
+            actual = [
+                item for item in record["actual_concepts"] if item and item.get("id")
+            ]
+            actual_ids = [item["id"] for item in actual]
+            error = compute_prediction_error(predicted_ids, actual_ids, cue_ids)
+            if error is None:
+                return {"status": "skipped", "reason": "no_non_cue_outcome"}
+
+            result = await s.run(
+                "MATCH (c:Concept) WHERE c.id IN $cue_ids "
+                "RETURN c.id AS id, c.name AS name, properties(c) AS props",
+                cue_ids=cue_ids,
+            )
+            state_records = await result.fetch(len(cue_ids))
+
+            states: list[dict] = []
+            for state_record in state_records:
+                props = dict(state_record["props"] or {})
+                update = update_learning_progress(
+                    error,
+                    props.get("curiosity_error_ema"),
+                    int(props.get("curiosity_observations") or 0),
+                    alpha=ema_alpha,
+                )
+                states.append({
+                    "id": state_record["id"],
+                    "name": state_record["name"],
+                    "error_ema": update.error_ema,
+                    "learning_progress": update.learning_progress,
+                    "observations": update.observations,
+                })
+
+            if not states:
+                return {"status": "skipped", "reason": "cue_state_not_found"}
+
+            now = _now_iso()
+            await s.run(
+                "UNWIND $states AS state MATCH (c:Concept {id: state.id}) "
+                "SET c.curiosity_error_ema = state.error_ema, "
+                "    c.learning_progress = state.learning_progress, "
+                "    c.curiosity_observations = state.observations, "
+                "    c.curiosity_updated_at = $now",
+                states=states,
+                now=now,
+            )
+
+            # Region-level view mirrors the aggregated concept signal for live
+            # monitoring without adding a second independent learning rule.
+            await s.run(
+                "UNWIND $states AS state MATCH (c:Concept {id: state.id}) "
+                "MATCH (c)-[:MAPPED_TO|ALSO_REPRESENTED_IN]->(br:BrainRegion) "
+                "WITH br, avg(state.error_ema) AS error_ema, "
+                "  max(state.learning_progress) AS learning_progress "
+                "SET br.curiosity_error_ema = error_ema, "
+                "    br.learning_progress = learning_progress, "
+                "    br.curiosity_updated_at = $now",
+                states=states,
+                now=now,
+            )
+
+            primary = max(states, key=lambda item: item["learning_progress"])
+            learning_progress = float(primary["learning_progress"])
+            gated = should_open_curiosity_gate(
+                learning_progress,
+                primary["observations"],
+                threshold=gate_threshold,
+                min_observations=min_observations,
+            )
+            target_id = select_curiosity_target(cue_ids, predicted_ids, actual_ids)
+            actual_by_id = {item["id"]: item.get("name") for item in actual}
+            target_name = actual_by_id.get(target_id) if target_id else None
+            integration_priority = compute_integration_priority(
+                float(record["salience"] or 0.5),
+                learning_progress,
+            )
+
+            await s.run(
+                "MATCH (e:Experience {id: $experience_id}) "
+                "SET e.prediction_error = $prediction_error, "
+                "    e.learning_progress = $learning_progress, "
+                "    e.integration_priority = $integration_priority, "
+                "    e.curiosity_gated = $gated, "
+                "    e.curiosity_cue_ids = $cue_ids, "
+                "    e.predicted_concept_ids = $predicted_ids, "
+                "    e.curiosity_target_id = $target_id, "
+                "    e.curiosity_scored_at = $now",
+                experience_id=experience_id,
+                prediction_error=error,
+                learning_progress=learning_progress,
+                integration_priority=integration_priority,
+                gated=gated,
+                cue_ids=cue_ids,
+                predicted_ids=predicted_ids,
+                target_id=target_id,
+                now=now,
+            )
+
+            curiosity_log_id = None
+            if gated and target_id and target_name:
+                target_key = f"{primary['id']}:{target_id}"
+                deterministic_log_id = str(uuid.uuid5(
+                    uuid.NAMESPACE_URL,
+                    f"baby-brain-learning-progress:{target_key}",
+                ))
+                curiosity_query = (
+                    f"{primary['name']}와(과) {target_name}의 관계를 더 알아보자"
+                )
+                curiosity_priority = round(min(0.9, 0.5 + 2.0 * learning_progress), 6)
+                result = await s.run(
+                    "MATCH (e:Experience {id: $experience_id}) "
+                    "MERGE (cl:CuriosityLog {id: $curiosity_log_id}) "
+                    "ON CREATE SET cl.exploration_count = 0, cl.created_at = datetime($now) "
+                    "SET cl.source = 'learning_progress', cl.target_key = $target_key, "
+                    "  cl.query = $curiosity_query, cl.query_type = 'concept_relation', "
+                    "  cl.priority = CASE WHEN coalesce(cl.priority, 0.0) < $priority "
+                    "    THEN $priority ELSE cl.priority END, "
+                    "  cl.status = CASE WHEN cl.status IS NULL "
+                    "      OR cl.status IN ['learned', 'failed'] THEN 'pending' "
+                    "    ELSE cl.status END, cl.updated_at = datetime($now), "
+                    "  cl.learning_progress = $learning_progress, "
+                    "  cl.prediction_error = $prediction_error "
+                    "MERGE (cl)-[:TRIGGERED_BY]->(e) "
+                    "RETURN cl.id AS id",
+                    experience_id=experience_id,
+                    curiosity_log_id=deterministic_log_id,
+                    target_key=target_key,
+                    curiosity_query=curiosity_query,
+                    priority=curiosity_priority,
+                    learning_progress=learning_progress,
+                    prediction_error=error,
+                    now=now,
+                )
+                log_record = await result.single()
+                curiosity_log_id = log_record["id"] if log_record else None
+
+        return {
+            "status": "recorded",
+            "prediction_error": round(float(error), 6),
+            "learning_progress": round(learning_progress, 6),
+            "integration_priority": integration_priority,
+            "gated": gated,
+            "target_id": target_id,
+            "curiosity_log_id": curiosity_log_id,
         }
 
     async def get_brain_regions(self) -> list[dict]:

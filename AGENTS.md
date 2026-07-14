@@ -14,18 +14,18 @@
 - 인프라: Gap#6 brain health 모니터링 상시화 · 보안 fix(.env.bak) · torch(cu124)/transformers/peft `.venv` 설치 · RTX 4070 12GB.
 
 ### 핵심 진단 (정직)
-1. **뇌가 "배우지만 무기력"**: 로컬 코어가 밤마다 학습하나 **wake에서 아무도 안 씀**(대화=Gemini 도구, 회상=그래프). 자기학습은 진짜지만 아직 **행동에 영향 X** — 북극성의 (1)"grounded 예측오차가 행동을 이끈다"가 빠짐.
+1. **"배우지만 무기력" 일부 해소**: 그래프의 turn별 prequential 예측오차가 이제 learning-progress를 통해 **통합 우선순위와 호기심 타깃에 영향**. 단 로컬 trainable 코어 자체는 여전히 wake 응답/Gemini prompt에 직접 쓰이지 않으므로 행동 영향은 아직 부분적.
 2. **모든 병목=데이터 밀도** (언어256·노드518·프레임45·실그래프2241, 4번 확인). Quest 다양장면 수집이 근본 레버(하드웨어·사용자 의존).
 
 ### 다음 작업 플랜 (2-트랙)
 - **[A] 사용자 몫(근본 레버)**: Quest **다양장면** 수집(방·주방·야외·사람, 머리 움직이며; 스케일링연구=다양성>밀도) + 살아있는 코어 **켜기**(`LOCAL_CORE_DISTILL=1` + Neo4j 상시). 계약 `docs/QUEST_APK_CONTRACT.md`.
-- **[B] 자율·최우선 추천 = Phase 3 예측오차 루프 닫기**: 코어/그래프의 예측오차(surprise)를 **wake에서 살아있는 신호로** → 무엇을 통합·탐색(호기심)·주의할지 이끌고, 코어 예측이 Gemini 응답에 관련개념 prime. "무기력한 학습자"→"자기동기적 학습자". 데이터 흐르면 자기증폭.
+- **[B] Phase 3 예측오차 루프 ✅ 합성검증+라이브 배선 완료(2026-07-14)**: `live_curiosity.py` + endpoint pre/post snapshot + Neo4j concept/region EMA. raw surprise는 관측만 하고 **오차 감소량만** `integration_priority`와 `CuriosityLog(source=learning_progress)`를 구동. 3회 반복 전 gate 금지, deterministic log id로 중복 방지. `conversation_handler.py` v30 미변경. 단위/배선 **7 passed**, rollback synthetic Neo4j에서 error `1→0→0`, gate `F→F→T`, priority `0.546` 검증. **다음=실 반복 대화 운영 관찰**(`/api/curiosity`, 신호 빈도/품질) + 로컬 코어 wake 영향 연결 여부 판단.
 - **[C] 자율·대안**: 운영화(실제 켜서 며칠 성장추적) + collapse(effective rank≈2) 장기감시.
-- **⚠️ 메타**: 과학은 검증됨. [B]도 데이터 얇으면 신호 약할 수 있음 → "[C]/실사용으로 데이터 먼저, [B] 나중"도 합리. **사용자 판단 대기.**
+- **⚠️ 메타**: 과학·배선은 검증됐지만 이득은 modest·데이터 의존. 실 대화에서 같은 개념의 반복이 적으면 gate가 드물 수 있으므로 운영 관찰 후 threshold 조정(현재 0.02, 최소 3회) 여부를 판단.
 - (보류·비가역, 사용자 확인 후) 방향성 엣지 마이그레이션 + RW 프로덕션 `hebbian_update` 반영.
 
 ### 전제
-Neo4j(Baby_Robotics, bolt 7687) 켜기 **(현재 다운)**. Phase 2 실행엔 GPU(RTX 4070)+`.venv`. 살아있는 코어 켜려면 `LOCAL_CORE_DISTILL=1`. 라이브 그래프 비파괴·conversation_handler(v30) 미변경 원칙 유지.
+Neo4j(Baby_Robotics, bolt 7687) **현재 UP**(세션마다 Desktop Start 필요), FastAPI 8000은 현재 DOWN. Phase 2 실행엔 GPU(RTX 4070)+`.venv`. 살아있는 코어 켜려면 `LOCAL_CORE_DISTILL=1`. 라이브 그래프 비파괴·conversation_handler(v30) 미변경 원칙 유지.
 
 ## 🧭 불변 원칙 (요약)
 - **제1원칙**: 인간 뇌를 본떠 아기부터 키우는, 로봇 이식용 AI 뇌. **신경과학적 타당성 > 코드 최적화.** LLM = 교체 가능한 몸, 학습/기억/성장 = LLM-free 내부 그래프 알고리즘.

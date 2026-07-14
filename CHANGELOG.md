@@ -5,6 +5,23 @@
 
 ---
 
+## 2026-07-14 (Phase 3 [B] 예측오차 루프 검증·라이브 배선 + Neo4j 운영 확인)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`, auto-memory `program_roadmap`(Phase 3)·`db_migration_status`.
+
+### 완료 ✅ (검증됨)
+- **Phase 3 [B] 예측오차 루프 첫 조각** (`scripts/research/curiosity_loop.py`): 합성 노이즈-지배 세계서 3정책(random/surprise/progress) 비교. **① learning-progress 호기심이 random보다 학습 가속**(AUC 0.752>0.733, 초반 뚜렷). **② raw surprise는 noisy-TV에 95% 갇힘**(파국). **결정적 설계규칙: 루프는 learning-progress(예측오차 감소율)로 닫아야 함, raw surprise 금지.** 이득 modest·regime 의존(균등환경선 이득 없었음=정직).
+- **[B] 라이브 배선 완료** (`neural/baby/live_curiosity.py`, `neo4j_db.py`, `api_server.py`): 대화 handler 호출 전 알려진 cue의 그래프 연관개념을 snapshot하고, 호출 후 `Experience-[:INVOLVES]->Concept` 실제값과 비교. concept/BrainRegion별 error EMA와 learning-progress를 저장하고 **progress만** `integration_priority` 및 기존 `CuriosityLog` 큐에 연결(raw surprise는 관측값만). 최소 3관측+threshold 0.02 gate, deterministic CuriosityLog id로 동시/반복 중복 방지. `conversation_handler.py` v30 변경 없음.
+- **검증**: `tests/test_live_curiosity.py` **7 passed**(순수 수학+endpoint prepare→handle→record 호출순서). 실제 Baby_Robotics에 rollback synthetic 노드로 error `1.0→0→0`, progress `0→0.4→0.24`, gate `false→false→true`, integration priority `0.546`, `source=learning_progress` 로그 생성 검증; 동일 타깃 2회 기록에도 로그 1개. synthetic 데이터 전부 삭제.
+- **Neo4j 인스턴스 복구·데이터 무결성 확인**: 세션 내 "다운"은 Desktop 2.x 인스턴스 STOP이 원인(데이터 문제 X). Start 후 **991 Concept·비비 자아허브 181연결·NEXT_FRAME 등 온전** 확인. 뇌 시각화 경로 확립(`http://localhost:7474/browser/` + path 쿼리). db_migration_status에 운영 gotcha 기록.
+- **Vercel/프론트 판단**: baby-dashboard는 로컬 백엔드(localhost:8000) 의존 → Vercel 클라우드 프론트가 접근 불가 → **Vercel 지금 불필요**, dev는 프론트 로컬 실행. 공개 데모 시점에만 (백엔드 터널 필요).
+
+### 다음 작업
+- **[B] 운영 검증**: FastAPI+실 대화를 켜고 동일/연관 개념 반복 후 `/api/curiosity`와 Experience/Concept progress 속성을 관찰. 이번 검증은 synthetic Neo4j까지이며 Gemini 실 대화 호출은 수행하지 않음. 데이터가 얇으면 gate 빈도가 낮을 수 있으므로 실측 전 threshold 조정 금지.
+- 대안: 살아있는 코어 실가동(`LOCAL_CORE_DISTILL=1`+서버) · Quest 다양장면 수집([A], 데이터 병목).
+
+---
+
 ## 2026-07-13 (🔴 보안: secret 제거 + Gap#6 모니터링 상시화)
 
 ### 🔴 보안 조치 ✅ (GitHub push protection 계기)
