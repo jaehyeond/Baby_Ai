@@ -1,0 +1,1969 @@
+{
+  "created_at": "2026-07-15T12:54:35.143402+00:00",
+  "current_predictor_diagnosis": {
+    "aggregation": "max mutable edge strength across cues",
+    "candidate_degree_penalty": false,
+    "candidate_union": "all RELATES_TO neighbours of selected cues",
+    "historical_strength_replay_safe": false,
+    "multi_cue_support_reward": false
+  },
+  "database_writes": false,
+  "evaluation": {
+    "any_exploratory_gate_passed": false,
+    "best_exploratory_mean_error": 0.75,
+    "best_exploratory_variant": "historical_cooccurrence",
+    "production_block_reason": "no_preregistered_held_out_sequence",
+    "production_promotion_gate": false,
+    "variants": {
+      "historical_cooccurrence": {
+        "baseline_gate": false,
+        "better_than_frequency_pair_count": 1,
+        "data_gate": true,
+        "exploratory_gate": false,
+        "frequency_mean_error": 0.5,
+        "hit_count": 2,
+        "mean_error": 0.75,
+        "pairs": [
+          {
+            "actual_names": [
+              "도시"
+            ],
+            "cue_names": [
+              "날씨",
+              "하늘",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1489,
+            "predicted_names": [
+              "형의",
+              "문장",
+              "형은",
+              "세상",
+              "신기하",
+              "형이",
+              "공부",
+              "AI"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992278,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.81649658,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.73029674,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.61237244,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.40824829,
+                "cue_support_count": 1,
+                "key": "세상",
+                "name": "세상"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.40824829,
+                "cue_support_count": 1,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "형이",
+                "name": "형이"
+              },
+              {
+                "candidate_document_frequency": 19,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.26490647,
+                "cue_support_count": 1,
+                "key": "공부",
+                "name": "공부"
+              },
+              {
+                "candidate_document_frequency": 30,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.21081851,
+                "cue_support_count": 1,
+                "key": "ai",
+                "name": "AI"
+              }
+            ],
+            "source_experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+            "source_task": "하늘과 날씨의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "사람"
+            ],
+            "cue_names": [
+              "도시",
+              "날씨",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1490,
+            "predicted_names": [
+              "신기하",
+              "형의",
+              "문장",
+              "형은",
+              "세상",
+              "친구래요",
+              "크고",
+              "되게"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992293,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.63620533,
+                "cue_support_count": 2,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.75592895,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.6761234,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.56694671,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.37796447,
+                "cue_support_count": 1,
+                "key": "세상",
+                "name": "세상"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "친구래요",
+                "name": "친구래요"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "크고",
+                "name": "크고"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.62081463,
+                "cue_support_count": 2,
+                "key": "되게",
+                "name": "되게"
+              }
+            ],
+            "source_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+            "source_task": "날씨와 도시의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "이름"
+            ],
+            "cue_names": [
+              "도시",
+              "사람",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1491,
+            "predicted_names": [
+              "형의",
+              "문장",
+              "신기하",
+              "날씨",
+              "형은",
+              "세상",
+              "보면",
+              "상상해"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992308,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.63245553,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.4472136,
+                "cue_support_count": 1,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.63245553,
+                "cue_support_count": 2,
+                "key": "날씨",
+                "name": "날씨"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.53033009,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.35355339,
+                "cue_support_count": 1,
+                "key": "세상",
+                "name": "세상"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "보면",
+                "name": "보면"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "상상해",
+                "name": "상상해"
+              }
+            ],
+            "source_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+            "source_task": "도시와 사람의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "비비"
+            ],
+            "cue_names": [
+              "이름",
+              "사람",
+              "관계"
+            ],
+            "error": 0.0,
+            "frequency_error": 0.0,
+            "history_count": 1492,
+            "predicted_names": [
+              "비비",
+              "형의",
+              "문장",
+              "신기하",
+              "도시",
+              "형은",
+              "세상",
+              "개발자"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992322,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 70,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.26418657,
+                "cue_support_count": 2,
+                "key": "비비",
+                "name": "비비"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.66666667,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.59628479,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.42163702,
+                "cue_support_count": 1,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.71823351,
+                "cue_support_count": 2,
+                "key": "도시",
+                "name": "도시"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.5,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.33333333,
+                "cue_support_count": 1,
+                "key": "세상",
+                "name": "세상"
+              },
+              {
+                "candidate_document_frequency": 35,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.20701967,
+                "cue_support_count": 1,
+                "key": "개발자",
+                "name": "개발자"
+              }
+            ],
+            "source_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+            "source_task": "사람과 이름의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "개발자",
+              "개발"
+            ],
+            "cue_names": [
+              "비비",
+              "이름",
+              "관계"
+            ],
+            "error": 0.5,
+            "frequency_error": 1.0,
+            "history_count": 1493,
+            "predicted_names": [
+              "개발자",
+              "형",
+              "기억",
+              "AI",
+              "박재현",
+              "사용자",
+              "인터넷",
+              "공부"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992337,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 35,
+                "cooccurrence_count": 29,
+                "cosine_score": 0.71694229,
+                "cue_support_count": 2,
+                "key": "개발자",
+                "name": "개발자"
+              },
+              {
+                "candidate_document_frequency": 20,
+                "cooccurrence_count": 16,
+                "cosine_score": 0.42761799,
+                "cue_support_count": 1,
+                "key": "형",
+                "name": "형"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 12,
+                "cosine_score": 0.44534076,
+                "cue_support_count": 3,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 30,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.24358087,
+                "cue_support_count": 2,
+                "key": "ai",
+                "name": "AI"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 8,
+                "cosine_score": 0.38409799,
+                "cue_support_count": 2,
+                "key": "박재현",
+                "name": "박재현"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 8,
+                "cosine_score": 0.38409799,
+                "cue_support_count": 2,
+                "key": "사용자",
+                "name": "사용자"
+              },
+              {
+                "candidate_document_frequency": 12,
+                "cooccurrence_count": 8,
+                "cosine_score": 0.27602622,
+                "cue_support_count": 1,
+                "key": "인터넷",
+                "name": "인터넷"
+              },
+              {
+                "candidate_document_frequency": 19,
+                "cooccurrence_count": 8,
+                "cosine_score": 0.2193634,
+                "cue_support_count": 1,
+                "key": "공부",
+                "name": "공부"
+              }
+            ],
+            "source_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+            "source_task": "이름과 비비의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "프로그램"
+            ],
+            "cue_names": [
+              "비비",
+              "개발자",
+              "관계",
+              "개발"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1494,
+            "predicted_names": [
+              "형",
+              "기억",
+              "AI",
+              "공부",
+              "대화",
+              "날짜",
+              "이름",
+              "기쁨"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992352,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 20,
+                "cooccurrence_count": 17,
+                "cosine_score": 0.46541443,
+                "cue_support_count": 2,
+                "key": "형",
+                "name": "형"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 16,
+                "cosine_score": 0.55198976,
+                "cue_support_count": 3,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 30,
+                "cooccurrence_count": 16,
+                "cosine_score": 0.42145967,
+                "cue_support_count": 2,
+                "key": "ai",
+                "name": "AI"
+              },
+              {
+                "candidate_document_frequency": 19,
+                "cooccurrence_count": 14,
+                "cosine_score": 0.45203342,
+                "cue_support_count": 2,
+                "key": "공부",
+                "name": "공부"
+              },
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 10,
+                "cosine_score": 0.47508828,
+                "cue_support_count": 2,
+                "key": "대화",
+                "name": "대화"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 10,
+                "cosine_score": 0.32839467,
+                "cue_support_count": 2,
+                "key": "날짜",
+                "name": "날짜"
+              },
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.56151586,
+                "cue_support_count": 3,
+                "key": "이름",
+                "name": "이름"
+              },
+              {
+                "candidate_document_frequency": 7,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.46271534,
+                "cue_support_count": 2,
+                "key": "기쁨",
+                "name": "기쁨"
+              }
+            ],
+            "source_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+            "source_task": "비비와 개발자의 관계를 말해줘."
+          }
+        ],
+        "production_block_reason": "same_pairs_used_for_candidate_selection",
+        "production_promotion_gate": false,
+        "random_expected_mean_error": 0.992315,
+        "robustness_gate": false,
+        "tied_with_frequency_pair_count": 3,
+        "variant": "historical_cooccurrence",
+        "worse_than_frequency_pair_count": 2
+      },
+      "historical_cosine": {
+        "baseline_gate": false,
+        "better_than_frequency_pair_count": 1,
+        "data_gate": true,
+        "exploratory_gate": false,
+        "frequency_mean_error": 0.5,
+        "hit_count": 1,
+        "mean_error": 0.916667,
+        "pairs": [
+          {
+            "actual_names": [
+              "도시"
+            ],
+            "cue_names": [
+              "날씨",
+              "하늘",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1489,
+            "predicted_names": [
+              "형의",
+              "문장",
+              "파란색",
+              "형은",
+              "형이",
+              "날씨 공부",
+              "물",
+              "비"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992278,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.81649658,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.73029674,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "파란색",
+                "name": "파란색"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.61237244,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "형이",
+                "name": "형이"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "날씨 공부",
+                "name": "날씨 공부"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.5,
+                "cue_support_count": 1,
+                "key": "물",
+                "name": "물"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.5,
+                "cue_support_count": 1,
+                "key": "비",
+                "name": "비"
+              }
+            ],
+            "source_experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+            "source_task": "하늘과 날씨의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "사람"
+            ],
+            "cue_names": [
+              "도시",
+              "날씨",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1490,
+            "predicted_names": [
+              "미국 특별시 종류",
+              "친구래요",
+              "크고",
+              "형의",
+              "미국",
+              "문장",
+              "신기하",
+              "되게"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992293,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 1.0,
+                "cue_support_count": 1,
+                "key": "미국 특별시 종류",
+                "name": "미국 특별시 종류"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "친구래요",
+                "name": "친구래요"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "크고",
+                "name": "크고"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.75592895,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "미국",
+                "name": "미국"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.6761234,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.63620533,
+                "cue_support_count": 2,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.62081463,
+                "cue_support_count": 2,
+                "key": "되게",
+                "name": "되게"
+              }
+            ],
+            "source_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+            "source_task": "날씨와 도시의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "이름"
+            ],
+            "cue_names": [
+              "도시",
+              "사람",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1491,
+            "predicted_names": [
+              "보면",
+              "상상해",
+              "영화",
+              "궁금하",
+              "모르",
+              "형의",
+              "멜로디",
+              "미국 특별시 종류"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992308,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "보면",
+                "name": "보면"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "상상해",
+                "name": "상상해"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.81649658,
+                "cue_support_count": 1,
+                "key": "영화",
+                "name": "영화"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.75,
+                "cue_support_count": 2,
+                "key": "궁금하다",
+                "name": "궁금하"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.75,
+                "cue_support_count": 2,
+                "key": "모르",
+                "name": "모르"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "멜로디",
+                "name": "멜로디"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "미국 특별시 종류",
+                "name": "미국 특별시 종류"
+              }
+            ],
+            "source_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+            "source_task": "도시와 사람의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "비비"
+            ],
+            "cue_names": [
+              "이름",
+              "사람",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1492,
+            "predicted_names": [
+              "관계인",
+              "커다란",
+              "도시",
+              "형의",
+              "영화",
+              "마치",
+              "문장",
+              "들어"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992322,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.9106836,
+                "cue_support_count": 2,
+                "key": "관계인",
+                "name": "관계인"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.9106836,
+                "cue_support_count": 2,
+                "key": "커다란",
+                "name": "커다란"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.71823351,
+                "cue_support_count": 2,
+                "key": "도시",
+                "name": "도시"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.66666667,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.66666667,
+                "cue_support_count": 1,
+                "key": "영화",
+                "name": "영화"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.64395055,
+                "cue_support_count": 2,
+                "key": "마치",
+                "name": "마치"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.59628479,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "들어",
+                "name": "들어"
+              }
+            ],
+            "source_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+            "source_task": "사람과 이름의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "개발자",
+              "개발"
+            ],
+            "cue_names": [
+              "비비",
+              "이름",
+              "관계"
+            ],
+            "error": 0.5,
+            "frequency_error": 1.0,
+            "history_count": 1493,
+            "predicted_names": [
+              "개발자",
+              "관계요",
+              "부르",
+              "왠지",
+              "형의",
+              "신기하",
+              "문장",
+              "사람"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992337,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 35,
+                "cooccurrence_count": 29,
+                "cosine_score": 0.71694229,
+                "cue_support_count": 2,
+                "key": "개발자",
+                "name": "개발자"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.71447484,
+                "cue_support_count": 2,
+                "key": "관계요",
+                "name": "관계요"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.69419224,
+                "cue_support_count": 2,
+                "key": "부르",
+                "name": "부르"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.69419224,
+                "cue_support_count": 2,
+                "key": "왠지",
+                "name": "왠지"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.63245553,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 11,
+                "cooccurrence_count": 6,
+                "cosine_score": 0.59069187,
+                "cue_support_count": 2,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.56568542,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.56497143,
+                "cue_support_count": 3,
+                "key": "사람",
+                "name": "사람"
+              }
+            ],
+            "source_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+            "source_task": "이름과 비비의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "프로그램"
+            ],
+            "cue_names": [
+              "비비",
+              "개발자",
+              "관계",
+              "개발"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1494,
+            "predicted_names": [
+              "성공",
+              "재도전",
+              "형의",
+              "이름",
+              "기억",
+              "문장",
+              "이야기",
+              "대화"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992352,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 1.0,
+                "cue_support_count": 1,
+                "key": "성공",
+                "name": "성공"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 1.0,
+                "cue_support_count": 1,
+                "key": "재도전",
+                "name": "재도전"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.60302269,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.56151586,
+                "cue_support_count": 3,
+                "key": "이름",
+                "name": "이름"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 16,
+                "cosine_score": 0.55198976,
+                "cue_support_count": 3,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.53935989,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 6,
+                "cosine_score": 0.49907081,
+                "cue_support_count": 3,
+                "key": "이야기",
+                "name": "이야기"
+              },
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 10,
+                "cosine_score": 0.47508828,
+                "cue_support_count": 2,
+                "key": "대화",
+                "name": "대화"
+              }
+            ],
+            "source_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+            "source_task": "비비와 개발자의 관계를 말해줘."
+          }
+        ],
+        "production_block_reason": "same_pairs_used_for_candidate_selection",
+        "production_promotion_gate": false,
+        "random_expected_mean_error": 0.992315,
+        "robustness_gate": false,
+        "tied_with_frequency_pair_count": 2,
+        "variant": "historical_cosine",
+        "worse_than_frequency_pair_count": 3
+      },
+      "historical_multi_cue_cosine": {
+        "baseline_gate": false,
+        "better_than_frequency_pair_count": 1,
+        "data_gate": true,
+        "exploratory_gate": false,
+        "frequency_mean_error": 0.5,
+        "hit_count": 2,
+        "mean_error": 0.75,
+        "pairs": [
+          {
+            "actual_names": [
+              "도시"
+            ],
+            "cue_names": [
+              "날씨",
+              "하늘",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1489,
+            "predicted_names": [
+              "형의",
+              "문장",
+              "파란색",
+              "형은",
+              "형이",
+              "날씨 공부",
+              "물",
+              "비"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992278,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.81649658,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.73029674,
+                "cue_support_count": 1,
+                "key": "문장",
+                "name": "문장"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "파란색",
+                "name": "파란색"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.61237244,
+                "cue_support_count": 1,
+                "key": "형은",
+                "name": "형은"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "형이",
+                "name": "형이"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.57735027,
+                "cue_support_count": 1,
+                "key": "날씨 공부",
+                "name": "날씨 공부"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.5,
+                "cue_support_count": 1,
+                "key": "물",
+                "name": "물"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.5,
+                "cue_support_count": 1,
+                "key": "비",
+                "name": "비"
+              }
+            ],
+            "source_experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+            "source_task": "하늘과 날씨의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "사람"
+            ],
+            "cue_names": [
+              "도시",
+              "날씨",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1490,
+            "predicted_names": [
+              "친구래요",
+              "크고",
+              "신기하",
+              "되게",
+              "하늘",
+              "미국 특별시 종류",
+              "형의",
+              "미국"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992293,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "친구래요",
+                "name": "친구래요"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.87796447,
+                "cue_support_count": 2,
+                "key": "크고",
+                "name": "크고"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.63620533,
+                "cue_support_count": 2,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.62081463,
+                "cue_support_count": 2,
+                "key": "되게",
+                "name": "되게"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.50689302,
+                "cue_support_count": 2,
+                "key": "하늘",
+                "name": "하늘"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 1.0,
+                "cue_support_count": 1,
+                "key": "미국 특별시 종류",
+                "name": "미국 특별시 종류"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.75592895,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "미국",
+                "name": "미국"
+              }
+            ],
+            "source_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+            "source_task": "날씨와 도시의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "이름"
+            ],
+            "cue_names": [
+              "도시",
+              "사람",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": 1491,
+            "predicted_names": [
+              "보면",
+              "상상해",
+              "궁금하",
+              "모르",
+              "날씨",
+              "영화",
+              "형의",
+              "멜로디"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992308,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "보면",
+                "name": "보면"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 1.06066017,
+                "cue_support_count": 2,
+                "key": "상상해",
+                "name": "상상해"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.75,
+                "cue_support_count": 2,
+                "key": "궁금하다",
+                "name": "궁금하"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.75,
+                "cue_support_count": 2,
+                "key": "모르",
+                "name": "모르"
+              },
+              {
+                "candidate_document_frequency": 5,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.63245553,
+                "cue_support_count": 2,
+                "key": "날씨",
+                "name": "날씨"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.81649658,
+                "cue_support_count": 1,
+                "key": "영화",
+                "name": "영화"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 1,
+                "cosine_score": 0.70710678,
+                "cue_support_count": 1,
+                "key": "멜로디",
+                "name": "멜로디"
+              }
+            ],
+            "source_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+            "source_task": "도시와 사람의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "비비"
+            ],
+            "cue_names": [
+              "이름",
+              "사람",
+              "관계"
+            ],
+            "error": 0.0,
+            "frequency_error": 0.0,
+            "history_count": 1492,
+            "predicted_names": [
+              "관계인",
+              "커다란",
+              "도시",
+              "마치",
+              "비비",
+              "기억",
+              "형의",
+              "영화"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992322,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.9106836,
+                "cue_support_count": 2,
+                "key": "관계인",
+                "name": "관계인"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.9106836,
+                "cue_support_count": 2,
+                "key": "커다란",
+                "name": "커다란"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.71823351,
+                "cue_support_count": 2,
+                "key": "도시",
+                "name": "도시"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.64395055,
+                "cue_support_count": 2,
+                "key": "마치",
+                "name": "마치"
+              },
+              {
+                "candidate_document_frequency": 70,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.26418657,
+                "cue_support_count": 2,
+                "key": "비비",
+                "name": "비비"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.17479246,
+                "cue_support_count": 2,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.66666667,
+                "cue_support_count": 1,
+                "key": "형의",
+                "name": "형의"
+              },
+              {
+                "candidate_document_frequency": 3,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.66666667,
+                "cue_support_count": 1,
+                "key": "영화",
+                "name": "영화"
+              }
+            ],
+            "source_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+            "source_task": "사람과 이름의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "개발자",
+              "개발"
+            ],
+            "cue_names": [
+              "비비",
+              "이름",
+              "관계"
+            ],
+            "error": 0.5,
+            "frequency_error": 1.0,
+            "history_count": 1493,
+            "predicted_names": [
+              "사람",
+              "기억",
+              "개발자",
+              "관계요",
+              "부르",
+              "왠지",
+              "신기하",
+              "박재현"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992337,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 4,
+                "cosine_score": 0.56497143,
+                "cue_support_count": 3,
+                "key": "사람",
+                "name": "사람"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 12,
+                "cosine_score": 0.44534076,
+                "cue_support_count": 3,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 35,
+                "cooccurrence_count": 29,
+                "cosine_score": 0.71694229,
+                "cue_support_count": 2,
+                "key": "개발자",
+                "name": "개발자"
+              },
+              {
+                "candidate_document_frequency": 2,
+                "cooccurrence_count": 3,
+                "cosine_score": 0.71447484,
+                "cue_support_count": 2,
+                "key": "관계요",
+                "name": "관계요"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.69419224,
+                "cue_support_count": 2,
+                "key": "부르",
+                "name": "부르"
+              },
+              {
+                "candidate_document_frequency": 1,
+                "cooccurrence_count": 2,
+                "cosine_score": 0.69419224,
+                "cue_support_count": 2,
+                "key": "왠지",
+                "name": "왠지"
+              },
+              {
+                "candidate_document_frequency": 11,
+                "cooccurrence_count": 6,
+                "cosine_score": 0.59069187,
+                "cue_support_count": 2,
+                "key": "신기하다",
+                "name": "신기하"
+              },
+              {
+                "candidate_document_frequency": 10,
+                "cooccurrence_count": 8,
+                "cosine_score": 0.38409799,
+                "cue_support_count": 2,
+                "key": "박재현",
+                "name": "박재현"
+              }
+            ],
+            "source_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+            "source_task": "이름과 비비의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "프로그램"
+            ],
+            "cue_names": [
+              "비비",
+              "개발자",
+              "관계",
+              "개발"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": 1494,
+            "predicted_names": [
+              "이름",
+              "기억",
+              "이야기",
+              "학습",
+              "대화",
+              "형",
+              "기쁨",
+              "공부"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992352,
+            "rank_diagnostics": [
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.56151586,
+                "cue_support_count": 3,
+                "key": "이름",
+                "name": "이름"
+              },
+              {
+                "candidate_document_frequency": 18,
+                "cooccurrence_count": 16,
+                "cosine_score": 0.55198976,
+                "cue_support_count": 3,
+                "key": "기억",
+                "name": "기억"
+              },
+              {
+                "candidate_document_frequency": 4,
+                "cooccurrence_count": 6,
+                "cosine_score": 0.49907081,
+                "cue_support_count": 3,
+                "key": "이야기",
+                "name": "이야기"
+              },
+              {
+                "candidate_document_frequency": 9,
+                "cooccurrence_count": 5,
+                "cosine_score": 0.27637026,
+                "cue_support_count": 3,
+                "key": "학습",
+                "name": "학습"
+              },
+              {
+                "candidate_document_frequency": 8,
+                "cooccurrence_count": 10,
+                "cosine_score": 0.47508828,
+                "cue_support_count": 2,
+                "key": "대화",
+                "name": "대화"
+              },
+              {
+                "candidate_document_frequency": 20,
+                "cooccurrence_count": 17,
+                "cosine_score": 0.46541443,
+                "cue_support_count": 2,
+                "key": "형",
+                "name": "형"
+              },
+              {
+                "candidate_document_frequency": 7,
+                "cooccurrence_count": 9,
+                "cosine_score": 0.46271534,
+                "cue_support_count": 2,
+                "key": "기쁨",
+                "name": "기쁨"
+              },
+              {
+                "candidate_document_frequency": 19,
+                "cooccurrence_count": 14,
+                "cosine_score": 0.45203342,
+                "cue_support_count": 2,
+                "key": "공부",
+                "name": "공부"
+              }
+            ],
+            "source_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+            "source_task": "비비와 개발자의 관계를 말해줘."
+          }
+        ],
+        "production_block_reason": "same_pairs_used_for_candidate_selection",
+        "production_promotion_gate": false,
+        "random_expected_mean_error": 0.992315,
+        "robustness_gate": false,
+        "tied_with_frequency_pair_count": 3,
+        "variant": "historical_multi_cue_cosine",
+        "worse_than_frequency_pair_count": 2
+      },
+      "stored_live_graph": {
+        "baseline_gate": false,
+        "better_than_frequency_pair_count": 0,
+        "data_gate": true,
+        "exploratory_gate": false,
+        "frequency_mean_error": 0.5,
+        "hit_count": 1,
+        "mean_error": 0.833333,
+        "pairs": [
+          {
+            "actual_names": [
+              "도시"
+            ],
+            "cue_names": [
+              "날씨",
+              "하늘",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": null,
+            "predicted_names": [
+              "문장",
+              "세상",
+              "서울",
+              "AI (비비)",
+              "AI",
+              "형의",
+              "형은",
+              "말해줘"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992278,
+            "rank_diagnostics": [],
+            "source_experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+            "source_task": "하늘과 날씨의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "사람"
+            ],
+            "cue_names": [
+              "도시",
+              "날씨",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": null,
+            "predicted_names": [
+              "문장",
+              "세상",
+              "서울",
+              "AI (비비)",
+              "AI",
+              "형의",
+              "형은",
+              "말해줘"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992293,
+            "rank_diagnostics": [],
+            "source_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+            "source_task": "날씨와 도시의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "이름"
+            ],
+            "cue_names": [
+              "도시",
+              "사람",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 0.0,
+            "history_count": null,
+            "predicted_names": [
+              "문장",
+              "세상",
+              "미국 특별시 종류",
+              "딥러닝",
+              "교토",
+              "형의",
+              "형은",
+              "말해줘"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992308,
+            "rank_diagnostics": [],
+            "source_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+            "source_task": "도시와 사람의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "비비"
+            ],
+            "cue_names": [
+              "이름",
+              "사람",
+              "관계"
+            ],
+            "error": 0.0,
+            "frequency_error": 0.0,
+            "history_count": null,
+            "predicted_names": [
+              "사용자",
+              "문장",
+              "형의",
+              "말해줘",
+              "세상",
+              "비비",
+              "형은",
+              "개발자"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992322,
+            "rank_diagnostics": [],
+            "source_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+            "source_task": "사람과 이름의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "개발자",
+              "개발"
+            ],
+            "cue_names": [
+              "비비",
+              "이름",
+              "관계"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": null,
+            "predicted_names": [
+              "공부",
+              "대화",
+              "기분",
+              "놀이",
+              "형",
+              "기쁨",
+              "사용자",
+              "인터넷"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992337,
+            "rank_diagnostics": [],
+            "source_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+            "source_task": "이름과 비비의 관계를 말해줘."
+          },
+          {
+            "actual_names": [
+              "프로그램"
+            ],
+            "cue_names": [
+              "비비",
+              "개발자",
+              "관계",
+              "개발"
+            ],
+            "error": 1.0,
+            "frequency_error": 1.0,
+            "history_count": null,
+            "predicted_names": [
+              "공부",
+              "대화",
+              "기분",
+              "놀이",
+              "형",
+              "기쁨",
+              "사용자",
+              "인터넷"
+            ],
+            "prediction_count": 8,
+            "random_expected_error": 0.992352,
+            "rank_diagnostics": [],
+            "source_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+            "source_task": "비비와 개발자의 관계를 말해줘."
+          }
+        ],
+        "production_block_reason": "same_pairs_used_for_candidate_selection",
+        "production_promotion_gate": false,
+        "random_expected_mean_error": 0.992315,
+        "robustness_gate": false,
+        "tied_with_frequency_pair_count": 4,
+        "variant": "stored_live_graph",
+        "worse_than_frequency_pair_count": 2
+      }
+    }
+  },
+  "experience_ids": [
+    "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+    "b8e867e6-a164-4dcf-8426-4618195a2f72",
+    "876b0ef6-1487-4171-94da-151ec18bd049",
+    "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+    "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+    "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+    "c97413f8-dc87-44d1-b2c6-97b57f261be7"
+  ],
+  "phase": "B5.2",
+  "source_artifact": "E:\\A2A\\our-a2a-project\\claudedocs\\research\\b5_1_external_outcome_pilot_v2_1_20260715.json",
+  "source_contract_sha256": "9c977463837208b69d3ec61054dba28fffc17158c6db0572cc07a433e911d5ce",
+  "status": "completed",
+  "temporal_integrity": {
+    "history_strictly_before_source": true,
+    "mutable_relationship_strength_used": false,
+    "target_input_used_for_ranking": false
+  },
+  "transition_route": {
+    "conversation_count": 1496,
+    "eligible": false,
+    "next_turn_link_count": 0,
+    "reason": "no_session_id_or_NEXT_TURN_boundary",
+    "with_session_id": 0,
+    "with_speaker_id": 0,
+    "with_user_id": 0
+  }
+}

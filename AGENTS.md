@@ -3,11 +3,11 @@
 > **크로스툴 단일 진입점.** Codex는 이 파일을 자동 로드한다. Claude Code는 `CLAUDE.md` 최상단의 `@AGENTS.md`로 임포트한다.
 > ⚠️ **Claude auto-memory(`C:\Users\SOGANG\.claude\projects\E--A2A\memory\`)는 Claude 전용 — Codex는 못 읽는다.** Codex는 아래 "상세 문서"의 경로를 직접 열어라. **세션 인계는 반드시 이 파일 + repo 공유 파일을 통해서만** 한다.
 
-## 🔖 현재 상태 / 재개 (2026-07-15 체크포인트)
+## 🔖 현재 상태 / 재개 (2026-07-16 체크포인트)
 **"이어서 하자"면 여기부터.** 상세 이력·수치는 `CHANGELOG.md` 최상단 + `claudedocs/**/2026-07*.md`.
 
 ### 어디까지 왔나 (한눈에)
-**자기학습 체인 end-to-end 검증 + 살아있는 시스템 전환 완료** (현재 push 기준 `DB_Renewal` local/remote HEAD `7b4862e`; B5까지 push 완료, B5.1은 현재 미커밋).
+**자기학습 체인 end-to-end 검증 + 살아있는 시스템 전환 완료** (현재 push 기준 `DB_Renewal` local/remote HEAD `42268bf`; B5.1까지 push 완료, B5.2는 현재 미커밋).
 - Phase 0 기반 ✅ · **Phase 1 가소성 ✅**: RW 음성증거(w_ab→P(b|a))=자기학습 신호, **다양성 주도**(prequential서 빈도·암기 초과, time-shuffle서 붕괴=진짜 시간학습). `PHASE1_PLASTICITY_FINDINGS.md`.
 - **Phase 2 코어 내재학습 ✅ 이번 세션 완주** (`PHASE2_SLEEP_DISTILL_2026-07-13.md`): ① 학습코어가 그래프 역전(N≈2~4천, **weight-homeostasis 필수**·causal 확인; 없으면 발산해 짐) ② CLS 안티망각(순차태스크서 online −0.32 vs replay +0.03) ③ **실 LLM+LoRA(Qwen2.5-0.5B)가 실 Neo4j 아기 특이연상(비비·형) 학습**(identity MRR 0.081→0.176, 3시드) ④ **살아있는 로컬 코어**: 어댑터 디스크 영속(`models/local_core_adapter/`), 누적성장 0.089→0.123→0.152 ⑤ **라이브 트리거**: consolidate 훅서 야간 자동학습, env `LOCAL_CORE_DISTILL=1` opt-in, 프로덕션 하드닝(게이팅+락+OOM/backoff, adversarial review).
 - **Phase 4 embodiment**: 파이프라인 준비됨(pose/depth 캡처·`NEXT_FRAME` 시퀀스)이나 **Quest 데이터 없음=병목**. `EMBODIMENT_PIPELINE_2026-07-12.md`.
@@ -25,8 +25,9 @@
 - **[B-4] canonical scoring offline gate 실패(정직)**: 보존 12 Experience read-only replay에서 exact mean error `1.0`→canonical `0.9833`, 개선 1/12(`신기한↔신기하`)뿐. scored actual 53개 중 40개(75.5%)가 Experience 이후 신규 Concept라 사전 ID 예측 불가. 사전 존재 13개만 제한해도 scorable 9턴 mean error `0.8889`, hit 1개. 따라서 canonical scorer는 production에 연결하지 않았다. **다음=[B-5] 동일 turn의 자기생성 응답 대신 다음 사용자 입력/센서 관측 같은 외부 outcome을 예측 대상으로 삼는 offline sequence 설계.**
 - **[B-5] external outcome offline gate = 데이터 부족으로 판정 불가(2026-07-15)**: 12개 보존 turn을 4개 독립 시퀀스의 8개 `t→t+1` pair로 정확히 재구성했다. 다음 사용자 입력은 모두 동일 cue 반복(`서울/컴퓨터/학습`)뿐이라 cue 제외 후 scorable external outcome `0`, graph/frequency/random error는 계산 불가. 센서 쪽은 vision Experience 45개·NEXT_FRAME 36개가 있으나 prediction snapshot이 붙은 vision Experience가 `0`이라 역시 점수화 불가. `promotion_gate=false`; production·threshold는 변경하지 않았다. **다음=[B-5.1] 최소 6쌍·고유 비-cue 외부 outcome 4개 이상을 만드는 다양한 후속 사용자 입력 수집, 또는 vision pre-frame prediction snapshot 설계 후 재평가.**
 - **[B-5.1] 외부 outcome 사용자 입력 파일럿 완료 — 데이터 gate 통과, 성능 gate 실패(2026-07-15)**: 7개 사전등록 입력으로 6개 `t→t+1` pair와 고유 preexisting outcome 7개를 확보했다. same-turn LLM 점수 오염을 막는 double opt-in `external_deferred` 모드에서 Concept curiosity state는 무변경이었다. 깨끗한 v2.1 재평가에서 graph mean error `0.833333`(hit 1)로 frequency `0.5`(hit 3)보다 나빴고, graph가 frequency를 이긴 pair도 `0/6`이라 `promotion_gate=false`. **다음=[B-5.2] 추가 live 수집·threshold 조정보다 먼저, 저장된 외부 sequence에서 hub/general concept 편향을 진단하고 per-cue/transition-aware predictor를 frequency baseline과 offline 비교.**
+- **[B-5.2] predictor ablation 완료 — 개선 후보도 frequency gate 실패(2026-07-15)**: production의 cue-neighbor union + `max(mutable edge strength)`는 degree penalty와 multi-cue 보상이 없고 과거 strength 버전을 복원할 수 없다. 따라서 source보다 엄격히 이전의 conversation Experience/INVOLVES만으로 co-occurrence, cosine, multi-cue cosine을 read-only 비교했다. 최고 후보 co-occurrence/multi-cue는 mean error `0.75`, hit `2`로 stored graph `0.833333`, hit `1`보다 조금 나았지만 frequency `0.5`, hit `3`에 여전히 패했다. cosine은 `0.916667`. 1,496 conversation에 session/speaker/user ID와 NEXT_TURN이 모두 `0`이라 안전한 transition 학습도 불가. **다음=[B-5.3] opt-in sequence boundary/turn-index 계약을 offline/unit으로 먼저 설계하고, train/held-out가 분리된 여러 사전등록 sequence를 확보.**
 - **[C] 자율·대안**: 운영화(실제 켜서 며칠 성장추적) + collapse(effective rank≈2) 장기감시.
-- **⚠️ 메타**: same-turn outcome은 부적합했고 B5.1에서 valid external evaluation 데이터는 확보했지만, 현재 graph predictor가 단순 frequency baseline에 패했다. threshold(현재 0.02, 최소 3회)는 유지하며 B5.2 offline predictor gate를 통과하기 전 production 승격·추가 live 표본 확대 금지.
+- **⚠️ 메타**: same-turn outcome은 부적합했고 B5.1에서 valid external evaluation 데이터는 확보했지만, B5.2의 세 후보도 frequency baseline에 패했다. 같은 6쌍으로 후보를 선택했으므로 exploratory pass가 나와도 production 근거가 될 수 없다. threshold(현재 0.02, 최소 3회)는 유지하며 B5.3의 명시적 sequence/held-out 계약 전 production 승격 금지.
 - (보류·비가역, 사용자 확인 후) 방향성 엣지 마이그레이션 + RW 프로덕션 `hebbian_update` 반영.
 
 ### 전제

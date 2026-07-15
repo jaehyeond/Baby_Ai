@@ -5,6 +5,26 @@
 
 ---
 
+## 2026-07-15 (Phase 3 [B-5.2] graph predictor read-only ablation)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.2]` 절.
+
+### 완료 ✅ (원인 분해·시간누출 없는 비교) / 승격 ❌
+- **B5.1 재감사**: 사용자 push 후 `DB_Renewal` local/remote HEAD `42268bf` 일치, worktree clean을 확인했다. v2.1 artifact와 Neo4j read-only 재평가가 data gate `true`, graph/frequency/random error `0.833333/0.5/0.992315`, hit `1/3`, `promotion_gate=false`를 그대로 재현했다. 기존 보고는 정확했고, 체크포인트의 “7b4862e/B5.1 미푸시” 문구만 stale해 현재 문서에서 교정했다.
+- **current predictor root cause**: 모든 cue의 `RELATES_TO` 이웃을 합치고 cue별 지지 수나 후보 degree 벌점 없이 `max(coalesce(hebb_strength,strength))` 한 값으로 전역 top-8을 고른다. 관계 strength는 이후 계속 바뀌지만 역사 버전은 없어 현재 그래프로 과거 rank를 재생하면 future leakage가 생긴다.
+- **시간누출 방지 계약**: `scripts/research/b5_2_graph_predictor_ablation.py`는 source Experience보다 엄격히 이전의 conversation Experience와 불변 `INVOLVES` 링크만 사용한다. target input, source 이후 history, 현재 mutable edge strength를 ranking에 쓰지 않으며 모든 Cypher는 read-only다.
+- **exploratory 후보**: historical co-occurrence 합, global hub 빈도를 나누는 cosine association, 여러 cue의 공동 지지를 먼저 보는 multi-cue cosine을 동일 top-8로 비교했다. 같은 B5.1 6쌍으로 후보를 선택했으므로 후보가 gate를 통과해도 새 preregistered held-out 전에는 production promotion을 항상 차단한다.
+- **결과**: stored live graph=`0.833333`/hit `1`; co-occurrence=`0.75`/hit `2`; cosine=`0.916667`/hit `1`; multi-cue cosine=`0.75`/hit `2`; frequency=`0.5`/hit `3`. 최고 후보도 frequency보다 좋은 pair `1`, tie `3`, worse `2`라 baseline/robustness/exploratory gate 모두 실패했다. 개선은 기존 `비비` 외 `개발자` 부분 hit 하나뿐이고 `도시·사람·이름` 전이는 모두 놓쳤다.
+- **transition route 차단 근거**: conversation Experience `1,496`; session_id `0`, speaker_id `0`, user_id `0`, NEXT_TURN link `0`. 전역 timestamp 인접 turn을 연결하면 서로 다른 대화 스트림을 섞으므로 transition-aware predictor를 만들지 않았다.
+- **검증**: 신규 6 unit을 포함한 전체 `64 passed`; py_compile, `pip check`, `git diff --check` 통과. Neo4j write/Gemini/live server 호출 없음, FastAPI 8000 DOWN. `conversation_handler.py` current/HEAD blob `054d974095be7425692860909181fafd54f97a33` 동일.
+
+### 다음 작업
+- **[B-5.3] sequence-grounded 데이터 계약**: 보호 handler 밖 endpoint/DB층에서 research opt-in `external_sequence_id`와 `external_turn_index`를 Experience에 저장하고 잘못된 순서·중복·stream 교차를 unit에서 fail-closed 검증한다.
+- 후보 선택용 여러 train sequence와 완전히 별도의 preregistered held-out sequence를 확보한다. B5.2 후보는 held-out에서 frequency/random과 robustness gate를 이길 때만 다음 live production 검토 대상으로 삼는다.
+- threshold 0.02, min observations 3, production predictor/scorer는 유지한다. B5.2 연구 스크립트·테스트·artifact·문서는 현재 미커밋·미푸시이며 commit/push는 사용자 명시 시만 수행한다.
+
+---
+
 ## 2026-07-15 (Phase 3 [B-5.1] preregistered external outcome live pilot)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.1]` 절.
@@ -22,7 +42,7 @@
 ### 다음 작업
 - **[B-5.2] predictor 진단을 offline에서 먼저 수행**: 현재 예측에 `문장`, `세상`, `말해줘` 같은 hub/general concept가 상위권을 차지하는 원인을 query/ranking 수준에서 분해한다.
 - 저장된 external sequence에 대해 per-cue top-k, transition-aware ranking, generic/hub penalty 같은 최소 후보를 ablation하고, 같은 future-leak 없는 frequency/random baseline보다 반복적으로 좋아질 때만 다음 live pilot을 허용한다.
-- threshold 0.02, min observations 3, production scorer는 유지한다. 현재 B5.1 코드는 미커밋·미푸시 상태이며 commit/push는 사용자 명시 시만 수행한다.
+- threshold 0.02, min observations 3, production scorer는 유지한다. B5.1 범위는 이후 사용자 push `42268bf`에 반영됐다.
 
 ---
 

@@ -301,3 +301,56 @@
 추가 live 수집이나 threshold 조정 전에 저장된 sequence에서 query/ranking을 offline 진단한다. 현재 상위 예측의
 hub/general concept 편향을 분해하고, per-cue top-k·transition-aware ranking·generic/hub penalty의 최소 ablation을
 동일한 future-leak 없는 frequency/random baseline과 비교한다. 이 gate를 반복적으로 이길 때만 다음 live pilot을 연다.
+
+## [B-5.2] graph predictor read-only ablation (2026-07-15)
+
+### B5.1 선행 재감사
+- 사용자 push 후 local/remote HEAD `42268bf` 일치와 clean worktree를 확인했다.
+- 저장 artifact와 Neo4j read-only 재평가가 graph/frequency/random mean error
+  `0.833333/0.5/0.992315`, graph/frequency hit `1/3`, `promotion_gate=false`를 그대로 재현했다.
+- B5.1 성능 보고는 정확했다. push 전 작성된 체크포인트의 HEAD/미푸시 문구만 교정 대상이었다.
+
+### 현재 predictor의 구조적 원인
+- `prepare_curiosity_prediction()`은 선택 cue 전체의 `RELATES_TO` 이웃을 합친 뒤
+  `max(coalesce(rel.hebb_strength, rel.strength, 0))` 한 값으로 전역 top-8을 고른다.
+- candidate degree 벌점과 여러 cue의 공동 지지 보상이 없어 `문장`, `세상`, `형의` 같은 자주 연결된
+  일반 concept가 한 개의 강한 edge만으로 상위권을 차지한다.
+- RELATES_TO strength는 후속 학습에서 계속 변하지만 과거 버전이 없다. 현재 edge strength로 B5.1 시점을
+  재계산하면 future leakage이므로 성능 ablation에는 사용하지 않았다.
+
+### 시간누출 없는 후보와 안전장치
+- source보다 엄격히 이전의 conversation Experience와 불변 `INVOLVES` concept만 사용했다.
+- 후보는 historical co-occurrence 합, candidate document frequency로 hub를 누르는 cosine association,
+  여러 cue에서 함께 지지된 후보를 먼저 두는 multi-cue cosine 세 가지다.
+- ranking 함수에는 target input을 전달하지 않는다. source 이후 history와 mutable 관계 strength도 사용하지 않는다.
+- 같은 6 pair로 후보 선택과 측정을 함께 했으므로 exploratory gate가 통과해도 production promotion은 항상 false다.
+
+### 결과
+| predictor | mean error | hit | vs frequency better/tie/worse | exploratory gate |
+|---|---:|---:|---:|---|
+| stored live graph | 0.833333 | 1 | 0/4/2 | false |
+| historical co-occurrence | **0.75** | **2** | 1/3/2 | false |
+| historical cosine | 0.916667 | 1 | 1/2/3 | false |
+| historical multi-cue cosine | **0.75** | **2** | 1/3/2 | false |
+| frequency baseline | **0.5** | **3** | - | - |
+
+- co-occurrence 계열은 기존 `비비` hit에 `개발자` 하나를 부분적으로 추가했을 뿐이다. 첫 세 외부 전이
+  `도시`, `사람`, `이름`과 마지막 `프로그램`은 계속 놓쳤다.
+- cosine은 hub를 누르는 대신 데이터가 희박한 표면형/문장 파편을 올려 stored graph보다도 나빠졌다.
+- `any_exploratory_gate_passed=false`, `production_promotion_gate=false`. production query와 threshold는 유지한다.
+
+### transition-aware 경로가 아직 불가능한 이유
+- conversation Experience `1,496`개 중 session_id, speaker_id, user_id가 있는 항목은 각각 `0`이고
+  NEXT_TURN link도 `0`이다.
+- timestamp로 전역 인접 Experience를 묶으면 서로 다른 사용자/실험 스트림 경계를 넘을 수 있다. 따라서
+  근거 없는 transition 모델을 만들지 않았다.
+
+### 검증과 다음 [B-5.3]
+- 산출: `scripts/research/b5_2_graph_predictor_ablation.py`,
+  `tests/test_b5_2_graph_predictor_ablation.py`,
+  `claudedocs/research/b5_2_graph_predictor_ablation_20260715.json`.
+- 전체 `64 passed`, py_compile, `pip check`, `git diff --check` 통과. DB write/Gemini/live server 호출 없음.
+  FastAPI 8000 DOWN, 보호 handler current/HEAD blob `054d974…` 동일.
+- 다음은 endpoint/DB층 research opt-in sequence ID와 turn index를 offline/unit으로 먼저 설계한다. 후보 선택용
+  train sequence와 별도 preregistered held-out sequence가 생기기 전에는 추가 predictor tuning이나 production
+  promotion을 하지 않는다.
