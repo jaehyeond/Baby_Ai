@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-07-16 (Phase 3 [B-5.3] sequence-grounded external outcome contract)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.3]` 절.
+
+### 완료 ✅ (offline/unit + real read-only Cypher preflight) / live 수집 보류
+- **push 기준점**: 시작 시 `DB_Renewal` local/remote HEAD가 사용자 push `5b74663`으로 일치하고 worktree clean이었다. 이 커밋에 B5.2 script/test/artifact/docs가 포함됨을 확인했다.
+- **필수 계약** (`neural/baby/external_sequence.py`): `external_sequence_id`, 0-based `external_turn_index`, `external_sequence_split=train|heldout`, `external_sequence_contract_sha256` 네 필드를 정규화한다. ID/turn/split/hash 형식이 하나라도 잘못되면 handler 전에 422로 거부한다.
+- **endpoint fail-closed**: research flag는 JSON boolean만 허용한다. 평가 env가 꺼짐, sequence metadata만 단독 전달, DB expected turn 불일치, prediction snapshot 없음에서는 normal same-turn scorer로 fallback하지 않고 handler 전 중단한다. 연구 metadata는 보호 handler context에 전달하지 않는다.
+- **DB 이중검사·순서 연결**: endpoint read-only preflight 뒤 `defer_curiosity_outcome_scoring()`의 managed write transaction에서 동일 상태를 다시 검사한다. 성공 시 Experience에 sequence/split/hash/turn을 저장하고 이전 turn과 `NEXT_EXTERNAL_TURN`으로 연결한다. rejected state는 snapshot/sequence 속성을 쓰지 않는다.
+- **격리 규칙**: duplicate turn, gap, 기존 sequence 손상, split 변경, manifest hash 변경, 같은 manifest hash의 train/heldout 교차 재사용을 모두 거부한다. B5.1 live pilot도 새 계약과 audit 필드를 보내도록 호환 갱신했으며 기존 artifact read-only 재평가는 같은 수치를 유지했다.
+- **offline 증거**: `b5_3_sequence_contract.py` matrix 8/8 통과. artifact는 `database_writes=false`, `live_collection_started=false`, `production_promotion_gate=false`를 명시한다. 실제 Neo4j에서 새 sequence turn 0 state query=`valid`, 저장 Cypher는 `EXPLAIN valid`; 실행 write는 하지 않았다.
+- **정직한 한계**: 현재 contract는 순차 단일 프로세스 pilot용 single-writer다. multi-writer production에서는 `(sequence_id, turn_index)` 중복을 원천 차단하는 DB unique constraint/lock이 추가로 필요하다.
+- **검증**: 전체 `81 passed`; py_compile, `pip check`, `git diff --check` 통과. Gemini/FastAPI live 호출과 Neo4j write 없음, 8000 DOWN. `conversation_handler.py` current/HEAD blob `054d974095be7425692860909181fafd54f97a33` 동일.
+
+### 다음 작업
+- **[B-5.4-A] train manifest**: 서로 다른 여러 train sequence의 전체 문장·순서·hash를 먼저 고정하고 single-writer로 수집한다. train만으로 후보 predictor와 모든 hyperparameter를 결정·freeze한다.
+- **[B-5.4-B] sealed held-out**: held-out 내용은 모델 선택 과정에 노출하지 않고 SHA-256만 먼저 등록한다. predictor/code hash를 freeze한 후 held-out를 한 번만 수집·평가한다.
+- held-out가 frequency/random 및 B5 robustness gate를 모두 이길 때만 production 검토를 재개한다. B5.3 변경은 현재 미커밋·미푸시이며 commit/push는 사용자 명시 시만 수행한다.
+
+---
+
 ## 2026-07-15 (Phase 3 [B-5.2] graph predictor read-only ablation)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.2]` 절.
@@ -21,7 +42,7 @@
 ### 다음 작업
 - **[B-5.3] sequence-grounded 데이터 계약**: 보호 handler 밖 endpoint/DB층에서 research opt-in `external_sequence_id`와 `external_turn_index`를 Experience에 저장하고 잘못된 순서·중복·stream 교차를 unit에서 fail-closed 검증한다.
 - 후보 선택용 여러 train sequence와 완전히 별도의 preregistered held-out sequence를 확보한다. B5.2 후보는 held-out에서 frequency/random과 robustness gate를 이길 때만 다음 live production 검토 대상으로 삼는다.
-- threshold 0.02, min observations 3, production predictor/scorer는 유지한다. B5.2 연구 스크립트·테스트·artifact·문서는 현재 미커밋·미푸시이며 commit/push는 사용자 명시 시만 수행한다.
+- threshold 0.02, min observations 3, production predictor/scorer는 유지한다. B5.2 범위는 이후 사용자 push `5b74663`에 반영됐다.
 
 ---
 

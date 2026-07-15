@@ -354,3 +354,48 @@ hub/general concept 편향을 분해하고, per-cue top-k·transition-aware rank
 - 다음은 endpoint/DB층 research opt-in sequence ID와 turn index를 offline/unit으로 먼저 설계한다. 후보 선택용
   train sequence와 별도 preregistered held-out sequence가 생기기 전에는 추가 predictor tuning이나 production
   promotion을 하지 않는다.
+
+## [B-5.3] sequence-grounded external outcome contract (2026-07-16)
+
+### 목적
+B5.2에서 conversation 1,496개에 session/user/NEXT_TURN 경계가 없음을 확인했다. timestamp 인접성을 임의로
+이어 붙이는 대신, 앞으로 수집하는 external outcome turn에 명시적 sequence와 split을 부여한다. 이번 단계는
+계약과 offline 검증만 수행하며 새 Gemini 대화나 Neo4j Experience write를 실행하지 않는다.
+
+### 요청 계약과 endpoint 경계
+- 필수: `external_sequence_id`, 0-based `external_turn_index`, `external_sequence_split`(`train|heldout`),
+  `external_sequence_contract_sha256`.
+- `external_outcome_evaluation`은 JSON boolean만 허용한다. env gate가 꺼져 있거나 metadata가 누락/단독 전달되면
+  409/422로 fail-closed하며 기존 same-turn scorer로 조용히 돌아가지 않는다.
+- endpoint는 handler 전에 형식과 Neo4j expected turn을 읽기 전용 검사한다. sequence 연구 metadata는 context에서
+  제거해 보호된 `conversation_handler.py`에 전달하지 않는다. prediction snapshot이 없을 때도 handler 전 중단한다.
+
+### DB 재검사와 연결
+- `defer_curiosity_outcome_scoring()`은 managed write transaction 안에서 sequence state를 다시 읽는다.
+- duplicate/gap, 기존 index 손상, sequence split/hash 변경, 동일 manifest hash의 train/heldout 교차 재사용을 거부한다.
+- 성공 turn만 Experience에 sequence ID/index/split/hash를 기록하고 이전 Experience와
+  `NEXT_EXTERNAL_TURN`을 연결한다. curiosity EMA, BrainRegion, CuriosityLog는 계속 변경하지 않는다.
+- B5.1 live pilot request/audit도 새 필드를 사용하도록 갱신했다. 기존 B5.1 artifact의 read-only 재평가는
+  graph/frequency error `0.833333/0.5`, promotion false를 그대로 재현했다.
+
+### 검증
+| gate | 결과 |
+|---|---|
+| offline contract matrix | **8/8 pass** |
+| real Neo4j sequence-state query | `valid`, expected turn `0` |
+| persistence Cypher | `EXPLAIN valid` (실행 write 없음) |
+| DB writes / live collection | **0 / 0** |
+| production promotion | `false` |
+| 전체 tests | **81 passed** |
+
+- artifact: `claudedocs/research/b5_3_sequence_contract_20260716.json`.
+- py_compile, `pip check`, `git diff --check` 통과. FastAPI 8000 DOWN, 보호 handler current/HEAD blob
+  `054d974095be7425692860909181fafd54f97a33` 동일.
+- 현재 계약은 sequential single-writer research pilot용이다. production multi-writer 전에는
+  `(sequence_id, turn_index)` unique constraint 또는 동등한 DB lock이 필요하다.
+
+### 다음 [B-5.4]
+1. 여러 train sequence의 문장·순서·manifest hash를 먼저 고정하고 train 데이터만 수집한다.
+2. train에서 predictor와 hyperparameter를 결정한 뒤 code/algorithm hash를 freeze한다.
+3. held-out 내용은 모델 선택 과정에 노출하지 않고 hash만 미리 등록한다. freeze 후 한 번만 수집·평가한다.
+4. held-out에서 frequency/random 및 robustness gate를 모두 이길 때만 production 검토를 다시 연다.

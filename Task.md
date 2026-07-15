@@ -8,8 +8,8 @@
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: Phase 3 [B-5.3] sequence-grounded 데이터 계약** — [B-5.2]는 mutable graph strength의 과거 재생을 금지하고 source 시점 이전의 Experience/INVOLVES만으로 세 predictor를 비교했다. 최고 co-occurrence/multi-cue 후보도 mean error `0.75`, hit `2`로 frequency `0.5`, hit `3`보다 나빴다. cosine은 `0.916667`; exploratory/production gate 모두 `false`다.
-> **이번 세션 완료(검증)**: B5.1 artifact와 Neo4j read-only 재평가가 기존 보고와 정확히 일치했고 사용자 push `42268bf`를 확인했다. B5.2는 current query의 max-edge/hub 구조를 분해하고, 미래 history·mutable edge strength·target input을 쓰지 않는 3개 ablation을 실행했다. conversation 1,496개에 session/speaker/user ID와 NEXT_TURN이 모두 없어 안전한 transition 학습이 불가능함도 확인했다. 전체 `64 passed`, `pip check` 정상, 보호된 `conversation_handler.py` blob `054d974…` 무변경. 다음은 endpoint/DB층의 opt-in sequence ID·turn index 계약을 offline/unit에서 먼저 검증하고, 모델 선택용 train sequence와 별도 held-out sequence를 확보하는 것이다. 상세 `CHANGELOG.md` 최상단.
+> **현재 진입점: Phase 3 [B-5.4] sealed train/held-out manifest와 순차 수집** — [B-5.3]에서 sequence ID, 0-based turn index, train/heldout split, manifest SHA-256을 handler 전에 검사하고 DB transaction에서 재검사하는 계약을 완성했다. 아직 새 live Experience는 수집하지 않았다.
+> **이번 세션 완료(검증)**: 사용자 push `5b74663`(B5.2)에서 시작했다. 외부 평가 요청은 4개 sequence 필드를 모두 요구하며, missing/duplicate/gap/split 변경/hash 변경/train-heldout hash 재사용, env off, 비 boolean flag, snapshot 없음에서 fail-closed한다. 성공 turn은 Experience sequence 속성과 `NEXT_EXTERNAL_TURN`으로 연결될 준비가 됐다. offline matrix `8/8`, 실제 Neo4j read-only state query와 저장 Cypher `EXPLAIN` 통과, 기존 B5.1 재평가 호환, 전체 `81 passed`, 보호 handler blob `054d974…` 무변경. 다음은 train manifests만 먼저 공개·수집해 후보를 freeze하고, 미리 hash만 고정한 봉인 held-out를 마지막 1회 평가하는 것이다. 상세 `CHANGELOG.md` 최상단.
 
 ---
 

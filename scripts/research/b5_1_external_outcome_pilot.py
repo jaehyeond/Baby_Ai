@@ -33,6 +33,7 @@ from scripts.research import b5_external_outcome_evaluation as b5
 
 
 PILOT_NAME = "b5_1_preregistered_user_input_v2_1_20260715"
+PILOT_SPLIT = "train"
 PILOT_MESSAGES: tuple[str, ...] = (
     "하늘과 날씨의 관계를 말해줘.",
     "날씨와 도시의 관계를 말해줘.",
@@ -62,6 +63,10 @@ RETURN e.id AS experience_id,
        e.curiosity_scoring_mode AS scoring_mode,
        e.prediction_error AS prediction_error,
        e.learning_progress AS learning_progress,
+       e.external_sequence_id AS external_sequence_id,
+       e.external_turn_index AS external_turn_index,
+       e.external_sequence_split AS external_sequence_split,
+       e.external_sequence_contract_sha256 AS external_sequence_contract_sha256,
        cues,
        collect(DISTINCT {id: predicted.id, name: predicted.name}) AS predictions
 """
@@ -144,7 +149,11 @@ def validate_preregistered_contract(
     }
 
 
-def validate_deferred_turn(record: dict[str, Any], expected_message: str) -> dict[str, Any]:
+def validate_deferred_turn(
+    record: dict[str, Any],
+    expected_message: str,
+    expected_sequence: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Fail closed if a live turn was scored in the invalid same-turn mode."""
 
     cues = [item for item in record.get("cues") or [] if item and item.get("id")]
@@ -164,6 +173,15 @@ def validate_deferred_turn(record: dict[str, Any], expected_message: str) -> dic
         errors.append("no_cues")
     if not predictions:
         errors.append("no_predictions")
+    if expected_sequence:
+        for field in (
+            "external_sequence_id",
+            "external_turn_index",
+            "external_sequence_split",
+            "external_sequence_contract_sha256",
+        ):
+            if record.get(field) != expected_sequence.get(field):
+                errors.append(f"{field}_mismatch")
     return {
         "valid": not errors,
         "errors": errors,
@@ -173,6 +191,9 @@ def validate_deferred_turn(record: dict[str, Any], expected_message: str) -> dic
         "scoring_mode": record.get("scoring_mode"),
         "cue_count": len(cues),
         "prediction_count": len(predictions),
+        "external_sequence_id": record.get("external_sequence_id"),
+        "external_turn_index": record.get("external_turn_index"),
+        "external_sequence_split": record.get("external_sequence_split"),
     }
 
 
@@ -340,6 +361,8 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
             health_payload = health.json()
             if not health_payload.get("curiosity_external_outcome_eval_enabled"):
                 raise RuntimeError("server external-outcome deferred mode is not enabled")
+            if not health_payload.get("curiosity_external_sequence_contract_required"):
+                raise RuntimeError("server external sequence contract is not required")
 
             turns: list[dict[str, Any]] = []
             experience_ids: list[str] = []
@@ -351,6 +374,10 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
                         "context": {
                             "speaker_id": "b5_1_pilot",
                             "external_outcome_evaluation": True,
+                            "external_sequence_id": PILOT_NAME,
+                            "external_turn_index": index - 1,
+                            "external_sequence_split": PILOT_SPLIT,
+                            "external_sequence_contract_sha256": contract_sha256(),
                         },
                     },
                 )
@@ -364,7 +391,16 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
                     env["NEO4J_DATABASE"],
                     experience_id,
                 )
-                audit = validate_deferred_turn(audit_record, message)
+                audit = validate_deferred_turn(
+                    audit_record,
+                    message,
+                    {
+                        "external_sequence_id": PILOT_NAME,
+                        "external_turn_index": index - 1,
+                        "external_sequence_split": PILOT_SPLIT,
+                        "external_sequence_contract_sha256": contract_sha256(),
+                    },
+                )
                 turns.append({"turn": index, **audit})
                 experience_ids.append(experience_id)
                 if not audit["valid"]:
@@ -405,6 +441,7 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
                 "status": health_payload.get("status"),
                 "backend": health_payload.get("backend"),
                 "external_outcome_eval_enabled": True,
+                "external_sequence_contract_required": True,
             },
             "turns": turns,
             "deferred_state_audit": {

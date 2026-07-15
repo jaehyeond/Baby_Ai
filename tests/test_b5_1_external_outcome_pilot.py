@@ -112,6 +112,38 @@ def test_deferred_turn_audit_rejects_same_turn_scores() -> None:
     assert "same_turn_learning_progress_present" in audit["errors"]
 
 
+def test_deferred_turn_audit_checks_sequence_contract() -> None:
+    record = {
+        "experience_id": "exp-1",
+        "task": "컴퓨터와 로봇",
+        "created_at": "2026-07-15T00:00:00+00:00",
+        "scoring_mode": "external_deferred",
+        "prediction_error": None,
+        "learning_progress": None,
+        "cues": [_concept("computer", "컴퓨터")],
+        "predictions": [_concept("robot", "로봇")],
+        "external_sequence_id": pilot.PILOT_NAME,
+        "external_turn_index": 0,
+        "external_sequence_split": pilot.PILOT_SPLIT,
+        "external_sequence_contract_sha256": pilot.contract_sha256(),
+    }
+    expected = {
+        "external_sequence_id": pilot.PILOT_NAME,
+        "external_turn_index": 0,
+        "external_sequence_split": pilot.PILOT_SPLIT,
+        "external_sequence_contract_sha256": pilot.contract_sha256(),
+    }
+
+    assert pilot.validate_deferred_turn(record, record["task"], expected)["valid"] is True
+    invalid = pilot.validate_deferred_turn(
+        {**record, "external_turn_index": 1},
+        record["task"],
+        expected,
+    )
+    assert invalid["valid"] is False
+    assert "external_turn_index_mismatch" in invalid["errors"]
+
+
 def test_turn_audit_query_is_read_only() -> None:
     upper = f" {pilot.TURN_AUDIT_QUERY} {pilot.CUE_STATE_QUERY} ".upper()
     for mutation in (" CREATE ", " MERGE ", " SET ", " DELETE ", " REMOVE "):

@@ -39,6 +39,10 @@ import uvicorn
 from .neo4j_db import init_driver, close_driver, get_brain_db, get_driver, _DB_NAME
 from .concept_binding import extract_color_bindings, select_visual_cooc_concepts
 from .live_curiosity import build_curiosity_cue_terms
+from .external_sequence import (
+    EXTERNAL_SEQUENCE_CONTEXT_KEYS,
+    parse_external_sequence_context,
+)
 from .redis_client import (
     init_redis, close_redis, get_redis,
     CHANNEL_BABY_STATE, CHANNEL_NEURON_ACTIVATION,
@@ -255,6 +259,7 @@ async def health_check():
         "curiosity_external_outcome_eval_enabled": (
             os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
         ),
+        "curiosity_external_sequence_contract_required": True,
     }
 
 
@@ -495,15 +500,57 @@ async def conversation(request: ConversationRequest):
         # STEP 0 identity (2026-07, docs/IDENTITY_ACCESS_CONTROL.md): owner token 검증
         # + owner 사칭 차단. endpoint-level 이라 conversation_handler v30 미변경.
         ctx = dict(request.context or {})
-        external_outcome_eval_requested = bool(
-            ctx.pop("external_outcome_evaluation", False)
-        )
+        external_outcome_eval_flag = ctx.pop("external_outcome_evaluation", False)
+        if not isinstance(external_outcome_eval_flag, bool):
+            raise HTTPException(
+                status_code=422,
+                detail="external_outcome_evaluation must be a boolean",
+            )
+        external_outcome_eval_requested = external_outcome_eval_flag
+        raw_external_sequence = {
+            key: ctx.pop(key, None) for key in EXTERNAL_SEQUENCE_CONTEXT_KEYS
+        }
         external_outcome_eval_enabled = (
             os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
         )
-        defer_curiosity_scoring = (
-            external_outcome_eval_requested and external_outcome_eval_enabled
+        has_sequence_metadata = any(
+            value is not None for value in raw_external_sequence.values()
         )
+        if has_sequence_metadata and not external_outcome_eval_requested:
+            raise HTTPException(
+                status_code=422,
+                detail="external sequence metadata requires external_outcome_evaluation",
+            )
+        if external_outcome_eval_requested and not external_outcome_eval_enabled:
+            raise HTTPException(
+                status_code=409,
+                detail="external outcome evaluation is disabled on this server",
+            )
+
+        external_sequence = None
+        if external_outcome_eval_requested:
+            try:
+                external_sequence = parse_external_sequence_context(
+                    raw_external_sequence
+                )
+            except ValueError as contract_err:
+                raise HTTPException(status_code=422, detail=str(contract_err)) from contract_err
+            sequence_preflight = (
+                await get_brain_db().validate_external_sequence_turn(
+                    external_sequence
+                )
+            )
+            if sequence_preflight.get("status") != "valid":
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "reason": sequence_preflight.get("reason"),
+                        "expected_turn_index": sequence_preflight.get(
+                            "expected_turn_index"
+                        ),
+                    },
+                )
+        defer_curiosity_scoring = external_outcome_eval_requested
         claimed_sid = ctx.get("speaker_id", "unknown")
         owner_token = ctx.pop("owner_token", None)  # 비밀은 downstream에 전달 안 함
         # 상수시간 비교(타이밍 공격 방지) + OWNER_SECRET 미설정 시 fail-closed
@@ -546,6 +593,11 @@ async def conversation(request: ConversationRequest):
             )
         except Exception as curiosity_pre_err:
             logger.warning(f"curiosity prediction snapshot error: {curiosity_pre_err}")
+        if defer_curiosity_scoring and not curiosity_snapshot:
+            raise HTTPException(
+                status_code=409,
+                detail="external sequence requires a valid pre-turn prediction snapshot",
+            )
 
         result = await handle_conversation(
             message=request.message,
@@ -560,6 +612,7 @@ async def conversation(request: ConversationRequest):
                 curiosity_signal = await get_brain_db().defer_curiosity_outcome_scoring(
                     curiosity_snapshot,
                     result.get("experience_id"),
+                    external_sequence,
                 )
             else:
                 curiosity_signal = await get_brain_db().record_curiosity_outcome(
@@ -576,11 +629,30 @@ async def conversation(request: ConversationRequest):
                 )
             elif curiosity_signal.get("status") == "deferred":
                 logger.info(
-                    "[curiosity] external outcome deferred experience=%s",
+                    "[curiosity] external outcome deferred experience=%s sequence=%s turn=%s",
                     result.get("experience_id"),
+                    external_sequence.get("sequence_id") if external_sequence else None,
+                    external_sequence.get("turn_index") if external_sequence else None,
                 )
+            elif defer_curiosity_scoring:
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "reason": curiosity_signal.get("reason"),
+                        "expected_turn_index": curiosity_signal.get(
+                            "expected_turn_index"
+                        ),
+                    },
+                )
+        except HTTPException:
+            raise
         except Exception as curiosity_post_err:
             logger.warning(f"curiosity outcome scoring error: {curiosity_post_err}")
+            if defer_curiosity_scoring:
+                raise HTTPException(
+                    status_code=500,
+                    detail="external sequence snapshot persistence failed",
+                ) from curiosity_post_err
 
         # M1 SSE: stage 전이 검출 (handler 내부 update_baby_state 결과 사용)
         try:
@@ -598,6 +670,8 @@ async def conversation(request: ConversationRequest):
             logger.warning(f"publish_stage_transition error: {pub_err}")
 
         return ConversationResponse(**result)
+    except HTTPException:
+        raise
     except ImportError:
         # conversation_handler 미구현 시 fallback
         db = get_brain_db()

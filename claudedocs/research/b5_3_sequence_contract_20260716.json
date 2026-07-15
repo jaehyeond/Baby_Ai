@@ -1,0 +1,102 @@
+{
+  "allowed_splits": [
+    "train",
+    "heldout"
+  ],
+  "case_count": 8,
+  "cases": [
+    {
+      "actual_reason": null,
+      "actual_status": "valid",
+      "expected_reason": null,
+      "expected_status": "valid",
+      "expected_turn_index": 0,
+      "name": "first_train_turn",
+      "passed": true
+    },
+    {
+      "actual_reason": null,
+      "actual_status": "valid",
+      "expected_reason": null,
+      "expected_status": "valid",
+      "expected_turn_index": 2,
+      "name": "next_contiguous_train_turn",
+      "passed": true
+    },
+    {
+      "actual_reason": "duplicate_turn_index",
+      "actual_status": "rejected",
+      "expected_reason": "duplicate_turn_index",
+      "expected_status": "rejected",
+      "expected_turn_index": 2,
+      "name": "duplicate_turn_rejected",
+      "passed": true
+    },
+    {
+      "actual_reason": "out_of_order_turn",
+      "actual_status": "rejected",
+      "expected_reason": "out_of_order_turn",
+      "expected_status": "rejected",
+      "expected_turn_index": 1,
+      "name": "gap_rejected",
+      "passed": true
+    },
+    {
+      "actual_reason": "sequence_split_mismatch",
+      "actual_status": "rejected",
+      "expected_reason": "sequence_split_mismatch",
+      "expected_status": "rejected",
+      "expected_turn_index": null,
+      "name": "split_change_rejected",
+      "passed": true
+    },
+    {
+      "actual_reason": "sequence_contract_mismatch",
+      "actual_status": "rejected",
+      "expected_reason": "sequence_contract_mismatch",
+      "expected_status": "rejected",
+      "expected_turn_index": null,
+      "name": "manifest_change_rejected",
+      "passed": true
+    },
+    {
+      "actual_reason": "contract_reused_across_splits",
+      "actual_status": "rejected",
+      "expected_reason": "contract_reused_across_splits",
+      "expected_status": "rejected",
+      "expected_turn_index": null,
+      "name": "train_heldout_hash_reuse_rejected",
+      "passed": true
+    },
+    {
+      "actual_reason": "invalid_contract_shape",
+      "actual_status": "rejected",
+      "expected_reason": "invalid_contract_shape",
+      "expected_status": "rejected",
+      "name": "missing_field_rejected",
+      "passed": true
+    }
+  ],
+  "created_at": "2026-07-15T21:30:25.622764+00:00",
+  "database_preflight": {
+    "expected_turn_index": 0,
+    "persist_query_explain": "valid",
+    "reason": null,
+    "status": "valid"
+  },
+  "database_writes": false,
+  "live_collection_started": false,
+  "passed_case_count": 8,
+  "phase": "B5.3",
+  "production_concurrency_constraint_required": true,
+  "production_promotion_gate": false,
+  "required_context_fields": [
+    "external_sequence_id",
+    "external_turn_index",
+    "external_sequence_split",
+    "external_sequence_contract_sha256"
+  ],
+  "single_writer_research_contract": true,
+  "status": "offline_contract_passed",
+  "turn_index_origin": 0
+}

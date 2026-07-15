@@ -304,8 +304,23 @@ def test_deferred_external_outcome_persists_snapshot_only(monkeypatch) -> None:
     update: dict = {}
 
     class FakeResult:
+        def __init__(self, records):
+            self.records = list(records)
+            self._index = 0
+
+        def __aiter__(self):
+            self._index = 0
+            return self
+
+        async def __anext__(self):
+            if self._index >= len(self.records):
+                raise StopAsyncIteration
+            record = self.records[self._index]
+            self._index += 1
+            return record
+
         async def single(self):
-            return {"id": "exp-1"}
+            return self.records[0] if self.records else None
 
     class FakeSession:
         async def __aenter__(self):
@@ -315,11 +330,19 @@ def test_deferred_external_outcome_persists_snapshot_only(monkeypatch) -> None:
             return False
 
         async def run(self, query, **params):
+            if "RETURN props[$turn_index_key] AS turn_index" in query:
+                return FakeResult([])
+            if "conflicting_split_count" in query:
+                return FakeResult([{"conflicting_split_count": 0}])
             assert "curiosity_scoring_mode = 'external_deferred'" in query
+            assert "NEXT_EXTERNAL_TURN" in query
             assert "learning_progress" not in query
             assert "CuriosityLog" not in query
             update.update(params)
-            return FakeResult()
+            return FakeResult([{"id": "exp-1", "previous_id": None}])
+
+        async def execute_write(self, callback):
+            return await callback(self)
 
     class FakeDriver:
         def session(self, database=None):
@@ -335,13 +358,26 @@ def test_deferred_external_outcome_persists_snapshot_only(monkeypatch) -> None:
     }
 
     result = asyncio.run(
-        neo4j_db.BrainDatabase().defer_curiosity_outcome_scoring(snapshot, "exp-1")
+        neo4j_db.BrainDatabase().defer_curiosity_outcome_scoring(
+            snapshot,
+            "exp-1",
+            {
+                "sequence_id": "b5_3_train_a",
+                "turn_index": 0,
+                "split": "train",
+                "contract_sha256": "a" * 64,
+            },
+        )
     )
 
     assert result["status"] == "deferred"
     assert update["cue_ids"] == ["computer"]
     assert update["predicted_ids"] == ["robot"]
     assert json.loads(update["input_terms_json"]) == ["컴퓨터"]
+    assert update["sequence_id"] == "b5_3_train_a"
+    assert update["turn_index"] == 0
+    assert update["split"] == "train"
+    assert result["sequence"]["contract_sha256"] == "a" * 64
 
 
 def test_conversation_endpoint_wires_prediction_before_handler(monkeypatch) -> None:
@@ -435,8 +471,24 @@ def test_conversation_endpoint_double_opt_in_defers_external_scoring(monkeypatch
         async def record_curiosity_outcome(self, _snapshot, _experience_id):
             raise AssertionError("same-turn scorer must not run in deferred mode")
 
-        async def defer_curiosity_outcome_scoring(self, received, experience_id):
+        async def validate_external_sequence_turn(self, sequence):
+            assert sequence == {
+                "sequence_id": "b5_3_train_a",
+                "turn_index": 0,
+                "split": "train",
+                "contract_sha256": "a" * 64,
+            }
+            events.append("validate:0")
+            return {"status": "valid", "expected_turn_index": 0}
+
+        async def defer_curiosity_outcome_scoring(
+            self,
+            received,
+            experience_id,
+            sequence,
+        ):
             assert received == snapshot
+            assert sequence["sequence_id"] == "b5_3_train_a"
             events.append(f"defer:{experience_id}")
             return {"status": "deferred"}
 
@@ -446,6 +498,7 @@ def test_conversation_endpoint_double_opt_in_defers_external_scoring(monkeypatch
 
     async def fake_handle_conversation(message, context):
         assert "external_outcome_evaluation" not in context
+        assert not any(key.startswith("external_sequence_") for key in context)
         events.append(f"handle:{message}")
         return {
             "output": "응답",
@@ -464,6 +517,10 @@ def test_conversation_endpoint_double_opt_in_defers_external_scoring(monkeypatch
                 context={
                     "speaker_id": "b5_1_pilot",
                     "external_outcome_evaluation": True,
+                    "external_sequence_id": "b5_3_train_a",
+                    "external_turn_index": 0,
+                    "external_sequence_split": "train",
+                    "external_sequence_contract_sha256": "a" * 64,
                 },
             )
         )
@@ -471,7 +528,149 @@ def test_conversation_endpoint_double_opt_in_defers_external_scoring(monkeypatch
 
     assert response.experience_id == "exp-1"
     assert events == [
+        "validate:0",
         "prepare:컴퓨터와 로봇",
         "handle:컴퓨터와 로봇",
         "defer:exp-1",
     ]
+
+
+def test_conversation_endpoint_rejects_missing_sequence_before_handler(monkeypatch) -> None:
+    from neural.baby import api_server, conversation_handler
+
+    called = False
+
+    class FakeDb:
+        async def get_baby_state(self):
+            return {"development_stage": 2}
+
+    monkeypatch.setattr(api_server, "get_brain_db", lambda: FakeDb())
+    monkeypatch.setenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "1")
+
+    async def fake_handle_conversation(message, context):
+        nonlocal called
+        called = True
+        raise AssertionError("handler must not run for an invalid sequence contract")
+
+    monkeypatch.setattr(conversation_handler, "handle_conversation", fake_handle_conversation)
+
+    with pytest.raises(api_server.HTTPException) as exc_info:
+        asyncio.run(
+            api_server.conversation(
+                api_server.ConversationRequest(
+                    message="컴퓨터와 로봇",
+                    context={"external_outcome_evaluation": True},
+                )
+            )
+        )
+
+    assert exc_info.value.status_code == 422
+    assert called is False
+
+
+def test_conversation_endpoint_rejects_out_of_order_before_handler(monkeypatch) -> None:
+    from neural.baby import api_server, conversation_handler
+
+    called = False
+
+    class FakeDb:
+        async def get_baby_state(self):
+            return {"development_stage": 2}
+
+        async def validate_external_sequence_turn(self, _sequence):
+            return {
+                "status": "rejected",
+                "reason": "out_of_order_turn",
+                "expected_turn_index": 1,
+            }
+
+    monkeypatch.setattr(api_server, "get_brain_db", lambda: FakeDb())
+    monkeypatch.setenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "1")
+
+    async def fake_handle_conversation(message, context):
+        nonlocal called
+        called = True
+        raise AssertionError("handler must not run for an out-of-order turn")
+
+    monkeypatch.setattr(conversation_handler, "handle_conversation", fake_handle_conversation)
+
+    with pytest.raises(api_server.HTTPException) as exc_info:
+        asyncio.run(
+            api_server.conversation(
+                api_server.ConversationRequest(
+                    message="컴퓨터와 로봇",
+                    context={
+                        "external_outcome_evaluation": True,
+                        "external_sequence_id": "b5_3_train_a",
+                        "external_turn_index": 2,
+                        "external_sequence_split": "train",
+                        "external_sequence_contract_sha256": "a" * 64,
+                    },
+                )
+            )
+        )
+
+    assert exc_info.value.status_code == 409
+    assert exc_info.value.detail["reason"] == "out_of_order_turn"
+    assert called is False
+
+
+def test_conversation_endpoint_rejects_eval_when_server_gate_is_off(monkeypatch) -> None:
+    from neural.baby import api_server, conversation_handler
+
+    called = False
+
+    class FakeDb:
+        async def get_baby_state(self):
+            return {"development_stage": 2}
+
+    monkeypatch.setattr(api_server, "get_brain_db", lambda: FakeDb())
+    monkeypatch.delenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", raising=False)
+
+    async def fake_handle_conversation(message, context):
+        nonlocal called
+        called = True
+        raise AssertionError("handler must not run when research gate is disabled")
+
+    monkeypatch.setattr(conversation_handler, "handle_conversation", fake_handle_conversation)
+
+    with pytest.raises(api_server.HTTPException) as exc_info:
+        asyncio.run(
+            api_server.conversation(
+                api_server.ConversationRequest(
+                    message="컴퓨터와 로봇",
+                    context={
+                        "external_outcome_evaluation": True,
+                        "external_sequence_id": "b5_3_train_a",
+                        "external_turn_index": 0,
+                        "external_sequence_split": "train",
+                        "external_sequence_contract_sha256": "a" * 64,
+                    },
+                )
+            )
+        )
+
+    assert exc_info.value.status_code == 409
+    assert called is False
+
+
+def test_conversation_endpoint_rejects_non_boolean_eval_flag(monkeypatch) -> None:
+    from neural.baby import api_server
+
+    class FakeDb:
+        async def get_baby_state(self):
+            return {"development_stage": 2}
+
+    monkeypatch.setattr(api_server, "get_brain_db", lambda: FakeDb())
+
+    with pytest.raises(api_server.HTTPException) as exc_info:
+        asyncio.run(
+            api_server.conversation(
+                api_server.ConversationRequest(
+                    message="컴퓨터와 로봇",
+                    context={"external_outcome_evaluation": "false"},
+                )
+            )
+        )
+
+    assert exc_info.value.status_code == 422

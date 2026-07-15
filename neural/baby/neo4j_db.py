@@ -26,10 +26,60 @@ from .live_curiosity import (
     should_open_curiosity_gate,
     update_learning_progress,
 )
+from .external_sequence import (
+    parse_external_sequence_context,
+    validate_external_sequence_state,
+)
 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+EXTERNAL_SEQUENCE_STATE_QUERY = """
+MATCH (e:Experience)
+WITH e, properties(e) AS props
+WHERE props[$sequence_id_key] = $sequence_id
+RETURN props[$turn_index_key] AS turn_index,
+       props[$split_key] AS split,
+       props[$contract_key] AS contract_sha256
+ORDER BY turn_index
+"""
+
+EXTERNAL_SEQUENCE_SPLIT_CONFLICT_QUERY = """
+MATCH (e:Experience)
+WITH properties(e) AS props
+WHERE props[$contract_key] = $contract_sha256
+  AND props[$split_key] IS NOT NULL
+  AND props[$split_key] <> $split
+RETURN count(*) AS conflicting_split_count
+"""
+
+EXTERNAL_SEQUENCE_PERSIST_QUERY = """
+MATCH (e:Experience {id: $experience_id})
+OPTIONAL MATCH (previous:Experience)
+WHERE $turn_index > 0
+  AND properties(previous)[$sequence_id_key] = $sequence_id
+  AND properties(previous)[$turn_index_key] = $previous_turn_index
+WITH e, previous
+WHERE $turn_index = 0 OR previous IS NOT NULL
+SET e.curiosity_cue_ids = $cue_ids,
+    e.predicted_concept_ids = $predicted_ids,
+    e.curiosity_input_terms_json = $input_terms_json,
+    e.curiosity_scoring_mode = 'external_deferred',
+    e.curiosity_snapshot_at = $captured_at,
+    e.external_sequence_id = $sequence_id,
+    e.external_turn_index = $turn_index,
+    e.external_sequence_split = $split,
+    e.external_sequence_contract_sha256 = $contract_sha256,
+    e.external_sequence_recorded_at = $recorded_at
+FOREACH (_ IN CASE WHEN previous IS NULL THEN [] ELSE [1] END |
+  MERGE (previous)-[link:NEXT_EXTERNAL_TURN]->(e)
+  SET link.sequence_id = $sequence_id,
+      link.contract_sha256 = $contract_sha256,
+      link.from_turn = $previous_turn_index,
+      link.to_turn = $turn_index)
+RETURN e.id AS id, previous.id AS previous_id
+"""
 
 # ── 환경변수 ────────────────────────────────────────────────────────────────
 _URI      = os.getenv("NEO4J_URI")        # bolt://localhost:7687
@@ -1903,10 +1953,69 @@ class BrainDatabase:
             "excluded_input_concepts": excluded_input,
         }
 
+    async def _fetch_external_sequence_state(
+        self,
+        runner: Any,
+        contract: dict[str, Any],
+    ) -> dict[str, Any]:
+        result = await runner.run(
+            EXTERNAL_SEQUENCE_STATE_QUERY,
+            sequence_id=contract["sequence_id"],
+            sequence_id_key="external_sequence_id",
+            turn_index_key="external_turn_index",
+            split_key="external_sequence_split",
+            contract_key="external_sequence_contract_sha256",
+        )
+        existing_turns = [dict(record) async for record in result]
+
+        result = await runner.run(
+            EXTERNAL_SEQUENCE_SPLIT_CONFLICT_QUERY,
+            contract_sha256=contract["contract_sha256"],
+            split=contract["split"],
+            contract_key="external_sequence_contract_sha256",
+            split_key="external_sequence_split",
+        )
+        conflict_record = await result.single()
+        conflicting_split_count = (
+            int(conflict_record["conflicting_split_count"] or 0)
+            if conflict_record else 0
+        )
+        return validate_external_sequence_state(
+            contract,
+            existing_turns,
+            conflicting_split_count=conflicting_split_count,
+        )
+
+    async def validate_external_sequence_turn(
+        self,
+        sequence_context: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Read-only preflight before the protected conversation handler runs."""
+
+        try:
+            contract = parse_external_sequence_context({
+                "external_sequence_id": sequence_context.get("sequence_id"),
+                "external_turn_index": sequence_context.get("turn_index"),
+                "external_sequence_split": sequence_context.get("split"),
+                "external_sequence_contract_sha256": sequence_context.get(
+                    "contract_sha256"
+                ),
+            })
+        except ValueError as exc:
+            return {
+                "status": "rejected",
+                "reason": "invalid_sequence_contract",
+                "detail": str(exc),
+                "expected_turn_index": None,
+            }
+        async with self.driver.session(database=_DB_NAME) as session:
+            return await self._fetch_external_sequence_state(session, contract)
+
     async def defer_curiosity_outcome_scoring(
         self,
         snapshot: Optional[dict],
         experience_id: Optional[str],
+        sequence_context: Optional[dict[str, Any]] = None,
     ) -> dict:
         """Persist a pre-turn snapshot without scoring the same-turn LLM output.
 
@@ -1918,6 +2027,22 @@ class BrainDatabase:
 
         if not snapshot or not experience_id:
             return {"status": "skipped", "reason": "missing_snapshot_or_experience"}
+
+        try:
+            contract = parse_external_sequence_context({
+                "external_sequence_id": (sequence_context or {}).get("sequence_id"),
+                "external_turn_index": (sequence_context or {}).get("turn_index"),
+                "external_sequence_split": (sequence_context or {}).get("split"),
+                "external_sequence_contract_sha256": (sequence_context or {}).get(
+                    "contract_sha256"
+                ),
+            })
+        except ValueError as exc:
+            return {
+                "status": "rejected",
+                "reason": "invalid_sequence_contract",
+                "detail": str(exc),
+            }
 
         cues = [item for item in snapshot.get("cue_concepts", []) if item.get("id")]
         predictions = [
@@ -1933,31 +2058,48 @@ class BrainDatabase:
             list(snapshot.get("input_terms") or []),
             ensure_ascii=False,
         )
-        async with self.driver.session(database=_DB_NAME) as s:
-            result = await s.run(
-                "MATCH (e:Experience {id: $experience_id}) "
-                "SET e.curiosity_cue_ids = $cue_ids, "
-                "    e.predicted_concept_ids = $predicted_ids, "
-                "    e.curiosity_input_terms_json = $input_terms_json, "
-                "    e.curiosity_scoring_mode = 'external_deferred', "
-                "    e.curiosity_snapshot_at = $captured_at "
-                "RETURN e.id AS id",
+        async def _persist(tx: Any) -> dict[str, Any]:
+            sequence_state = await self._fetch_external_sequence_state(tx, contract)
+            if sequence_state.get("status") != "valid":
+                return sequence_state
+
+            result = await tx.run(
+                EXTERNAL_SEQUENCE_PERSIST_QUERY,
                 experience_id=experience_id,
                 cue_ids=cue_ids,
                 predicted_ids=predicted_ids,
                 input_terms_json=input_terms_json,
                 captured_at=captured_at,
+                sequence_id=contract["sequence_id"],
+                turn_index=contract["turn_index"],
+                previous_turn_index=contract["turn_index"] - 1,
+                split=contract["split"],
+                contract_sha256=contract["contract_sha256"],
+                recorded_at=_now_iso(),
+                sequence_id_key="external_sequence_id",
+                turn_index_key="external_turn_index",
             )
             record = await result.single()
+            if not record:
+                return {
+                    "status": "rejected",
+                    "reason": (
+                        "previous_turn_not_found"
+                        if contract["turn_index"] > 0
+                        else "experience_not_found"
+                    ),
+                }
+            return {
+                "status": "deferred",
+                "experience_id": record["id"],
+                "previous_experience_id": record["previous_id"],
+                "sequence": contract,
+                "cue_concepts": cues,
+                "predicted_concepts": predictions,
+            }
 
-        if not record:
-            return {"status": "skipped", "reason": "experience_not_found"}
-        return {
-            "status": "deferred",
-            "experience_id": record["id"],
-            "cue_concepts": cues,
-            "predicted_concepts": predictions,
-        }
+        async with self.driver.session(database=_DB_NAME) as session:
+            return await session.execute_write(_persist)
 
     async def get_brain_regions(self) -> list[dict]:
         """뇌 영역 목록 조회"""
