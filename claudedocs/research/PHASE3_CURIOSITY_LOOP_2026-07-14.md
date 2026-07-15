@@ -386,11 +386,13 @@ B5.2에서 conversation 1,496개에 session/user/NEXT_TURN 경계가 없음을 �
 | persistence Cypher | `EXPLAIN valid` (실행 write 없음) |
 | DB writes / live collection | **0 / 0** |
 | production promotion | `false` |
-| 전체 tests | **81 passed** |
+| canonical `tests/` suite | **71 passed** |
 
 - artifact: `claudedocs/research/b5_3_sequence_contract_20260716.json`.
 - py_compile, `pip check`, `git diff --check` 통과. FastAPI 8000 DOWN, 보호 handler current/HEAD blob
   `054d974095be7425692860909181fafd54f97a33` 동일.
+- 기존 “전체 81 passed” 표기는 후속 B5.4 cross-check에서 중복/상이 범위 실행 수가 섞인 집계로 확인됐다.
+  B5.4가 테스트 3개를 추가한 현재 canonical suite가 74개이므로 B5.3 동일 범위는 71개이며, 이를 교정했다.
 - 현재 계약은 sequential single-writer research pilot용이다. production multi-writer 전에는
   `(sequence_id, turn_index)` unique constraint 또는 동등한 DB lock이 필요하다.
 
@@ -399,3 +401,44 @@ B5.2에서 conversation 1,496개에 session/user/NEXT_TURN 경계가 없음을 �
 2. train에서 predictor와 hyperparameter를 결정한 뒤 code/algorithm hash를 freeze한다.
 3. held-out 내용은 모델 선택 과정에 노출하지 않고 hash만 미리 등록한다. freeze 후 한 번만 수집·평가한다.
 4. held-out에서 frequency/random 및 robustness gate를 모두 이길 때만 production 검토를 다시 연다.
+
+## [B-5.4-A] minimal train gate and early stop (2026-07-16)
+
+### 과검증 감사와 범위 축소
+B5.1~B5.3은 target 오류, baseline 열세, sequence 경계 부재를 각각 분리했으므로 상위 목표에 필요한 단계였다.
+하지만 후보 신호를 보기 전에 여러 train과 sealed held-out까지 모두 수집하면 검증 절차가 연구 병목이 된다. 따라서
+B5.4-A는 B5.1 train에 새 7-turn train 하나만 더한 뒤, 합친 train에서 candidate가 frequency를 이길 가능성이
+없으면 추가 수집을 중단하도록 축소했다. production lock/constraint, threshold 변경, held-out 공개는 범위에서 제외했다.
+
+### manifest와 live 수집
+- manifest: `scripts/research/manifests/b5_4_train_a_20260716.json`; SHA-256
+  `3486eff0e169f3c4bf1420e924f85427d6747fa4405943dabe35dcace6911b6c`.
+- 첫 read-only preflight에서 모든 문장 공통 cue `관계`를 발견했다. 이는 예측 이름이 아니라 cue 결과이므로 누출 없이
+  live 전 `설명해줘` 형식으로 교정했다. B2 필터 적용 후 매 turn 핵심 cue 2개, 6/6 scorable pair, 고유 outcome
+  6개, pair별 prediction count 8을 확인했다.
+- live 7 turn은 모두 `external_deferred`, index `0..6`, audit error 0. Experience 7개와
+  `NEXT_EXTERNAL_TURN` 6개가 저장됐고 Concept curiosity state는 무변경이었다.
+- 새 sequence만 평가하면 graph/frequency error=`1.0/1.0`, hit=`0/0`; data gate=true지만 baseline/robustness/
+  promotion gate=false다.
+
+### 합친 train-only 비교와 판정
+| variant | mean error | hit | vs frequency better/tie/worse | exploratory gate |
+|---|---:|---:|---:|---|
+| stored live graph | 0.916667 | 1 | 0 / 10 / 2 | false |
+| historical co-occurrence | **0.875** | **2** | 1 / 9 / 2 | false |
+| historical cosine | 0.958333 | 1 | 1 / 8 / 3 | false |
+| historical multi-cue cosine | **0.875** | **2** | 1 / 9 / 2 | false |
+| frequency baseline | **0.75** | 3 | — | — |
+
+- train sequence 2개, 12 pair. random expected error `0.992371`.
+- history는 source보다 엄격히 이전만 사용했고 target input, 미래 record, mutable relationship strength는 ranking에
+  사용하지 않았다. candidate 중 exploratory gate를 통과한 것은 0개이며 production gate는 항상 false다.
+- 이 결과는 sequence 저장 계약이 작동한다는 증거인 동시에, **현재 target/predictor 조합에는 held-out에 쓸 만한
+  train 신호가 없다는 음성 증거**다. 따라서 추가 train, predictor freeze, sealed held-out를 중단했다.
+- 현재 canonical `tests/` suite `74 passed`; `pip check`, py_compile, `git diff --check` 통과. 보호 handler blob
+  `054d974095be7425692860909181fafd54f97a33` 무변경, 새 artifact 비밀 패턴 0건, FastAPI 8000 DOWN.
+
+### 다음 [B-5.5]
+임의의 다음 사용자 주제는 현재 cue만으로 예측 가능한 환경 outcome이 아닐 수 있다. 아기가 선택한 질문/행동에
+조건부인 다음 사용자 반응, 또는 action-conditioned sensor outcome이 Phase 3의 “예측오차로 행동 선택” 목표에 더
+직접 맞는지 target validity gate에서 비교한다. 이 판단 전 추가 live collection과 held-out 평가는 하지 않는다.

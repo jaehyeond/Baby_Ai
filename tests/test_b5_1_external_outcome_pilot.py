@@ -1,3 +1,7 @@
+import json
+
+import pytest
+
 from scripts.research import b5_1_external_outcome_pilot as pilot
 
 
@@ -15,6 +19,40 @@ def test_preregistered_contract_is_fixed_and_has_six_pairs() -> None:
     assert len(pilot.contract_sha256()) == 64
     assert pilot.contract_sha256() == pilot.contract_sha256(pilot.PILOT_MESSAGES)
     assert all("어떻게" not in message for message in pilot.PILOT_MESSAGES)
+
+
+def test_load_b5_4_manifest_checks_fixed_hash_and_budget(tmp_path) -> None:
+    messages = [f"메시지 {index}" for index in range(7)]
+    manifest = {
+        "pilot_name": "b5_4_train_test",
+        "split": "train",
+        "contract_sha256": pilot.contract_sha256(messages),
+        "max_live_turns": 7,
+        "messages": messages,
+    }
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+
+    loaded = pilot.load_pilot_manifest(path)
+
+    assert loaded["messages"] == tuple(messages)
+    assert loaded["contract_sha256"] == pilot.contract_sha256(messages)
+
+
+def test_load_b5_4_manifest_rejects_message_change_without_hash_change(tmp_path) -> None:
+    messages = [f"메시지 {index}" for index in range(7)]
+    manifest = {
+        "pilot_name": "b5_4_train_test",
+        "split": "train",
+        "contract_sha256": pilot.contract_sha256(messages),
+        "max_live_turns": 7,
+        "messages": [*messages[:-1], "변경된 메시지"],
+    }
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="does not match"):
+        pilot.load_pilot_manifest(path)
 
 
 def test_contract_gate_passes_with_six_diverse_preexisting_outcomes(monkeypatch) -> None:

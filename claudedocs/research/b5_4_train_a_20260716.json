@@ -1,0 +1,568 @@
+{
+  "collection_budget": {
+    "additional_collection_requires_train_gate": true,
+    "max_live_turns": 7
+  },
+  "completed_at": "2026-07-15T21:51:03.271830+00:00",
+  "contract_sha256": "3486eff0e169f3c4bf1420e924f85427d6747fa4405943dabe35dcace6911b6c",
+  "deferred_state_audit": {
+    "concept_curiosity_states_unchanged": true,
+    "cue_count": 7
+  },
+  "evaluation": {
+    "baseline_gate": false,
+    "contaminated_pair_count": 0,
+    "data_gate": true,
+    "database_writes": false,
+    "frequency_hit_count": 0,
+    "frequency_mean_error": 1.0,
+    "graph_better_than_frequency_pair_count": 0,
+    "graph_hit_count": 0,
+    "graph_mean_error": 1.0,
+    "graph_tied_with_frequency_pair_count": 6,
+    "graph_worse_than_frequency_pair_count": 0,
+    "minimum_baseline_improved_pairs": 3,
+    "minimum_graph_hits": 3,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "missing_experience_ids": [],
+    "novel_external_outcome_count": 0,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "available_vocabulary_size": 1053,
+        "cue_names": [
+          "인터넷",
+          "프로그램"
+        ],
+        "external_outcome_terms": [
+          "딥러닝"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "날씨",
+          "사람이",
+          "다시",
+          "잘못"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "프로그램",
+          "딥러닝"
+        ],
+        "next_user_input": "프로그램과 딥러닝을 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "인터넷 검색",
+          "정보 탐색",
+          "로보틱스",
+          "관계",
+          "컴퓨터",
+          "검색",
+          "비비"
+        ],
+        "preexisting_outcome_terms": [
+          "딥러닝"
+        ],
+        "random_expected_error": 0.992403,
+        "repeated_cue_terms": [
+          "프로그램"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "1d9c6eda-a4ae-454f-9012-fdf8cccbb469",
+        "source_task": "인터넷과 프로그램을 설명해줘.",
+        "target_experience_id": "b24b190e-5871-4a78-bfe3-40efc8bfd6b0"
+      },
+      {
+        "available_vocabulary_size": 1054,
+        "cue_names": [
+          "딥러닝",
+          "프로그램"
+        ],
+        "external_outcome_terms": [
+          "로봇"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "딥러닝",
+          "로봇"
+        ],
+        "next_user_input": "딥러닝과 로봇을 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "레고 블록",
+          "코딩",
+          "신기한",
+          "로보틱스",
+          "관계",
+          "개발자",
+          "컴퓨터"
+        ],
+        "preexisting_outcome_terms": [
+          "로봇"
+        ],
+        "random_expected_error": 0.99241,
+        "repeated_cue_terms": [
+          "딥러닝"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "b24b190e-5871-4a78-bfe3-40efc8bfd6b0",
+        "source_task": "프로그램과 딥러닝을 설명해줘.",
+        "target_experience_id": "1be69276-055b-4857-9500-3199c8b4d01b"
+      },
+      {
+        "available_vocabulary_size": 1055,
+        "cue_names": [
+          "딥러닝",
+          "로봇"
+        ],
+        "external_outcome_terms": [
+          "놀이"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "로봇",
+          "놀이"
+        ],
+        "next_user_input": "로봇과 놀이를 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "설명해줘",
+          "궁금해",
+          "신기하",
+          "신기한",
+          "관계",
+          "세상",
+          "컴퓨터"
+        ],
+        "preexisting_outcome_terms": [
+          "놀이"
+        ],
+        "random_expected_error": 0.992417,
+        "repeated_cue_terms": [
+          "로봇"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "1be69276-055b-4857-9500-3199c8b4d01b",
+        "source_task": "딥러닝과 로봇을 설명해줘.",
+        "target_experience_id": "a57b981c-d91d-4dce-ad74-335e27a0b235"
+      },
+      {
+        "available_vocabulary_size": 1056,
+        "cue_names": [
+          "놀이",
+          "로봇"
+        ],
+        "external_outcome_terms": [
+          "기쁨"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "놀이",
+          "기쁨"
+        ],
+        "next_user_input": "놀이와 기쁨을 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "비비",
+          "형",
+          "숨바꼭질",
+          "AI",
+          "관계",
+          "사용자",
+          "컴퓨터"
+        ],
+        "preexisting_outcome_terms": [
+          "기쁨"
+        ],
+        "random_expected_error": 0.992424,
+        "repeated_cue_terms": [
+          "놀이"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "a57b981c-d91d-4dce-ad74-335e27a0b235",
+        "source_task": "로봇과 놀이를 설명해줘.",
+        "target_experience_id": "f5391336-0c91-4163-85d3-5311f44289fe"
+      },
+      {
+        "available_vocabulary_size": 1059,
+        "cue_names": [
+          "놀이",
+          "기쁨"
+        ],
+        "external_outcome_terms": [
+          "감정"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "기쁨",
+          "감정"
+        ],
+        "next_user_input": "기쁨과 감정을 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "설명해줘",
+          "비비",
+          "숨바꼭질",
+          "AI",
+          "관계",
+          "사용자",
+          "컴퓨터"
+        ],
+        "preexisting_outcome_terms": [
+          "감정"
+        ],
+        "random_expected_error": 0.992446,
+        "repeated_cue_terms": [
+          "기쁨"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "f5391336-0c91-4163-85d3-5311f44289fe",
+        "source_task": "놀이와 기쁨을 설명해줘.",
+        "target_experience_id": "2e499195-9869-42f8-9282-b065aaa0df48"
+      },
+      {
+        "available_vocabulary_size": 1061,
+        "cue_names": [
+          "감정",
+          "기쁨"
+        ],
+        "external_outcome_terms": [
+          "대화"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "감정",
+          "대화"
+        ],
+        "next_user_input": "감정과 대화를 설명해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "말해줘",
+          "AI (비비)",
+          "비비",
+          "신기한",
+          "AI",
+          "관계",
+          "설명해줘",
+          "기분"
+        ],
+        "preexisting_outcome_terms": [
+          "대화"
+        ],
+        "random_expected_error": 0.99246,
+        "repeated_cue_terms": [
+          "감정"
+        ],
+        "sequence": "b5_4_train_a_20260716",
+        "source_experience_id": "2e499195-9869-42f8-9282-b065aaa0df48",
+        "source_task": "기쁨과 감정을 설명해줘.",
+        "target_experience_id": "a0723237-8531-4a33-8b86-2b7295295f3e"
+      }
+    ],
+    "preexisting_external_outcome_count": 6,
+    "promotion_gate": false,
+    "random_expected_mean_error": 0.992427,
+    "robustness_gate": false,
+    "scorable_pair_count": 6,
+    "sensor_coverage": {},
+    "sensor_route_scorable": false,
+    "unique_preexisting_external_outcome_count": 6,
+    "unscorable_pair_count": 0,
+    "verdict": "graph_did_not_beat_baselines"
+  },
+  "experience_ids": [
+    "1d9c6eda-a4ae-454f-9012-fdf8cccbb469",
+    "b24b190e-5871-4a78-bfe3-40efc8bfd6b0",
+    "1be69276-055b-4857-9500-3199c8b4d01b",
+    "a57b981c-d91d-4dce-ad74-335e27a0b235",
+    "f5391336-0c91-4163-85d3-5311f44289fe",
+    "2e499195-9869-42f8-9282-b065aaa0df48",
+    "a0723237-8531-4a33-8b86-2b7295295f3e"
+  ],
+  "health": {
+    "backend": "neo4j+redis",
+    "external_outcome_eval_enabled": true,
+    "external_sequence_contract_required": true,
+    "status": "healthy"
+  },
+  "manifest_path": "E:\\A2A\\our-a2a-project\\scripts\\research\\manifests\\b5_4_train_a_20260716.json",
+  "messages": [
+    "인터넷과 프로그램을 설명해줘.",
+    "프로그램과 딥러닝을 설명해줘.",
+    "딥러닝과 로봇을 설명해줘.",
+    "로봇과 놀이를 설명해줘.",
+    "놀이와 기쁨을 설명해줘.",
+    "기쁨과 감정을 설명해줘.",
+    "감정과 대화를 설명해줘."
+  ],
+  "pilot_name": "b5_4_train_a_20260716",
+  "preflight": {
+    "contract_gate": true,
+    "message_count": 7,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "cue_names": [
+          "인터넷",
+          "프로그램"
+        ],
+        "next_user_input": "프로그램과 딥러닝을 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 1,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "딥러닝"
+        ],
+        "source_message": "인터넷과 프로그램을 설명해줘."
+      },
+      {
+        "cue_names": [
+          "딥러닝",
+          "프로그램"
+        ],
+        "next_user_input": "딥러닝과 로봇을 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 2,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "로봇"
+        ],
+        "source_message": "프로그램과 딥러닝을 설명해줘."
+      },
+      {
+        "cue_names": [
+          "딥러닝",
+          "로봇"
+        ],
+        "next_user_input": "로봇과 놀이를 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 3,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "놀이"
+        ],
+        "source_message": "딥러닝과 로봇을 설명해줘."
+      },
+      {
+        "cue_names": [
+          "놀이",
+          "로봇"
+        ],
+        "next_user_input": "놀이와 기쁨을 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 4,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "기쁨"
+        ],
+        "source_message": "로봇과 놀이를 설명해줘."
+      },
+      {
+        "cue_names": [
+          "놀이",
+          "기쁨"
+        ],
+        "next_user_input": "기쁨과 감정을 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 5,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "감정"
+        ],
+        "source_message": "놀이와 기쁨을 설명해줘."
+      },
+      {
+        "cue_names": [
+          "감정",
+          "기쁨"
+        ],
+        "next_user_input": "감정과 대화를 설명해줘.",
+        "novel_external_outcomes": [],
+        "pair": 6,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "대화"
+        ],
+        "source_message": "기쁨과 감정을 설명해줘."
+      }
+    ],
+    "scorable_pair_count": 6,
+    "unique_preexisting_external_outcome_count": 6
+  },
+  "split": "train",
+  "started_at": "2026-07-15T21:50:30.469361+00:00",
+  "status": "completed",
+  "turns": [
+    {
+      "created_at": "2026-07-15T21:50:39.982859+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "1d9c6eda-a4ae-454f-9012-fdf8cccbb469",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 0,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "인터넷과 프로그램을 설명해줘.",
+      "turn": 1,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:50:45.685869+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "b24b190e-5871-4a78-bfe3-40efc8bfd6b0",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 1,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "프로그램과 딥러닝을 설명해줘.",
+      "turn": 2,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:50:49.134750+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "1be69276-055b-4857-9500-3199c8b4d01b",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 2,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "딥러닝과 로봇을 설명해줘.",
+      "turn": 3,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:50:52.281435+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "a57b981c-d91d-4dce-ad74-335e27a0b235",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 3,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "로봇과 놀이를 설명해줘.",
+      "turn": 4,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:50:55.432169+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "f5391336-0c91-4163-85d3-5311f44289fe",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 4,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "놀이와 기쁨을 설명해줘.",
+      "turn": 5,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:50:58.908152+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "2e499195-9869-42f8-9282-b065aaa0df48",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 5,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "기쁨과 감정을 설명해줘.",
+      "turn": 6,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T21:51:01.806061+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "a0723237-8531-4a33-8b86-2b7295295f3e",
+      "external_sequence_id": "b5_4_train_a_20260716",
+      "external_sequence_split": "train",
+      "external_turn_index": 6,
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "감정과 대화를 설명해줘.",
+      "turn": 7,
+      "valid": true
+    }
+  ]
+}

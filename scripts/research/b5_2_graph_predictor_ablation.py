@@ -1,4 +1,4 @@
-"""Read-only B5.2 ablation for external-outcome graph predictions.
+"""Read-only B5.2/B5.4-train ablation for external-outcome predictions.
 
 The live predictor ranks the union of cue neighbours by one maximum mutable
 edge strength.  Replaying that ranking after the pilot would leak later graph
@@ -84,11 +84,17 @@ CALL () {
   WHERE type(link) = $next_turn_type
   RETURN count(link) AS next_turn_link_count
 }
+CALL () {
+  MATCH (:Experience)-[link]->(:Experience)
+  WHERE type(link) = $external_next_turn_type
+  RETURN count(link) AS external_next_turn_link_count
+}
 RETURN conversation_count,
        with_session_id,
        with_speaker_id,
        with_user_id,
-       next_turn_link_count
+       next_turn_link_count,
+       external_next_turn_link_count
 """
 
 
@@ -390,6 +396,7 @@ async def fetch_inputs(
             speaker_key="speaker_id",
             user_key="user_id",
             next_turn_type="NEXT_TURN",
+            external_next_turn_type="NEXT_EXTERNAL_TURN",
         )
         coverage_record = await result.single()
     return (
@@ -405,7 +412,13 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only B5.2 graph predictor ablation",
     )
-    parser.add_argument("--artifact", type=Path, default=DEFAULT_SOURCE_ARTIFACT)
+    parser.add_argument(
+        "--artifact",
+        dest="artifacts",
+        action="append",
+        type=Path,
+        help="train pilot artifact; repeat to evaluate multiple sequences",
+    )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--compact", action="store_true")
     return parser.parse_args()
@@ -423,11 +436,25 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
     if missing:
         raise RuntimeError(f"missing environment keys: {', '.join(missing)}")
 
-    source_path = args.artifact.resolve()
-    source_report = json.loads(source_path.read_text(encoding="utf-8"))
-    experience_ids = list(source_report.get("experience_ids") or [])
-    if len(experience_ids) < 2:
-        raise RuntimeError("source artifact has fewer than two Experience IDs")
+    source_paths = [
+        path.resolve() for path in (args.artifacts or [DEFAULT_SOURCE_ARTIFACT])
+    ]
+    source_reports = [
+        json.loads(path.read_text(encoding="utf-8")) for path in source_paths
+    ]
+    sequences: list[tuple[str, tuple[str, ...]]] = []
+    experience_ids: list[str] = []
+    for index, source_report in enumerate(source_reports, start=1):
+        sequence_ids = tuple(source_report.get("experience_ids") or ())
+        if len(sequence_ids) < 2:
+            raise RuntimeError(
+                f"source artifact {source_paths[index - 1]} has fewer than two Experience IDs"
+            )
+        pilot_name = str(source_report.get("pilot_name") or f"train_sequence_{index}")
+        sequences.append((pilot_name, sequence_ids))
+        experience_ids.extend(sequence_ids)
+    if len(experience_ids) != len(set(experience_ids)):
+        raise RuntimeError("source artifacts reuse an Experience ID")
 
     driver = AsyncGraphDatabase.driver(
         required["NEO4J_URI"],
@@ -445,16 +472,16 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
     finally:
         await driver.close()
 
-    pilot_name = str(source_report.get("pilot_name") or "b5_1_sequence")
     pairs, missing_ids = b5.build_sequence_pairs(
         records,
-        sequences=((pilot_name, tuple(experience_ids)),),
+        sequences=tuple(sequences),
     )
     if missing_ids:
         raise RuntimeError(f"missing Experience IDs: {missing_ids}")
 
     transition_eligible = bool(
         int(coverage.get("next_turn_link_count") or 0) > 0
+        or int(coverage.get("external_next_turn_link_count") or 0) > 0
         or int(coverage.get("with_session_id") or 0) >= 2
     )
     evaluation = evaluate_variants(
@@ -465,10 +492,13 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
     )
     return {
         "status": "completed",
-        "phase": "B5.2",
+        "phase": "B5.4-train" if len(source_paths) > 1 else "B5.2",
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "source_artifact": str(source_path),
-        "source_contract_sha256": source_report.get("contract_sha256"),
+        "source_artifacts": [str(path) for path in source_paths],
+        "source_contract_sha256": [
+            report.get("contract_sha256") for report in source_reports
+        ],
+        "train_sequence_count": len(sequences),
         "experience_ids": experience_ids,
         "database_writes": False,
         "temporal_integrity": {
@@ -487,7 +517,7 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
             **coverage,
             "eligible": transition_eligible,
             "reason": (
-                "session_or_next_turn_boundary_available"
+                "session_or_explicit_sequence_boundary_available"
                 if transition_eligible
                 else "no_session_id_or_NEXT_TURN_boundary"
             ),

@@ -138,3 +138,8 @@ def test_b5_2_queries_are_read_only() -> None:
     upper = f" {b52.ASSOCIATION_HISTORY_QUERY} {b52.TRANSITION_COVERAGE_QUERY} ".upper()
     for mutation in (" CREATE ", " MERGE ", " SET ", " DELETE ", " REMOVE "):
         assert mutation not in upper
+
+
+def test_transition_coverage_counts_external_sequence_links() -> None:
+    assert "external_next_turn_link_count" in b52.TRANSITION_COVERAGE_QUERY
+    assert "external_next_turn_type" in b52.TRANSITION_COVERAGE_QUERY

@@ -1,0 +1,16 @@
+{
+  "pilot_name": "b5_4_train_a_20260716",
+  "split": "train",
+  "contract_sha256": "3486eff0e169f3c4bf1420e924f85427d6747fa4405943dabe35dcace6911b6c",
+  "max_live_turns": 7,
+  "post_collection_stop_gate": "Do not collect another train or any held-out sequence unless the combined train-only comparison shows a candidate can plausibly beat the frequency baseline.",
+  "messages": [
+    "인터넷과 프로그램을 설명해줘.",
+    "프로그램과 딥러닝을 설명해줘.",
+    "딥러닝과 로봇을 설명해줘.",
+    "로봇과 놀이를 설명해줘.",
+    "놀이와 기쁨을 설명해줘.",
+    "기쁨과 감정을 설명해줘.",
+    "감정과 대화를 설명해줘."
+  ]
+}

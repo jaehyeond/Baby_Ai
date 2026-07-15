@@ -27,6 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from neural.baby.external_sequence import parse_external_sequence_context
 from neural.baby.neo4j_db import BrainDatabase, close_driver, init_driver
 from scripts.research.b3_curiosity_snapshot import build_message_snapshot
 from scripts.research import b5_external_outcome_evaluation as b5
@@ -92,18 +93,53 @@ def contract_sha256(messages: Iterable[str] = PILOT_MESSAGES) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def load_pilot_manifest(path: Path) -> dict[str, Any]:
+    """Load a fixed seven-turn manifest without exposing prediction contents."""
+
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    messages = raw.get("messages")
+    if not isinstance(messages, list) or len(messages) != 7:
+        raise ValueError("pilot manifest must contain exactly seven messages")
+    if any(not isinstance(message, str) or not message.strip() for message in messages):
+        raise ValueError("pilot manifest messages must be non-empty strings")
+    if len(set(messages)) != len(messages):
+        raise ValueError("pilot manifest messages must be unique")
+
+    expected_hash = contract_sha256(messages)
+    if raw.get("contract_sha256") != expected_hash:
+        raise ValueError("pilot manifest contract_sha256 does not match messages")
+    if raw.get("max_live_turns") != len(messages):
+        raise ValueError("pilot manifest max_live_turns must equal message count")
+
+    normalized = parse_external_sequence_context({
+        "external_sequence_id": raw.get("pilot_name"),
+        "external_turn_index": 0,
+        "external_sequence_split": raw.get("split"),
+        "external_sequence_contract_sha256": expected_hash,
+    })
+    return {
+        **raw,
+        "pilot_name": normalized["sequence_id"],
+        "split": normalized["split"],
+        "contract_sha256": normalized["contract_sha256"],
+        "messages": tuple(messages),
+    }
+
+
 def validate_preregistered_contract(
     snapshots: list[dict[str, Any]],
     concepts: list[dict[str, Any]],
     *,
     captured_at: str,
+    messages: Iterable[str] = PILOT_MESSAGES,
 ) -> dict[str, Any]:
     """Check data sufficiency without exposing or adapting to predictions."""
 
+    fixed_messages = tuple(messages)
     pairs: list[dict[str, Any]] = []
     unique_outcomes: set[str] = set()
     for index, (source, next_message) in enumerate(
-        zip(snapshots, PILOT_MESSAGES[1:]),
+        zip(snapshots, fixed_messages[1:]),
         start=1,
     ):
         snapshot = source.get("snapshot") or {}
@@ -138,7 +174,7 @@ def validate_preregistered_contract(
         and all(pair["prediction_count"] > 0 for pair in pairs)
     )
     return {
-        "message_count": len(PILOT_MESSAGES),
+        "message_count": len(fixed_messages),
         "pair_count": len(pairs),
         "scorable_pair_count": len(scorable_pairs),
         "unique_preexisting_external_outcome_count": len(unique_outcomes),
@@ -253,13 +289,15 @@ async def _build_preflight(
     driver: Any,
     database: str,
     captured_at: str,
+    messages: Iterable[str] = PILOT_MESSAGES,
 ) -> tuple[dict[str, Any], list[str]]:
+    fixed_messages = tuple(messages)
     await init_driver()
     try:
         db = BrainDatabase()
         snapshots = [
             await build_message_snapshot(db, message)
-            for message in PILOT_MESSAGES[:-1]
+            for message in fixed_messages[:-1]
         ]
     finally:
         await close_driver()
@@ -268,6 +306,7 @@ async def _build_preflight(
         snapshots,
         concepts,
         captured_at=captured_at,
+        messages=fixed_messages,
     )
     cue_ids = sorted({
         str(item["id"])
@@ -293,6 +332,11 @@ def _required_neo4j_env() -> dict[str, str]:
 
 async def _run(args: argparse.Namespace) -> dict[str, Any]:
     load_dotenv(PROJECT_ROOT / ".env")
+    manifest = load_pilot_manifest(args.manifest.resolve()) if args.manifest else None
+    pilot_name = str(manifest["pilot_name"] if manifest else PILOT_NAME)
+    pilot_split = str(manifest["split"] if manifest else PILOT_SPLIT)
+    pilot_messages = tuple(manifest["messages"] if manifest else PILOT_MESSAGES)
+    pilot_contract_sha256 = contract_sha256(pilot_messages)
     env = _required_neo4j_env()
     driver = AsyncGraphDatabase.driver(
         env["NEO4J_URI"],
@@ -336,11 +380,18 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
             driver,
             env["NEO4J_DATABASE"],
             started_at,
+            pilot_messages,
         )
         base_report: dict[str, Any] = {
-            "pilot_name": PILOT_NAME,
-            "contract_sha256": contract_sha256(),
-            "messages": list(PILOT_MESSAGES),
+            "pilot_name": pilot_name,
+            "split": pilot_split,
+            "contract_sha256": pilot_contract_sha256,
+            "messages": list(pilot_messages),
+            "manifest_path": str(args.manifest.resolve()) if args.manifest else None,
+            "collection_budget": {
+                "max_live_turns": len(pilot_messages),
+                "additional_collection_requires_train_gate": bool(manifest),
+            },
             "started_at": started_at,
             "preflight": preflight,
         }
@@ -366,18 +417,18 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
 
             turns: list[dict[str, Any]] = []
             experience_ids: list[str] = []
-            for index, message in enumerate(PILOT_MESSAGES, start=1):
+            for index, message in enumerate(pilot_messages, start=1):
                 response = await client.post(
                     "/api/conversation",
                     json={
                         "message": message,
                         "context": {
-                            "speaker_id": "b5_1_pilot",
+                            "speaker_id": pilot_name,
                             "external_outcome_evaluation": True,
-                            "external_sequence_id": PILOT_NAME,
+                            "external_sequence_id": pilot_name,
                             "external_turn_index": index - 1,
-                            "external_sequence_split": PILOT_SPLIT,
-                            "external_sequence_contract_sha256": contract_sha256(),
+                            "external_sequence_split": pilot_split,
+                            "external_sequence_contract_sha256": pilot_contract_sha256,
                         },
                     },
                 )
@@ -395,10 +446,10 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
                     audit_record,
                     message,
                     {
-                        "external_sequence_id": PILOT_NAME,
+                        "external_sequence_id": pilot_name,
                         "external_turn_index": index - 1,
-                        "external_sequence_split": PILOT_SPLIT,
-                        "external_sequence_contract_sha256": contract_sha256(),
+                        "external_sequence_split": pilot_split,
+                        "external_sequence_contract_sha256": pilot_contract_sha256,
                     },
                 )
                 turns.append({"turn": index, **audit})
@@ -407,7 +458,7 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
                     raise RuntimeError(
                         f"turn {index} deferred audit failed: {audit['errors']}"
                     )
-                if index < len(PILOT_MESSAGES) and args.delay:
+                if index < len(pilot_messages) and args.delay:
                     await asyncio.sleep(args.delay)
 
         cue_states_after = await _fetch_cue_states(
@@ -426,7 +477,7 @@ async def _run(args: argparse.Namespace) -> dict[str, Any]:
         )
         pairs, missing_ids = b5.build_sequence_pairs(
             records,
-            sequences=((PILOT_NAME, tuple(experience_ids)),),
+            sequences=((pilot_name, tuple(experience_ids)),),
         )
         evaluation = b5.summarize_evaluation(
             pairs,
@@ -463,6 +514,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--delay", type=float, default=0.25)
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        help="fixed seven-turn train/heldout manifest (B5.4+)",
+    )
     parser.add_argument(
         "--reevaluate",
         type=Path,

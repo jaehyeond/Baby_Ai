@@ -8,8 +8,8 @@
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: Phase 3 [B-5.4] sealed train/held-out manifest와 순차 수집** — [B-5.3]에서 sequence ID, 0-based turn index, train/heldout split, manifest SHA-256을 handler 전에 검사하고 DB transaction에서 재검사하는 계약을 완성했다. 아직 새 live Experience는 수집하지 않았다.
-> **이번 세션 완료(검증)**: 사용자 push `5b74663`(B5.2)에서 시작했다. 외부 평가 요청은 4개 sequence 필드를 모두 요구하며, missing/duplicate/gap/split 변경/hash 변경/train-heldout hash 재사용, env off, 비 boolean flag, snapshot 없음에서 fail-closed한다. 성공 turn은 Experience sequence 속성과 `NEXT_EXTERNAL_TURN`으로 연결될 준비가 됐다. offline matrix `8/8`, 실제 Neo4j read-only state query와 저장 Cypher `EXPLAIN` 통과, 기존 B5.1 재평가 호환, 전체 `81 passed`, 보호 handler blob `054d974…` 무변경. 다음은 train manifests만 먼저 공개·수집해 후보를 freeze하고, 미리 hash만 고정한 봉인 held-out를 마지막 1회 평가하는 것이다. 상세 `CHANGELOG.md` 최상단.
+> **현재 진입점: Phase 3 [B-5.4-A] 최소 train gate 실패 후 target 재검토** — [B-5.3] sequence 계약으로 새 train 7 turn/6 pair를 수집했지만, candidate가 frequency baseline을 이기지 못해 추가 train과 sealed held-out를 조기중단했다.
+> **이번 세션 완료(검증)**: 사용자 push `7f0d48e`(B5.3)에서 시작했다. 새 manifest hash `3486eff0…`는 핵심 cue 2개·6/6 scorable pair를 preflight에서 확인한 뒤 live 7 turn을 index `0..6`으로 저장했고 `NEXT_EXTERNAL_TURN` 6개가 생겼다. 새 sequence의 graph/frequency error는 둘 다 `1.0`; B5.1과 합친 train 12 pair에서 최선 candidate error `0.875`, frequency `0.75`, 개선/동률/악화 `1/9/2`, exploratory/production gate=false다. 따라서 predictor freeze·held-out·production 변경은 하지 않았다. 상세 `CHANGELOG.md` 최상단.
 
 ---
 

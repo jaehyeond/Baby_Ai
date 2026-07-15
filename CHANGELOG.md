@@ -5,6 +5,28 @@
 
 ---
 
+## 2026-07-16 (Phase 3 [B-5.4-A] minimal train gate and early stop)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.4-A]` 절.
+
+### plan/goal cross-check
+- **push 기준점**: 시작 시 `DB_Renewal` local/remote HEAD가 사용자 push `7f0d48e`(B5.3)로 일치하고 worktree clean이었다. `AGENTS.md`/`CHANGELOG.md`의 “B5.3 미푸시” 문구만 stale해 이번 기록에서 교정했다.
+- B5.1의 외부 outcome 전환, B5.2의 frequency baseline 반증, B5.3의 명시적 sequence 경계는 모두 Phase 3의 “예측오차가 행동에 영향을 주는가”를 정직하게 재는 데 필요했다. 다만 B5.3 이후 추가 계약·락·반복 전체검증은 연구 병목이 될 수 있어, B5.4를 **새 train 1개(7 turn) 뒤 신호가 없으면 즉시 중단**하는 비용 gate로 축소했다.
+
+### 실행과 결과
+- **manifest 사전등록**: `scripts/research/manifests/b5_4_train_a_20260716.json`, hash `3486eff0e169f3c4bf1420e924f85427d6747fa4405943dabe35dcace6911b6c`. 예측 이름을 보지 않는 첫 preflight에서 일반 cue `관계`를 발견해 live 전 문장을 `설명해줘` 형식으로 바꿨다. B2 speech-act 필터가 이를 제거해 매 turn 핵심 cue 2개만 남았고, 6/6 scorable pair·고유 preexisting outcome 6개·prediction count 8을 확인했다.
+- **live train 7 turn**: 모든 turn이 `external_deferred`, sequence index `0..6`, audit error 없음. Experience 7개와 `NEXT_EXTERNAL_TURN` 6개가 저장됐고 Concept curiosity state는 전후 동일했다. 임시 FastAPI는 수집 후 종료해 port 8000 DOWN.
+- **새 sequence 단독**: graph/frequency mean error=`1.0/1.0`, hit=`0/0`, data gate만 true, promotion=false.
+- **합친 train 2 sequence/12 pair**: 최선 historical co-occurrence와 multi-cue cosine mean error `0.875`, hit `2`; frequency `0.75`, random `0.992371`; frequency 대비 개선/동률/악화=`1/9/2`. exploratory gate=false, production gate=false. target input·미래 history·mutable relationship strength는 ranking에 사용하지 않았다.
+- **조기중단**: candidate signal이 없으므로 두 번째 신규 train, predictor/hyperparameter freeze, sealed held-out 수집, threshold/production 변경, multi-writer unique constraint를 실행하지 않았다. 현 단계에서 held-out를 추가하면 성능 확인보다 검증 절차가 병목이 된다.
+- **검증/보고 교정**: canonical `tests/` suite `74 passed`, `pip check`, py_compile, `git diff --check` 통과. 이번 변경은 테스트 3개만 추가했으므로 B5.3 시점의 동일 suite는 71개다. 기존 문서의 “전체 81 passed”는 중복/상이 범위 실행 수를 섞은 부정확한 보고라 71로 교정했다. 보호 handler blob `054d974095be7425692860909181fafd54f97a33` 무변경, 비밀 패턴 0건, port 8000 DOWN.
+- artifacts: `claudedocs/research/b5_4_train_a_20260716.json`, `claudedocs/research/b5_4_train_ablation_20260716.json`.
+
+### 다음 판단
+- **[B-5.5] target validity gate**: 사용자가 임의로 다음 주제로 이동하는 것을 graph가 맞히게 하는 현재 target이 Phase 3 행동 루프와 정합한지 재검토한다. 우선 후보는 아기가 선택한 질문/행동에 조건부인 다음 사용자 반응 또는 action-conditioned sensor outcome이다. 이 판단 전 추가 live data와 held-out를 금지한다.
+
+---
+
 ## 2026-07-16 (Phase 3 [B-5.3] sequence-grounded external outcome contract)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.3]` 절.
@@ -17,12 +39,12 @@
 - **격리 규칙**: duplicate turn, gap, 기존 sequence 손상, split 변경, manifest hash 변경, 같은 manifest hash의 train/heldout 교차 재사용을 모두 거부한다. B5.1 live pilot도 새 계약과 audit 필드를 보내도록 호환 갱신했으며 기존 artifact read-only 재평가는 같은 수치를 유지했다.
 - **offline 증거**: `b5_3_sequence_contract.py` matrix 8/8 통과. artifact는 `database_writes=false`, `live_collection_started=false`, `production_promotion_gate=false`를 명시한다. 실제 Neo4j에서 새 sequence turn 0 state query=`valid`, 저장 Cypher는 `EXPLAIN valid`; 실행 write는 하지 않았다.
 - **정직한 한계**: 현재 contract는 순차 단일 프로세스 pilot용 single-writer다. multi-writer production에서는 `(sequence_id, turn_index)` 중복을 원천 차단하는 DB unique constraint/lock이 추가로 필요하다.
-- **검증**: 전체 `81 passed`; py_compile, `pip check`, `git diff --check` 통과. Gemini/FastAPI live 호출과 Neo4j write 없음, 8000 DOWN. `conversation_handler.py` current/HEAD blob `054d974095be7425692860909181fafd54f97a33` 동일.
+- **검증**: canonical `tests/` suite `71 passed`; py_compile, `pip check`, `git diff --check` 통과. Gemini/FastAPI live 호출과 Neo4j write 없음, 8000 DOWN. `conversation_handler.py` current/HEAD blob `054d974095be7425692860909181fafd54f97a33` 동일. (기존 “전체 81”은 후속 B5.4 cross-check에서 중복/상이 범위 실행 수가 섞인 부정확한 집계로 확인돼 교정.)
 
 ### 다음 작업
 - **[B-5.4-A] train manifest**: 서로 다른 여러 train sequence의 전체 문장·순서·hash를 먼저 고정하고 single-writer로 수집한다. train만으로 후보 predictor와 모든 hyperparameter를 결정·freeze한다.
 - **[B-5.4-B] sealed held-out**: held-out 내용은 모델 선택 과정에 노출하지 않고 SHA-256만 먼저 등록한다. predictor/code hash를 freeze한 후 held-out를 한 번만 수집·평가한다.
-- held-out가 frequency/random 및 B5 robustness gate를 모두 이길 때만 production 검토를 재개한다. B5.3 변경은 현재 미커밋·미푸시이며 commit/push는 사용자 명시 시만 수행한다.
+- held-out가 frequency/random 및 B5 robustness gate를 모두 이길 때만 production 검토를 재개한다. B5.3 변경은 사용자 push `7f0d48e`에 반영됐다.
 
 ---
 
