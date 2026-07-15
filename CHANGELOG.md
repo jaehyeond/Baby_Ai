@@ -5,6 +5,26 @@
 
 ---
 
+## 2026-07-15 (Phase 3 [B-5] valid external outcome offline evaluation)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5]` 절.
+
+### 완료 ✅ (평가기 구현·데이터 gate 판정)
+- **push 상태 재확인**: `DB_Renewal` local/remote HEAD가 사용자 push `2e9cafb`로 일치하고 시작 worktree clean. 이 커밋에 B3/B4 코드·테스트·문서가 포함됨을 diff로 확인했다.
+- **B5 read-only evaluator 추가** (`scripts/research/b5_external_outcome_evaluation.py`): 보존 12 turn을 `서울/컴퓨터 초기/학습/컴퓨터 필터 후`의 4개 독립 시퀀스로 고정하고, 시퀀스 내부의 8개 `t→t+1` pair만 만든다. turn `t`의 저장된 graph prediction을 turn `t+1` 사용자 입력의 비-cue 의미 concept와 비교한다.
+- **공정성·baseline**: speech-act와 반복 cue를 제외하고, source turn 시점에 이미 존재한 concept만 scorable로 분리한다. 과거 사용자 입력만 사용하는 frequency baseline과 같은 top-k 크기의 uniform random 기대오차를 함께 계산한다. 미래 Experience/Concept 누출을 막았다.
+- **다음 사용자 입력 route 결과**: Experience 누락 `0`, pair `8`. 다음 문장은 모두 `서울/컴퓨터/학습` cue를 말투만 바꿔 반복했고, 이를 제외한 external outcome은 preexisting `0`, novel `0`, scorable pair `0/8`. 따라서 graph/frequency/random mean error는 모두 `null`; `data_gate=false`, `promotion_gate=false`, verdict=`insufficient_external_outcome_data`.
+- **다음 센서 route coverage**: vision Experience `45`, observed concepts가 있는 vision `45`, NEXT_FRAME `36`. 그러나 `predicted_concept_ids` snapshot이 있는 vision Experience는 `0`이라 pre-frame prediction과 next-frame observation 비교가 아직 불가능하다.
+- **판정**: B5는 모델 패배가 아니라 **valid external evaluation 데이터 부족**으로 종료한다. 같은-turn LLM outcome, canonical scorer, threshold 0.02, min observations 3, production scoring은 변경하지 않는다. 추가 Gemini/live 대화도 실행하지 않았고 Neo4j는 읽기만 했다.
+- **검증**: B5 focused unit `11 passed`. 시퀀스 경계, parser/speech-act, cue 제외, concept 생성시각, B4 canonical match 재사용, future-leak 없는 frequency, random 기대값, sparse/pass gate 양쪽, sensor eligibility, Cypher read-only를 검사했다. 전체 suite와 보호 hash 검증은 세션 종료 전에 수행한다.
+
+### 다음 작업
+- **[B-5.1] 사용자 입력 route**: 최소 6개의 연속 pair와 최소 4개의 고유 비-cue external outcome이 생기도록, 같은 질문 반복이 아닌 다양한 후속 입력을 수집한다. 예: 현재 cue `컴퓨터` 다음에 사용자가 `로봇과 연결해서 설명해줘`처럼 새 외부 concept를 실제로 제공한다.
+- **[B-5.1] 센서 route 대안**: vision Experience 학습 전에 prediction snapshot을 남기는 설계를 offline/unit에서 먼저 검증한 뒤, 다음 NEXT_FRAME의 관측 concept와 비교한다. 보호된 conversation handler와는 분리한다.
+- 어느 route든 graph error가 frequency와 random baseline을 모두 이길 때만 production promotion을 재검토한다.
+
+---
+
 ## 2026-07-14 (Phase 3 [B] 예측오차 루프 검증·라이브 배선 + 실 대화 운영 확인)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`, auto-memory `program_roadmap`(Phase 3)·`db_migration_status`.

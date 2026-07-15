@@ -3,11 +3,11 @@
 > **크로스툴 단일 진입점.** Codex는 이 파일을 자동 로드한다. Claude Code는 `CLAUDE.md` 최상단의 `@AGENTS.md`로 임포트한다.
 > ⚠️ **Claude auto-memory(`C:\Users\SOGANG\.claude\projects\E--A2A\memory\`)는 Claude 전용 — Codex는 못 읽는다.** Codex는 아래 "상세 문서"의 경로를 직접 열어라. **세션 인계는 반드시 이 파일 + repo 공유 파일을 통해서만** 한다.
 
-## 🔖 현재 상태 / 재개 (2026-07-14 체크포인트)
+## 🔖 현재 상태 / 재개 (2026-07-15 체크포인트)
 **"이어서 하자"면 여기부터.** 상세 이력·수치는 `CHANGELOG.md` 최상단 + `claudedocs/**/2026-07*.md`.
 
 ### 어디까지 왔나 (한눈에)
-**자기학습 체인 end-to-end 검증 + 살아있는 시스템 전환 완료** (현재 push 기준 `DB_Renewal` local/remote HEAD `7af4231`; B3 후속은 아직 미커밋).
+**자기학습 체인 end-to-end 검증 + 살아있는 시스템 전환 완료** (현재 push 기준 `DB_Renewal` local/remote HEAD `2e9cafb`; B3/B4까지 push 완료, B5는 현재 미커밋).
 - Phase 0 기반 ✅ · **Phase 1 가소성 ✅**: RW 음성증거(w_ab→P(b|a))=자기학습 신호, **다양성 주도**(prequential서 빈도·암기 초과, time-shuffle서 붕괴=진짜 시간학습). `PHASE1_PLASTICITY_FINDINGS.md`.
 - **Phase 2 코어 내재학습 ✅ 이번 세션 완주** (`PHASE2_SLEEP_DISTILL_2026-07-13.md`): ① 학습코어가 그래프 역전(N≈2~4천, **weight-homeostasis 필수**·causal 확인; 없으면 발산해 짐) ② CLS 안티망각(순차태스크서 online −0.32 vs replay +0.03) ③ **실 LLM+LoRA(Qwen2.5-0.5B)가 실 Neo4j 아기 특이연상(비비·형) 학습**(identity MRR 0.081→0.176, 3시드) ④ **살아있는 로컬 코어**: 어댑터 디스크 영속(`models/local_core_adapter/`), 누적성장 0.089→0.123→0.152 ⑤ **라이브 트리거**: consolidate 훅서 야간 자동학습, env `LOCAL_CORE_DISTILL=1` opt-in, 프로덕션 하드닝(게이팅+락+OOM/backoff, adversarial review).
 - **Phase 4 embodiment**: 파이프라인 준비됨(pose/depth 캡처·`NEXT_FRAME` 시퀀스)이나 **Quest 데이터 없음=병목**. `EMBODIMENT_PIPELINE_2026-07-12.md`.
@@ -23,8 +23,9 @@
 - **[B-2] cue 품질 개선 ✅**: endpoint 전용 조사 정규화와 cue/이웃 2단계 조회. speech-act 일반어(`설명해줘`, `궁금해`, `무엇이` 등)는 cue에서 제외하고 사용자 입력에서 복제된 비-cue Concept도 outcome 점수에서 제외한다. 실제 snapshot은 세 문장 모두 cue=`컴퓨터`만 선택. `conversation_handler.py` blob `054d974…` 무변경.
 - **[B-3] 운영 표본 확대 완료 — 음성 결과가 다음 병목 확정**: 서울/컴퓨터/학습 9턴 모두 error=1.0, 후속 컴퓨터 3턴도 error=1.0·progress=0·gate=F. 초기 응답 잘림은 `gemini-flash-latest`가 512 중 thinking 487토큰을 써 `MAX_TOKENS`가 된 원인으로 분리했고, 공식 `google-genai` + stable `gemini-2.5-flash-lite` + thinking budget 0으로 완전 응답을 복구했다. 그러나 예측 `신기한`과 다음 실제 `신기하`처럼 형태별 Concept ID가 갈라져 exact-ID metric은 계속 실패한다. **다음=[B-4] handler 밖 canonical concept scoring을 offline/unit으로 먼저 설계·검증. threshold 조정·추가 live 표본 금지.**
 - **[B-4] canonical scoring offline gate 실패(정직)**: 보존 12 Experience read-only replay에서 exact mean error `1.0`→canonical `0.9833`, 개선 1/12(`신기한↔신기하`)뿐. scored actual 53개 중 40개(75.5%)가 Experience 이후 신규 Concept라 사전 ID 예측 불가. 사전 존재 13개만 제한해도 scorable 9턴 mean error `0.8889`, hit 1개. 따라서 canonical scorer는 production에 연결하지 않았다. **다음=[B-5] 동일 turn의 자기생성 응답 대신 다음 사용자 입력/센서 관측 같은 외부 outcome을 예측 대상으로 삼는 offline sequence 설계.**
+- **[B-5] external outcome offline gate = 데이터 부족으로 판정 불가(2026-07-15)**: 12개 보존 turn을 4개 독립 시퀀스의 8개 `t→t+1` pair로 정확히 재구성했다. 다음 사용자 입력은 모두 동일 cue 반복(`서울/컴퓨터/학습`)뿐이라 cue 제외 후 scorable external outcome `0`, graph/frequency/random error는 계산 불가. 센서 쪽은 vision Experience 45개·NEXT_FRAME 36개가 있으나 prediction snapshot이 붙은 vision Experience가 `0`이라 역시 점수화 불가. `promotion_gate=false`; production·threshold는 변경하지 않았다. **다음=[B-5.1] 최소 6쌍·고유 비-cue 외부 outcome 4개 이상을 만드는 다양한 후속 사용자 입력 수집, 또는 vision pre-frame prediction snapshot 설계 후 재평가.**
 - **[C] 자율·대안**: 운영화(실제 켜서 며칠 성장추적) + collapse(effective rank≈2) 장기감시.
-- **⚠️ 메타**: 과학·배선은 검증됐지만 현재 same-turn outcome 정의는 부적합 판정. threshold(현재 0.02, 최소 3회)는 유지하며 B5 target validity가 통과하기 전 추가 live 표본·threshold 조정 금지.
+- **⚠️ 메타**: 과학·배선은 검증됐지만 same-turn outcome은 부적합하고, 기존 B3 반복 대화·vision 기록도 valid external evaluation 데이터로는 부족하다. threshold(현재 0.02, 최소 3회)는 유지하며 B5.1 데이터 gate가 통과하기 전 production 승격·threshold 조정 금지.
 - (보류·비가역, 사용자 확인 후) 방향성 엣지 마이그레이션 + RW 프로덕션 `hebbian_update` 반영.
 
 ### 전제

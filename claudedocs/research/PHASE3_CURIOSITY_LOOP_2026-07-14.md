@@ -190,3 +190,59 @@
    - same-turn LLM output을 계속 쓰려면 graph predictions를 generator에 conditioning해야 하나,
      이는 보호된 `conversation_handler.py` 경계와 행동 생성 의미를 바꾸므로 현재는 배선하지 않는다.
 4. A/B sequence에서 random/frequency baseline보다 prequential error가 실제 감소할 때만 live gate로 승격한다.
+
+## [B-5] valid external outcome offline evaluation (2026-07-15)
+
+### 질문과 사전 gate
+- 질문: turn `t`에서 저장한 graph prediction이 LLM 자신의 같은-turn 문장이 아니라 **다음 외부 입력**을
+  random/frequency baseline보다 잘 예측하는가?
+- 사용자 입력 route는 보존 12 turn을 4개 독립 sequence로 나누고 내부의 `t→t+1` 8 pair만 사용했다.
+  sequence 경계를 넘어선 임의 timestamp 연결은 금지했다.
+- 반복 source cue와 speech-act를 제외하고, source 시점에 존재한 concept만 성능 점수에 포함한다.
+- 데이터 gate는 scorable pair 6개 이상, 고유 preexisting external outcome 4개 이상이다. 성능 gate는 graph
+  mean error가 과거 사용자 입력 frequency와 uniform random top-k 기대 error보다 모두 낮아야 한다.
+
+### 구현과 단위 검증
+- `scripts/research/b5_external_outcome_evaluation.py`: Neo4j read-only sequence/history/concept/sensor coverage.
+- `tests/test_b5_external_outcome_evaluation.py`: 11 tests. sequence 경계, generic speech-act와 repeated cue,
+  pre-turn availability, B4 conservative match, history future leak, random 기대값, sparse/pass gate,
+  sensor eligibility, Cypher mutation 부재를 검증했다.
+
+### 결과 A — 다음 사용자 입력
+| 항목 | 결과 |
+|---|---:|
+| 보존 Experience | 12/12 |
+| 올바른 `t→t+1` pair | 8 |
+| scorable pair | **0/8** |
+| preexisting non-cue outcome | **0** |
+| novel non-cue outcome | **0** |
+| graph / frequency / random error | 계산 불가(`null`) |
+
+- 모든 target 입력은 `서울을 설명해줘→서울이 궁금해`, `컴퓨터를 설명해줘→컴퓨터가 궁금해`,
+  `학습을 설명해줘→학습이 궁금해`처럼 동일 cue를 말투만 바꾼 반복이었다.
+- predictor가 source cue 자체를 후보에서 제외하므로 cue 반복을 outcome으로 세는 것은 불공정하다. 이를
+  제외하면 새 외부 정보가 하나도 없어 모델과 baseline의 승패를 측정할 수 없다.
+
+### 결과 B — 다음 센서 관측 coverage
+| 항목 | 결과 |
+|---|---:|
+| vision Experience | 45 |
+| observed Concept가 있는 vision | 45 |
+| NEXT_FRAME link | 36 |
+| prediction snapshot이 있는 vision | **0** |
+
+- frame sequence와 관측은 있지만, 각 frame 전에 무엇을 예측했는지가 저장되지 않았다. 현재 데이터로는
+  pre-frame prediction과 next-frame outcome을 짝지을 수 없다.
+
+### 판정
+1. `data_gate=false`, `baseline_gate=false`, `promotion_gate=false`.
+2. verdict는 `insufficient_external_outcome_data`. 이는 graph 성능 실패가 아니라 **평가 데이터 부재**다.
+3. production scorer, threshold 0.02, min observations 3, canonical 배선은 그대로 둔다.
+4. Neo4j write, Gemini/live 호출, `conversation_handler.py` 수정은 하지 않았다.
+
+### 다음 [B-5.1]
+- 사용자 입력 route: 최소 6 pair와 고유 비-cue external outcome 4개 이상을 실제 다양한 후속 입력으로
+  수집한다. 같은 topic의 질문형만 바꾸는 반복은 표본으로 세지 않는다.
+- 센서 route: vision 처리 전에 prediction snapshot을 남기는 별도 endpoint/DB 설계를 offline/unit에서
+  검증한 뒤 NEXT_FRAME 관측과 비교한다.
+- 어느 route든 graph error가 frequency와 random baseline을 모두 이길 때만 production 승격을 재검토한다.
