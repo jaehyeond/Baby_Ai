@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-07-15 (Phase 3 [B-5.1] preregistered external outcome live pilot)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.1]` 절.
+
+### 완료 ✅ (외부 데이터 확보) / 승격 ❌ (graph가 frequency에 패배)
+- **push 상태 재확인**: 시작 시 `DB_Renewal` local/remote HEAD가 사용자 push `7b4862e`로 일치하고 worktree clean이었다. B5 코드·테스트·문서가 이 커밋에 포함됨을 확인했다.
+- **route 선택**: predictor 정의와 pre-frame snapshot이 없는 vision route 대신, 최소 요건을 직접 검증할 수 있는 다음 사용자 입력 route를 선택했다. 메시지는 live 결과를 보기 전에 고정하고 SHA-256 계약으로 기록했다.
+- **same-turn 오염 차단**: 서버 env `CURIOSITY_EXTERNAL_OUTCOME_EVAL=1`과 request context `external_outcome_evaluation=true`가 모두 있을 때만 `external_deferred`가 활성화된다. 이 모드는 새 Experience에 cue/prediction snapshot만 저장하고 Concept/BrainRegion learning-progress, CuriosityLog, integration priority를 건드리지 않는다. 기본 production 경로는 기존 same-turn scoring을 유지한다.
+- **v1 실시간 검토로 false pass 차단**: 최초 7-turn pilot은 겉보기에는 graph가 baseline을 이겼지만, handler stem `어떻`이 cue와 outcome에 남았고 실질 graph hit는 1개뿐이었다. `어떻게/어떻`을 일반 기능어로 제외하고 contaminated pair 제외, 최소 graph hit 3개, frequency를 이긴 pair 최소 3개 및 개선 pair>악화 pair의 robustness gate를 추가했다. 원본과 read-only 재평가 artifact는 실패 증거로 보존했다.
+- **v2.1 사전등록·수집**: `하늘→날씨→도시→사람→이름→비비→개발자→프로그램` 연결을 담은 7개 문장을 고정했다. preflight는 6/6 scorable pair, 고유 preexisting outcome 7개, 각 source prediction 8개로 통과했다. 7/7 live turn이 `external_deferred` audit를 통과했고, 사전 cue Concept 9개의 curiosity state는 전후 동일했다.
+- **최종 성능**: data gate `true`, contaminated `0`, graph mean error `0.833333` / hit `1`, frequency mean error `0.5` / hit `3`, random expected error `0.992315`. pairwise graph better/tie/worse=`0/4/2`; baseline gate와 robustness gate가 모두 `false`, verdict=`graph_did_not_beat_baselines`, `promotion_gate=false`.
+- **쓰기 범위**: 두 live pilot이 총 14개 conversation Experience와 handler의 통상 Concept/관계를 Neo4j에 남겼다. 이를 삭제하지 않고 음성·감사 증거로 보존한다. evaluator와 재평가는 read-only이며, deferred layer는 curiosity state를 변경하지 않았다.
+- **검증**: 저장 v2.1 artifact의 별도 read-only 재계산이 동일 수치를 재현했다. 전체 `pytest tests neural/test_neural.py -q`는 `58 passed`; py_compile, `pip check`, `git diff --check` 통과. FastAPI 종료 후 port 8000 listener 없음. `conversation_handler.py` current/HEAD blob 모두 `054d974095be7425692860909181fafd54f97a33`.
+
+### 다음 작업
+- **[B-5.2] predictor 진단을 offline에서 먼저 수행**: 현재 예측에 `문장`, `세상`, `말해줘` 같은 hub/general concept가 상위권을 차지하는 원인을 query/ranking 수준에서 분해한다.
+- 저장된 external sequence에 대해 per-cue top-k, transition-aware ranking, generic/hub penalty 같은 최소 후보를 ablation하고, 같은 future-leak 없는 frequency/random baseline보다 반복적으로 좋아질 때만 다음 live pilot을 허용한다.
+- threshold 0.02, min observations 3, production scorer는 유지한다. 현재 B5.1 코드는 미커밋·미푸시 상태이며 commit/push는 사용자 명시 시만 수행한다.
+
+---
+
 ## 2026-07-15 (Phase 3 [B-5] valid external outcome offline evaluation)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5]` 절.

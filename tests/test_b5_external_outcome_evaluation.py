@@ -31,13 +31,14 @@ def test_build_sequence_pairs_never_crosses_sequence_boundaries() -> None:
 
 def test_external_input_terms_filter_generic_speech_acts() -> None:
     terms = b5.extract_external_input_terms(
-        "컴퓨터와 로봇의 관계는 왜 특별한지 설명해줘",
+        "컴퓨터와 로봇의 관계는 어떻게 연결되는지 왜 특별한지 설명해줘",
     )
 
     assert "컴퓨터" in terms
     assert "로봇" in terms
     assert "관계" in terms
     assert "왜" not in terms
+    assert "어떻" not in terms
     assert "설명해줘" not in terms
 
 
@@ -115,6 +116,7 @@ def test_summary_refuses_promotion_when_external_data_is_too_sparse(monkeypatch)
             "random_expected_error": 0.9,
             "preexisting_outcome_terms": [pair["outcome"]],
             "novel_outcome_terms": [],
+            "invalid_cue_names": [],
         },
     )
     pairs = [{"outcome": "로봇"}, {"outcome": "로봇"}]
@@ -136,6 +138,7 @@ def test_summary_passes_only_with_diverse_data_and_both_baselines_beaten(monkeyp
             "random_expected_error": 0.9,
             "preexisting_outcome_terms": [pair["outcome"]],
             "novel_outcome_terms": [],
+            "invalid_cue_names": [],
         },
     )
     pairs = [
@@ -146,8 +149,37 @@ def test_summary_passes_only_with_diverse_data_and_both_baselines_beaten(monkeyp
 
     assert report["data_gate"] is True
     assert report["baseline_gate"] is True
+    assert report["robustness_gate"] is True
     assert report["promotion_gate"] is True
     assert report["verdict"] == "offline_gate_passed"
+
+
+def test_summary_rejects_one_pair_advantage_as_not_robust(monkeypatch) -> None:
+    def fake_evaluate(pair, _concepts, _history):
+        better = pair["index"] == 0
+        return {
+            "graph_error": 0.0 if better else 1.0,
+            "frequency_error": 1.0,
+            "random_expected_error": 0.99,
+            "preexisting_outcome_terms": [pair["outcome"]],
+            "novel_outcome_terms": [],
+            "invalid_cue_names": [],
+        }
+
+    monkeypatch.setattr(b5, "evaluate_pair", fake_evaluate)
+    pairs = [
+        {"index": index, "outcome": outcome}
+        for index, outcome in enumerate(("로봇", "사과", "서울", "기억", "학습", "감정"))
+    ]
+    report = b5.summarize_evaluation(pairs, [], [])
+
+    assert report["data_gate"] is True
+    assert report["baseline_gate"] is True
+    assert report["graph_better_than_frequency_pair_count"] == 1
+    assert report["graph_hit_count"] == 1
+    assert report["robustness_gate"] is False
+    assert report["promotion_gate"] is False
+    assert report["verdict"] == "positive_but_not_robust"
 
 
 def test_sensor_route_requires_both_predictions_and_next_frame_links() -> None:

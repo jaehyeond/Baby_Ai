@@ -246,3 +246,58 @@
 - 센서 route: vision 처리 전에 prediction snapshot을 남기는 별도 endpoint/DB 설계를 offline/unit에서
   검증한 뒤 NEXT_FRAME 관측과 비교한다.
 - 어느 route든 graph error가 frequency와 random baseline을 모두 이길 때만 production 승격을 재검토한다.
+
+## [B-5.1] preregistered external outcome live pilot (2026-07-15)
+
+### 목적과 안전 경계
+- B5의 `scorable pair=0`을 해소하되 결과를 본 뒤 문장을 고르는 것을 막기 위해 7개 메시지를 사전등록하고
+  SHA-256 계약으로 고정했다. 센서 route는 pre-frame predictor 정의가 아직 없어 사용자 입력 route를 택했다.
+- FastAPI env `CURIOSITY_EXTERNAL_OUTCOME_EVAL=1`과 request context
+  `external_outcome_evaluation=true`의 double opt-in에서만 `external_deferred` 모드가 작동한다.
+- deferred 모드는 Experience에 cue/prediction/input snapshot만 붙이고 same-turn error를 계산하지 않는다.
+  Concept/BrainRegion EMA, CuriosityLog, integration priority는 변경하지 않는다. production 기본 동작도 바꾸지 않았다.
+
+### 실시간 검토로 발견한 v1 오염
+- 첫 사전등록 7-turn(`컴퓨터→로봇→카메라→기억→학습→경험→감정`)은 초기 계산상 graph가 baseline보다
+  좋아 보였다. 그러나 pair를 직접 감사하니 질문 기능어 `어떻게`의 handler stem인 `어떻`이 cue와 external
+  outcome에 동시에 남아 있었다. 의미 있는 graph hit는 1개뿐이었다.
+- 이를 정상 성능으로 보고하지 않고 `어떻게/어떻`을 일반 기능어로 제외했다. invalid cue가 있는 pair는
+  contaminated로 분리하고, graph hit 3개 이상, frequency보다 나은 pair 3개 이상, 개선 pair가 악화 pair보다
+  많아야 한다는 robustness gate를 추가했다.
+- v1 read-only 재평가는 contaminated 1, scorable 5, graph/frequency hit 모두 0,
+  verdict=`insufficient_external_outcome_data`였다. 원본과 재평가 artifact는 삭제하지 않았다.
+
+### v2.1 사전등록과 수집
+- 메시지 흐름: `하늘→날씨→도시→사람→이름→비비→개발자→프로그램`.
+- preflight: 7 messages, 6/6 scorable pairs, 고유 preexisting external outcome 7개, source마다 prediction 8개,
+  contract SHA-256 `9c977463837208b69d3ec61054dba28fffc17158c6db0572cc07a433e911d5ce`.
+- live audit: 7/7 Experience가 `external_deferred`; same-turn `prediction_error`와 `learning_progress` 없음.
+  preflight cue Concept 9개의 curiosity state는 전후 동일했다.
+
+### 최종 결과
+| metric | graph | frequency | random expected |
+|---|---:|---:|---:|
+| mean error (낮을수록 좋음) | **0.833333** | **0.5** | 0.992315 |
+| hit count | **1** | **3** | - |
+
+- graph better/tie/worse than frequency pair는 `0/4/2`였다. data gate는 통과했지만 baseline gate와 robustness
+  gate는 실패했다. verdict=`graph_did_not_beat_baselines`, `promotion_gate=false`.
+- 유일한 graph hit `비비`도 frequency가 맞혔다. frequency는 graph가 놓친 `사람`, `이름`까지 맞혔다.
+- 결론은 **외부 결과 데이터 수집 성공, 현재 graph-neighbor predictor 성능 실패**다. threshold를 낮출 문제가
+  아니며 production에 승격하지 않는다.
+
+### 쓰기·재현성·검증
+- v1과 v2.1 live 수집은 총 14개 conversation Experience와 handler의 통상 Concept/관계를 Neo4j에 남겼다.
+  evaluator는 read-only이고 deferred layer의 curiosity state write는 없었다. 라이브 기록은 감사 증거로 보존한다.
+- v2.1 artifact를 라이브 호출 없이 별도 재평가해 모든 핵심 수치가 동일함을 확인했다.
+- 전체 suite `58 passed`, py_compile, `pip check`, `git diff --check` 통과. 종료 후 port 8000 listener 없음.
+  보호된 `conversation_handler.py` current/HEAD blob은 모두 `054d974095be7425692860909181fafd54f97a33`.
+- artifacts:
+  - `claudedocs/research/b5_1_external_outcome_pilot_20260715.json` (v1 원본)
+  - `claudedocs/research/b5_1_external_outcome_pilot_v1_reevaluated_20260715.json` (v1 교정)
+  - `claudedocs/research/b5_1_external_outcome_pilot_v2_1_20260715.json` (최종)
+
+### 다음 [B-5.2]
+추가 live 수집이나 threshold 조정 전에 저장된 sequence에서 query/ranking을 offline 진단한다. 현재 상위 예측의
+hub/general concept 편향을 분해하고, per-cue top-k·transition-aware ranking·generic/hub penalty의 최소 ablation을
+동일한 future-leak 없는 frequency/random baseline과 비교한다. 이 gate를 반복적으로 이길 때만 다음 live pilot을 연다.

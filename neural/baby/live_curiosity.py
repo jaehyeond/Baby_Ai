@@ -27,7 +27,7 @@ _ONE_CHARACTER_CUE_STOPWORDS = frozenset({
 _GENERIC_CURIOSITY_CUE_TERMS = frozenset({
     "궁금해", "궁금해요", "말해줘", "말해주세요", "알려줘", "알려주세요",
     "설명해줘", "설명해주세요", "무엇", "무엇이", "뭐", "뭔지",
-    "어디", "어디야", "어떤",
+    "어디", "어디야", "어떤", "어떻게", "어떻",
 })
 
 

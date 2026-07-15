@@ -248,7 +248,14 @@ class PendingQuestionAnswer(BaseModel):
 @app.get("/health")
 async def health_check():
     """서버 상태 확인"""
-    return {"status": "healthy", "version": "2.0.0", "backend": "neo4j+redis"}
+    return {
+        "status": "healthy",
+        "version": "2.0.0",
+        "backend": "neo4j+redis",
+        "curiosity_external_outcome_eval_enabled": (
+            os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
+        ),
+    }
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
@@ -488,6 +495,15 @@ async def conversation(request: ConversationRequest):
         # STEP 0 identity (2026-07, docs/IDENTITY_ACCESS_CONTROL.md): owner token 검증
         # + owner 사칭 차단. endpoint-level 이라 conversation_handler v30 미변경.
         ctx = dict(request.context or {})
+        external_outcome_eval_requested = bool(
+            ctx.pop("external_outcome_evaluation", False)
+        )
+        external_outcome_eval_enabled = (
+            os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
+        )
+        defer_curiosity_scoring = (
+            external_outcome_eval_requested and external_outcome_eval_enabled
+        )
         claimed_sid = ctx.get("speaker_id", "unknown")
         owner_token = ctx.pop("owner_token", None)  # 비밀은 downstream에 전달 안 함
         # 상수시간 비교(타이밍 공격 방지) + OWNER_SECRET 미설정 시 fail-closed
@@ -536,14 +552,20 @@ async def conversation(request: ConversationRequest):
             context=ctx,
         )
 
-        # Score the pre-learning prediction against concepts linked by the
-        # handler.  Raw surprise is observed, while only learning-progress may
-        # affect consolidation priority or open a CuriosityLog target.
+        # Normal mode scores the same-turn outcome for backward compatibility.
+        # B5 research mode is a double opt-in (server env + request context): it
+        # persists only the snapshot and waits for the next external outcome.
         try:
-            curiosity_signal = await get_brain_db().record_curiosity_outcome(
-                curiosity_snapshot,
-                result.get("experience_id"),
-            )
+            if defer_curiosity_scoring:
+                curiosity_signal = await get_brain_db().defer_curiosity_outcome_scoring(
+                    curiosity_snapshot,
+                    result.get("experience_id"),
+                )
+            else:
+                curiosity_signal = await get_brain_db().record_curiosity_outcome(
+                    curiosity_snapshot,
+                    result.get("experience_id"),
+                )
             if curiosity_signal.get("status") == "recorded":
                 logger.info(
                     "[curiosity] error=%.3f progress=%.3f gated=%s target=%s",
@@ -551,6 +573,11 @@ async def conversation(request: ConversationRequest):
                     curiosity_signal["learning_progress"],
                     curiosity_signal["gated"],
                     curiosity_signal.get("target_id"),
+                )
+            elif curiosity_signal.get("status") == "deferred":
+                logger.info(
+                    "[curiosity] external outcome deferred experience=%s",
+                    result.get("experience_id"),
                 )
         except Exception as curiosity_post_err:
             logger.warning(f"curiosity outcome scoring error: {curiosity_post_err}")

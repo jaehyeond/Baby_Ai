@@ -1,0 +1,572 @@
+{
+  "completed_at": "2026-07-15T12:15:55.376261+00:00",
+  "contract_sha256": "9c977463837208b69d3ec61054dba28fffc17158c6db0572cc07a433e911d5ce",
+  "deferred_state_audit": {
+    "concept_curiosity_states_unchanged": true,
+    "cue_count": 9
+  },
+  "evaluation": {
+    "baseline_gate": false,
+    "contaminated_pair_count": 0,
+    "data_gate": true,
+    "database_writes": false,
+    "frequency_hit_count": 3,
+    "frequency_mean_error": 0.5,
+    "graph_better_than_frequency_pair_count": 0,
+    "graph_hit_count": 1,
+    "graph_mean_error": 0.833333,
+    "graph_tied_with_frequency_pair_count": 4,
+    "graph_worse_than_frequency_pair_count": 2,
+    "minimum_baseline_improved_pairs": 3,
+    "minimum_graph_hits": 3,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "missing_experience_ids": [],
+    "novel_external_outcome_count": 0,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "available_vocabulary_size": 1036,
+        "cue_names": [
+          "날씨",
+          "하늘",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "도시"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "인터넷에",
+          "다시",
+          "사람이",
+          "잘못",
+          "기분"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "날씨",
+          "도시",
+          "관계"
+        ],
+        "next_user_input": "날씨와 도시의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "문장",
+          "세상",
+          "서울",
+          "AI (비비)",
+          "AI",
+          "형의",
+          "형은",
+          "말해줘"
+        ],
+        "preexisting_outcome_terms": [
+          "도시"
+        ],
+        "random_expected_error": 0.992278,
+        "repeated_cue_terms": [
+          "날씨",
+          "관계"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+        "source_task": "하늘과 날씨의 관계를 말해줘.",
+        "target_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72"
+      },
+      {
+        "available_vocabulary_size": 1038,
+        "cue_names": [
+          "도시",
+          "날씨",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "사람"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "하늘",
+          "이름",
+          "인터넷에",
+          "다시",
+          "사람이",
+          "잘못"
+        ],
+        "frequency_error": 0.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "도시",
+          "사람",
+          "관계"
+        ],
+        "next_user_input": "도시와 사람의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "문장",
+          "세상",
+          "서울",
+          "AI (비비)",
+          "AI",
+          "형의",
+          "형은",
+          "말해줘"
+        ],
+        "preexisting_outcome_terms": [
+          "사람"
+        ],
+        "random_expected_error": 0.992293,
+        "repeated_cue_terms": [
+          "도시",
+          "관계"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+        "source_task": "날씨와 도시의 관계를 말해줘.",
+        "target_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049"
+      },
+      {
+        "available_vocabulary_size": 1040,
+        "cue_names": [
+          "도시",
+          "사람",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "이름"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "하늘",
+          "이름",
+          "인터넷에",
+          "날씨",
+          "다시",
+          "잘못"
+        ],
+        "frequency_error": 0.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "사람",
+          "이름",
+          "관계"
+        ],
+        "next_user_input": "사람과 이름의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "문장",
+          "세상",
+          "미국 특별시 종류",
+          "딥러닝",
+          "교토",
+          "형의",
+          "형은",
+          "말해줘"
+        ],
+        "preexisting_outcome_terms": [
+          "이름"
+        ],
+        "random_expected_error": 0.992308,
+        "repeated_cue_terms": [
+          "사람",
+          "관계"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+        "source_task": "도시와 사람의 관계를 말해줘.",
+        "target_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d"
+      },
+      {
+        "available_vocabulary_size": 1042,
+        "cue_names": [
+          "이름",
+          "사람",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "비비"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시",
+          "잘못",
+          "기분"
+        ],
+        "frequency_error": 0.0,
+        "graph_error": 0.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "이름",
+          "비비",
+          "관계"
+        ],
+        "next_user_input": "이름과 비비의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "사용자",
+          "문장",
+          "형의",
+          "말해줘",
+          "세상",
+          "비비",
+          "형은",
+          "개발자"
+        ],
+        "preexisting_outcome_terms": [
+          "비비"
+        ],
+        "random_expected_error": 0.992322,
+        "repeated_cue_terms": [
+          "이름",
+          "관계"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+        "source_task": "사람과 이름의 관계를 말해줘.",
+        "target_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988"
+      },
+      {
+        "available_vocabulary_size": 1044,
+        "cue_names": [
+          "비비",
+          "이름",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "개발자",
+          "개발"
+        ],
+        "frequency_baseline_names": [
+          "비",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시",
+          "잘못",
+          "기분"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "비비",
+          "개발자",
+          "관계",
+          "개발"
+        ],
+        "next_user_input": "비비와 개발자의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "공부",
+          "대화",
+          "기분",
+          "놀이",
+          "형",
+          "기쁨",
+          "사용자",
+          "인터넷"
+        ],
+        "preexisting_outcome_terms": [
+          "개발자",
+          "개발"
+        ],
+        "random_expected_error": 0.992337,
+        "repeated_cue_terms": [
+          "비비",
+          "관계"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+        "source_task": "이름과 비비의 관계를 말해줘.",
+        "target_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6"
+      },
+      {
+        "available_vocabulary_size": 1046,
+        "cue_names": [
+          "비비",
+          "개발자",
+          "관계",
+          "개발"
+        ],
+        "external_outcome_terms": [
+          "프로그램"
+        ],
+        "frequency_baseline_names": [
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "사람이",
+          "다시",
+          "잘못"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "invalid_cue_names": [],
+        "next_input_terms": [
+          "개발자",
+          "프로그램",
+          "관계",
+          "개발"
+        ],
+        "next_user_input": "개발자와 프로그램의 관계를 말해줘.",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "공부",
+          "대화",
+          "기분",
+          "놀이",
+          "형",
+          "기쁨",
+          "사용자",
+          "인터넷"
+        ],
+        "preexisting_outcome_terms": [
+          "프로그램"
+        ],
+        "random_expected_error": 0.992352,
+        "repeated_cue_terms": [
+          "개발자",
+          "관계",
+          "개발"
+        ],
+        "sequence": "b5_1_preregistered_user_input_v2_1_20260715",
+        "source_experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+        "source_task": "비비와 개발자의 관계를 말해줘.",
+        "target_experience_id": "c97413f8-dc87-44d1-b2c6-97b57f261be7"
+      }
+    ],
+    "preexisting_external_outcome_count": 7,
+    "promotion_gate": false,
+    "random_expected_mean_error": 0.992315,
+    "robustness_gate": false,
+    "scorable_pair_count": 6,
+    "sensor_coverage": {},
+    "sensor_route_scorable": false,
+    "unique_preexisting_external_outcome_count": 7,
+    "unscorable_pair_count": 0,
+    "verdict": "graph_did_not_beat_baselines"
+  },
+  "experience_ids": [
+    "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+    "b8e867e6-a164-4dcf-8426-4618195a2f72",
+    "876b0ef6-1487-4171-94da-151ec18bd049",
+    "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+    "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+    "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+    "c97413f8-dc87-44d1-b2c6-97b57f261be7"
+  ],
+  "health": {
+    "backend": "neo4j+redis",
+    "external_outcome_eval_enabled": true,
+    "status": "healthy"
+  },
+  "messages": [
+    "하늘과 날씨의 관계를 말해줘.",
+    "날씨와 도시의 관계를 말해줘.",
+    "도시와 사람의 관계를 말해줘.",
+    "사람과 이름의 관계를 말해줘.",
+    "이름과 비비의 관계를 말해줘.",
+    "비비와 개발자의 관계를 말해줘.",
+    "개발자와 프로그램의 관계를 말해줘."
+  ],
+  "pilot_name": "b5_1_preregistered_user_input_v2_1_20260715",
+  "preflight": {
+    "contract_gate": true,
+    "message_count": 7,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "cue_names": [
+          "날씨",
+          "하늘",
+          "관계"
+        ],
+        "next_user_input": "날씨와 도시의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 1,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "도시"
+        ],
+        "source_message": "하늘과 날씨의 관계를 말해줘."
+      },
+      {
+        "cue_names": [
+          "도시",
+          "날씨",
+          "관계"
+        ],
+        "next_user_input": "도시와 사람의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 2,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "사람"
+        ],
+        "source_message": "날씨와 도시의 관계를 말해줘."
+      },
+      {
+        "cue_names": [
+          "도시",
+          "사람",
+          "관계"
+        ],
+        "next_user_input": "사람과 이름의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 3,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "이름"
+        ],
+        "source_message": "도시와 사람의 관계를 말해줘."
+      },
+      {
+        "cue_names": [
+          "이름",
+          "사람",
+          "관계"
+        ],
+        "next_user_input": "이름과 비비의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 4,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "비비"
+        ],
+        "source_message": "사람과 이름의 관계를 말해줘."
+      },
+      {
+        "cue_names": [
+          "비비",
+          "이름",
+          "관계"
+        ],
+        "next_user_input": "비비와 개발자의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 5,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "개발자",
+          "개발"
+        ],
+        "source_message": "이름과 비비의 관계를 말해줘."
+      },
+      {
+        "cue_names": [
+          "비비",
+          "개발자",
+          "관계",
+          "개발"
+        ],
+        "next_user_input": "개발자와 프로그램의 관계를 말해줘.",
+        "novel_external_outcomes": [],
+        "pair": 6,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "프로그램"
+        ],
+        "source_message": "비비와 개발자의 관계를 말해줘."
+      }
+    ],
+    "scorable_pair_count": 6,
+    "unique_preexisting_external_outcome_count": 7
+  },
+  "started_at": "2026-07-15T12:15:25.127488+00:00",
+  "status": "completed",
+  "turns": [
+    {
+      "created_at": "2026-07-15T12:15:36.303180+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "f1ec3421-3d82-48b2-b45d-67eb6e275ad0",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "하늘과 날씨의 관계를 말해줘.",
+      "turn": 1,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:39.628653+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "b8e867e6-a164-4dcf-8426-4618195a2f72",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "날씨와 도시의 관계를 말해줘.",
+      "turn": 2,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:42.859469+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "876b0ef6-1487-4171-94da-151ec18bd049",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "도시와 사람의 관계를 말해줘.",
+      "turn": 3,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:45.871537+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "0af7815e-60dc-4c55-ae6c-ac5e9312982d",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "사람과 이름의 관계를 말해줘.",
+      "turn": 4,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:48.778651+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "8f21e255-0c7c-40ae-aad8-4f8ca3c84988",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "이름과 비비의 관계를 말해줘.",
+      "turn": 5,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:51.167959+00:00",
+      "cue_count": 4,
+      "errors": [],
+      "experience_id": "482e355c-b56e-4e0a-b510-27d9bcb3f8d6",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "비비와 개발자의 관계를 말해줘.",
+      "turn": 6,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T12:15:54.318640+00:00",
+      "cue_count": 4,
+      "errors": [],
+      "experience_id": "c97413f8-dc87-44d1-b2c6-97b57f261be7",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "개발자와 프로그램의 관계를 말해줘.",
+      "turn": 7,
+      "valid": true
+    }
+  ]
+}

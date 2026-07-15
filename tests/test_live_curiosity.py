@@ -42,7 +42,7 @@ def test_curiosity_cue_terms_filter_one_character_pronouns() -> None:
 
 def test_curiosity_cue_filter_removes_speech_act_terms() -> None:
     assert filter_curiosity_cue_terms([
-        "컴퓨터", "설명해줘", "궁금해", "무엇이", "컴퓨터",
+        "컴퓨터", "설명해줘", "궁금해", "무엇이", "어떻", "컴퓨터",
     ]) == ["컴퓨터"]
 
 
@@ -298,6 +298,52 @@ def test_record_outcome_persists_b3_observability(monkeypatch) -> None:
     assert json.loads(experience_update["cue_states_json"]) == signal["cue_states"]
 
 
+def test_deferred_external_outcome_persists_snapshot_only(monkeypatch) -> None:
+    from neural.baby import neo4j_db
+
+    update: dict = {}
+
+    class FakeResult:
+        async def single(self):
+            return {"id": "exp-1"}
+
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, _exc_type, _exc, _tb):
+            return False
+
+        async def run(self, query, **params):
+            assert "curiosity_scoring_mode = 'external_deferred'" in query
+            assert "learning_progress" not in query
+            assert "CuriosityLog" not in query
+            update.update(params)
+            return FakeResult()
+
+    class FakeDriver:
+        def session(self, database=None):
+            assert database == neo4j_db._DB_NAME
+            return FakeSession()
+
+    monkeypatch.setattr(neo4j_db, "get_driver", lambda: FakeDriver())
+    snapshot = {
+        "cue_concepts": [{"id": "computer", "name": "컴퓨터"}],
+        "predicted_concepts": [{"id": "robot", "name": "로봇", "score": 0.8}],
+        "input_terms": ["컴퓨터"],
+        "captured_at": "2026-07-15T01:00:00+00:00",
+    }
+
+    result = asyncio.run(
+        neo4j_db.BrainDatabase().defer_curiosity_outcome_scoring(snapshot, "exp-1")
+    )
+
+    assert result["status"] == "deferred"
+    assert update["cue_ids"] == ["computer"]
+    assert update["predicted_ids"] == ["robot"]
+    assert json.loads(update["input_terms_json"]) == ["컴퓨터"]
+
+
 def test_conversation_endpoint_wires_prediction_before_handler(monkeypatch) -> None:
     from neural.baby import api_server, conversation_handler
 
@@ -363,4 +409,69 @@ def test_conversation_endpoint_wires_prediction_before_handler(monkeypatch) -> N
         "prepare:비비와 형의 관계",
         "handle:비비와 형의 관계",
         "record:exp-1",
+    ]
+
+
+def test_conversation_endpoint_double_opt_in_defers_external_scoring(monkeypatch) -> None:
+    from neural.baby import api_server, conversation_handler
+
+    events: list[str] = []
+    snapshot = {
+        "cue_concepts": [{"id": "computer", "name": "컴퓨터"}],
+        "predicted_concepts": [{"id": "robot", "name": "로봇", "score": 0.8}],
+    }
+
+    class FakeDb:
+        async def get_baby_state(self):
+            return {"development_stage": 2}
+
+        async def resolve_speaker_clearance(self, _speaker_id):
+            return "public"
+
+        async def prepare_curiosity_prediction(self, message, cue_terms=None):
+            events.append(f"prepare:{message}")
+            return snapshot
+
+        async def record_curiosity_outcome(self, _snapshot, _experience_id):
+            raise AssertionError("same-turn scorer must not run in deferred mode")
+
+        async def defer_curiosity_outcome_scoring(self, received, experience_id):
+            assert received == snapshot
+            events.append(f"defer:{experience_id}")
+            return {"status": "deferred"}
+
+    fake_db = FakeDb()
+    monkeypatch.setattr(api_server, "get_brain_db", lambda: fake_db)
+    monkeypatch.setenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "1")
+
+    async def fake_handle_conversation(message, context):
+        assert "external_outcome_evaluation" not in context
+        events.append(f"handle:{message}")
+        return {
+            "output": "응답",
+            "success": True,
+            "emotional_state": {},
+            "development_stage": 2,
+            "experience_id": "exp-1",
+        }
+
+    monkeypatch.setattr(conversation_handler, "handle_conversation", fake_handle_conversation)
+
+    response = asyncio.run(
+        api_server.conversation(
+            api_server.ConversationRequest(
+                message="컴퓨터와 로봇",
+                context={
+                    "speaker_id": "b5_1_pilot",
+                    "external_outcome_evaluation": True,
+                },
+            )
+        )
+    )
+
+    assert response.experience_id == "exp-1"
+    assert events == [
+        "prepare:컴퓨터와 로봇",
+        "handle:컴퓨터와 로봇",
+        "defer:exp-1",
     ]

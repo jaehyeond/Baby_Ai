@@ -1,0 +1,578 @@
+{
+  "completed_at": "2026-07-15T11:03:32.290490+00:00",
+  "contract_sha256": "d7f28377caf5719d00fdb4af18f3e65c5c62a3e0c2ac8704f568bfadbec44c6f",
+  "deferred_state_audit": {
+    "concept_curiosity_states_unchanged": true,
+    "cue_count": 10
+  },
+  "evaluation": {
+    "baseline_gate": true,
+    "data_gate": true,
+    "database_writes": false,
+    "frequency_mean_error": 0.944445,
+    "graph_mean_error": 0.888889,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "missing_experience_ids": [],
+    "novel_external_outcome_count": 8,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "available_vocabulary_size": 1012,
+        "cue_names": [
+          "컴퓨터",
+          "도구"
+        ],
+        "external_outcome_terms": [
+          "로봇",
+          "어떻",
+          "연결돼"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시",
+          "사람이"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "next_input_terms": [
+          "로봇",
+          "컴퓨터",
+          "어떻",
+          "연결돼"
+        ],
+        "next_user_input": "로봇과 컴퓨터는 어떻게 연결돼?",
+        "novel_outcome_terms": [
+          "어떻",
+          "연결돼"
+        ],
+        "predicted_names": [
+          "비비",
+          "로보틱스",
+          "컴퓨터라",
+          "컴퓨터요",
+          "신기한",
+          "AI",
+          "개발자",
+          "프로그램"
+        ],
+        "preexisting_outcome_terms": [
+          "로봇"
+        ],
+        "random_expected_error": 0.992095,
+        "repeated_cue_terms": [
+          "컴퓨터"
+        ],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "40964ae9-9645-4458-9b28-d5815b52b6fd",
+        "source_task": "컴퓨터는 무엇을 하는 도구야?",
+        "target_experience_id": "182b9020-7aa9-4723-b67f-86b450a7b9bb"
+      },
+      {
+        "available_vocabulary_size": 1014,
+        "cue_names": [
+          "컴퓨터",
+          "로봇"
+        ],
+        "external_outcome_terms": [
+          "카메라",
+          "볼"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시",
+          "사람이"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "next_input_terms": [
+          "로봇",
+          "카메라",
+          "볼"
+        ],
+        "next_user_input": "로봇이 카메라로 무엇을 볼 수 있어?",
+        "novel_outcome_terms": [
+          "볼"
+        ],
+        "predicted_names": [
+          "비비",
+          "로보틱스",
+          "컴퓨터라",
+          "컴퓨터요",
+          "신기한",
+          "AI",
+          "개발자",
+          "프로그램"
+        ],
+        "preexisting_outcome_terms": [
+          "카메라"
+        ],
+        "random_expected_error": 0.99211,
+        "repeated_cue_terms": [
+          "로봇"
+        ],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "182b9020-7aa9-4723-b67f-86b450a7b9bb",
+        "source_task": "로봇과 컴퓨터는 어떻게 연결돼?",
+        "target_experience_id": "ddcb9f8a-fa54-4c28-a26c-44d46b95049e"
+      },
+      {
+        "available_vocabulary_size": 1021,
+        "cue_names": [
+          "로봇",
+          "카메라"
+        ],
+        "external_outcome_terms": [
+          "정보",
+          "기억에",
+          "어떻",
+          "남아"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "어떻",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시"
+        ],
+        "frequency_error": 0.666667,
+        "graph_error": 0.666667,
+        "next_input_terms": [
+          "정보",
+          "카메라",
+          "기억에",
+          "어떻",
+          "남아"
+        ],
+        "next_user_input": "카메라 정보는 기억에 어떻게 남아?",
+        "novel_outcome_terms": [
+          "남아"
+        ],
+        "predicted_names": [
+          "컴퓨터",
+          "거라",
+          "카메라 따 놓기",
+          "이야기하",
+          "연결돼",
+          "연결되",
+          "궁금해",
+          "어떻"
+        ],
+        "preexisting_outcome_terms": [
+          "정보",
+          "기억에",
+          "어떻"
+        ],
+        "random_expected_error": 0.992165,
+        "repeated_cue_terms": [
+          "카메라"
+        ],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "ddcb9f8a-fa54-4c28-a26c-44d46b95049e",
+        "source_task": "로봇이 카메라로 무엇을 볼 수 있어?",
+        "target_experience_id": "2eb044cf-a123-4d23-8cad-42aa504604cc"
+      },
+      {
+        "available_vocabulary_size": 1022,
+        "cue_names": [
+          "정보",
+          "카메라",
+          "어떻"
+        ],
+        "external_outcome_terms": [
+          "기억",
+          "학습",
+          "관계"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시",
+          "사람이"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 0.666667,
+        "next_input_terms": [
+          "기억",
+          "학습",
+          "관계"
+        ],
+        "next_user_input": "기억은 학습과 어떤 관계야?",
+        "novel_outcome_terms": [],
+        "predicted_names": [
+          "인터넷",
+          "비비",
+          "대답",
+          "인터넷 검색",
+          "AI",
+          "기억",
+          "회상",
+          "일본"
+        ],
+        "preexisting_outcome_terms": [
+          "기억",
+          "학습",
+          "관계"
+        ],
+        "random_expected_error": 0.992172,
+        "repeated_cue_terms": [],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "2eb044cf-a123-4d23-8cad-42aa504604cc",
+        "source_task": "카메라 정보는 기억에 어떻게 남아?",
+        "target_experience_id": "eba84c6c-0537-4518-9f37-3d413b81a9ff"
+      },
+      {
+        "available_vocabulary_size": 1026,
+        "cue_names": [
+          "학습",
+          "기억",
+          "관계"
+        ],
+        "external_outcome_terms": [
+          "내용",
+          "경험",
+          "학습한",
+          "연결해"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "어떻",
+          "비",
+          "이름",
+          "하늘",
+          "인터넷에",
+          "날씨",
+          "다시"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "next_input_terms": [
+          "내용",
+          "경험",
+          "학습한",
+          "연결해"
+        ],
+        "next_user_input": "학습한 내용을 경험과 연결해서 말해줘.",
+        "novel_outcome_terms": [
+          "학습한",
+          "연결해"
+        ],
+        "predicted_names": [
+          "문장",
+          "AI",
+          "형의",
+          "형은",
+          "말해줘",
+          "정보",
+          "세상",
+          "비비"
+        ],
+        "preexisting_outcome_terms": [
+          "내용",
+          "경험"
+        ],
+        "random_expected_error": 0.992203,
+        "repeated_cue_terms": [],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "eba84c6c-0537-4518-9f37-3d413b81a9ff",
+        "source_task": "기억은 학습과 어떤 관계야?",
+        "target_experience_id": "50070b17-0162-41ca-8a24-5d86beee15b0"
+      },
+      {
+        "available_vocabulary_size": 1030,
+        "cue_names": [
+          "내용",
+          "경험"
+        ],
+        "external_outcome_terms": [
+          "영향",
+          "줘",
+          "감정에"
+        ],
+        "frequency_baseline_names": [
+          "비비",
+          "어떻",
+          "비",
+          "이름",
+          "하늘"
+        ],
+        "frequency_error": 1.0,
+        "graph_error": 1.0,
+        "next_input_terms": [
+          "경험",
+          "영향",
+          "줘",
+          "감정에"
+        ],
+        "next_user_input": "경험이 감정에 어떤 영향을 줘?",
+        "novel_outcome_terms": [
+          "영향",
+          "줘"
+        ],
+        "predicted_names": [
+          "배움",
+          "사전적 정의",
+          "학습",
+          "똑똑함",
+          "AI"
+        ],
+        "preexisting_outcome_terms": [
+          "감정에"
+        ],
+        "random_expected_error": 0.995146,
+        "repeated_cue_terms": [
+          "경험"
+        ],
+        "sequence": "b5_1_preregistered_user_input_20260715",
+        "source_experience_id": "50070b17-0162-41ca-8a24-5d86beee15b0",
+        "source_task": "학습한 내용을 경험과 연결해서 말해줘.",
+        "target_experience_id": "67cbce90-2c54-4953-a361-c12d0644448a"
+      }
+    ],
+    "preexisting_external_outcome_count": 11,
+    "promotion_gate": true,
+    "random_expected_mean_error": 0.992649,
+    "scorable_pair_count": 6,
+    "sensor_coverage": {},
+    "sensor_route_scorable": false,
+    "unique_preexisting_external_outcome_count": 10,
+    "unscorable_pair_count": 0,
+    "verdict": "offline_gate_passed"
+  },
+  "experience_ids": [
+    "40964ae9-9645-4458-9b28-d5815b52b6fd",
+    "182b9020-7aa9-4723-b67f-86b450a7b9bb",
+    "ddcb9f8a-fa54-4c28-a26c-44d46b95049e",
+    "2eb044cf-a123-4d23-8cad-42aa504604cc",
+    "eba84c6c-0537-4518-9f37-3d413b81a9ff",
+    "50070b17-0162-41ca-8a24-5d86beee15b0",
+    "67cbce90-2c54-4953-a361-c12d0644448a"
+  ],
+  "health": {
+    "backend": "neo4j+redis",
+    "external_outcome_eval_enabled": true,
+    "status": "healthy"
+  },
+  "messages": [
+    "컴퓨터는 무엇을 하는 도구야?",
+    "로봇과 컴퓨터는 어떻게 연결돼?",
+    "로봇이 카메라로 무엇을 볼 수 있어?",
+    "카메라 정보는 기억에 어떻게 남아?",
+    "기억은 학습과 어떤 관계야?",
+    "학습한 내용을 경험과 연결해서 말해줘.",
+    "경험이 감정에 어떤 영향을 줘?"
+  ],
+  "pilot_name": "b5_1_preregistered_user_input_20260715",
+  "preflight": {
+    "contract_gate": true,
+    "message_count": 7,
+    "minimum_scorable_pairs": 6,
+    "minimum_unique_external_outcomes": 4,
+    "pair_count": 6,
+    "pairs": [
+      {
+        "cue_names": [
+          "컴퓨터",
+          "도구"
+        ],
+        "next_user_input": "로봇과 컴퓨터는 어떻게 연결돼?",
+        "novel_external_outcomes": [
+          "어떻",
+          "연결돼"
+        ],
+        "pair": 1,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "로봇"
+        ],
+        "source_message": "컴퓨터는 무엇을 하는 도구야?"
+      },
+      {
+        "cue_names": [
+          "컴퓨터",
+          "로봇"
+        ],
+        "next_user_input": "로봇이 카메라로 무엇을 볼 수 있어?",
+        "novel_external_outcomes": [
+          "볼"
+        ],
+        "pair": 2,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "카메라"
+        ],
+        "source_message": "로봇과 컴퓨터는 어떻게 연결돼?"
+      },
+      {
+        "cue_names": [
+          "로봇",
+          "카메라"
+        ],
+        "next_user_input": "카메라 정보는 기억에 어떻게 남아?",
+        "novel_external_outcomes": [
+          "어떻",
+          "남아"
+        ],
+        "pair": 3,
+        "prediction_count": 1,
+        "preexisting_external_outcomes": [
+          "정보",
+          "기억에"
+        ],
+        "source_message": "로봇이 카메라로 무엇을 볼 수 있어?"
+      },
+      {
+        "cue_names": [
+          "정보",
+          "카메라"
+        ],
+        "next_user_input": "기억은 학습과 어떤 관계야?",
+        "novel_external_outcomes": [],
+        "pair": 4,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "기억",
+          "학습",
+          "관계"
+        ],
+        "source_message": "카메라 정보는 기억에 어떻게 남아?"
+      },
+      {
+        "cue_names": [
+          "학습",
+          "기억",
+          "관계"
+        ],
+        "next_user_input": "학습한 내용을 경험과 연결해서 말해줘.",
+        "novel_external_outcomes": [
+          "학습한",
+          "연결해"
+        ],
+        "pair": 5,
+        "prediction_count": 8,
+        "preexisting_external_outcomes": [
+          "내용",
+          "경험"
+        ],
+        "source_message": "기억은 학습과 어떤 관계야?"
+      },
+      {
+        "cue_names": [
+          "내용",
+          "경험"
+        ],
+        "next_user_input": "경험이 감정에 어떤 영향을 줘?",
+        "novel_external_outcomes": [
+          "영향",
+          "줘"
+        ],
+        "pair": 6,
+        "prediction_count": 5,
+        "preexisting_external_outcomes": [
+          "감정에"
+        ],
+        "source_message": "학습한 내용을 경험과 연결해서 말해줘."
+      }
+    ],
+    "scorable_pair_count": 6,
+    "unique_preexisting_external_outcome_count": 9
+  },
+  "started_at": "2026-07-15T11:02:58.941349+00:00",
+  "status": "completed",
+  "turns": [
+    {
+      "created_at": "2026-07-15T11:03:07.413778+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "40964ae9-9645-4458-9b28-d5815b52b6fd",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "컴퓨터는 무엇을 하는 도구야?",
+      "turn": 1,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:12.857621+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "182b9020-7aa9-4723-b67f-86b450a7b9bb",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "로봇과 컴퓨터는 어떻게 연결돼?",
+      "turn": 2,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:15.915260+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "ddcb9f8a-fa54-4c28-a26c-44d46b95049e",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "로봇이 카메라로 무엇을 볼 수 있어?",
+      "turn": 3,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:19.657408+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "2eb044cf-a123-4d23-8cad-42aa504604cc",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "카메라 정보는 기억에 어떻게 남아?",
+      "turn": 4,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:23.613308+00:00",
+      "cue_count": 3,
+      "errors": [],
+      "experience_id": "eba84c6c-0537-4518-9f37-3d413b81a9ff",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "기억은 학습과 어떤 관계야?",
+      "turn": 5,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:27.357993+00:00",
+      "cue_count": 2,
+      "errors": [],
+      "experience_id": "50070b17-0162-41ca-8a24-5d86beee15b0",
+      "prediction_count": 5,
+      "scoring_mode": "external_deferred",
+      "task": "학습한 내용을 경험과 연결해서 말해줘.",
+      "turn": 6,
+      "valid": true
+    },
+    {
+      "created_at": "2026-07-15T11:03:31.325422+00:00",
+      "cue_count": 1,
+      "errors": [],
+      "experience_id": "67cbce90-2c54-4953-a361-c12d0644448a",
+      "prediction_count": 8,
+      "scoring_mode": "external_deferred",
+      "task": "경험이 감정에 어떤 영향을 줘?",
+      "turn": 7,
+      "valid": true
+    }
+  ]
+}

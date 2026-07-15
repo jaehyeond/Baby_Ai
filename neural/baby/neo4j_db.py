@@ -1903,6 +1903,62 @@ class BrainDatabase:
             "excluded_input_concepts": excluded_input,
         }
 
+    async def defer_curiosity_outcome_scoring(
+        self,
+        snapshot: Optional[dict],
+        experience_id: Optional[str],
+    ) -> dict:
+        """Persist a pre-turn snapshot without scoring the same-turn LLM output.
+
+        B5 external-outcome pilots compare this prediction with a later user or
+        sensor observation.  The method updates only the newly created
+        Experience and deliberately leaves Concept/BrainRegion progress state,
+        CuriosityLog, and integration priority untouched.
+        """
+
+        if not snapshot or not experience_id:
+            return {"status": "skipped", "reason": "missing_snapshot_or_experience"}
+
+        cues = [item for item in snapshot.get("cue_concepts", []) if item.get("id")]
+        predictions = [
+            item for item in snapshot.get("predicted_concepts", []) if item.get("id")
+        ]
+        if not cues:
+            return {"status": "skipped", "reason": "no_known_cues"}
+
+        cue_ids = [item["id"] for item in cues]
+        predicted_ids = [item["id"] for item in predictions]
+        captured_at = str(snapshot.get("captured_at") or _now_iso())
+        input_terms_json = json.dumps(
+            list(snapshot.get("input_terms") or []),
+            ensure_ascii=False,
+        )
+        async with self.driver.session(database=_DB_NAME) as s:
+            result = await s.run(
+                "MATCH (e:Experience {id: $experience_id}) "
+                "SET e.curiosity_cue_ids = $cue_ids, "
+                "    e.predicted_concept_ids = $predicted_ids, "
+                "    e.curiosity_input_terms_json = $input_terms_json, "
+                "    e.curiosity_scoring_mode = 'external_deferred', "
+                "    e.curiosity_snapshot_at = $captured_at "
+                "RETURN e.id AS id",
+                experience_id=experience_id,
+                cue_ids=cue_ids,
+                predicted_ids=predicted_ids,
+                input_terms_json=input_terms_json,
+                captured_at=captured_at,
+            )
+            record = await result.single()
+
+        if not record:
+            return {"status": "skipped", "reason": "experience_not_found"}
+        return {
+            "status": "deferred",
+            "experience_id": record["id"],
+            "cue_concepts": cues,
+            "predicted_concepts": predictions,
+        }
+
     async def get_brain_regions(self) -> list[dict]:
         """뇌 영역 목록 조회"""
         async with self.driver.session(database=_DB_NAME) as s:

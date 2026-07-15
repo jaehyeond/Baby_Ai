@@ -129,8 +129,10 @@ RETURN vision_experience_count,
 
 MIN_SCORABLE_PAIRS = 6
 MIN_UNIQUE_EXTERNAL_OUTCOMES = 4
+MIN_BASELINE_IMPROVED_PAIRS = 3
+MIN_GRAPH_HITS = 3
 _EXTERNAL_INPUT_FUNCTION_TERMS = frozenset({
-    "왜", "어떻게", "안녕", "어때", "해", "해줘", "해주세요",
+    "왜", "어떻게", "어떻", "안녕", "어때", "해", "해줘", "해주세요",
 })
 
 
@@ -325,6 +327,11 @@ def evaluate_pair(
     source = pair["source"]
     target = pair["target"]
     cues = _valid_concepts(source.get("cue_concepts") or [])
+    invalid_cue_names = [
+        item["name"]
+        for item in cues
+        if normalize_concept_name(item["name"]) in _EXTERNAL_INPUT_FUNCTION_TERMS
+    ]
     predictions = _valid_concepts(source.get("predicted_concepts") or [])
     predicted_names = [item["name"] for item in predictions]
     term_split = split_next_input_terms(str(target.get("task") or ""), cues)
@@ -344,6 +351,7 @@ def evaluate_pair(
         "source_task": source.get("task"),
         "next_user_input": target.get("task"),
         "cue_names": [item["name"] for item in cues],
+        "invalid_cue_names": invalid_cue_names,
         "predicted_names": predicted_names,
         "next_input_terms": term_split["all_terms"],
         "repeated_cue_terms": term_split["repeated_cue_terms"],
@@ -369,6 +377,12 @@ def _mean(values: Iterable[float | None]) -> float | None:
     return round(sum(present) / len(present), 6) if present else None
 
 
+def _hit_count(error: float | None, actual_count: int) -> int:
+    if error is None or actual_count <= 0:
+        return 0
+    return int(round((1.0 - float(error)) * actual_count))
+
+
 def summarize_evaluation(
     pairs: Iterable[dict[str, Any]],
     concepts: Iterable[dict[str, Any]],
@@ -384,7 +398,12 @@ def summarize_evaluation(
         and int(sensor.get("next_frame_link_count") or 0) > 0
     )
     evaluated = [evaluate_pair(pair, concepts, history) for pair in pairs]
-    scorable = [item for item in evaluated if item["graph_error"] is not None]
+    contaminated = [item for item in evaluated if item.get("invalid_cue_names")]
+    scorable = [
+        item
+        for item in evaluated
+        if item["graph_error"] is not None and not item.get("invalid_cue_names")
+    ]
     unique_outcomes = {
         canonical_bucket(term)
         for item in scorable
@@ -394,6 +413,27 @@ def summarize_evaluation(
     graph_mean = _mean(item["graph_error"] for item in scorable)
     frequency_mean = _mean(item["frequency_error"] for item in scorable)
     random_mean = _mean(item["random_expected_error"] for item in scorable)
+    paired = [
+        item for item in scorable
+        if item["graph_error"] is not None and item["frequency_error"] is not None
+    ]
+    improved_pair_count = sum(
+        item["graph_error"] < item["frequency_error"] for item in paired
+    )
+    tied_pair_count = sum(
+        item["graph_error"] == item["frequency_error"] for item in paired
+    )
+    worsened_pair_count = sum(
+        item["graph_error"] > item["frequency_error"] for item in paired
+    )
+    graph_hit_count = sum(
+        _hit_count(item["graph_error"], len(item["preexisting_outcome_terms"]))
+        for item in scorable
+    )
+    frequency_hit_count = sum(
+        _hit_count(item["frequency_error"], len(item["preexisting_outcome_terms"]))
+        for item in scorable
+    )
     data_gate = (
         len(scorable) >= MIN_SCORABLE_PAIRS
         and len(unique_outcomes) >= MIN_UNIQUE_EXTERNAL_OUTCOMES
@@ -406,11 +446,18 @@ def summarize_evaluation(
         and graph_mean < frequency_mean
         and graph_mean < random_mean
     )
-    promotion_gate = data_gate and baseline_gate
+    robustness_gate = (
+        improved_pair_count >= MIN_BASELINE_IMPROVED_PAIRS
+        and graph_hit_count >= MIN_GRAPH_HITS
+        and improved_pair_count > worsened_pair_count
+    )
+    promotion_gate = data_gate and baseline_gate and robustness_gate
     if not data_gate:
         verdict = "insufficient_external_outcome_data"
     elif not baseline_gate:
         verdict = "graph_did_not_beat_baselines"
+    elif not robustness_gate:
+        verdict = "positive_but_not_robust"
     else:
         verdict = "offline_gate_passed"
 
@@ -419,6 +466,7 @@ def summarize_evaluation(
         "pair_count": len(evaluated),
         "scorable_pair_count": len(scorable),
         "unscorable_pair_count": len(evaluated) - len(scorable),
+        "contaminated_pair_count": len(contaminated),
         "preexisting_external_outcome_count": sum(
             len(item["preexisting_outcome_terms"]) for item in evaluated
         ),
@@ -431,10 +479,18 @@ def summarize_evaluation(
         "random_expected_mean_error": random_mean,
         "data_gate": data_gate,
         "baseline_gate": baseline_gate,
+        "robustness_gate": robustness_gate,
         "promotion_gate": promotion_gate,
         "verdict": verdict,
         "minimum_scorable_pairs": MIN_SCORABLE_PAIRS,
         "minimum_unique_external_outcomes": MIN_UNIQUE_EXTERNAL_OUTCOMES,
+        "minimum_baseline_improved_pairs": MIN_BASELINE_IMPROVED_PAIRS,
+        "minimum_graph_hits": MIN_GRAPH_HITS,
+        "graph_better_than_frequency_pair_count": improved_pair_count,
+        "graph_tied_with_frequency_pair_count": tied_pair_count,
+        "graph_worse_than_frequency_pair_count": worsened_pair_count,
+        "graph_hit_count": graph_hit_count,
+        "frequency_hit_count": frequency_hit_count,
         "missing_experience_ids": missing_ids,
         "sensor_route_scorable": sensor_route_scorable,
         "sensor_coverage": sensor,
