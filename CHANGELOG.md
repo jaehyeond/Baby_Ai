@@ -10,6 +10,12 @@
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`, auto-memory `program_roadmap`(Phase 3)·`db_migration_status`.
 
 ### 완료 ✅ (검증됨)
+- **[B-4] canonical scoring offline/unit gate — production 연결 안 함** (`scripts/research/b4_canonical_scoring.py`, `tests/test_b4_canonical_scoring.py`): Unicode/case/공백, 보수적 한국어 조사, 길이 제한 `-하/-한`, cue-only 종결형을 분리했다. positive 변형은 허용하면서 `비비/비빔밥`, `형/형광등`, `컴퓨터/컴퓨터공학`, `카메/카메라`, `오디/오디오`, `은하/은한`, `북하/북한`은 불일치로 고정했다. 12 Experience read-only replay 결과 exact mean `1.0`, canonical mean `0.983333`, 개선 1/12(`신기한↔신기하`)뿐이라 **canonicalization-only 가설 기각**.
+- **B4 pre-turn predictability 감사**: scored actual 53개 중 40개(75.5%)가 해당 Experience 이후 생성된 신규 Concept, 사전 존재는 13개였다. 신규를 제외해도 scorable 9턴 mean error `0.888889`, hit는 같은 1개뿐. 주원인은 형태가 아니라 **그래프 prediction을 입력받지 않은 LLM의 same-turn 자기생성 응답을 outcome으로 점수화한 target mismatch**다. production `compute_prediction_error()`는 변경하지 않았다.
+- **[B-3] 12-turn 운영 표본 결론**: fresh `서울/컴퓨터/학습` 각 3턴(9턴)과 수정 후 `컴퓨터` 3턴을 실행했다. 전부 prediction error=`1.0`, learning progress=`0`, gate=`false`, CuriosityLog 없음. 이는 threshold 실패가 아니라 **graph prediction ID와 handler outcome ID의 표현 불일치**다. 마지막 3턴에서 예측 `신기한`이 다음 응답의 `신기하`와 의미상 같아도 ID가 달라 miss가 됐고, `컴퓨터요/컴퓨터라/컴퓨터에`도 분리됐다. 추가 표본·threshold 조정은 중단하고 [B-4] canonical scoring을 offline/unit부터 진행한다.
+- **Gemini 응답 잘림 root cause 분리·복구** (`llm_client.py`, `pyproject.toml`): 동일 프롬프트 SDK A/B에서 구형·신형 모두 `MAX_TOKENS`; 신형 메타데이터로 512 예산 중 thinking 487, 실제 답변 21토큰임을 확인했다. SDK 자체가 원인이 아니었다. 다만 구형 `google-generativeai`는 지원 종료 상태라 공식 `google-genai>=1.10`을 의존성에 추가했다. 가변 `gemini-flash-latest`를 기존 단가와 일치하는 stable `gemini-2.5-flash-lite`로 고정하고 thinking budget 0을 명시했다. probe에서 `STOP`, thinking 0, 완전 응답 160토큰; 실제 후속 3턴도 잘림·메타 누출 없이 완전 응답이었다.
+- **B3 cue/outcome 오염 차단** (`live_curiosity.py`, `neo4j_db.py`): `설명해줘/궁금해/무엇이` 등 speech-act terms는 cue에서 제외하되 input audit에는 보존한다. handler가 사용자 메시지까지 outcome Concept로 저장하므로, snapshot input terms와 일치하는 비-cue actual은 점수에서 제외하고 `curiosity_excluded_input_concept_ids`에 별도 기록한다. 실제 세 메시지 모두 cue=`컴퓨터`만 선택했고 각각 `무엇이/설명해줘/궁금해`가 score 제외 목록에 남았다.
+- **B3 관측·도구**: Experience에 actual IDs, primary cue/EMA/observations, 전체 cue state JSON을 저장. read-only 후보 선택(`b3_curiosity_candidates.py`), endpoint-mirror snapshot(`b3_curiosity_snapshot.py`), auditable live pilot(`b3_curiosity_live_pilot.py`), SDK response metadata probe(`b3_gemini_sdk_probe.py`) 추가. 모든 live Experience는 삭제하지 않고 음성 증거로 보존했다.
 - **Phase 3 [B] 예측오차 루프 첫 조각** (`scripts/research/curiosity_loop.py`): 합성 노이즈-지배 세계서 3정책(random/surprise/progress) 비교. **① learning-progress 호기심이 random보다 학습 가속**(AUC 0.752>0.733, 초반 뚜렷). **② raw surprise는 noisy-TV에 95% 갇힘**(파국). **결정적 설계규칙: 루프는 learning-progress(예측오차 감소율)로 닫아야 함, raw surprise 금지.** 이득 modest·regime 의존(균등환경선 이득 없었음=정직).
 - **[B] 라이브 배선 완료** (`neural/baby/live_curiosity.py`, `neo4j_db.py`, `api_server.py`): 대화 handler 호출 전 알려진 cue의 그래프 연관개념을 snapshot하고, 호출 후 `Experience-[:INVOLVES]->Concept` 실제값과 비교. concept/BrainRegion별 error EMA와 learning-progress를 저장하고 **progress만** `integration_priority` 및 기존 `CuriosityLog` 큐에 연결(raw surprise는 관측값만). 최소 3관측+threshold 0.02 gate, deterministic CuriosityLog id로 동시/반복 중복 방지. `conversation_handler.py` v30 변경 없음.
 - **검증**: `tests/test_live_curiosity.py` **7 passed**(순수 수학+endpoint prepare→handle→record 호출순서). 실제 Baby_Robotics에 rollback synthetic 노드로 error `1.0→0→0`, progress `0→0.4→0.24`, gate `false→false→true`, integration priority `0.546`, `source=learning_progress` 로그 생성 검증; 동일 타깃 2회 기록에도 로그 1개. synthetic 데이터 전부 삭제.
@@ -24,7 +30,9 @@
 ### 다음 작업
 - **[B-1] 인프라 복구 ✅**: `baby_ai_robot_v4` 신규 생성, `.env` 갱신, Pub/Sub·`/api/events`·실 대화 SSE 재검증 완료.
 - **[B-2] cue 품질 개선 ✅**: endpoint/DB 정확일치 정규화, 다중 cue 보존, 실제 1턴 검증 완료. `conversation_handler.py` v30 미변경.
-- **[B-3] 운영 표본 확대**: 다양한 관계/사물 문장으로 gate 빈도와 질문 품질을 관찰한 뒤에만 threshold 조정 여부를 판단한다.
+- **[B-3] 운영 표본 확대 ✅**: 12 live turns로 cue/LLM 문제와 canonical-ID 문제를 분리했다.
+- **[B-4] canonical concept scoring ✅ offline 판정 완료**: broad substring 오탐은 막았으나 개선 1/12로 production gate 실패. 배선하지 않음.
+- **[B-5] valid external outcome**: same-turn 자기생성 응답 대신 다음 사용자 입력 또는 센서 관측을 outcome으로 삼는 prequential sequence를 offline/unit에서 먼저 비교한다. 통과 전 추가 live 호출·threshold 변경 금지.
 - 대안: 살아있는 코어 실가동(`LOCAL_CORE_DISTILL=1`+서버) · Quest 다양장면 수집([A], 데이터 병목).
 
 ---

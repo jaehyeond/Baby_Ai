@@ -8,8 +8,8 @@
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: Phase 3 [B-3] 운영 표본 확대** — [B-2]에서 endpoint/DB 정확일치 cue 정규화 완료. `비비와 형의 관계...` 실제 1턴 저장 cue가 `비비,형,관계,말해줘`로 개선되고 `형의`는 cue에서 제외됨. 다음은 **다양한 관계/사물 문장으로 gate 빈도와 질문 품질 관찰**이며, 그 전 threshold 조정 금지.
-> **이번 세션 완료(검증)**: `build_curiosity_cue_terms()` 추가, explicit 한 글자 허용/substring fallback 2글자 제한, cue/이웃 쿼리 분리로 고차수 cue 독점 해결. 관련 21 tests+py_compile+라이브 Neo4j snapshot+실제 Gemini 1턴 통과. `conversation_handler.py` blob `054d974…` 무변경. Redis v4/SSE도 정상. 상세 `CHANGELOG.md` 최상단.
+> **현재 진입점: Phase 3 [B-5] valid external outcome 설계** — [B-4] canonical replay는 exact mean `1.0`→`0.9833`, 개선 1/12뿐이라 production gate 실패. actual 53개 중 40개가 그 턴 신규 Concept였고, preexisting 13개만 봐도 mean error `0.8889`. 같은 turn의 자기생성 LLM 응답은 graph prediction을 입력받지 않으므로 정당한 예측 target이 아니다. **다음 사용자 입력 또는 센서 관측을 outcome으로 삼는 prequential sequence를 offline/unit에서 비교한다.**
+> **이번 세션 완료(검증)**: read-only `b4_canonical_scoring.py`와 positive/false-positive/생성시각 단위 테스트 추가. `비비↔비빔밥`, `형↔형광등`, `카메↔카메라` 오탐 차단. canonical production 배선은 하지 않았고 threshold·live 호출도 유지 중단. `conversation_handler.py` blob `054d974…` 무변경. 상세 `CHANGELOG.md` 최상단.
 
 ---
 

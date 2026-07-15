@@ -107,3 +107,86 @@
 - 실제 outcome Concept에는 보호된 handler 규칙 때문에 `형의/형은/형이`가 여전히 남는다. B-2는 이를 새로
   만들거나 고치지 않고, 호기심 snapshot의 알려진 identity cue만 안전하게 복원한다.
 - **다음 [B-3]**: 다양한 관계/사물 문장으로 gate 빈도와 생성 질문 품질을 관찰한 뒤 threshold 조정 여부 판단.
+
+## [B-3] 운영 표본 확대와 실패 분해 (2026-07-14 후속)
+
+### 표본과 1차 결과
+- Neo4j에서 observations=0이며 degree가 과도하지 않은 `서울`, `컴퓨터`, `학습`을 fresh stream으로
+  골라 각각 3턴씩 실제 FastAPI→Gemini→Neo4j 경로를 실행했다.
+- 9턴 모두 prediction error=1.0, learning progress=0, gate=false, CuriosityLog 없음. threshold를
+  낮춰 해결할 성질이 아니므로 추가 9-stream 확장은 중단했다.
+- Experience IDs(삭제하지 않고 음성 증거로 보존):
+  `6d426fe9-2d0f-4ed8-94eb-e6e30db48011`, `3316f5f6-296c-4664-b2cc-cd705e430f02`,
+  `0246aef4-38e5-4c13-af1e-34ca79ee9bf7`, `282a9570-4136-4d61-9d6f-301147a43d85`,
+  `a00f9758-fda3-4b56-8fca-2d9a83432236`, `50e2e34f-f8e3-49e3-8cb5-a4d841f3e232`,
+  `291e1790-d5a9-49c1-aaa0-0996730c2a1c`, `b8e61dce-dfbb-46e7-b7b6-63d1ff2f47e7`,
+  `d80c1329-45b6-4fb2-b7f9-d4da08a68a22`.
+
+### 원인 1: LLM 출력 예산을 thinking이 소진
+- 동일 프롬프트를 구형 `google-generativeai`와 신형 `google-genai`로 각각 호출했으나 둘 다
+  `MAX_TOKENS`. 신형 응답 메타데이터에서 prompt 235, thinking 487, 실제 answer 21,
+  total 743을 확인했다. 512 output budget 대부분이 내부 thinking에 사용돼 답변이 잘렸다.
+- SDK 자체의 차이는 아니었다. 다만 구형 SDK는 지원 종료 상태이므로 공식 `google-genai>=1.10`을
+  정식 의존성으로 추가했다.
+- 가변 `gemini-flash-latest` 대신 기존 코드 단가와 일치하는 stable
+  `gemini-2.5-flash-lite`를 고정하고 thinking budget=0으로 설정했다. probe는 `STOP`, answer 160,
+  thinking 0이었다.
+
+### 원인 2: speech-act cue와 사용자 입력이 outcome을 오염
+- 첫 표본이 `설명해줘`, `궁금해`, `무엇이` Concept를 만든 뒤 다음 turn부터 이들이 알려진 cue로
+  승격됐다. endpoint/DB층에서 이 speech-act terms를 cue에서 제외했다.
+- handler는 `response + user message`에서 Concept를 함께 생성한다. 따라서 user input terms와 정확히
+  같은 비-cue actual을 점수에서 제외하고, `curiosity_excluded_input_concept_ids`에는 감사용으로 보존했다.
+- read-only snapshot과 실제 후속 3턴 모두 cue는 `컴퓨터` 하나만 남고 각 기능어는 제외 목록에 남았다.
+
+### 수정 후 3-turn 판정: canonical ID가 남은 병목
+- 후속 Experience: `ffd88f20-72c5-4973-9de6-7986cb3113c1`,
+  `01f4d589-5dd9-438b-86c7-0597067126f9`, `ed7f3ef4-c1f4-486b-aff5-7d3c834f5d5d`.
+- 세 응답 모두 잘림 없이 완전했고 cue/input 필터도 작동했다. 그러나 세 턴 모두 error=1.0,
+  progress=0, gate=false였다.
+- turn 1 실제 `신기한`이 turn 2 predicted에 들어왔지만 turn 2 actual은 `신기하`로 저장돼 exact-ID
+  hit가 아니었다. `컴퓨터요`, `컴퓨터라`, `컴퓨터에`도 동일 cue의 형태 변이지만 서로 다른 ID다.
+- **결론**: 다음 [B-4]는 handler를 바꾸지 않고 conservative canonical-name scoring을 먼저
+  offline/unit에서 검증한다. exact normalized equality만 허용하고 broad substring은 금지하며,
+  `비비/비빔밥`, `형/형광등` 같은 false-positive 대조군을 반드시 포함한다. 이 gate를 통과하기 전
+  threshold 조정이나 추가 live 표본은 금지한다.
+
+## [B-4] canonical scoring offline gate (2026-07-14)
+
+### 가설과 안전장치
+- 가설: `신기한↔신기하`, `컴퓨터↔컴퓨터에` 같은 표면형 분리가 exact-ID error를 과대평가한다.
+- production에 연결하기 전에 `scripts/research/b4_canonical_scoring.py`로 12개 보존 Experience를
+  read-only replay했다. `conversation_handler.py`, Neo4j state, threshold는 변경하지 않았다.
+- 일반 predicted↔actual match는 Unicode/case/공백, 보수적 조사 제거, 2음절 base 이상의 `-하/-한`
+  교대만 허용했다. `-요/-라`는 알려진 cue 변형 제외에만 제한했다.
+- false-positive gate: `비비/비빔밥`, `형/형광등`, `컴퓨터/컴퓨터공학`, `카메/카메라`,
+  `오디/오디오`, `은하/은한`, `북하/북한`은 모두 불일치여야 한다.
+
+### 결과 1: canonicalization-only 가설 기각
+| metric | exact | canonical |
+|---|---:|---:|
+| 12-turn mean error | 1.000000 | 0.983333 |
+| 개선 turn | 0 | 1/12 |
+
+- 유일한 회복은 Experience `01f4d589-5dd9-438b-86c7-0597067126f9`의
+  predicted `신기한` ↔ actual `신기하`; canonical error는 1.0→0.8이었다.
+- 형태 분리는 실재하지만 12턴 실패를 설명하는 주원인은 아니다. canonical scorer는 production에
+  연결하지 않는다.
+
+### 결과 2: same-turn outcome 자체가 사전 예측 불가능
+- Concept/Experience의 ISO `created_at`으로 actual이 turn 전에 존재했는지 감사했다. Experience가 먼저
+  생성되고 응답 Concept가 뒤에 MERGE되는 현재 pipeline 순서를 사용했다.
+- scored actual 53개 중 **40개(75.5%)가 그 turn 신규 Concept**, preexisting은 13개였다.
+- 신규 actual을 제외해도 scorable 9턴의 preexisting canonical mean error는 `0.888889`; hit는 위 1개뿐.
+- 즉 현재 graph predictor는 cue의 기존 이웃을 예측하지만, outcome은 그 prediction을 입력받지 않은
+  LLM이 같은 turn에 자유 생성한 단어다. 둘의 불일치는 학습 실패라기보다 **target mismatch**다.
+
+### 판정과 다음 [B-5]
+1. canonicalization-only production 배선 금지.
+2. threshold 0.02와 min observations 3 유지; 추가 live 표본 금지.
+3. 다음 offline 비교 대상:
+   - A안: turn `t`의 prediction을 turn `t+1` 사용자 입력 Concept와 비교.
+   - B안: 시각/센서 Experience의 다음 외부 관측 Concept와 비교.
+   - same-turn LLM output을 계속 쓰려면 graph predictions를 generator에 conditioning해야 하나,
+     이는 보호된 `conversation_handler.py` 경계와 행동 생성 의미를 바꾸므로 현재는 배선하지 않는다.
+4. A/B sequence에서 random/frequency baseline보다 prequential error가 실제 감소할 때만 live gate로 승격한다.

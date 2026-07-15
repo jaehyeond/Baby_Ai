@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import pytest
 
@@ -8,6 +9,7 @@ from neural.baby.live_curiosity import (
     build_curiosity_cue_terms,
     compute_integration_priority,
     compute_prediction_error,
+    filter_curiosity_cue_terms,
     select_curiosity_target,
     should_open_curiosity_gate,
     update_learning_progress,
@@ -36,6 +38,12 @@ def test_curiosity_cue_terms_filter_one_character_pronouns() -> None:
     assert "나" not in terms
     assert "너" not in terms
     assert "형" in terms
+
+
+def test_curiosity_cue_filter_removes_speech_act_terms() -> None:
+    assert filter_curiosity_cue_terms([
+        "컴퓨터", "설명해줘", "궁금해", "무엇이", "컴퓨터",
+    ]) == ["컴퓨터"]
 
 
 def test_prediction_error_scores_non_cue_outcomes() -> None:
@@ -140,8 +148,154 @@ def test_prepare_prediction_keeps_all_selected_cues(monkeypatch) -> None:
     assert [item["name"] for item in snapshot["cue_concepts"]] == ["비비", "형"]
     assert [item["name"] for item in snapshot["predicted_concepts"]] == ["관계"]
     assert calls[0][1]["cue_terms"] == ["비비", "형"]
+    assert calls[0][1]["allow_message_fallback"] is False
     assert calls[1][1]["cue_ids"] == ["bibi", "hyung"]
     assert len(calls) == 2
+    assert snapshot["input_terms"] == ["비비", "형"]
+
+
+def test_prepare_prediction_does_not_fallback_to_generic_explicit_terms(
+    monkeypatch,
+) -> None:
+    from neural.baby import neo4j_db
+
+    calls = []
+
+    class FakeResult:
+        async def fetch(self, _limit):
+            return []
+
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, _exc_type, _exc, _tb):
+            return False
+
+        async def run(self, query, **params):
+            calls.append((query, params))
+            return FakeResult()
+
+    class FakeDriver:
+        def session(self, database=None):
+            assert database == neo4j_db._DB_NAME
+            return FakeSession()
+
+    monkeypatch.setattr(neo4j_db, "get_driver", lambda: FakeDriver())
+    snapshot = asyncio.run(
+        neo4j_db.BrainDatabase().prepare_curiosity_prediction(
+            "설명해줘",
+            cue_terms=["설명해줘"],
+        )
+    )
+
+    assert snapshot is None
+    assert calls[0][1]["cue_terms"] == []
+    assert calls[0][1]["allow_message_fallback"] is False
+    assert len(calls) == 1
+
+
+def test_record_outcome_persists_b3_observability(monkeypatch) -> None:
+    from neural.baby import neo4j_db
+
+    experience_update: dict = {}
+
+    class FakeResult:
+        def __init__(self, *, single_record=None, records=None):
+            self.single_record = single_record
+            self.records = records or []
+
+        async def single(self):
+            return self.single_record
+
+        async def fetch(self, _limit):
+            return self.records
+
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, _exc_type, _exc, _tb):
+            return False
+
+        async def run(self, query, **params):
+            if "OPTIONAL MATCH (e)-[:INVOLVES]->(actual:Concept)" in query:
+                return FakeResult(single_record={
+                    "salience": 0.5,
+                    "actual_concepts": [
+                        {"id": "cup", "name": "컵"},
+                        {"id": "table", "name": "식탁"},
+                        {"id": "on", "name": "위"},
+                        {"id": "tell", "name": "알려줘"},
+                    ],
+                })
+            if "properties(c) AS props" in query:
+                return FakeResult(records=[
+                    {
+                        "id": "cup",
+                        "name": "컵",
+                        "props": {
+                            "curiosity_error_ema": 0.8,
+                            "curiosity_observations": 2,
+                        },
+                    },
+                    {
+                        "id": "table",
+                        "name": "식탁",
+                        "props": {
+                            "curiosity_error_ema": 0.4,
+                            "curiosity_observations": 1,
+                        },
+                    },
+                ])
+            if "SET e.prediction_error" in query:
+                experience_update.update(params)
+            if "RETURN cl.id AS id" in query:
+                return FakeResult(single_record={"id": "curiosity-log"})
+            return FakeResult()
+
+    class FakeDriver:
+        def session(self, database=None):
+            assert database == neo4j_db._DB_NAME
+            return FakeSession()
+
+    monkeypatch.setattr(neo4j_db, "get_driver", lambda: FakeDriver())
+    snapshot = {
+        "cue_concepts": [
+            {"id": "cup", "name": "컵"},
+            {"id": "table", "name": "식탁"},
+        ],
+        "predicted_concepts": [
+            {"id": "on", "name": "위", "score": 0.9},
+        ],
+        "input_terms": ["컵", "식탁", "알려줘"],
+    }
+
+    signal = asyncio.run(
+        neo4j_db.BrainDatabase().record_curiosity_outcome(snapshot, "exp-1")
+    )
+
+    assert signal["prediction_error"] == 0.0
+    assert signal["learning_progress"] == pytest.approx(0.32)
+    assert signal["gated"] is True
+    assert signal["primary_cue"] == {
+        "id": "cup",
+        "name": "컵",
+        "error_ema": 0.48,
+        "learning_progress": 0.32,
+        "observations": 3,
+    }
+    assert signal["actual_concepts"][-1] == {"id": "on", "name": "위"}
+    assert signal["excluded_input_concepts"] == [
+        {"id": "tell", "name": "알려줘"},
+    ]
+
+    assert experience_update["primary_cue_id"] == "cup"
+    assert experience_update["primary_cue_name"] == "컵"
+    assert experience_update["primary_observations"] == 3
+    assert experience_update["actual_ids"] == ["cup", "table", "on"]
+    assert experience_update["excluded_input_ids"] == ["tell"]
+    assert json.loads(experience_update["cue_states_json"]) == signal["cue_states"]
 
 
 def test_conversation_endpoint_wires_prediction_before_handler(monkeypatch) -> None:

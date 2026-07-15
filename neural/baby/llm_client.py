@@ -84,12 +84,11 @@ AVAILABLE_MODELS = {
     # Fallback models (현재 실제 사용 가능)
     "gemini-2-flash": ModelConfig(
         provider=ModelProvider.GOOGLE,
-        # 2026-07-10: gemini-2.0-flash가 Google에서 deprecated(404) → 브레인 mute 사고.
-        # version-deprecation 재발 방지 위해 'gemini-flash-latest'(항상 최신 flash 별칭) 사용.
-        # config key 'gemini-2-flash'는 호출부(conversation_handler 등) 호환 위해 유지.
-        model_id="gemini-flash-latest",
+        # 호출부 호환을 위해 config key는 유지하되, 가변 latest 별칭은 쓰지 않는다.
+        # latest가 고비용 thinking 모델로 교체되면 짧은 출력 예산을 소진할 수 있다.
+        model_id="gemini-2.5-flash-lite",
         tier=ModelTier.FLASH,
-        description="Gemini Flash (latest 별칭) - 빠른 처리 (기본/Fallback)",
+        description="Gemini 2.5 Flash-Lite - 빠른 저비용 기본/Fallback",
         input_cost_per_1m=0.10,
         output_cost_per_1m=0.40,
     ),
@@ -102,6 +101,28 @@ AVAILABLE_MODELS = {
         output_cost_per_1m=0.60,
     ),
 }
+
+
+def _build_google_generation_config(
+    model_id: str,
+    temperature: float,
+    max_tokens: int,
+    thinking_level: str | None,
+) -> dict:
+    """Build GenerateContent config with an explicit short-chat budget."""
+    generation_config = {
+        "temperature": temperature,
+        "max_output_tokens": max_tokens,
+    }
+
+    if model_id.startswith("gemini-2.5-flash-lite"):
+        generation_config["thinking_config"] = {"thinking_budget": 0}
+    elif thinking_level and model_id.startswith("gemini-3"):
+        generation_config["thinking_config"] = {
+            "thinking_level": thinking_level,
+        }
+
+    return generation_config
 
 
 class LLMClient:
@@ -200,14 +221,12 @@ class LLMClient:
         try:
             # 새로운 SDK (google-genai)
             if hasattr(client, 'models'):
-                generation_config = {
-                    "temperature": temperature,
-                    "max_output_tokens": max_tokens,
-                }
-
-                # Thinking level (Gemini 3 전용)
-                if thinking_level and "gemini-3" in config.model_id:
-                    generation_config["thinking_level"] = thinking_level
+                generation_config = _build_google_generation_config(
+                    config.model_id,
+                    temperature,
+                    max_tokens,
+                    thinking_level,
+                )
 
                 contents = prompt
                 if system_prompt:
@@ -254,7 +273,7 @@ class LLMClient:
         client = self._get_google_client()
 
         if hasattr(client, 'GenerativeModel'):
-            model = client.GenerativeModel("gemini-flash-latest")
+            model = client.GenerativeModel(AVAILABLE_MODELS["gemini-2-flash"].model_id)
         else:
             model = client.models
 
@@ -270,7 +289,7 @@ class LLMClient:
             return response.text
         else:
             response = client.models.generate_content(
-                model="gemini-flash-latest",
+                model=AVAILABLE_MODELS["gemini-2-flash"].model_id,
                 contents=full_prompt,
             )
             return response.text

@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 from .live_curiosity import (
     compute_integration_priority,
     compute_prediction_error,
+    filter_curiosity_cue_terms,
     select_curiosity_target,
     should_open_curiosity_gate,
     update_learning_progress,
@@ -1612,6 +1613,7 @@ class BrainDatabase:
             for term in (cue_terms or [])
             if str(term).strip()
         ))
+        eligible_cue_terms = filter_curiosity_cue_terms(normalized_terms)
 
         cue_limit = max(1, min(int(cue_limit), 10))
         prediction_limit = max(1, min(int(prediction_limit), 20))
@@ -1621,7 +1623,7 @@ class BrainDatabase:
                 "WHERE cue.name IS NOT NULL "
                 "  AND ((size($cue_terms) > 0 "
                 "        AND toLower(trim(toString(cue.name))) IN $cue_terms) "
-                "    OR (size($cue_terms) = 0 "
+                "    OR ($allow_message_fallback "
                 "        AND size(trim(toString(cue.name))) >= 2 "
                 "        AND $message CONTAINS toLower(trim(toString(cue.name))))) "
                 "WITH cue ORDER BY "
@@ -1631,7 +1633,8 @@ class BrainDatabase:
                 "  coalesce(cue.strength, 0.0) DESC LIMIT $cue_limit "
                 "RETURN cue.id AS cue_id, cue.name AS cue_name",
                 message=normalized,
-                cue_terms=normalized_terms,
+                cue_terms=eligible_cue_terms,
+                allow_message_fallback=not normalized_terms,
                 cue_limit=cue_limit,
             )
             cue_records = await cue_result.fetch(cue_limit)
@@ -1670,6 +1673,7 @@ class BrainDatabase:
         return {
             "cue_concepts": cues,
             "predicted_concepts": predictions,
+            "input_terms": normalized_terms,
             "captured_at": _now_iso(),
         }
 
@@ -1686,7 +1690,8 @@ class BrainDatabase:
 
         Raw prediction error is recorded for observability, but only positive
         reduction of the error EMA can raise integration priority or create a
-        CuriosityLog target.
+        CuriosityLog target.  B3 observability fields keep the selected primary
+        cue and every cue's updated state without changing that decision rule.
         """
         if not snapshot or not experience_id:
             return {"status": "skipped", "reason": "missing_snapshot_or_experience"}
@@ -1712,8 +1717,23 @@ class BrainDatabase:
             if not record:
                 return {"status": "skipped", "reason": "experience_not_found"}
 
-            actual = [
+            raw_actual = [
                 item for item in record["actual_concepts"] if item and item.get("id")
+            ]
+            input_terms = {
+                str(term).strip().casefold()
+                for term in snapshot.get("input_terms", [])
+                if str(term).strip()
+            }
+            excluded_input = [
+                item for item in raw_actual
+                if item["id"] not in cue_ids
+                and str(item.get("name") or "").strip().casefold() in input_terms
+            ]
+            excluded_input_ids = [item["id"] for item in excluded_input]
+            excluded_input_id_set = set(excluded_input_ids)
+            actual = [
+                item for item in raw_actual if item["id"] not in excluded_input_id_set
             ]
             actual_ids = [item["id"] for item in actual]
             error = compute_prediction_error(predicted_ids, actual_ids, cue_ids)
@@ -1787,6 +1807,13 @@ class BrainDatabase:
                 float(record["salience"] or 0.5),
                 learning_progress,
             )
+            primary_cue = {
+                "id": primary["id"],
+                "name": primary["name"],
+                "error_ema": primary["error_ema"],
+                "learning_progress": primary["learning_progress"],
+                "observations": primary["observations"],
+            }
 
             await s.run(
                 "MATCH (e:Experience {id: $experience_id}) "
@@ -1796,7 +1823,14 @@ class BrainDatabase:
                 "    e.curiosity_gated = $gated, "
                 "    e.curiosity_cue_ids = $cue_ids, "
                 "    e.predicted_concept_ids = $predicted_ids, "
+                "    e.curiosity_actual_concept_ids = $actual_ids, "
+                "    e.curiosity_excluded_input_concept_ids = $excluded_input_ids, "
                 "    e.curiosity_target_id = $target_id, "
+                "    e.curiosity_primary_cue_id = $primary_cue_id, "
+                "    e.curiosity_primary_cue_name = $primary_cue_name, "
+                "    e.curiosity_primary_error_ema = $primary_error_ema, "
+                "    e.curiosity_primary_observations = $primary_observations, "
+                "    e.curiosity_cue_states_json = $cue_states_json, "
                 "    e.curiosity_scored_at = $now",
                 experience_id=experience_id,
                 prediction_error=error,
@@ -1805,7 +1839,14 @@ class BrainDatabase:
                 gated=gated,
                 cue_ids=cue_ids,
                 predicted_ids=predicted_ids,
+                actual_ids=actual_ids,
+                excluded_input_ids=excluded_input_ids,
                 target_id=target_id,
+                primary_cue_id=primary_cue["id"],
+                primary_cue_name=primary_cue["name"],
+                primary_error_ema=primary_cue["error_ema"],
+                primary_observations=primary_cue["observations"],
+                cue_states_json=json.dumps(states, ensure_ascii=False, sort_keys=True),
                 now=now,
             )
 
@@ -1855,6 +1896,11 @@ class BrainDatabase:
             "gated": gated,
             "target_id": target_id,
             "curiosity_log_id": curiosity_log_id,
+            "primary_cue": primary_cue,
+            "cue_states": states,
+            "predicted_concepts": predictions,
+            "actual_concepts": actual,
+            "excluded_input_concepts": excluded_input,
         }
 
     async def get_brain_regions(self) -> list[dict]:
