@@ -8,11 +8,12 @@
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: [J-1.0] Question-as-Experiment offline contract 완료·readiness blocked 후** — B5.9의 6질문·25 reviewed label은 의미 target으로 유효하지만, calibrated graph/local-core probability, multi-candidate decision, pre-question model/calibrator seal이 없어 기존 표본의 J1 contract gate는 false다. 다음은 [J-1.1] 새 고품질 train-calibration 질문 사전등록과 질문 전 raw-score shadow capture다. DB write·학습·held-out·production 승격은 계속 금지한다.
+> **현재 진입점: [J-1.1] train-calibration 질문 사전등록·raw-score capture 완료, 사용자 답변 대기** — 새 6질문은 contract `51b2c72c…`로 결과 확인 전에 봉인했고, 질문 공개 전에 graph와 local core가 동일 후보 8개씩 raw score 48개/예측기를 pack `d52720d8…`로 봉인했다. local core는 `cuda:0` read-only inference, trainable parameter 0이었다. graph 후보 잡음 때문에 자동 라벨은 금지한다. 다음은 사용자 6답변 수집 후 후보별 의미 라벨 명시 승인과 train-only calibrator fit이다. DB write·학습·held-out·performance claim·production 승격은 계속 금지한다.
 > **이번 세션 추가 감사**: Phase 2 실그래프 row split에서 현재 그래프 기준 test pair `18/250(7.2%)`가 train에도 존재했고, 기존 야간 job은 test pair를 replay에 직접 포함했다. 기존 MRR은 fit/영속 탐색 증거로 강등했다. pair-disjoint split과 비퇴행 adapter save gate를 구현·단위검증했지만 GPU 재학습은 하지 않았다. 보호 handler는 무변경이다. 상세 `CHANGELOG.md` 최상단.
 > **J-0 상세**: `claudedocs/research/JARVIS_GROUNDED_DEVELOPMENTAL_SELF_IMPROVEMENT_2026-07-16.md`. GDSI/DCSC는 구현 방향을 반증 가능한 단계로 줄인 가설이며 새 분야·AGI 달성 주장이 아니다.
 > **UI/Ops 격리 결정**: Zoey OS Reel은 상위 program roadmap의 병렬 `관측/UI` 참고자료다. J1–J3 연구 critical path나 능력 주장에 포함하지 않으며, 실제 predictor provenance가 생기기 전 UI 구현·가짜 agent 상태 표시는 금지한다.
 > **J-1.0 artifact**: `claudedocs/research/j1_question_as_experiment_readiness_20260716.json`. graph ranked ID를 확률로 변환하지 않았고 local-core GPU shadow inference도 실행하지 않았다.
+> **J-1.1 artifacts**: `scripts/research/manifests/j1_1_train_calibration_a_20260716.json`, `scripts/research/inputs/j1_1_train_calibration_a_20260716_raw_scores_sealed.json`, `claudedocs/research/j1_1_train_calibration_capture_20260716.json`. raw score만 있으며 probability/calibrator는 아직 없다.
 
 ---
 

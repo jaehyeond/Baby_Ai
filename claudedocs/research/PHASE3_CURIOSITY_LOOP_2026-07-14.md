@@ -706,3 +706,16 @@ probability, multi-candidate decision, pre-question predictor/calibrator seal이
 
 다음 [J-1.1]은 새 고품질 train-calibration 질문 사전등록과 질문 표시 전 graph/local-core raw-score shadow
 capture다. calibrator를 fit하기 전 probability/JSD 성능 수치를 만들지 않는다.
+
+## [J-1.1] Preregistered train-calibration raw-score capture (2026-07-16)
+
+사용자가 local-core GPU read-only 추론과 신규 질문·답변 수집만 명시 승인했다. 새 관계 질문 6개는 예측 결과를
+보기 전에 exact text/order/cue를 contract `51b2c72c…`로 봉인했다. 이후 Neo4j read-only graph와
+`Qwen2.5-0.5B-Instruct`+기존 adapter를 `cuda:0`, `torch.inference_mode()`, trainable parameter 0으로 실행해
+각 질문의 같은 Concept 후보 8개를 두 예측기가 점수화했다. 예측기당 raw score 48개를 pack `d52720d8…`로
+봉인했으며 DB write, gradient, optimizer, model save, probability, calibrator, held-out, production은 모두 없었다.
+
+구조 audit은 valid지만 후보 universe에는 일반 hub와 조사 결합 어형 잡음이 남아 있다. 따라서 이번 capture는
+성능 증거가 아니라 사용자 답변으로 양성·음성 calibration label을 만들기 위한 train-only 재료다. 자동 라벨은
+금지하며, 사용자 6답변 뒤 후보별 의미 라벨을 다시 명시 승인받은 후에만 calibrator를 fit한다. capture 후
+품질감사에서 후보 이름을 확인했으므로 완전 블라인드 답변 표본으로 주장하지도 않는다.

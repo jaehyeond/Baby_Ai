@@ -5,6 +5,24 @@
 
 ---
 
+## 2026-07-16 (J-1.1 preregistered train-calibration raw-score capture)
+
+### 승인·사전등록
+- 사용자 명시 승인 범위를 `local_core_gpu_read_only_inference`와 `new_question_answer_collection`으로만 기록했다. DB write, learning, held-out, performance claim, production promotion은 승인 범위 밖이며 계속 false다.
+- 새 고품질 관계 질문 6개를 결과 확인 전에 `j1_1_train_calibration_a_20260716` manifest로 고정했다. exact text/order/cue hash를 포함한 contract SHA-256은 `51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887`이다.
+
+### read-only capture
+- Neo4j는 기존 `prepare_curiosity_prediction()`의 MATCH 기반 read query만 사용했다. 각 질문에서 graph 후보 8개를 얻고 local core가 정확히 같은 Concept universe를 점수화했다.
+- local core는 `Qwen/Qwen2.5-0.5B-Instruct` + `models/local_core_adapter`를 offline cache에서 `cuda:0`로 로드했다. 모든 파라미터를 freeze하고 `torch.inference_mode()`에서 평균 조건부 token log-probability 원점수만 계산했다. trainable parameter=`0`, peak allocated CUDA memory=`1,171,836,928 bytes`였고 optimizer/backward/save는 없었다.
+- 질문당 8개, 예측기당 총 48개 raw score를 `d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853`로 봉인했다. 질문은 캡처 뒤에만 사용자에게 전달한다. probability 생성과 calibrator fit은 실행하지 않았다.
+
+### 비판적 품질 판정과 다음
+- 형식 audit은 valid지만 graph universe에는 `비비`, `AI`, `관계` 같은 일반 hub와 `컴퓨터라/컴퓨터요` 같은 어형 변형이 섞여 있다. 따라서 raw capture는 calibration 재료로 보존하되 자동 의미 라벨 생성은 금지한다.
+- raw capture가 끝난 뒤 품질감사에서 후보 이름은 확인했지만 원점수·순위는 사용자 답변에 제시하지 않는다. 그래도 완전 블라인드 free-form 성능 표본으로 주장하지 않고, 사용자 검토형 train-calibration provenance로만 기록한다.
+- 다음은 사용자에게 사전등록 6질문을 그대로 제시해 새 답변을 받고, 답변과 후보 universe를 대조한 의미 라벨을 다시 명시 승인받는 것이다. 그 뒤에만 train-only graph/local-core calibrator를 fit한다. held-out/JSD 성능 평가/학습/DB relation write는 그 이후 별도 gate다.
+- 신규 J1.1 계약 targeted tests `7 passed`, J1 전체 targeted `15 passed`, pushed HEAD 단독 `136 passed`, J1.1 포함 전체 canonical `143 passed`, py_compile·pip check·diff check가 통과했다. 과거 J1.0의 전체 `146 passed` 보고는 현재 checkout에서 재현되지 않아 잘못된/상이한 집계로 교정했다. 보호 `conversation_handler.py`는 수정하지 않았다.
+- artifacts: `scripts/research/manifests/j1_1_train_calibration_a_20260716.json`, `scripts/research/inputs/j1_1_train_calibration_a_20260716_raw_scores_sealed.json`, `claudedocs/research/j1_1_train_calibration_capture_20260716.json`.
+
 ## 2026-07-16 (J-1.0 Question-as-Experiment offline contract + readiness audit)
 
 ### 구현
@@ -20,7 +38,7 @@
 ### 다음 데이터 후보 감사
 - 남은 CuriosityLog 8개를 read-only discovery했다. graph prediction이 있는 후보는 3개였지만 `이야기 궁금한 것`, `하루 1시간 뒤`, `궁금한 것 비밀`처럼 기존 6개와 겹치고 의미가 불안정해 calibration용으로 채택하지 않았다.
 - 다음 J1.1은 새 고품질 train-calibration 질문을 사전등록하고, 질문 표시 전에 graph/local-core raw score와 model snapshot hash를 봉인한 뒤 calibrator를 fit한다. GPU shadow inference, live 질문, DB write는 이번 단계에서 실행하지 않았다.
-- 신규 J1 targeted `8 passed`, 전체 canonical suite `146 passed`, py_compile, diff check 통과. 보호 handler blob은 HEAD와 동일하고 비밀 패턴 노출은 0건이다.
+- 신규 J1 targeted `8 passed`. 당시 전체 canonical `146 passed`로 보고했지만 J1.1 재감사에서 현재 pushed HEAD 단독 `136 passed`가 재현됐고 삭제·실패 테스트는 없었다. 146은 다른/중복 범위가 섞인 부정확한 집계로 교정한다. py_compile과 diff check는 통과했고 보호 handler blob은 HEAD와 동일하며 비밀 패턴 노출은 0건이다.
 
 ---
 

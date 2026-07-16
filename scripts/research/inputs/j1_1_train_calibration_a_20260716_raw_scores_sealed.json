@@ -1,0 +1,1050 @@
+{
+  "calibrator_fitted": false,
+  "contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "created_at": "2026-07-16T09:09:04.234846+00:00",
+  "database_writes": false,
+  "gpu_inference_read_only": true,
+  "gradients_enabled": false,
+  "graph_implementation_sha256": "602dfe3a0e2a654509914bed7d026dd0cb1ce4bd43fb5d0e86892737e4ba9109",
+  "graph_model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+  "graph_snapshot_scope": "query_scoped_not_full_database",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "local_core_adapter_sha256": "dd60ed3cd31b82098522ea7b2efff104efe86cb0aeb10b98cb591259fe3cdb8b",
+  "local_core_base_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "local_core_base_model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "local_core_device": "cuda:0",
+  "local_core_model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+  "local_core_peak_cuda_memory_bytes": 1171836928,
+  "local_core_trainable_parameter_count": 0,
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "mode": "offline_shadow_read_only",
+  "optimizer_created": false,
+  "performance_claim_gate": false,
+  "phase": "J1.1",
+  "probabilities_created": false,
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "questions": [
+    {
+      "concept_universe": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비"
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI"
+        },
+        {
+          "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+          "concept_name": "정보"
+        },
+        {
+          "concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240",
+          "concept_name": "설명해줘"
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한"
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계"
+        },
+        {
+          "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+          "concept_name": "말해줘"
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "name": "학습"
+        },
+        {
+          "id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "name": "기억"
+        }
+      ],
+      "cue_terms": [
+        "기억",
+        "학습"
+      ],
+      "order": 0,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.234846+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": 0.998001
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 2,
+              "raw_score": 0.9148766453013699
+            },
+            {
+              "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+              "concept_name": "정보",
+              "rank": 3,
+              "raw_score": 0.24579096594519248
+            },
+            {
+              "concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240",
+              "concept_name": "설명해줘",
+              "rank": 4,
+              "raw_score": 0.21999999999999997
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 5,
+              "raw_score": 0.20999999999999996
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 6,
+              "raw_score": 0.18999999999999997
+            },
+            {
+              "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+              "concept_name": "말해줘",
+              "rank": 7,
+              "raw_score": 0.16
+            },
+            {
+              "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+              "concept_name": "검색",
+              "rank": 8,
+              "raw_score": 0.1459908659451925
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.262719+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": -3.059800863265991
+            },
+            {
+              "concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240",
+              "concept_name": "설명해줘",
+              "rank": 2,
+              "raw_score": -3.8662428855895996
+            },
+            {
+              "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+              "concept_name": "말해줘",
+              "rank": 3,
+              "raw_score": -4.841376781463623
+            },
+            {
+              "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+              "concept_name": "검색",
+              "rank": 4,
+              "raw_score": -4.8572187423706055
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 5,
+              "raw_score": -5.681613922119141
+            },
+            {
+              "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+              "concept_name": "정보",
+              "rank": 6,
+              "raw_score": -7.338218688964844
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 7,
+              "raw_score": -7.767906188964844
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 8,
+              "raw_score": -8.252281188964844
+            }
+          ]
+        }
+      },
+      "question": "기억과 학습은 서로 어떻게 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31",
+      "question_snapshot_sha256": "bee75d0b106345702f0231f9f67530841b8f5609ffd22fb7ea92ef3005d5e057"
+    },
+    {
+      "concept_universe": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비"
+        },
+        {
+          "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+          "concept_name": "컴퓨터라"
+        },
+        {
+          "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+          "concept_name": "놀이"
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜"
+        },
+        {
+          "concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e",
+          "concept_name": "알려주세요"
+        },
+        {
+          "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+          "concept_name": "등에 업히기"
+        },
+        {
+          "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+          "concept_name": "컴퓨터요"
+        },
+        {
+          "concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c",
+          "concept_name": "궁금해"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "name": "컴퓨터"
+        },
+        {
+          "id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "name": "로봇"
+        }
+      ],
+      "cue_terms": [
+        "컴퓨터",
+        "로봇"
+      ],
+      "order": 1,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.269849+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": 0.2656134416759796
+            },
+            {
+              "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+              "concept_name": "컴퓨터라",
+              "rank": 2,
+              "raw_score": 0.2
+            },
+            {
+              "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+              "concept_name": "놀이",
+              "rank": 3,
+              "raw_score": 0.16
+            },
+            {
+              "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+              "concept_name": "날짜",
+              "rank": 4,
+              "raw_score": 0.16
+            },
+            {
+              "concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e",
+              "concept_name": "알려주세요",
+              "rank": 5,
+              "raw_score": 0.16
+            },
+            {
+              "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+              "concept_name": "등에 업히기",
+              "rank": 6,
+              "raw_score": 0.16
+            },
+            {
+              "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+              "concept_name": "컴퓨터요",
+              "rank": 7,
+              "raw_score": 0.15000000000000002
+            },
+            {
+              "concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c",
+              "concept_name": "궁금해",
+              "rank": 8,
+              "raw_score": 0.15000000000000002
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.303227+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": -3.436614513397217
+            },
+            {
+              "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+              "concept_name": "컴퓨터라",
+              "rank": 2,
+              "raw_score": -3.563859701156616
+            },
+            {
+              "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+              "concept_name": "컴퓨터요",
+              "rank": 3,
+              "raw_score": -4.261125564575195
+            },
+            {
+              "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+              "concept_name": "날짜",
+              "rank": 4,
+              "raw_score": -4.345636367797852
+            },
+            {
+              "concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e",
+              "concept_name": "알려주세요",
+              "rank": 5,
+              "raw_score": -4.554910659790039
+            },
+            {
+              "concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c",
+              "concept_name": "궁금해",
+              "rank": 6,
+              "raw_score": -4.862720966339111
+            },
+            {
+              "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+              "concept_name": "등에 업히기",
+              "rank": 7,
+              "raw_score": -6.054265022277832
+            },
+            {
+              "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+              "concept_name": "놀이",
+              "rank": 8,
+              "raw_score": -7.335164546966553
+            }
+          ]
+        }
+      },
+      "question": "컴퓨터와 로봇은 어떤 점에서 연결되고 달라?",
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9",
+      "question_snapshot_sha256": "13653d44929b12d230d1fc6c202f10b63cc53c8588cb83e9dd6db35963046e19"
+    },
+    {
+      "concept_universe": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI"
+        },
+        {
+          "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+          "concept_name": "1시간 뒤"
+        },
+        {
+          "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+          "concept_name": "배움"
+        },
+        {
+          "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+          "concept_name": "똑똑함"
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습"
+        },
+        {
+          "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+          "concept_name": "사전적 정의"
+        },
+        {
+          "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+          "concept_name": "세상"
+        },
+        {
+          "concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127",
+          "concept_name": "제가"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "2a430a39-24f9-4b3e-95d5-03fbc84da073",
+          "name": "시간"
+        },
+        {
+          "id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+          "name": "경험"
+        }
+      ],
+      "cue_terms": [
+        "시간",
+        "경험"
+      ],
+      "order": 2,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.275354+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 1,
+              "raw_score": 0.9061291738038022
+            },
+            {
+              "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+              "concept_name": "1시간 뒤",
+              "rank": 2,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+              "concept_name": "배움",
+              "rank": 3,
+              "raw_score": 0.1457026691395584
+            },
+            {
+              "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+              "concept_name": "똑똑함",
+              "rank": 4,
+              "raw_score": 0.1457026691395584
+            },
+            {
+              "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+              "concept_name": "학습",
+              "rank": 5,
+              "raw_score": 0.1457026691395584
+            },
+            {
+              "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+              "concept_name": "사전적 정의",
+              "rank": 6,
+              "raw_score": 0.1457026691395584
+            },
+            {
+              "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+              "concept_name": "세상",
+              "rank": 7,
+              "raw_score": 0.05
+            },
+            {
+              "concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127",
+              "concept_name": "제가",
+              "rank": 8,
+              "raw_score": 0.05
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.340295+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+              "concept_name": "배움",
+              "rank": 1,
+              "raw_score": -3.5996532440185547
+            },
+            {
+              "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+              "concept_name": "세상",
+              "rank": 2,
+              "raw_score": -4.414638042449951
+            },
+            {
+              "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+              "concept_name": "1시간 뒤",
+              "rank": 3,
+              "raw_score": -4.534923553466797
+            },
+            {
+              "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+              "concept_name": "학습",
+              "rank": 4,
+              "raw_score": -4.539812088012695
+            },
+            {
+              "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+              "concept_name": "사전적 정의",
+              "rank": 5,
+              "raw_score": -4.543046951293945
+            },
+            {
+              "concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127",
+              "concept_name": "제가",
+              "rank": 6,
+              "raw_score": -4.588626861572266
+            },
+            {
+              "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+              "concept_name": "똑똑함",
+              "rank": 7,
+              "raw_score": -4.875300884246826
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 8,
+              "raw_score": -8.902368545532227
+            }
+          ]
+        }
+      },
+      "question": "시간의 흐름이 경험을 바꾸는 이유는 무엇일까?",
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b",
+      "question_snapshot_sha256": "739eb3c210da39fe15607b070fe48eb7d11e3bd561c3fe11b1490d983f23fbe2"
+    },
+    {
+      "concept_universe": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI"
+        },
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비"
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색"
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것"
+        },
+        {
+          "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+          "concept_name": "위치"
+        },
+        {
+          "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+          "concept_name": "개발자"
+        },
+        {
+          "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+          "concept_name": "답"
+        },
+        {
+          "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+          "concept_name": "비밀 질문"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "8b792a6c-090c-481d-8b63-1dbcfa43bed3",
+          "name": "궁금증"
+        },
+        {
+          "id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "name": "질문"
+        }
+      ],
+      "cue_terms": [
+        "질문",
+        "궁금증"
+      ],
+      "order": 3,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.280296+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 1,
+              "raw_score": 0.5988005999999999
+            },
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 2,
+              "raw_score": 0.2933124468951928
+            },
+            {
+              "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+              "concept_name": "검색",
+              "rank": 3,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+              "concept_name": "모르는 것",
+              "rank": 4,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+              "concept_name": "위치",
+              "rank": 5,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+              "concept_name": "개발자",
+              "rank": 6,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+              "concept_name": "답",
+              "rank": 7,
+              "raw_score": 0.1459908659451925
+            },
+            {
+              "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+              "concept_name": "비밀 질문",
+              "rank": 8,
+              "raw_score": 0.1459908659451925
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.373936+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+              "concept_name": "답",
+              "rank": 1,
+              "raw_score": -1.8077006340026855
+            },
+            {
+              "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+              "concept_name": "모르는 것",
+              "rank": 2,
+              "raw_score": -3.170616626739502
+            },
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 3,
+              "raw_score": -3.609062671661377
+            },
+            {
+              "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+              "concept_name": "검색",
+              "rank": 4,
+              "raw_score": -4.767109394073486
+            },
+            {
+              "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+              "concept_name": "비밀 질문",
+              "rank": 5,
+              "raw_score": -5.665565490722656
+            },
+            {
+              "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+              "concept_name": "개발자",
+              "rank": 6,
+              "raw_score": -6.481023788452148
+            },
+            {
+              "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+              "concept_name": "위치",
+              "rank": 7,
+              "raw_score": -7.347653388977051
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 8,
+              "raw_score": -9.073326110839844
+            }
+          ]
+        }
+      },
+      "question": "질문과 궁금증은 어떻게 새로운 지식으로 이어져?",
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795",
+      "question_snapshot_sha256": "ca9c1b4fcb196f216e86b221658137345192271dedb3be2812e46efe56b3099d"
+    },
+    {
+      "concept_universe": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비"
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI"
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것"
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한"
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계"
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습"
+        },
+        {
+          "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "concept_name": "기억"
+        },
+        {
+          "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+          "concept_name": "인터넷"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "name": "이야기"
+        },
+        {
+          "id": "d07f03e9-d3d1-4b19-ad2c-6d280ef08715",
+          "name": "상상"
+        }
+      ],
+      "cue_terms": [
+        "이야기",
+        "상상"
+      ],
+      "order": 4,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.283296+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": 0.9353858494069779
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 2,
+              "raw_score": 0.14907052125363363
+            },
+            {
+              "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+              "concept_name": "하늘을 나는 것",
+              "rank": 3,
+              "raw_score": 0.14726090649313342
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 4,
+              "raw_score": 0.1
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 5,
+              "raw_score": 0.1
+            },
+            {
+              "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+              "concept_name": "학습",
+              "rank": 6,
+              "raw_score": 0.07
+            },
+            {
+              "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+              "concept_name": "기억",
+              "rank": 7,
+              "raw_score": 0.07
+            },
+            {
+              "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+              "concept_name": "인터넷",
+              "rank": 8,
+              "raw_score": 0.06
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.409080+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+              "concept_name": "비비",
+              "rank": 1,
+              "raw_score": -3.351824998855591
+            },
+            {
+              "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+              "concept_name": "기억",
+              "rank": 2,
+              "raw_score": -4.028425216674805
+            },
+            {
+              "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+              "concept_name": "학습",
+              "rank": 3,
+              "raw_score": -4.624628067016602
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 4,
+              "raw_score": -5.193753719329834
+            },
+            {
+              "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+              "concept_name": "하늘을 나는 것",
+              "rank": 5,
+              "raw_score": -6.3491082191467285
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 6,
+              "raw_score": -8.76832103729248
+            },
+            {
+              "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+              "concept_name": "AI",
+              "rank": 7,
+              "raw_score": -9.61597728729248
+            },
+            {
+              "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+              "concept_name": "인터넷",
+              "rank": 8,
+              "raw_score": -10.30738353729248
+            }
+          ]
+        }
+      },
+      "question": "이야기와 상상은 서로를 어떻게 발전시켜?",
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a",
+      "question_snapshot_sha256": "c2b9d5646611470cec8126992c882a5caba79ef73a38b95c5c6ac75d32f37282"
+    },
+    {
+      "concept_universe": [
+        {
+          "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+          "concept_name": "말해줘"
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한"
+        },
+        {
+          "concept_id": "569f9646-15dd-4b93-9773-841ab564296d",
+          "concept_name": "형의"
+        },
+        {
+          "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+          "concept_name": "문장"
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계"
+        },
+        {
+          "concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96",
+          "concept_name": "형은"
+        },
+        {
+          "concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f",
+          "concept_name": "Search_dictionary"
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜"
+        }
+      ],
+      "cue_concepts": [
+        {
+          "id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+          "name": "사람"
+        },
+        {
+          "id": "16603cac-174b-4f18-a36d-0803236d7e61",
+          "name": "세상"
+        }
+      ],
+      "cue_terms": [
+        "사람",
+        "세상"
+      ],
+      "order": 5,
+      "predictors": {
+        "graph": {
+          "captured_at": "2026-07-16T09:09:04.288633+00:00",
+          "model_snapshot_sha256": "dd15fdb375897fae5653346fd03834a9772033874da73f3cceb5a2d2cf11da06",
+          "predictor": "graph",
+          "raw_score_type": "graph_max_relationship_strength",
+          "raw_scores": [
+            {
+              "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+              "concept_name": "말해줘",
+              "rank": 1,
+              "raw_score": 0.2
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 2,
+              "raw_score": 0.17
+            },
+            {
+              "concept_id": "569f9646-15dd-4b93-9773-841ab564296d",
+              "concept_name": "형의",
+              "rank": 3,
+              "raw_score": 0.15000000000000002
+            },
+            {
+              "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+              "concept_name": "문장",
+              "rank": 4,
+              "raw_score": 0.15000000000000002
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 5,
+              "raw_score": 0.15000000000000002
+            },
+            {
+              "concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96",
+              "concept_name": "형은",
+              "rank": 6,
+              "raw_score": 0.12000000000000001
+            },
+            {
+              "concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f",
+              "concept_name": "Search_dictionary",
+              "rank": 7,
+              "raw_score": 0.1
+            },
+            {
+              "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+              "concept_name": "날짜",
+              "rank": 8,
+              "raw_score": 0.1
+            }
+          ]
+        },
+        "local_core": {
+          "captured_at": "2026-07-16T09:09:11.440640+00:00",
+          "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+          "predictor": "local_core",
+          "raw_score_type": "mean_conditional_token_log_probability",
+          "raw_scores": [
+            {
+              "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+              "concept_name": "말해줘",
+              "rank": 1,
+              "raw_score": -4.314786911010742
+            },
+            {
+              "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+              "concept_name": "날짜",
+              "rank": 2,
+              "raw_score": -5.6362738609313965
+            },
+            {
+              "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+              "concept_name": "신기한",
+              "rank": 3,
+              "raw_score": -5.736556053161621
+            },
+            {
+              "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+              "concept_name": "문장",
+              "rank": 4,
+              "raw_score": -6.403852462768555
+            },
+            {
+              "concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96",
+              "concept_name": "형은",
+              "rank": 5,
+              "raw_score": -8.142644882202148
+            },
+            {
+              "concept_id": "569f9646-15dd-4b93-9773-841ab564296d",
+              "concept_name": "형의",
+              "rank": 6,
+              "raw_score": -8.212957382202148
+            },
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계",
+              "rank": 7,
+              "raw_score": -8.366495132446289
+            },
+            {
+              "concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f",
+              "concept_name": "Search_dictionary",
+              "rank": 8,
+              "raw_score": -13.13984489440918
+            }
+          ]
+        }
+      },
+      "question": "사람과 세상은 어떻게 서로 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286",
+      "question_snapshot_sha256": "e13c8f88692876e3cc2bae22874d97d6806a8ee562d81920fa3a048bd87425d0"
+    }
+  ],
+  "questions_revealed_before_capture": false,
+  "raw_score_count_per_predictor": 48,
+  "raw_score_pack_sha256": "d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853",
+  "raw_score_pack_version": 1,
+  "sealed_at": "2026-07-16T09:09:11.481255+00:00",
+  "split": "train_calibration"
+}

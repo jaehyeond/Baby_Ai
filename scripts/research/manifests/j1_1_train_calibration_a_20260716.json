@@ -1,0 +1,85 @@
+{
+  "approval_recorded_at": "2026-07-16T09:07:43.642626+00:00",
+  "constraints": {
+    "calibrator_fit_before_reviewed_answers": false,
+    "database_writes": false,
+    "heldout_collection": false,
+    "learning_enabled": false,
+    "production_promotion": false,
+    "questions_revealed_before_raw_capture": false
+  },
+  "contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "created_at": "2026-07-16T09:07:43.642626+00:00",
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "phase": "J1.1",
+  "purpose": "probability_calibration_only",
+  "question_calibration_manifest_version": 1,
+  "question_count": 6,
+  "questions": [
+    {
+      "cue_terms": [
+        "기억",
+        "학습"
+      ],
+      "order": 0,
+      "question": "기억과 학습은 서로 어떻게 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31"
+    },
+    {
+      "cue_terms": [
+        "컴퓨터",
+        "로봇"
+      ],
+      "order": 1,
+      "question": "컴퓨터와 로봇은 어떤 점에서 연결되고 달라?",
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9"
+    },
+    {
+      "cue_terms": [
+        "시간",
+        "경험"
+      ],
+      "order": 2,
+      "question": "시간의 흐름이 경험을 바꾸는 이유는 무엇일까?",
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b"
+    },
+    {
+      "cue_terms": [
+        "질문",
+        "궁금증"
+      ],
+      "order": 3,
+      "question": "질문과 궁금증은 어떻게 새로운 지식으로 이어져?",
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795"
+    },
+    {
+      "cue_terms": [
+        "이야기",
+        "상상"
+      ],
+      "order": 4,
+      "question": "이야기와 상상은 서로를 어떻게 발전시켜?",
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+    },
+    {
+      "cue_terms": [
+        "사람",
+        "세상"
+      ],
+      "order": 5,
+      "question": "사람과 세상은 어떻게 서로 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286"
+    }
+  ],
+  "split": "train_calibration",
+  "user_approval_scope": [
+    "local_core_gpu_read_only_inference",
+    "new_question_answer_collection"
+  ]
+}

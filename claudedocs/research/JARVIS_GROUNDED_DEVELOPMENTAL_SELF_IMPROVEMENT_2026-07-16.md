@@ -235,7 +235,9 @@ local core의 raw score와 model snapshot hash를 함께 봉인하는 단계다.
 질문의 probability/JSD 선택을 시작한다. local-core shadow inference는 GPU 학습이 아니라 read-only 추론이지만,
 현재 턴에는 실행하지 않았다.
 
-신규 J1 targeted test `8 passed`, 전체 canonical suite `146 passed`, py_compile과 diff check가 통과했다.
+신규 J1 targeted test `8 passed`였다. 당시 전체 canonical suite를 `146 passed`로 기록했지만 J1.1 재감사에서
+현재 pushed HEAD 단독 `136 passed`가 재현됐고 삭제·실패 테스트는 없었다. 146은 다른/중복 범위가 섞인
+부정확한 집계로 교정한다. py_compile과 diff check는 통과했다.
 보호 `conversation_handler.py` blob은 HEAD와 동일한 `054d974095be7425692860909181fafd54f97a33`이며 비밀값
 패턴 노출은 0건이다.
 

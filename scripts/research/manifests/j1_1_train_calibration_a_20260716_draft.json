@@ -1,0 +1,58 @@
+{
+  "question_calibration_manifest_version": 1,
+  "phase": "J1.1",
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "split": "train_calibration",
+  "purpose": "probability_calibration_only",
+  "user_approval_scope": [
+    "local_core_gpu_read_only_inference",
+    "new_question_answer_collection"
+  ],
+  "question_count": 6,
+  "constraints": {
+    "database_writes": false,
+    "learning_enabled": false,
+    "heldout_collection": false,
+    "production_promotion": false,
+    "questions_revealed_before_raw_capture": false,
+    "calibrator_fit_before_reviewed_answers": false
+  },
+  "questions": [
+    {
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "question": "기억과 학습은 서로 어떻게 영향을 주고받아?",
+      "cue_terms": ["기억", "학습"]
+    },
+    {
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "question": "컴퓨터와 로봇은 어떤 점에서 연결되고 달라?",
+      "cue_terms": ["컴퓨터", "로봇"]
+    },
+    {
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "question": "시간의 흐름이 경험을 바꾸는 이유는 무엇일까?",
+      "cue_terms": ["시간", "경험"]
+    },
+    {
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "question": "질문과 궁금증은 어떻게 새로운 지식으로 이어져?",
+      "cue_terms": ["질문", "궁금증"]
+    },
+    {
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "question": "이야기와 상상은 서로를 어떻게 발전시켜?",
+      "cue_terms": ["이야기", "상상"]
+    },
+    {
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "question": "사람과 세상은 어떻게 서로 영향을 주고받아?",
+      "cue_terms": ["사람", "세상"]
+    }
+  ]
+}
