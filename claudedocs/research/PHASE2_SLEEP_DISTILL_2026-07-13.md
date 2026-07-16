@@ -123,16 +123,19 @@ LoRA gain 측정 = 진짜 자기학습(사전지식 복구와 구분).
   +0.071/+0.147**, 평균 **+0.094 ≈ 2.2배**). 3시드 전부 견고, **전체 gain(+0.017~+0.039)의 4배.**
 - novelty 층화(base rank>5): +0.025~+0.037 일관 양수. 전체: +0.017~+0.039.
 
-## 판정
-**✅ Phase 2 코어가 실 데이터의 아기 특이연상을 학습 = 진짜 자기학습(실 데이터 첫 실측).** Qwen이
-절대 알 수 없는 "비비의 정체성·관계"를 LoRA 가중치가 배움(identity ~2-3배, 견고). **단 전체
-magnitude는 modest** — 이유는 세션 내내 확인된 그 병목, **실 co-occurrence 희소성**(2241 엣지).
+## 판정 (2026-07-16 감사로 수정)
+당시 결과는 LoRA weight가 graph replay에 맞춰 변한 탐색 신호지만 **clean held-out 일반화 확정으로
+사용하지 않는다.** relationship row 단위 split은 동일 concept pair의 parallel/source별 관계를 train/test에
+동시에 둘 수 있었다. 현재 그래프 재현에서는 test 250쌍 중 18쌍(7.2%)이 train에도 존재했다. 당시
+2241-edge snapshot 자체가 보존되지 않아 과거 3 seed의 정확한 overlap은 계산할 수 없다. 따라서
+identity MRR 증가는 유망하지만 pair-canonicalized 3-seed 재실험 전 “실 데이터 자기학습 확정” 주장은
+보류한다.
 
 ## 전체 연구 프로그램 귀결
 Phase 1 가소성(RW) → Phase 2 코어(스케일서 그래프 역전, 항상성 필수) → 실 LLM+LoRA가 실 데이터
-특이연상 학습 — **자기학습 체인 end-to-end 검증됨.** 모든 병목이 **데이터 밀도·다양성** 한 곳으로
-수렴. → 다음 레버 = (A) Quest 다양장면 수집(하드웨어) or (B) **검증된 코어를 라이브 파이프라인에
-연결**(그래프 replay→야간 LoRA, 경험 쌓이며 코어 성장). 연구 프로토타입 → 살아있는 시스템 전환.
+특이연상 학습 가설은 남지만 **자기학습 체인 end-to-end 검증으로 부르지 않는다.** 데이터 밀도·다양성
+외에도 leakage-free evaluation, grounded action outcome, learned core의 wake 행동 연결, continual
+promotion/rollback이 독립 병목이다.
 
 산출 추가: `scripts/research/llm_real_distill.py`, `claudedocs/research/llm_real_distill_20260713.json`.
 
@@ -167,14 +170,21 @@ python scripts/research/sleep_distill_job.py --daily-gate --steps 200
 python scripts/research/sleep_distill_job.py --fresh          # 어댑터 초기화
 ```
 
-## 검증 (2026-07-13)
-- 누적 성장: run1 0.089→0.123, run2 0.123(=run1 학습후 정확일치=기억유지)→0.152. 어댑터 영속(4.5MB).
+## 검증 (2026-07-13, 2026-07-16 감사 주석)
+- 당시 측정: run1 0.089→0.123, run2 0.123(=run1 학습후 정확일치)→0.152, 어댑터 영속(4.5MB).
+- **감사 교정**: 당시 job은 test `edges[:250]`을 평가한 뒤 전체 `adj`에서 replay하여 test pair를 같은
+  run 학습에 직접 포함했다. 그러므로 위 수치는 persistence/same-probe fit 증거이며 unseen generalization
+  또는 “매일 성장”의 증거가 아니다. 두 run의 loss도 각각 3.891→5.775, 2.187→5.421로 종료값이 높다.
+- 2026-07-16부터 parallel/reverse 관계를 concept pair로 합친 deterministic pair-disjoint split을 쓰고,
+  MRR/identity 비퇴행 gate 통과 때만 adapter를 저장한다. 기존 resumed adapter는 현재 관계를 과거에
+  봤을 수 있어 새 평가도 clean future-heldout으로 부르지 않는다. 별도 sealed future canary가 필요하다.
 - 게이팅: 같은 날 2회차 즉시 skip(4.9s). Neo4j 다운 시 clean skip(exit 0). 락 finally 해제 + stale TTL.
 - 프로덕션 안전: 훅 기본 OFF, 비차단 Popen, 실패 격리. **adversarial review(wf_42f17ed5)가 enable-path
   결함 3개 발견→수정**: OOM clean 처리(try/except+VRAM 프리플라이트), retry-storm 방지(`.last_attempt`
   30분 backoff), 락 무조건 획득(수동 실행 충돌→어댑터 손상 방지). backoff·OOM·락 전부 재테스트 통과.
 
 ## 상태 / 남은 것
-- **완료**: 코어 학습·누적·영속·게이팅·훅·실패안전 전부 구현·테스트. **자율 가능분 종료.**
+- **완료**: 코어 학습·영속·게이팅·훅·실패안전 구현. pair-disjoint split과 비퇴행 저장 gate 추가.
+- **미완료**: leakage-safe 3-seed 재실험, future canary, forgetting suite, wake 행동 연결. 자율 성장 확정 아님.
 - **사용자 액션**: (a) 실제로 켜려면 `LOCAL_CORE_DISTILL=1` + Neo4j 상시 가동, (b) 데이터 밀도 병목은
   Quest 다양장면 수집으로만 풀림(하드웨어). (c) collapse(effective rank) 장기 감시 권장.

@@ -24,6 +24,7 @@ from neo4j import GraphDatabase
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(__file__))
 from llm_core_distill import MODEL, DEV, load_lora, distill   # 모델/LoRA/학습 재사용
+from graph_replay_split import build_edge_disjoint_split
 from transformers import AutoTokenizer
 
 load_dotenv(".env")
@@ -75,11 +76,13 @@ def eval_pairs(model, tok, test_edges, all_nodes, nrng, k=K_NEG):
     per_pair = []
     for (a, b, _w) in test_edges:
         negs = []
+        seen = {a, b}
         tries = 0
         while len(negs) < k and tries < k * 4:
             n = all_nodes[nrng.randint(0, len(all_nodes) - 1)]
-            if n != a and n != b:
+            if n not in seen:
                 negs.append(n)
+                seen.add(n)
             tries += 1
         if len(negs) < k // 2:
             continue
@@ -108,6 +111,9 @@ def main():
     ap.add_argument("--steps", type=int, default=400)
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
     rng = random.Random(args.seed); nrng = random.Random(args.seed + 7)
     tok = AutoTokenizer.from_pretrained(MODEL)
     if tok.pad_token is None:
@@ -115,17 +121,14 @@ def main():
 
     edges, adj, cat = fetch_graph()
     all_nodes = sorted(adj.keys())
-    rng.shuffle(edges)
-    # held-out: 양끝이 다른 엣지도 갖는 것만 (train서 고립 방지)
-    n_test = min(250, int(len(edges) * 0.2))
-    test, train_edges = edges[:n_test], edges[n_test:]
-    # train 인접(held-out 엣지 제거)
-    tadj = defaultdict(dict)
-    for a, b, w in train_edges:
-        tadj[a][b] = max(tadj[a].get(b, 0), w); tadj[b][a] = max(tadj[b].get(a, 0), w)
+    split = build_edge_disjoint_split(edges, seed=args.seed)
+    test = split.test_edges
+    tadj = split.train_adjacency
     seeds = [n for n in tadj if tadj[n]]
     print(f"=== LLM+LoRA on REAL Neo4j — {MODEL} ===")
-    print(f"  concepts {len(all_nodes)} | edges {len(edges)} | test {len(test)} | train episodes seeds {len(seeds)}")
+    print(f"  concepts {len(all_nodes)} | raw edges {len(edges)} | "
+          f"unique pairs {split.diagnostics['unique_pair_count']} | "
+          f"test {len(test)} | train episode seeds {len(seeds)}")
 
     model, n_tr, n_tot = load_lora()
     # test 엣지 중 양끝이 train에 있는 것만 평가
@@ -157,6 +160,8 @@ def main():
     print(f"  판정: {verdict}  (loss {round(losses[0],2)}→{round(losses[-1],2)})")
 
     out = {"model": MODEL, "n_concepts": len(all_nodes), "n_edges": len(edges), "n_test": len(test),
+           "evaluation_split": "canonical_undirected_pair_disjoint_same_snapshot",
+           "split_diagnostics": split.diagnostics,
            "base_mrr": base_mrr, "after_mrr": after_mrr, "gain": gain,
            "identity_base": id_base, "identity_after": id_after, "identity_gain": id_gain,
            "base_poor_count": len(poor), "base_poor_mrr": poor_base, "base_poor_after": poor_after,

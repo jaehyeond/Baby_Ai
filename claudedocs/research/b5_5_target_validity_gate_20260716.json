@@ -1,0 +1,141 @@
+{
+  "coverage": {
+    "answer_before_question_count": 0,
+    "answered_missing_time_count": 14,
+    "answered_question_count": 15,
+    "assistant_question_output_count": 1263,
+    "conversation_count": 1503,
+    "conversation_with_output": 1503,
+    "external_sequence_link_count": 6,
+    "external_sequence_turn_count": 7,
+    "external_turn_with_prediction_snapshot": 7,
+    "generated_from_curiosity_count": 0,
+    "next_frame_count": 36,
+    "next_frame_with_pose_delta": 0,
+    "ordered_answer_count": 1,
+    "pending_prediction_before_question_count": 0,
+    "pending_question_count": 18,
+    "pending_sources": [
+      {
+        "count": 14,
+        "source": "<missing>",
+        "status": "answered"
+      },
+      {
+        "count": 2,
+        "source": "<missing>",
+        "status": "pending"
+      },
+      {
+        "count": 1,
+        "source": "<missing>",
+        "status": "skipped"
+      },
+      {
+        "count": 1,
+        "source": "test",
+        "status": "answered"
+      }
+    ],
+    "pending_with_answer": 15,
+    "pending_with_prediction_snapshot": 0,
+    "pending_with_question": 18,
+    "vision_count": 45,
+    "vision_with_head_pose": 0,
+    "vision_with_prediction_snapshot": 0
+  },
+  "created_at": "2026-07-15T22:28:46.226807+00:00",
+  "database_writes": false,
+  "gate": {
+    "candidates": {
+      "action_conditioned_next_sensor_outcome": {
+        "criteria": {
+          "action_precedes_outcome": false,
+          "deterministic_pair_boundary": true,
+          "directly_closes_action_selection_loop": true,
+          "external_outcome": true,
+          "pre_outcome_prediction_snapshot": false,
+          "recorded_action_identity": false
+        },
+        "evaluation_readiness_gate": false,
+        "observed_action_count": 0,
+        "observed_pair_count": 36,
+        "target_validity_gate": false,
+        "verdict": "deferred_no_recorded_action_or_prediction"
+      },
+      "action_conditioned_pending_question_answer": {
+        "curiosity_selected_pair_count": 0,
+        "definition_criteria": {
+          "action_precedes_outcome": false,
+          "curiosity_policy_link_supported_by_schema": true,
+          "deterministic_pair_boundary": true,
+          "external_outcome": true,
+          "outcome_conditioned_on_baby_action": true,
+          "recorded_action_identity": true
+        },
+        "eligible_pre_answer_prediction_count": 0,
+        "evaluation_readiness_gate": false,
+        "existing_answers_reusable_for_scoring": false,
+        "observed_pair_count": 15,
+        "prediction_before_question_count": 0,
+        "readiness_criteria": {
+          "curiosity_selected_actions": false,
+          "minimum_paired_outcomes": true,
+          "pre_answer_prediction_snapshots": false,
+          "retrospective_scoring_forbidden": true
+        },
+        "target_schema_gate": true,
+        "target_validity_gate": false,
+        "verdict": "invalid_target"
+      },
+      "unconditioned_next_user_topic": {
+        "criteria": {
+          "deterministic_pair_boundary": true,
+          "directly_closes_action_selection_loop": false,
+          "external_outcome": true,
+          "outcome_conditioned_on_baby_action": false,
+          "recorded_action_identity": false,
+          "source_prediction_before_outcome": true
+        },
+        "empirical_train_signal": false,
+        "evaluation_readiness_gate": false,
+        "observed_pair_count": 6,
+        "target_validity_gate": false,
+        "verdict": "rejected_not_action_conditioned"
+      }
+    },
+    "decision": "no_current_target_valid_recommend_pending_question_contract",
+    "evaluation_readiness_gate": false,
+    "next_contract": {
+      "forbidden": [
+        "score_existing_15_answers_retrospectively",
+        "collect_heldout_before_train_signal",
+        "change_production_threshold",
+        "modify_conversation_handler_v30"
+      ],
+      "phase": "B5.6",
+      "protected_handler_change_required": false,
+      "required_before_question_is_shown": [
+        "curiosity_log_id_or_policy_action_id",
+        "question_id",
+        "prediction_captured_at",
+        "predicted_concept_ids",
+        "evaluation_split",
+        "contract_sha256"
+      ],
+      "required_when_answer_arrives": [
+        "answered_at",
+        "external_answer_text",
+        "external_outcome_concept_ids"
+      ]
+    },
+    "production_promotion_gate": false,
+    "recommended_instrumentation_target": "action_conditioned_pending_question_answer",
+    "selected_target": null,
+    "target_selection_gate": false
+  },
+  "live_collection_started": false,
+  "phase": "B5.5",
+  "source_b5_4_artifact": "E:\\A2A\\our-a2a-project\\claudedocs\\research\\b5_4_train_ablation_20260716.json",
+  "status": "completed"
+}

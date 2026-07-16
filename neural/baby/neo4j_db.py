@@ -30,6 +30,12 @@ from .external_sequence import (
     parse_external_sequence_context,
     validate_external_sequence_state,
 )
+from .pending_question_outcome import (
+    normalize_pending_question_prediction,
+    prediction_precedes_question,
+    validate_pending_question_action_state,
+    validate_pending_question_answer_state,
+)
 
 load_dotenv()
 
@@ -79,6 +85,80 @@ FOREACH (_ IN CASE WHEN previous IS NULL THEN [] ELSE [1] END |
       link.from_turn = $previous_turn_index,
       link.to_turn = $turn_index)
 RETURN e.id AS id, previous.id AS previous_id
+"""
+
+PENDING_QUESTION_ACTION_STATE_QUERY = """
+MATCH (pq:PendingQuestion)
+WITH pq, properties(pq) AS props
+WHERE props[$policy_action_key_name] = $policy_action_key
+RETURN pq.id AS question_id,
+       props[$split_key_name] AS split,
+       props[$contract_key_name] AS contract_sha256
+"""
+
+PENDING_QUESTION_ACTION_SPLIT_CONFLICT_QUERY = """
+MATCH (pq:PendingQuestion)
+WITH pq, properties(pq) AS props
+WHERE props[$contract_key_name] = $contract_sha256
+  AND props[$split_key_name] IS NOT NULL
+  AND props[$split_key_name] <> $split
+RETURN count(pq) AS conflicting_split_count
+"""
+
+PENDING_QUESTION_CURIOSITY_SOURCE_QUERY = """
+OPTIONAL MATCH (cl:CuriosityLog {id: $curiosity_log_id})
+RETURN cl IS NOT NULL AS curiosity_log_exists
+"""
+
+PENDING_QUESTION_ACTION_PERSIST_QUERY = """
+CREATE (pq:PendingQuestion {id: randomUUID()})
+SET pq += $props
+RETURN pq
+"""
+
+PENDING_QUESTION_ACTION_PERSIST_WITH_CURIOSITY_QUERY = """
+MATCH (cl:CuriosityLog {id: $curiosity_log_id})
+CREATE (pq:PendingQuestion {id: randomUUID()})
+SET pq += $props
+CREATE (cl)-[generated:GENERATED]->(pq)
+SET generated.policy_action_key = $policy_action_key,
+    generated.contract_sha256 = $contract_sha256,
+    generated.created_at = $recorded_at
+RETURN pq
+"""
+
+PENDING_QUESTION_ANSWER_STATE_QUERY = """
+MATCH (pq:PendingQuestion {id: $question_id})
+RETURN pq
+"""
+
+PENDING_QUESTION_OUTCOME_CONCEPT_QUERY = """
+UNWIND $outcome_terms AS outcome_term
+MATCH (concept:Concept)
+WHERE concept.name IS NOT NULL
+  AND toLower(trim(toString(concept.name))) = outcome_term
+  AND concept.created_at IS NOT NULL
+  AND datetime(toString(concept.created_at)) <= datetime($prediction_captured_at)
+  AND NOT concept.id IN $cue_ids
+WITH DISTINCT concept
+RETURN concept.id AS concept_id, concept.name AS concept_name
+ORDER BY concept_id
+"""
+
+PENDING_QUESTION_ANSWER_PERSIST_QUERY = """
+MATCH (pq:PendingQuestion {id: $question_id})
+WHERE pq.question_outcome_evaluation = true
+  AND pq.status = 'pending'
+  AND pq.answer IS NULL
+SET pq.answer = $answer,
+    pq.answer_confidence = $answer_confidence,
+    pq.answered_at = $answered_at,
+    pq.status = 'answered',
+    pq.external_outcome_terms_json = $outcome_terms_json,
+    pq.external_outcome_concept_ids = $outcome_concept_ids,
+    pq.question_outcome_scoring_mode = 'external_recorded',
+    pq.question_outcome_recorded_at = $answered_at
+RETURN pq
 """
 
 # ── 환경변수 ────────────────────────────────────────────────────────────────
@@ -1705,7 +1785,7 @@ class BrainDatabase:
                 "  max(coalesce(rel.hebb_strength, rel.strength, 0.0)) AS score "
                 "RETURN candidate.id AS candidate_id, "
                 "  candidate.name AS candidate_name, score "
-                "ORDER BY score DESC LIMIT $prediction_limit",
+                "ORDER BY score DESC, candidate_id ASC LIMIT $prediction_limit",
                 cue_ids=cue_ids,
                 prediction_limit=prediction_limit,
             )
@@ -2443,6 +2523,138 @@ class BrainDatabase:
             record = await result.single()
             return dict(record["pq"]) if record else {}
 
+    async def _fetch_pending_question_action_state(
+        self,
+        runner: Any,
+        contract: dict[str, Any],
+    ) -> dict[str, Any]:
+        result = await runner.run(
+            PENDING_QUESTION_ACTION_STATE_QUERY,
+            policy_action_key=contract["policy_action_key"],
+            policy_action_key_name="question_outcome_policy_action_key",
+            split_key_name="question_outcome_split",
+            contract_key_name="question_outcome_contract_sha256",
+        )
+        existing_actions = [dict(record) async for record in result]
+
+        result = await runner.run(
+            PENDING_QUESTION_ACTION_SPLIT_CONFLICT_QUERY,
+            contract_sha256=contract["contract_sha256"],
+            split=contract["split"],
+            contract_key_name="question_outcome_contract_sha256",
+            split_key_name="question_outcome_split",
+        )
+        conflict_record = await result.single()
+        conflicting_split_count = (
+            int(conflict_record["conflicting_split_count"] or 0)
+            if conflict_record else 0
+        )
+
+        curiosity_log_exists = True
+        if contract.get("curiosity_log_id"):
+            result = await runner.run(
+                PENDING_QUESTION_CURIOSITY_SOURCE_QUERY,
+                curiosity_log_id=contract["curiosity_log_id"],
+            )
+            source_record = await result.single()
+            curiosity_log_exists = bool(
+                source_record and source_record["curiosity_log_exists"]
+            )
+        return validate_pending_question_action_state(
+            contract,
+            existing_actions,
+            conflicting_split_count=conflicting_split_count,
+            curiosity_log_exists=curiosity_log_exists,
+        )
+
+    async def validate_pending_question_action(
+        self,
+        contract: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Read-only preflight before prediction work and SSE publication."""
+
+        async with self.driver.session(database=_DB_NAME) as session:
+            return await self._fetch_pending_question_action_state(session, contract)
+
+    async def insert_pending_question_action_outcome(
+        self,
+        question: str,
+        source: str,
+        contract: dict[str, Any],
+        prediction_snapshot: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Atomically persist a new research question and its pre-display snapshot."""
+
+        try:
+            prediction = normalize_pending_question_prediction(prediction_snapshot)
+        except ValueError as exc:
+            return {
+                "status": "rejected",
+                "reason": "invalid_prediction_snapshot",
+                "detail": str(exc),
+            }
+
+        async def _persist(tx: Any) -> dict[str, Any]:
+            action_state = await self._fetch_pending_question_action_state(tx, contract)
+            if action_state.get("status") != "valid":
+                return action_state
+
+            asked_at = _now_iso()
+            if not prediction_precedes_question(
+                prediction["captured_at"],
+                asked_at,
+            ):
+                return {
+                    "status": "rejected",
+                    "reason": "prediction_after_question_timestamp",
+                }
+            props = {
+                "question": question,
+                "source": source,
+                "status": "pending",
+                "asked_at": asked_at,
+                "question_outcome_evaluation": True,
+                "question_outcome_scoring_mode": "external_deferred",
+                "question_outcome_policy_action_id": contract.get("policy_action_id"),
+                "question_outcome_policy_action_key": contract["policy_action_key"],
+                "question_outcome_split": contract["split"],
+                "question_outcome_contract_sha256": contract["contract_sha256"],
+                "question_outcome_recorded_at": asked_at,
+                "prediction_captured_at": prediction["captured_at"],
+                "curiosity_cue_ids": prediction["cue_ids"],
+                "predicted_concept_ids": prediction["predicted_ids"],
+                "prediction_snapshot_version": 2,
+                "predicted_concepts_json": json.dumps(
+                    prediction["predicted_candidates"],
+                    ensure_ascii=False,
+                ),
+                "curiosity_input_terms_json": json.dumps(
+                    prediction["input_terms"],
+                    ensure_ascii=False,
+                ),
+            }
+            if contract.get("curiosity_log_id"):
+                result = await tx.run(
+                    PENDING_QUESTION_ACTION_PERSIST_WITH_CURIOSITY_QUERY,
+                    props=props,
+                    curiosity_log_id=contract["curiosity_log_id"],
+                    policy_action_key=contract["policy_action_key"],
+                    contract_sha256=contract["contract_sha256"],
+                    recorded_at=asked_at,
+                )
+            else:
+                result = await tx.run(
+                    PENDING_QUESTION_ACTION_PERSIST_QUERY,
+                    props=props,
+                )
+            record = await result.single()
+            if not record:
+                return {"status": "rejected", "reason": "question_create_failed"}
+            return {"status": "created", "question": dict(record["pq"])}
+
+        async with self.driver.session(database=_DB_NAME) as session:
+            return await session.execute_write(_persist)
+
     async def get_pending_questions(
         self,
         status: str = None,
@@ -2480,6 +2692,91 @@ class BrainDatabase:
             )
             record = await result.single()
             return dict(record["pq"]) if record else {}
+
+    async def get_pending_question_action_outcome_state(
+        self,
+        question_id: str,
+    ) -> dict[str, Any]:
+        """Return legacy/research answer routing state without writing."""
+
+        async with self.driver.session(database=_DB_NAME) as session:
+            result = await session.run(
+                PENDING_QUESTION_ANSWER_STATE_QUERY,
+                question_id=question_id,
+            )
+            record = await result.single()
+        question = dict(record["pq"]) if record else None
+        return validate_pending_question_answer_state(question)
+
+    async def submit_pending_question_action_outcome(
+        self,
+        question_id: str,
+        answer: str,
+        answer_confidence: float,
+        outcome_terms: list[str],
+    ) -> dict[str, Any]:
+        """Store one new external answer without updating learning/production state."""
+
+        normalized_terms = list(dict.fromkeys(
+            str(term).strip().casefold()
+            for term in outcome_terms
+            if str(term).strip()
+        ))
+        if not normalized_terms:
+            return {"status": "rejected", "reason": "no_external_outcome_terms"}
+
+        async def _persist(tx: Any) -> dict[str, Any]:
+            result = await tx.run(
+                PENDING_QUESTION_ANSWER_STATE_QUERY,
+                question_id=question_id,
+            )
+            record = await result.single()
+            question = dict(record["pq"]) if record else None
+            answer_state = validate_pending_question_answer_state(question)
+            if answer_state.get("status") != "ready":
+                return answer_state
+
+            result = await tx.run(
+                PENDING_QUESTION_OUTCOME_CONCEPT_QUERY,
+                outcome_terms=normalized_terms,
+                prediction_captured_at=answer_state["prediction_captured_at"],
+                cue_ids=answer_state["cue_ids"],
+            )
+            concept_records = [dict(item) async for item in result]
+            outcome_concepts = [
+                {"id": item["concept_id"], "name": item["concept_name"]}
+                for item in concept_records
+                if item.get("concept_id")
+            ]
+            outcome_ids = [item["id"] for item in outcome_concepts]
+            if not outcome_ids:
+                return {
+                    "status": "rejected",
+                    "reason": "no_preexisting_external_outcome_concepts",
+                }
+
+            answered_at = _now_iso()
+            result = await tx.run(
+                PENDING_QUESTION_ANSWER_PERSIST_QUERY,
+                question_id=question_id,
+                answer=answer,
+                answer_confidence=answer_confidence,
+                answered_at=answered_at,
+                outcome_terms_json=json.dumps(normalized_terms, ensure_ascii=False),
+                outcome_concept_ids=outcome_ids,
+            )
+            record = await result.single()
+            if not record:
+                return {"status": "rejected", "reason": "question_state_changed"}
+            return {
+                "status": "recorded",
+                "question": dict(record["pq"]),
+                "external_outcome_concepts": outcome_concepts,
+                "prediction_scored": False,
+            }
+
+        async with self.driver.session(database=_DB_NAME) as session:
+            return await session.execute_write(_persist)
 
     async def submit_question_answer(
         self,

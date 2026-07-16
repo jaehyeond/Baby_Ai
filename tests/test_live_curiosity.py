@@ -150,6 +150,7 @@ def test_prepare_prediction_keeps_all_selected_cues(monkeypatch) -> None:
     assert calls[0][1]["cue_terms"] == ["비비", "형"]
     assert calls[0][1]["allow_message_fallback"] is False
     assert calls[1][1]["cue_ids"] == ["bibi", "hyung"]
+    assert "ORDER BY score DESC, candidate_id ASC" in calls[1][0]
     assert len(calls) == 2
     assert snapshot["input_terms"] == ["비비", "형"]
 

@@ -5,6 +5,165 @@
 
 ---
 
+## 2026-07-16 (J-1.0 Question-as-Experiment offline contract + readiness audit)
+
+### 구현
+- `neural/baby/question_experiment.py`: graph/local-core가 동일 Concept universe에 대해 pre-question relevance probability를 제출하는 fail-closed 계약을 추가했다. Jensen-Shannon divergence 최대 질문을 deterministic하게 선택하고 reviewed multi-label target에 Brier, binary log loss, Expected Calibration Error, top-k recall을 계산한다.
+- 임의 softmax를 확률로 오인하지 않도록 Platt/isotonic/temperature scaling method, calibration dataset/calibrator SHA-256, positive/negative count, fitted timestamp를 필수화했다. exact question text, semantic label pack hash, predictor model snapshot hash, selection-before-asked timestamp도 검증한다.
+- `scripts/research/j1_question_as_experiment.py`: experiment pack이 없으면 legacy readiness를 audit하고, pack이 있으면 동일 evaluator로 train-only shadow report를 만든다. DB/API/handler를 import하지 않는다.
+
+### 실제 6질문 audit
+- reviewed semantic target은 6질문·25개로 유효하고 historical graph ranked ID도 있다. 그러나 calibrated graph probability, local-core pre-question probability, 2개 이상 후보의 동시 decision, pre-question model/calibrator seal이 없다.
+- ranked ID 또는 B5.8 post-hoc score를 확률로 변환하지 않았다. 결과는 `status=blocked`, `contract_gate=false`, learning/DB write/heldout/production=false다.
+- artifact: `claudedocs/research/j1_question_as_experiment_readiness_20260716.json`.
+
+### 다음 데이터 후보 감사
+- 남은 CuriosityLog 8개를 read-only discovery했다. graph prediction이 있는 후보는 3개였지만 `이야기 궁금한 것`, `하루 1시간 뒤`, `궁금한 것 비밀`처럼 기존 6개와 겹치고 의미가 불안정해 calibration용으로 채택하지 않았다.
+- 다음 J1.1은 새 고품질 train-calibration 질문을 사전등록하고, 질문 표시 전에 graph/local-core raw score와 model snapshot hash를 봉인한 뒤 calibrator를 fit한다. GPU shadow inference, live 질문, DB write는 이번 단계에서 실행하지 않았다.
+- 신규 J1 targeted `8 passed`, 전체 canonical suite `146 passed`, py_compile, diff check 통과. 보호 handler blob은 HEAD와 동일하고 비밀 패턴 노출은 0건이다.
+
+---
+
+## 2026-07-16 (J-0 JARVIS 방향 연구 재설계)
+
+### 문헌 교차검증과 판정
+- Bandi의 기존 자기학습 프런티어 노트를 먼저 확인한 뒤 2025–2026 continual/test-time memory, open-ended autocurriculum, world model, self-modification, action verifier 문헌을 arXiv에서 검색했다. 핵심 8편은 Semantic Scholar에서 year, venue, citationCount, influentialCitationCount를 교차검증했고 World Action Verifier는 references/citations까지 추가 조회했다.
+- 결과는 “JARVIS 경로가 없다”가 아니라 “필요한 조각은 있으나 open-world lifelong loop 전체를 입증한 시스템은 없다”이다. 개인화 지속개선 조수는 공학적으로 도전 가능하고 embodied lifelong learner는 열린 연구 문제이며 영화 속 open-domain JARVIS는 달성법과 일정이 미확립이다.
+- 정확한 선행 분야명으로 확인되지 않은 `Grounded Developmental Self-Improvement`를 working label로만 제안했다. 새 분야·세계 최초 주장은 하지 않는다.
+
+### Baby용 새 시스템 가설
+- `Developmental Causal Self-Compiler`는 graph/local core/world model의 독립 예측, disagreement 기반 epistemic action, forward/inverse/plausibility verifier, causal experience ledger, 검증된 sleep compile, LoRA 후보 archive, future-canary promotion, shadow wake integration을 하나의 단계적 폐루프로 묶는다.
+- 가장 작은 다음 실험 [J-1]은 `PendingQuestion`을 안전한 action으로 사용해 graph/local core의 사전 확률과 calibration을 학습 없이 먼저 비교하는 Question-as-Experiment offline contract다. 같은 6개 B5.9 train label은 interface 검사에만 쓰고 성능 증거로 쓰지 않는다.
+- 상세: `claudedocs/research/JARVIS_GROUNDED_DEVELOPMENTAL_SELF_IMPROVEMENT_2026-07-16.md`.
+
+### 경계
+- B5.9 25개 의미 라벨은 사용자 승인 상태로 유지한다. Neo4j relation write, live collection, Gemini call, GPU retraining, held-out, production promotion은 실행하지 않았다.
+- GDSI/DCSC는 문헌 조각을 Baby 병목에 대응시킨 연구 가설이며 JARVIS 가능성의 실험 증거가 아니다.
+
+### Zoey OS Reel 참고 위치 고정
+- 사용자 제공 Reel의 9.356초 공개 MP4와 캡션을 확인했다. 보이는 범위는 음성/채팅 명령, companion/bot 생성·위임, companion 간 메시지, Knowledge 폴더·파일·그래프 UI다.
+- 공개 문서·소스·benchmark·파라미터 학습·grounded verifier·continual promotion 증거는 확인하지 못했다. 따라서 `Jarvis` 홍보 문구를 Baby 능력 주장이나 학습 target으로 가져오지 않는다.
+- 상위 program roadmap의 병렬 `관측/UI` 트랙에만 배치했다. J1 predictor 출력 계약이 안정된 뒤 Hypothesis Council, message provenance, agent ablation, Causal Experience Ledger 화면을 참고할 수 있지만 J1–J3 gate·schema·데이터를 override하지 않는다.
+
+---
+
+## 2026-07-16 (Phase 3 [B-5.9] semantic outcome contract + self-learning evidence audit)
+
+### B5.9 의미 라벨 계약
+- B5.7의 user-final 답변 6개와 B5.8의 prediction-time-valid Concept을 입력으로, 의미상 평가 후보 25개를 별도 semantic label pack으로 만들었다. 각 항목은 action/question ID와 답변 SHA-256에 묶여 답변 또는 순서가 바뀌면 fail-closed한다.
+- 최초 파일은 `draft_unreviewed`로 생성했고, 사용자가 6묶음 후보 전체를 명시 승인했다. 현재 pack은 `review_status=user_reviewed`, `reviewer_role=user`, timezone 검토 시각, 25개 `approved`를 만족한다. semantic target validity gate는 true지만 같은 6개 train의 라벨 검토 통과이지 predictor 성능 또는 held-out 통과가 아니다.
+- action→answer 표현은 `PendingQuestion-[:ANSWER_EVIDENCES_CONCEPT]->Concept` 25개 offline proposal로만 생성했다. 현재 schema/transaction에는 연결하지 않았고 DB write, held-out, production promotion은 모두 false다.
+- artifact: `claudedocs/research/b5_9_semantic_outcome_contract_20260716.json`; reviewed pack: `scripts/research/inputs/b5_9_pending_question_train_a_20260716_semantic_labels_reviewed.json`.
+
+### Phase 2 자기학습 증거 적대 재감사
+- `llm_real_distill.py`의 기존 split은 Neo4j relationship row를 먼저 나눠 동일 concept pair의 다른 source/type 관계가 train과 test에 동시에 남을 수 있었다. 2026-07-16 현재 그래프 6,247 row/6,051 unique pair로 재현하면 test 250쌍 중 18쌍(7.2%)이 train에도 있었다. 2026-07-13 snapshot은 보존되지 않아 과거 3-seed의 정확한 오염률은 확정할 수 없지만, 방법상 clean held-out 주장은 유지할 수 없다.
+- `sleep_distill_job.py`는 `edges[:250]`을 평가하면서 전체 `adj`로 replay episode를 만들었으므로 같은 run 평가쌍을 직접 학습했다. 기존 `0.089→0.123→0.152`는 adapter weight update·disk persistence·같은 probe fit의 증거이지 unseen generalization 또는 자율 성장의 확정 근거가 아니다. 두 run 모두 `loss_last>loss_first`인 점도 안정성 경고다.
+- `graph_replay_split.py`를 추가해 방향/parallel 관계를 undirected concept pair로 canonicalize하고 최대 weight 한 개로 합친 뒤 deterministic pair-disjoint split을 만든다. 일회성 실험과 야간 job 모두 train adjacency에서 test pair를 완전히 제거한다. Torch seed를 명시하고 sampled negatives도 중복 없이 뽑아 재현성과 metric validity를 보강했다.
+- 야간 job은 link-MRR 비퇴행 및 identity probe가 있을 때 identity-MRR 비퇴행을 동시에 만족해야 기존 adapter를 덮어쓴다. candidate directory 저장이 끝난 뒤에만 기존 adapter와 교체하고 실패 시 이전 adapter를 복구한다. `--fresh`도 gate 통과 전 기존 checkpoint를 삭제하지 않는다. resumed adapter는 과거 그래프를 이미 봤을 수 있다는 contamination flag를 log에 남긴다. 따라서 clean continual proof에는 앞으로 생성되는 sealed future canary가 별도로 필요하다.
+
+### 검증 및 정직한 시스템 판정
+- 신규 단위 `10 passed`(split 3 + semantic contract/report 5 + adapter atomic promotion 2), canonical suite `138 passed`, 신규 모듈 py_compile, `pip check`, diff check, B5.9 offline artifact 생성 통과. Neo4j write/Gemini/live server/GPU 학습 없음.
+- 현재 시스템은 graph memory/plasticity, opt-in LoRA consolidation, curiosity instrumentation을 가진 연구 프로토타입이다. 로컬 learned core는 wake response/Gemini prompt에 연결되지 않고, grounded action→outcome 성능·장기 자율 계획·embodied control·clean promotion/rollback도 미검증이므로 **JARVIS 도달을 입증하거나 보장하지 않는다.**
+
+---
+
+## 2026-07-16 (Phase 3 [B-5.8] measurement validity + offline source-aware ranker)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.8]` 절.
+
+### B5.7 보고 교정
+- B5.7의 `target_validity_gate=true`는 답변 의미가 올바른 예측 target이라는 검증이 아니라 6개 action-linked answer의 ID/시간/split/non-empty outcome을 확인한 **structural contract gate**였다. semantic outcome label을 독립 검토하지 않았으므로 이를 target validity로 부른 것은 과한 해석이었다.
+- gate를 `structural_contract_gate`, `outcome_content_validity_gate`, 결합 `target_validity_gate`로 분리했다. 기존 6개에는 reviewed outcome ID label이 없으므로 structural=true, content=false, target=false로 재분류한다.
+
+### 측정 계약 수정
+- `pending_question_outcome.py`는 보호 handler를 import하지 않는 전용 parser를 유지하면서 첫 12개 token 편향을 제거했다. 전체 답변에서 최대 32개를 고르고 `서/맺/하/모르` 같은 잘린 술어와 활용형 표면을 제외한다.
+- research question cue는 별도 `build_pending_question_cue_terms()`로 분리해 기존 B-2의 12-term 조사/speech-act 정규화 계약을 그대로 유지한다. answer outcome 개선이 질문 전 prediction 입력을 바꾸지 않게 했다.
+- 숫자+단위 compound `1시간/60분/3600초/24시간`을 보존하고 한국어 분수 `24분의 1`을 `24분`으로 오인하지 않는다. 문장 후반의 `계산/로봇/제어`도 outcome 후보에 남는다.
+- 이후 신규 research question snapshot은 predicted ID뿐 아니라 name/score/rank JSON과 snapshot version 2를 저장한다. 기존 live graph ranker의 의미 점수는 바꾸지 않았고 동점만 `candidate_id`로 결정해 재현성을 고정했다.
+
+### offline ranker와 실측
+- source, relation direction/type, multi-cue support, candidate degree, 최대 2-hop을 쓰는 B5.8 ranker를 research script에만 구현했다. 같은 6개 답변을 본 post-hoc train 진단이므로 어떤 수치에서도 production promotion은 false다.
+- 새 parser로 prediction 시점 이전 Concept을 다시 resolve하면 outcome은 기존 21개에서 26개로 늘었다. bounded 2-hop candidate pool 안에 10/26개가 있었지만 source-aware top-8 hit는 0이고 stored live hit도 0이다.
+- 따라서 단순 strength/hub 가중치가 주원인이라는 가설은 지지되지 않았다. 16/26 outcome은 bounded 2-hop에서도 닿지 않고, 닿는 10개도 top-8 밖이어서 action→definition answer 관계 표현과 semantic label 계약이 먼저다.
+- 첫 unbounded 쿼리는 질문당 2,000 path를 펼쳐 약 73초/5.9MB artifact가 되는 검증 병목이었다. cue당 direct 48, second-hop source 12, source당 neighbor 48로 제한해 약 5초/72KB로 줄였다.
+
+### 현재 판정
+- DB write=false, live predictor changed=false, handler changed=false, semantic content gate=false, production promotion=false.
+- 다음은 여섯 답변의 semantic outcome label을 별도 검토하는 계약과 action→answer relation 표현 설계다. 그 전 추가 held-out 수집, threshold 조정, production 연결을 하지 않는다.
+- targeted B5.6~B5.8/live-curiosity 회귀 `55 passed`, canonical `tests + neural/test_neural.py` suite `128 passed`; py_compile, `pip check`, `git diff --check`, literal secret scan 0건을 확인했다. 보호 handler blob `054d974095be7425692860909181fafd54f97a33`과 FastAPI 8000 DOWN 상태도 유지된다.
+- artifact: `claudedocs/research/b5_8_measurement_validity_ranker_20260716.json`.
+
+---
+
+## 2026-07-16 (Phase 3 [B-5.7] action-conditioned train answer pilot)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.7]` 절.
+
+### 범위와 provenance
+- local/remote push 기준은 `ec98ed2`(B5.4-A)이며 B5.5~B5.6 미커밋 변경을 그대로 보존했다. 이번에도 commit/push는 하지 않았다.
+- train manifest `b5_7_pending_question_train_a_20260716`, hash `4e1e5d715005f3e4f391f0c761c8d081bfe452cc4ef4fd9cf09202266cc03c37`를 고정했다. 선택된 CuriosityLog source는 learning-progress 1, legacy failure 3, legacy similarity 2이므로 **현재 curiosity policy 성능 표본으로 일반화하지 않는다.**
+- 사용자가 6개 설명을 최종 답변으로 명시적으로 채택했다. answer pack에는 `answer_role=user_final`, `answer_provenance=user_reviewed_adopted`로 기록해 자발적 무보조 사용자 생성 답변과 구분했다.
+
+### live 수집과 결과
+- 답변 전 read-only preflight에서 6/6 질문이 pending이고 prediction-before-question이며, prediction 시점 이전의 non-cue outcome을 각각 `4/3/1/7/3/3`개 확인한 뒤에만 answer API 쓰기를 시작했다.
+- 신규 `PendingQuestion` 6개와 answer 6개가 동일 action/split/hash 계약으로 저장됐다. 사후 독립 audit은 answered `6/6`, `external_recorded` `6/6`, outcome 총 21개·고유 19개를 확인했다.
+- 6개 모두 action provenance, `prediction≤asked≤answered`, non-empty cue/prediction/outcome 조건을 만족해 **target validity gate=true**다. 답변 저장 전후 CuriosityLog learning state는 동일했고 EMA/threshold/production은 갱신하지 않았다.
+- 봉인을 해제한 exact-ID train 진단은 여섯 질문 모두 prediction-outcome hit `0`, recall error `1.0`이었다. 따라서 `exploratory_train_overlap_signal=false`, predictor freeze=false, held-out 수집=false, evaluation readiness=false, production promotion=false다.
+- 결론은 **질문→답변 target 계약은 유효하지만 현재 graph predictor의 train signal은 없음**이다. 다음은 추가 질문/held-out 수집이 아니라 predictor가 action-conditioned answer outcome을 전혀 맞히지 못한 원인 진단이다.
+
+### 검증
+- B5.7 targeted `9 passed`, B5.7+B5.6 계약 targeted `30 passed`, canonical `tests/` suite `110 passed`, `py_compile`, `pip check`, `git diff --check` 통과.
+- 변경 파일 비밀 패턴 0건, 보호 handler blob `054d974095be7425692860909181fafd54f97a33` 무변경.
+- 답변·감사 완료 후 B5.7 임시 FastAPI 프로세스를 종료했고 `127.0.0.1:8000` listener와 `/health`가 모두 내려간 것을 확인했다.
+- artifacts: `scripts/research/inputs/b5_7_pending_question_train_a_20260716_answers.json`, `claudedocs/research/b5_7_pending_question_train_a_20260716.json`.
+
+---
+
+## 2026-07-16 (Phase 3 [B-5.6] PendingQuestion action-outcome contract)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.6]` 절.
+
+### 범위와 기준
+- local/remote push 기준은 계속 `ec98ed2`(B5.4-A)다. B5.5 미커밋 변경을 보존한 상태에서 B5.6만 이어 구현했으며 commit/push는 하지 않았다.
+- 신규 연구 질문에만 적용되는 opt-in 계약이다. 기존 `PendingQuestion` 생성·답변 API와 저장된 18질문/15답변은 그대로 유지하고, `conversation_handler.py` v30은 수정하지 않는다.
+- 목적은 성능 점수화가 아니라 질문 action이 표시되기 전에 provenance와 prediction을 고정하고, 그 질문에 대한 **새 외부 답변만** outcome으로 닫는 것이다.
+
+### 구현
+- `pending_question_outcome.py`: `curiosity_log_id|policy_action_id`, `train|heldout`, manifest SHA-256 형식을 fail-closed 정규화한다. action 중복, 같은 hash의 split 교차 재사용, missing CuriosityLog, 빈 cue/prediction, prediction-after-question timestamp, 중복 답변을 거부한다. handler를 import하지 않는 exact-name term builder도 분리했다.
+- endpoint: server env `CURIOSITY_QUESTION_OUTCOME_EVAL=1` + JSON boolean의 double opt-in이다. metadata 단독/비 boolean/env off는 DB·prediction 전에 중단한다. 성공 경로는 read-only action preflight → graph prediction → managed transaction persist → Redis/SSE publish 순서다.
+- DB: transaction 안에서 preflight를 다시 수행하고 question/action/split/hash/cue/predicted IDs/captured time을 한 번에 저장한다. answer transaction은 질문 상태를 재검사하고 prediction 시각 이전에 존재한 non-cue Concept만 `external_outcome_concept_ids`로 기록한다. prediction error, learning-progress EMA, integration priority, CuriosityLog, BrainRegion, production threshold는 변경하지 않는다.
+- 연구 질문의 `answered` 상태를 일반 PATCH로 우회할 수 없게 answer endpoint만 허용했다. legacy 질문은 기존 생성·답변 경로를 그대로 사용한다. 현재 계약은 sequential single-writer 연구용이며 production multi-writer에는 DB unique constraint/lock이 별도로 필요하다.
+
+### 검증과 판정
+- offline contract matrix `16/16`, B5.6 targeted tests `21 passed`, canonical `tests/` suite `101 passed`, `py_compile`, `pip check`, `git diff --check` 통과.
+- 실제 Neo4j read-only coverage는 PendingQuestion `18`, answer `15`, B5.6 research question/outcome `0/0`이다. persistence 포함 Cypher 8종은 모두 `EXPLAIN valid`, 실제 preexisting outcome resolver read는 1 concept을 반환했다. **DB write/live collection/held-out collection/기존 답변 재사용/점수화는 모두 0**이다.
+- artifact: `claudedocs/research/b5_6_pending_question_action_outcome_20260716.json`. 보호 handler blob `054d974095be7425692860909181fafd54f97a33` 무변경.
+- 판정은 `instrumentation_contract_gate=true`, `target_validity_gate=false`, `evaluation_readiness_gate=false`, `production_promotion_gate=false`다. 다음 B5.7은 사용자 명시 승인 후 신규 train 질문만 최소 pilot로 수집하며, train signal 전 held-out·학습상태 갱신·threshold 변경을 금지한다.
+
+---
+
+## 2026-07-16 (Phase 3 [B-5.5] target validity gate)
+
+> 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.5]` 절.
+
+### 목적과 기준
+- **push 기준점**: 시작 시 `DB_Renewal` local/remote HEAD가 사용자 push `ec98ed2`(B5.4-A)로 일치하고 worktree clean이었다.
+- B5.4 실패를 predictor 문제로만 보지 않고 target 정의를 재검토했다. 후보는 ① unconditioned next-user topic, ② action-conditioned PendingQuestion answer, ③ action-conditioned next sensor outcome이다.
+- gate는 grounded external outcome, deterministic pair boundary, 기록된 action ID, action 선행 시간, outcome의 action 조건성, pre-outcome prediction, curiosity/action-selection loop 정합성을 분리한다. target 정의 통과와 현재 evaluation readiness도 별도 판정한다.
+
+### 코드·DB cross-check
+- conversation Experience 1,503개 모두 user `task`와 assistant `output`을 저장하고 1,263 output에 `?`가 있지만, 질문 action ID와 다음 입력의 인과 연결은 없다. B5.4 explicit sequence는 turn 7/link 6/snapshot 7이나 다음 입력이 사전 고정돼 assistant action 조건성이 없다.
+- `PendingQuestion`은 동일 ID에 question/asked_at와 외부 answer/answered_at를 저장해 구조상 가장 직접적인 action→outcome schema다. 그러나 실제 18개 중 answer 15, 정상 시간 순서 1, 시간 누락 14, source 누락 17(`test` 1), CuriosityLog `GENERATED` 0, 질문 표시 전 prediction 0이다. 기존 답변은 prediction보다 먼저 노출됐으므로 score/retrain에 재사용하지 않는다.
+- vision은 Experience 45개와 `NEXT_FRAME` 36개가 있지만 head pose 0, pose delta 0, pre-frame prediction 0이다. action-conditioned sensor target은 현재 관측 불가다.
+
+### 판정과 다음
+- 세 후보 모두 current target-validity gate=false, evaluation-readiness=false. selected target=`null`, production gate=false, DB write/live collection=false.
+- schema recommendation만 `action_conditioned_pending_question_answer`: 질문 ID 자체가 action identity이고 answer endpoint가 외부 outcome 경계를 제공한다. 이는 성능 승격이 아니라 B5.6 instrumentation 우선순위다.
+- **[B-5.6]** PendingQuestion 생성/표시 전에 `curiosity_log_id|policy_action_id`, `question_id`, `prediction_captured_at`, `predicted_concept_ids`, split, contract hash를 저장한다. 새 answer 도착 시에만 외부 concept outcome을 기록한다. handler v30 수정, 기존 15답변 소급 점수화, held-out 선수집, threshold 변경은 금지한다.
+- artifact: `claudedocs/research/b5_5_target_validity_gate_20260716.json`. canonical `tests/` suite `80 passed`, `pip check`, py_compile, `git diff --check` 통과. 보호 handler blob `054d974095be7425692860909181fafd54f97a33` 무변경, FastAPI 8000 DOWN. secret scan의 `NEO4J_PASSWORD` 2건은 환경변수 이름이며 literal secret 값은 artifact/code에 없다.
+
+---
+
 ## 2026-07-16 (Phase 3 [B-5.4-A] minimal train gate and early stop)
 
 > 상세: `claudedocs/research/PHASE3_CURIOSITY_LOOP_2026-07-14.md`의 `[B-5.4-A]` 절.

@@ -1,0 +1,370 @@
+{
+  "block_reasons": [
+    "train_only_same_six_questions",
+    "relation_schema_not_integrated"
+  ],
+  "contract_sha256": "4e1e5d715005f3e4f391f0c761c8d081bfe452cc4ef4fd9cf09202266cc03c37",
+  "conversation_handler_changed": false,
+  "created_at": "2026-07-16T07:51:00.612014+00:00",
+  "database_writes": false,
+  "heldout_gate": false,
+  "live_predictor_changed": false,
+  "next_step": "review_relation_schema_and_keep_train_only_until_clean_signal",
+  "phase": "B5.9",
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "relation_proposal": {
+    "database_block_reason": "offline_relation_schema_not_integrated",
+    "database_write_gate": false,
+    "database_writes": false,
+    "evaluation_target_ids_by_order": {
+      "0": [
+        "0e38d912-4a52-448e-ad8f-6885e08aa991",
+        "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+        "f86afb96-71c3-4e52-a286-5072f2ac6f04",
+        "fec1bfe1-dba4-43d0-8532-6305457aaab7"
+      ],
+      "1": [
+        "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+        "94342976-be82-45f9-b2a3-1cfaa0342302",
+        "c5c6bc5c-a361-46f5-b35e-1072de66ffa7",
+        "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+        "e8ddbe83-8661-431e-94bd-73759cf1c367",
+        "ecc5e6d6-cf0e-414c-a477-00ee85547c14"
+      ],
+      "2": [
+        "bd1da048-5fc7-4837-8094-bafb74a6a282"
+      ],
+      "3": [
+        "0e38d912-4a52-448e-ad8f-6885e08aa991",
+        "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+        "2a430a39-24f9-4b3e-95d5-03fbc84da073",
+        "3c978b80-05ac-4f57-a212-b9dead97519a",
+        "a3de8f8b-4955-4ff9-8049-e3df8cf92fbc",
+        "d07f03e9-d3d1-4b19-ad2c-6d280ef08715"
+      ],
+      "4": [
+        "4173344b-0fe6-4613-a6fb-f47196389963",
+        "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+        "8b792a6c-090c-481d-8b63-1dbcfa43bed3"
+      ],
+      "5": [
+        "27189b22-c28f-4c45-b618-b3a1dd15f33c",
+        "3d03470b-32cc-435d-88ea-514f630f1a63",
+        "7a40331b-84e2-42bc-819b-0cae429526ec",
+        "e8ddbe83-8661-431e-94bd-73759cf1c367",
+        "f7ebe94f-9f93-47ea-8ef1-719394a74177"
+      ]
+    },
+    "relation_proposal_count": 25,
+    "relation_proposals": [
+      {
+        "proposal_id": "56b1c17c240d6aea84f11e2fa40f52cd5858d4059ac535c2d5b91650ef06a902",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "03b8e5f3-8e6e-4861-9b78-bfca02497cd8",
+        "source_label": "PendingQuestion",
+        "target_id": "0e38d912-4a52-448e-ad8f-6885e08aa991",
+        "target_label": "Concept",
+        "target_name": "사건",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "c00f46270b325c83cbfc994f7d28be355d30cfeaeef6eaa170ddc49d03338688",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "03b8e5f3-8e6e-4861-9b78-bfca02497cd8",
+        "source_label": "PendingQuestion",
+        "target_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+        "target_label": "Concept",
+        "target_name": "사람",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "26e5ad87e86da27ededb2f18686a3f0210922c4f6d2d68d8dd10af9fab9f7704",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "03b8e5f3-8e6e-4861-9b78-bfca02497cd8",
+        "source_label": "PendingQuestion",
+        "target_id": "f86afb96-71c3-4e52-a286-5072f2ac6f04",
+        "target_label": "Concept",
+        "target_name": "장소",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "99ad9cf71a3a6061cd3f50c0fa90dcc96937ad2b6762d397ffe4b44bf41038b6",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "03b8e5f3-8e6e-4861-9b78-bfca02497cd8",
+        "source_label": "PendingQuestion",
+        "target_id": "fec1bfe1-dba4-43d0-8532-6305457aaab7",
+        "target_label": "Concept",
+        "target_name": "영향",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "ea8da7d9f390f12ad45dc68de4e1fb49183b6f0a2a866cd2dd0f6aaef3a0094f",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+        "target_label": "Concept",
+        "target_name": "정보",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "eb56e7d0a51187af74300ed9431f43e569a2dda63912b2a7218ebcca1d05ef5e",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+        "target_label": "Concept",
+        "target_name": "소리",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "45fe8f465e1bb1a288e5a3d7907811efbd379d289eafafb96246d54c6b15ae5a",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "c5c6bc5c-a361-46f5-b35e-1072de66ffa7",
+        "target_label": "Concept",
+        "target_name": "저장",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "ff22b293ec5c0a3546561b32e3c7be4286de12ee2cf433aa1e1b6bf6f810932b",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+        "target_label": "Concept",
+        "target_name": "장치",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "31dfe364ef4b904257541d42932ca6fec294b33ea81f6ca2edc895d0b8e4ef8a",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+        "target_label": "Concept",
+        "target_name": "프로그램",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "4cb2437a74d0db626208aaedd2b879b24ca3d531bdb33caab8546552d5343aa6",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+        "source_label": "PendingQuestion",
+        "target_id": "ecc5e6d6-cf0e-414c-a477-00ee85547c14",
+        "target_label": "Concept",
+        "target_name": "화면",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "4e36680e9b665bbde2a2eb2bda447c3882579dabf832c2e9fc9a4a7d6a59a71e",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "cc81416f-f16d-44d3-bb9a-c087e027b574",
+        "source_label": "PendingQuestion",
+        "target_id": "bd1da048-5fc7-4837-8094-bafb74a6a282",
+        "target_label": "Concept",
+        "target_name": "하루",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "7adfc1b5b3ae5b3155a438879db0882dbb454a8fd3edde60c9b6e88a0340caa0",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "0e38d912-4a52-448e-ad8f-6885e08aa991",
+        "target_label": "Concept",
+        "target_name": "사건",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "26ff0bb3f0325e80869db31079e93a81260198b8ed268b2b71a8f6a3b9e8abd6",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+        "target_label": "Concept",
+        "target_name": "경험",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "f0fca2858b7de903b2a57e146b86e4fe7def28bc6914e70fbd846f04e8e721aa",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "2a430a39-24f9-4b3e-95d5-03fbc84da073",
+        "target_label": "Concept",
+        "target_name": "시간",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "c0f3d54f33c2a271467ebb0c399bd802fe8e79e1706606c1366ada0e70277e57",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "3c978b80-05ac-4f57-a212-b9dead97519a",
+        "target_label": "Concept",
+        "target_name": "생각",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "0851dca9cf725e072648e9cebae6ef7a44ca3aec00c9a60336b72785b58c1e0c",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "a3de8f8b-4955-4ff9-8049-e3df8cf92fbc",
+        "target_label": "Concept",
+        "target_name": "원인",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "7bac5cfa589c9c9264f1e2cd6fc5a14ed56a92e418ddea21b0097d40db6feac8",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+        "source_label": "PendingQuestion",
+        "target_id": "d07f03e9-d3d1-4b19-ad2c-6d280ef08715",
+        "target_label": "Concept",
+        "target_name": "상상",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "ee22731b47a48d8cf4ba37774bb2f134774071b071c0dc72d381677c90be9174",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "56049503-0409-4ae3-98ea-941d4fb830a8",
+        "source_label": "PendingQuestion",
+        "target_id": "4173344b-0fe6-4613-a6fb-f47196389963",
+        "target_label": "Concept",
+        "target_name": "의미",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "de15925bb23b2ec67a3db71b75df671a44203cf1e3a9c3641797432d2327a1bb",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "56049503-0409-4ae3-98ea-941d4fb830a8",
+        "source_label": "PendingQuestion",
+        "target_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+        "target_label": "Concept",
+        "target_name": "정보",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "de67b94058f8f19b3e975890a3cdf3fe481c96ab7671206c168f4a219c75ae46",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "56049503-0409-4ae3-98ea-941d4fb830a8",
+        "source_label": "PendingQuestion",
+        "target_id": "8b792a6c-090c-481d-8b63-1dbcfa43bed3",
+        "target_label": "Concept",
+        "target_name": "궁금증",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "406330d0e6616ecbf5fd8e81abde076ed556c79181039d22846f3ce1dc04efd7",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+        "source_label": "PendingQuestion",
+        "target_id": "27189b22-c28f-4c45-b618-b3a1dd15f33c",
+        "target_label": "Concept",
+        "target_name": "작업",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "9c0c7a37f38916cd334cde2ef84533411bd71bff6a1874ee3a93d5a6f2a5cbae",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+        "source_label": "PendingQuestion",
+        "target_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+        "target_label": "Concept",
+        "target_name": "로봇",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "4dca02e5a392f2b0bea006d12fec8aa0b94d30f405360b03a63c3a2d191427ea",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+        "source_label": "PendingQuestion",
+        "target_id": "7a40331b-84e2-42bc-819b-0cae429526ec",
+        "target_label": "Concept",
+        "target_name": "계산",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "aa4da260807cb078c295df7252ecfb27c60b293250cca8775eef9dfc1d71a098",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+        "source_label": "PendingQuestion",
+        "target_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+        "target_label": "Concept",
+        "target_name": "프로그램",
+        "write_eligible_after_schema_review": true
+      },
+      {
+        "proposal_id": "cb50c1b885e5a7c65d29311d95e14086a86fa9c6b68e06928060eb28852578eb",
+        "relationship_type": "ANSWER_EVIDENCES_CONCEPT",
+        "review_status": "user_reviewed",
+        "semantic_decision": "approved",
+        "source_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+        "source_label": "PendingQuestion",
+        "target_id": "f7ebe94f-9f93-47ea-8ef1-719394a74177",
+        "target_label": "Concept",
+        "target_name": "기능",
+        "write_eligible_after_schema_review": true
+      }
+    ],
+    "review_status": "user_reviewed",
+    "semantic_target_validity_gate": true
+  },
+  "review_status": "user_reviewed",
+  "semantic_label_count": 25,
+  "semantic_label_pack_sha256": "71581fc1cd19a0e381614da70e4646945436901cc16f1b5310776d1810d27e18",
+  "semantic_target_validity_gate": true,
+  "status": "completed"
+}

@@ -29,6 +29,7 @@ from peft import LoraConfig, get_peft_model, PeftModel
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(__file__))
 from llm_core_distill import MODEL, DEV, distill
+from graph_replay_split import build_edge_disjoint_split
 from llm_real_distill import fetch_graph, episodes_from_graph, eval_pairs, mrr, K_NEG
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +53,39 @@ def run_count():
     if not LOG.exists():
         return 0
     return sum(1 for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip())
+
+
+def save_promoted_core(model) -> None:
+    """Replace the adapter only after a complete candidate save.
+
+    The previous adapter remains recoverable if candidate promotion fails.
+    """
+
+    candidate = MDIR / ".local_core_adapter_candidate"
+    previous = MDIR / ".local_core_adapter_previous"
+    if candidate.exists():
+        shutil.rmtree(candidate)
+    if previous.exists():
+        shutil.rmtree(previous)
+    model.save_pretrained(str(candidate))
+    moved_previous = False
+    try:
+        if CKPT.exists():
+            CKPT.rename(previous)
+            moved_previous = True
+        candidate.rename(CKPT)
+    except Exception:
+        if moved_previous and not CKPT.exists() and previous.exists():
+            previous.rename(CKPT)
+        raise
+    finally:
+        if candidate.exists():
+            shutil.rmtree(candidate)
+    if previous.exists():
+        try:
+            shutil.rmtree(previous)
+        except OSError:
+            print(f"[distill] 이전 adapter backup 정리 보류: {previous.name}")
 
 
 # 마커/락은 models/ 에 (CKPT rmtree(--fresh)에 안 지워지게). adversarial review wf_42f17ed5 반영.
@@ -131,8 +165,9 @@ def main():
 
 
 def _main_run(args) -> bool:
-    if args.fresh and CKPT.exists():
-        shutil.rmtree(CKPT)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
 
     # Neo4j 그래프 먼저 (없으면 학습할 게 없음). 다운 시 traceback 없이 clean skip.
     try:
@@ -158,36 +193,62 @@ def _main_run(args) -> bool:
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     all_nodes = sorted(adj.keys())
-    test = [(a, b, w) for (a, b, w) in edges[:250] if a in adj and b in adj]
+    split = build_edge_disjoint_split(edges, seed=args.seed)
+    test = split.test_edges
+    train_adj = split.train_adjacency
+    if not test:
+        print("[distill] pair-disjoint 평가쌍 없음 → skip")
+        return False
 
     try:   # GPU 학습: OOM/CUDA 오류도 clean skip (Neo4j 경로와 동형; DEVNULL로 traceback 숨는 것 방지)
         model, resumed = load_core(fresh=args.fresh)
         run_i = run_count() + 1
         print(f"=== SLEEP-DISTILL JOB (살아있는 로컬 코어) — run #{run_i} ===")
         print(f"  코어: {'✅ 어댑터 이어받음(누적)' if resumed else '🆕 fresh LoRA'} | "
-              f"그래프 {len(all_nodes)} concept / {len(edges)} edge")
+              f"그래프 {len(all_nodes)} concept / {len(edges)} raw edge / "
+              f"{split.diagnostics['unique_pair_count']} unique pair")
         before = eval_pairs(model, tok, test, all_nodes, random.Random(1))
         mrr_before = mrr(before); id_before = mrr([p for p in before if p["identity"]])
         print(f"  학습 전 link-MRR {mrr_before} (identity {id_before})  ← 직전 코어 상태")
-        eps = episodes_from_graph(adj, [n for n in adj if adj[n]], 400, rng)
+        eps = episodes_from_graph(
+            train_adj,
+            [n for n in train_adj if train_adj[n]],
+            400,
+            rng,
+        )
         losses = distill(model, tok, eps, args.steps)
         after = eval_pairs(model, tok, test, all_nodes, random.Random(1))
         mrr_after = mrr(after); id_after = mrr([p for p in after if p["identity"]])
         print(f"  학습 후 link-MRR {mrr_after} (identity {id_after})  Δ{round(mrr_after-mrr_before,4):+}")
-        model.save_pretrained(str(CKPT))
-        print(f"  💾 어댑터 저장 → {CKPT.relative_to(ROOT)}")
+        identity_pairs_present = any(p["identity"] for p in before)
+        promotion_gate = (
+            mrr_after >= mrr_before
+            and (not identity_pairs_present or id_after >= id_before)
+        )
+        if promotion_gate:
+            save_promoted_core(model)
+            print(f"  💾 비퇴행 게이트 통과, 어댑터 저장 → {CKPT.relative_to(ROOT)}")
+        else:
+            print("  🛑 비퇴행 게이트 실패, 기존 어댑터를 덮어쓰지 않음")
         row = {"run": run_i, "timestamp": datetime.now(timezone.utc).isoformat(),
                "resumed": resumed, "n_edges": len(edges),
+               "evaluation_split": "canonical_undirected_pair_disjoint_current_run",
+               "resumed_adapter_prior_graph_exposure_possible": resumed,
+               "split_diagnostics": split.diagnostics,
                "mrr_before": mrr_before, "mrr_after": mrr_after,
                "identity_before": id_before, "identity_after": id_after,
                "loss_first": round(losses[0], 3), "loss_last": round(losses[-1], 3),
-               "steps": args.steps}
+               "steps": args.steps, "promotion_gate": promotion_gate,
+               "adapter_saved": promotion_gate}
         with LOG.open("a", encoding="utf-8") as f:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
         if run_i >= 2:
             prev = [json.loads(l) for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip()][-2]
-            print(f"\n  ♻️ 영속 확인: run#{run_i} 학습전 MRR {mrr_before} vs run#{run_i-1} 학습후 "
-                  f"{prev['mrr_after']} → {'✅ 기억 유지(코어 누적)' if mrr_before >= prev['mrr_after']*0.9 else '⚠️ 유지 약함'}")
+            if prev.get("adapter_saved", True):
+                print(f"\n  ♻️ 영속 확인: run#{run_i} 학습전 MRR {mrr_before} vs run#{run_i-1} 학습후 "
+                      f"{prev['mrr_after']} → {'✅ 저장 상태 유지' if mrr_before >= prev['mrr_after']*0.9 else '⚠️ 유지 약함'}")
+            else:
+                print("\n  ℹ️ 직전 run은 promotion 실패로 저장되지 않아 persistence 비교 제외")
         print(f"\n[log] {LOG.relative_to(ROOT)} (누적 {run_i} runs)")
         return True
     except torch.cuda.OutOfMemoryError:

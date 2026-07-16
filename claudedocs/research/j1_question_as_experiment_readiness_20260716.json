@@ -1,0 +1,34 @@
+{
+  "approved_semantic_target_count": 25,
+  "block_reasons": [
+    "ranked_graph_ids_are_not_calibrated_probabilities",
+    "local_core_pre_question_probabilities_missing",
+    "historical_questions_were_not_a_multi_candidate_decision",
+    "predictor_snapshot_hashes_not_sealed_before_question",
+    "probability_calibration_provenance_missing"
+  ],
+  "contract_gate": false,
+  "conversation_handler_changed": false,
+  "created_at": "2026-07-16T08:29:48.049644+00:00",
+  "database_writes": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "live_predictor_changed": false,
+  "mode": "legacy_readiness_audit",
+  "next_step": "preregister_new_train_calibration_questions_and_capture_graph_and_local_core_raw_scores_before_asking_then_fit_sealed_calibrators",
+  "phase": "J1.0",
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "readiness_gates": {
+    "calibrated_graph_probability_snapshots": false,
+    "historical_ranked_graph_ids_present": true,
+    "learning_disabled": true,
+    "local_core_probability_snapshots": false,
+    "predictor_snapshot_hashes_sealed_before_question": false,
+    "question_texts_bound": true,
+    "reviewed_semantic_targets": true,
+    "sealed_probability_calibrators": false,
+    "two_or_more_candidates_per_decision": false
+  },
+  "status": "blocked"
+}

@@ -27,7 +27,7 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
-from typing import Optional, AsyncGenerator
+from typing import Any, Optional, AsyncGenerator
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,6 +42,12 @@ from .live_curiosity import build_curiosity_cue_terms
 from .external_sequence import (
     EXTERNAL_SEQUENCE_CONTEXT_KEYS,
     parse_external_sequence_context,
+)
+from .pending_question_outcome import (
+    PENDING_QUESTION_ACTION_METADATA_FIELDS,
+    build_pending_question_cue_terms,
+    build_pending_question_terms,
+    parse_pending_question_action_contract,
 )
 from .redis_client import (
     init_redis, close_redis, get_redis,
@@ -240,6 +246,10 @@ class PendingQuestionCreate(BaseModel):
     question: str
     source: str = "conversation"
     curiosity_log_id: Optional[str] = None
+    question_outcome_evaluation: Any = False
+    policy_action_id: Optional[str] = None
+    question_outcome_split: Optional[str] = None
+    question_outcome_contract_sha256: Optional[str] = None
 
 
 class PendingQuestionAnswer(BaseModel):
@@ -260,6 +270,10 @@ async def health_check():
             os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
         ),
         "curiosity_external_sequence_contract_required": True,
+        "curiosity_pending_question_outcome_eval_enabled": (
+            os.getenv("CURIOSITY_QUESTION_OUTCOME_EVAL", "0") == "1"
+        ),
+        "curiosity_pending_question_outcome_contract_required": True,
     }
 
 
@@ -2072,16 +2086,79 @@ async def create_pending_question(request: PendingQuestionCreate):
     """
     try:
         db = get_brain_db()
-        question = await db.insert_pending_question(
-            question=request.question,
-            source=request.source,
-            curiosity_log_id=request.curiosity_log_id,
-        )
-        if not question:
+        outcome_eval_flag = request.question_outcome_evaluation
+        if not isinstance(outcome_eval_flag, bool):
             raise HTTPException(
-                status_code=404,
-                detail="CuriosityLog not found" if request.curiosity_log_id else "Failed to create question",
+                status_code=422,
+                detail="question_outcome_evaluation must be a boolean",
             )
+        raw_action_metadata = {
+            field: getattr(request, field)
+            for field in PENDING_QUESTION_ACTION_METADATA_FIELDS
+        }
+        has_action_metadata = any(
+            value is not None for value in raw_action_metadata.values()
+        )
+        if has_action_metadata and not outcome_eval_flag:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "pending question action metadata requires "
+                    "question_outcome_evaluation"
+                ),
+            )
+
+        if outcome_eval_flag:
+            if os.getenv("CURIOSITY_QUESTION_OUTCOME_EVAL", "0") != "1":
+                raise HTTPException(
+                    status_code=409,
+                    detail="pending question outcome evaluation is disabled on this server",
+                )
+            try:
+                action_contract = parse_pending_question_action_contract({
+                    "curiosity_log_id": request.curiosity_log_id,
+                    **raw_action_metadata,
+                })
+            except ValueError as contract_err:
+                raise HTTPException(status_code=422, detail=str(contract_err)) from contract_err
+
+            action_preflight = await db.validate_pending_question_action(action_contract)
+            if action_preflight.get("status") != "valid":
+                raise HTTPException(
+                    status_code=409,
+                    detail={"reason": action_preflight.get("reason")},
+                )
+
+            prediction_snapshot = await db.prepare_curiosity_prediction(
+                request.question,
+                cue_terms=build_pending_question_cue_terms(request.question),
+            )
+            created = await db.insert_pending_question_action_outcome(
+                question=request.question,
+                source=request.source,
+                contract=action_contract,
+                prediction_snapshot=prediction_snapshot,
+            )
+            if created.get("status") != "created":
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "reason": created.get("reason"),
+                        "detail": created.get("detail"),
+                    },
+                )
+            question = created["question"]
+        else:
+            question = await db.insert_pending_question(
+                question=request.question,
+                source=request.source,
+                curiosity_log_id=request.curiosity_log_id,
+            )
+            if not question:
+                raise HTTPException(
+                    status_code=404,
+                    detail="CuriosityLog not found" if request.curiosity_log_id else "Failed to create question",
+                )
         # Redis Pub/Sub 발행 (SSE로 브라우저에 전달)
         await publish_pending_question(question)
         return {"success": True, "question": question}
@@ -2107,6 +2184,13 @@ async def update_question_status_endpoint(question_id: str, request: Request):
             raise HTTPException(status_code=400, detail="status must be pending, answered, or dismissed")
 
         db = get_brain_db()
+        if new_status == "answered":
+            answer_state = await db.get_pending_question_action_outcome_state(question_id)
+            if answer_state.get("status") not in ("legacy", "not_found"):
+                raise HTTPException(
+                    status_code=409,
+                    detail="research questions must be answered through the answer endpoint",
+                )
         updated = await db.update_question_status(question_id, new_status)
         if not updated:
             raise HTTPException(status_code=404, detail=f"PendingQuestion {question_id} not found")
@@ -2126,13 +2210,40 @@ async def answer_pending_question(question_id: str, request: PendingQuestionAnsw
     """
     try:
         db = get_brain_db()
-        answered = await db.submit_question_answer(
-            question_id=question_id,
-            answer=request.answer,
-            answer_confidence=request.answer_confidence,
-        )
-        if not answered:
+        answer_state = await db.get_pending_question_action_outcome_state(question_id)
+        if answer_state.get("status") == "not_found":
             raise HTTPException(status_code=404, detail=f"PendingQuestion {question_id} not found")
+        if answer_state.get("status") == "legacy":
+            answered = await db.submit_question_answer(
+                question_id=question_id,
+                answer=request.answer,
+                answer_confidence=request.answer_confidence,
+            )
+            if not answered:
+                raise HTTPException(status_code=404, detail=f"PendingQuestion {question_id} not found")
+        else:
+            if os.getenv("CURIOSITY_QUESTION_OUTCOME_EVAL", "0") != "1":
+                raise HTTPException(
+                    status_code=409,
+                    detail="pending question outcome evaluation is disabled on this server",
+                )
+            if answer_state.get("status") != "ready":
+                raise HTTPException(
+                    status_code=409,
+                    detail={"reason": answer_state.get("reason")},
+                )
+            outcome = await db.submit_pending_question_action_outcome(
+                question_id=question_id,
+                answer=request.answer,
+                answer_confidence=request.answer_confidence,
+                outcome_terms=build_pending_question_terms(request.answer),
+            )
+            if outcome.get("status") != "recorded":
+                raise HTTPException(
+                    status_code=409,
+                    detail={"reason": outcome.get("reason")},
+                )
+            answered = outcome["question"]
         # Redis Pub/Sub 발행
         await publish_pending_question(answered)
         return {"success": True, "question": answered}

@@ -1,0 +1,52 @@
+{
+  "answer_pack_version": 1,
+  "pilot_name": "b5_7_pending_question_train_a_20260716",
+  "contract_sha256": "4e1e5d715005f3e4f391f0c761c8d081bfe452cc4ef4fd9cf09202266cc03c37",
+  "answer_role": "user_final",
+  "answer_provenance": "user_reviewed_adopted",
+  "approved_at": "2026-07-16T09:30:11.8738849+09:00",
+  "answers": [
+    {
+      "order": 0,
+      "curiosity_log_id": "be9e608a-0a17-55e0-af09-2b778d8697a5",
+      "question_id": "03b8e5f3-8e6e-4861-9b78-bfca02497cd8",
+      "answer_confidence": 1.0,
+      "answer": "세상은 사람, 사물, 장소, 사건이 서로 맺는 관계로 이루어져 있습니다. 관계를 알면 각각이 서로에게 어떤 영향을 주는지 이해할 수 있습니다."
+    },
+    {
+      "order": 1,
+      "curiosity_log_id": "0b575ce3-d782-4784-bc4e-71d5d640f34a",
+      "question_id": "aa9bf325-9fb6-40ca-a1da-4f70b88154f7",
+      "answer_confidence": 1.0,
+      "answer": "컴퓨터는 입력된 정보를 프로그램의 규칙에 따라 처리하고, 저장하며, 결과를 화면이나 소리 같은 형태로 출력하는 전자 장치입니다."
+    },
+    {
+      "order": 2,
+      "curiosity_log_id": "807b9dc6-5db4-4986-b7fc-e5aecd82e5e4",
+      "question_id": "cc81416f-f16d-44d3-bb9a-c087e027b574",
+      "answer_confidence": 1.0,
+      "answer": "1시간은 60분이고 3,600초입니다. 하루 24시간을 기준으로 하면 하루의 24분의 1에 해당합니다."
+    },
+    {
+      "order": 3,
+      "curiosity_log_id": "f4a63d8b-9b44-4f8c-827b-98c6189b2d25",
+      "question_id": "2702dc45-fea4-41df-8bda-3dc2b8715086",
+      "answer_confidence": 1.0,
+      "answer": "이야기는 인물과 사건을 시간이나 원인의 순서로 연결해 경험, 생각, 상상을 전달하는 표현입니다."
+    },
+    {
+      "order": 4,
+      "curiosity_log_id": "00e59336-30ea-4daa-860f-fba2ae681539",
+      "question_id": "56049503-0409-4ae3-98ea-941d4fb830a8",
+      "answer_confidence": 1.0,
+      "answer": "이야기 속 비밀은 인물이나 독자가 아직 모르는 숨겨진 정보입니다. 비밀은 궁금증과 긴장감을 만들고, 나중에 밝혀지며 이야기의 의미를 바꿀 수 있습니다."
+    },
+    {
+      "order": 5,
+      "curiosity_log_id": "3d6b04b6-491d-4d84-920c-b7e3dfc4932e",
+      "question_id": "8a1e7424-31e3-4e6d-bb37-ea757fc57e2f",
+      "answer_confidence": 1.0,
+      "answer": "컴퓨터는 하나의 기능만 하는 기계와 달리 프로그램을 바꾸면 글쓰기, 그림 그리기, 통신, 계산, 로봇 제어처럼 여러 작업을 수행할 수 있는 특별한 장치입니다."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "contract_sha256": "4e1e5d715005f3e4f391f0c761c8d081bfe452cc4ef4fd9cf09202266cc03c37",
+  "created_at": "2026-07-15T23:33:35.831787+00:00",
+  "manifest_version": 1,
+  "phase": "B5.7",
+  "pilot_name": "b5_7_pending_question_train_a_20260716",
+  "question_count": 6,
+  "questions": [
+    {
+      "curiosity_log_id": "be9e608a-0a17-55e0-af09-2b778d8697a5",
+      "curiosity_source": "learning_progress",
+      "order": 0,
+      "preflight_cue_count": 2,
+      "preflight_prediction_count": 8,
+      "query_type": "concept_relation",
+      "question": "관계와(과) 세상의 관계를 설명해줘"
+    },
+    {
+      "curiosity_log_id": "0b575ce3-d782-4784-bc4e-71d5d640f34a",
+      "curiosity_source": "failure",
+      "order": 1,
+      "preflight_cue_count": 1,
+      "preflight_prediction_count": 8,
+      "query_type": "unknown_term",
+      "question": "컴퓨터를 설명해줘"
+    },
+    {
+      "curiosity_log_id": "807b9dc6-5db4-4986-b7fc-e5aecd82e5e4",
+      "curiosity_source": "failure",
+      "order": 2,
+      "preflight_cue_count": 2,
+      "preflight_prediction_count": 1,
+      "query_type": "unknown_term",
+      "question": "1시간을 설명해줘"
+    },
+    {
+      "curiosity_log_id": "f4a63d8b-9b44-4f8c-827b-98c6189b2d25",
+      "curiosity_source": "failure",
+      "order": 3,
+      "preflight_cue_count": 1,
+      "preflight_prediction_count": 8,
+      "query_type": "unknown_term",
+      "question": "이야기를 설명해줘"
+    },
+    {
+      "curiosity_log_id": "00e59336-30ea-4daa-860f-fba2ae681539",
+      "curiosity_source": "similarity",
+      "order": 4,
+      "preflight_cue_count": 2,
+      "preflight_prediction_count": 8,
+      "query_type": "relation_discovery",
+      "question": "이야기 비밀을 설명해줘"
+    },
+    {
+      "curiosity_log_id": "3d6b04b6-491d-4d84-920c-b7e3dfc4932e",
+      "curiosity_source": "similarity",
+      "order": 5,
+      "preflight_cue_count": 2,
+      "preflight_prediction_count": 8,
+      "query_type": "relation_discovery",
+      "question": "특별한 장치 컴퓨터를 설명해줘"
+    }
+  ],
+  "selection_rule": "unused pending CuriosityLog; learning_progress first, then priority/recency; known cue and non-empty prediction required; prediction identities sealed",
+  "split": "train"
+}
