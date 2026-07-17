@@ -1,0 +1,114 @@
+{
+  "answer_source_amendment_sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+  "answer_source_contract_gate": true,
+  "block_reasons": [
+    "explicit_user_batch_review_missing",
+    "candidate_positive_coverage_5_of_6",
+    "candidate_universe_is_graph_selected_only"
+  ],
+  "candidate_label_count": 48,
+  "candidate_label_pack_sha256": "064f4b6c567f45b02bc5c085eefbcda82efceb20326878c7912687ec0df85da4",
+  "candidate_positive_coverage_count": 5,
+  "candidate_positive_coverage_gate": false,
+  "conversation_handler_changed": false,
+  "created_at": "2026-07-16T09:58:35.093444+00:00",
+  "database_writes": false,
+  "fair_candidate_universe_gate": false,
+  "heldout_gate": false,
+  "label_proposal_contract_gate": true,
+  "learning_enabled": false,
+  "live_predictor_changed": false,
+  "next_step": "user_batch_review_reference_answers_and_label_draft_then_build_independent_union_candidate_universe_v2_before_any_calibrator_fit",
+  "per_question_review": [
+    {
+      "candidate_coverage": true,
+      "order": 0,
+      "proposed_approved_names": [
+        "정보",
+        "관계"
+      ],
+      "proposed_rejected_count": 6,
+      "proposed_uncertain_names": [],
+      "question_id": "j1-1-cal-a-00"
+    },
+    {
+      "candidate_coverage": false,
+      "order": 1,
+      "proposed_approved_names": [],
+      "proposed_rejected_count": 6,
+      "proposed_uncertain_names": [
+        "컴퓨터라",
+        "컴퓨터요"
+      ],
+      "question_id": "j1-1-cal-a-01"
+    },
+    {
+      "candidate_coverage": true,
+      "order": 2,
+      "proposed_approved_names": [
+        "1시간 뒤",
+        "배움",
+        "학습"
+      ],
+      "proposed_rejected_count": 4,
+      "proposed_uncertain_names": [
+        "세상"
+      ],
+      "question_id": "j1-1-cal-a-02"
+    },
+    {
+      "candidate_coverage": true,
+      "order": 3,
+      "proposed_approved_names": [
+        "검색",
+        "모르는 것",
+        "답"
+      ],
+      "proposed_rejected_count": 4,
+      "proposed_uncertain_names": [
+        "비밀 질문"
+      ],
+      "question_id": "j1-1-cal-a-03"
+    },
+    {
+      "candidate_coverage": true,
+      "order": 4,
+      "proposed_approved_names": [
+        "관계",
+        "학습",
+        "기억"
+      ],
+      "proposed_rejected_count": 3,
+      "proposed_uncertain_names": [
+        "하늘을 나는 것",
+        "신기한"
+      ],
+      "question_id": "j1-1-cal-a-04"
+    },
+    {
+      "candidate_coverage": true,
+      "order": 5,
+      "proposed_approved_names": [
+        "관계"
+      ],
+      "proposed_rejected_count": 7,
+      "proposed_uncertain_names": [],
+      "question_id": "j1-1-cal-a-05"
+    }
+  ],
+  "performance_claim_gate": false,
+  "phase": "J1.1A",
+  "production_promotion_gate": false,
+  "proposed_decision_counts": {
+    "approved": 12,
+    "rejected": 30,
+    "uncertain": 6
+  },
+  "provisional_calibrator_fit_gate": false,
+  "question_count": 6,
+  "question_selection_calibrator_gate": false,
+  "reference_answer_contract_gate": true,
+  "reference_answer_pack_sha256": "a1c9882a4a56fc79aa52c39e2797ac8faeaf4f2a3c1932730d214393584aa857",
+  "review_status": "awaiting_user_review",
+  "status": "awaiting_user_review_and_candidate_universe_v2"
+}

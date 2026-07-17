@@ -1,0 +1,354 @@
+{
+  "calibrator_fit_allowed": false,
+  "candidate_label_pack_sha256": "9243d456c56ba6736aa69870293a4d961361cbcc2f44baae4dd5dc94563eb4d4",
+  "candidate_label_pack_version": 1,
+  "contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "created_at": "2026-07-16T09:58:35.093444+00:00",
+  "database_writes": false,
+  "entries": [
+    {
+      "answer_sha256": "0c99c413bf7ed819890c9408185c68b365f47103130f980c3cb69ed462095a15",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "rejected",
+          "rationale": "개별 정체성 이름이며 일반 기억-학습 관계의 직접 의미가 아니다."
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "rejected",
+          "rationale": "질문은 AI에 한정되지 않은 일반 인지 관계를 묻는다."
+        },
+        {
+          "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+          "concept_name": "정보",
+          "decision": "approved",
+          "rationale": "기억이 저장하고 학습이 갱신하는 핵심 대상이다."
+        },
+        {
+          "concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240",
+          "concept_name": "설명해줘",
+          "decision": "rejected",
+          "rationale": "요청형 speech-act이며 답변 의미가 아니다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "rejected",
+          "rationale": "감상 표현으로 기억-학습 메커니즘을 설명하지 않는다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "approved",
+          "rationale": "기억과 학습이 서로 갱신하는 순환 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+          "concept_name": "말해줘",
+          "decision": "rejected",
+          "rationale": "요청형 speech-act이며 답변 의미가 아니다."
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색",
+          "decision": "rejected",
+          "rationale": "기억-학습 관계의 핵심 설명에 포함되지 않는다."
+        }
+      ],
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31"
+    },
+    {
+      "answer_sha256": "4f2099d89bce2926d71bf39708b05cb3586244d2cd775b06779037f997e9132b",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "rejected",
+          "rationale": "개별 정체성 이름으로 컴퓨터-로봇 비교와 무관하다."
+        },
+        {
+          "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+          "concept_name": "컴퓨터라",
+          "decision": "uncertain",
+          "rationale": "컴퓨터를 가리키는 조사 결합 어형으로 보이지만 정규 Concept로는 손상됐다."
+        },
+        {
+          "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+          "concept_name": "놀이",
+          "decision": "rejected",
+          "rationale": "컴퓨터와 로봇의 구조적 연결이나 차이를 나타내지 않는다."
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜",
+          "decision": "rejected",
+          "rationale": "질문 의미와 무관하다."
+        },
+        {
+          "concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e",
+          "concept_name": "알려주세요",
+          "decision": "rejected",
+          "rationale": "요청형 speech-act이며 답변 의미가 아니다."
+        },
+        {
+          "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+          "concept_name": "등에 업히기",
+          "decision": "rejected",
+          "rationale": "컴퓨터-로봇 비교의 일반 의미와 무관하다."
+        },
+        {
+          "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+          "concept_name": "컴퓨터요",
+          "decision": "uncertain",
+          "rationale": "컴퓨터를 가리키는 조사 결합 어형으로 보이지만 정규 Concept로는 손상됐다."
+        },
+        {
+          "concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c",
+          "concept_name": "궁금해",
+          "decision": "rejected",
+          "rationale": "호기심 표현이며 컴퓨터-로봇 관계의 답변 의미가 아니다."
+        }
+      ],
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9"
+    },
+    {
+      "answer_sha256": "8a43ade5ac33fea193878e5d911d1a99a8441c1e083d77b2a6a4cbd68edfacd9",
+      "labels": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "rejected",
+          "rationale": "질문은 AI에 한정되지 않은 일반 경험 변화다."
+        },
+        {
+          "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+          "concept_name": "1시간 뒤",
+          "decision": "approved",
+          "rationale": "시간 경과와 이후 맥락이라는 질문 축을 직접 나타낸다."
+        },
+        {
+          "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+          "concept_name": "배움",
+          "decision": "approved",
+          "rationale": "새로 배운 내용이 과거 경험의 해석을 바꾸는 요인이다."
+        },
+        {
+          "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+          "concept_name": "똑똑함",
+          "decision": "rejected",
+          "rationale": "경험 재해석의 직접 메커니즘이 아니다."
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습",
+          "decision": "approved",
+          "rationale": "후속 학습이 기존 경험의 의미와 기억을 수정할 수 있다."
+        },
+        {
+          "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+          "concept_name": "사전적 정의",
+          "decision": "rejected",
+          "rationale": "경험 변화의 원인이나 결과를 나타내지 않는다."
+        },
+        {
+          "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+          "concept_name": "세상",
+          "decision": "uncertain",
+          "rationale": "새 사건의 외부 맥락으로는 연결되지만 답변의 핵심 개념은 아니다."
+        },
+        {
+          "concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127",
+          "concept_name": "제가",
+          "decision": "rejected",
+          "rationale": "대명사 조각으로 의미 Concept가 아니다."
+        }
+      ],
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b"
+    },
+    {
+      "answer_sha256": "90f8f2daaa2ff04f879db335c744e4f19a970b254b521cf4604dfaeed5653d67",
+      "labels": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "rejected",
+          "rationale": "질문-궁금증-지식 과정은 AI에 한정되지 않는다."
+        },
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "rejected",
+          "rationale": "개별 정체성 이름이며 일반 지식 형성과 무관하다."
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색",
+          "decision": "approved",
+          "rationale": "질문에 대한 정보와 증거를 얻는 대표 행동이다."
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "decision": "approved",
+          "rationale": "궁금증과 질문이 드러내는 지식의 빈틈이다."
+        },
+        {
+          "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+          "concept_name": "위치",
+          "decision": "rejected",
+          "rationale": "특정 위치 정보는 일반 지식 형성 과정과 무관하다."
+        },
+        {
+          "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+          "concept_name": "개발자",
+          "decision": "rejected",
+          "rationale": "특정 역할이며 질문-지식 과정의 핵심이 아니다."
+        },
+        {
+          "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+          "concept_name": "답",
+          "decision": "approved",
+          "rationale": "질문에 대한 답과 증거가 새로운 지식의 재료가 된다."
+        },
+        {
+          "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+          "concept_name": "비밀 질문",
+          "decision": "uncertain",
+          "rationale": "질문의 한 종류지만 새로운 지식 형성의 일반 메커니즘은 아니다."
+        }
+      ],
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795"
+    },
+    {
+      "answer_sha256": "290c77225a0f6df5ea2459152e8a8fd995546cb82a6479c011ee4ab1c70b1208",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "rejected",
+          "rationale": "개별 정체성 이름이며 이야기-상상 관계의 일반 의미가 아니다."
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "rejected",
+          "rationale": "질문은 AI에 한정되지 않은 창작 관계다."
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "decision": "uncertain",
+          "rationale": "상상의 예시는 될 수 있지만 상호 발전 메커니즘 자체는 아니다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "uncertain",
+          "rationale": "상상의 정서적 결과일 수 있지만 핵심 관계는 아니다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "approved",
+          "rationale": "이야기와 상상이 서로 확장하는 상호 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습",
+          "decision": "approved",
+          "rationale": "이야기에서 얻은 새 구조와 요소가 상상을 확장하는 과정과 연결된다."
+        },
+        {
+          "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "concept_name": "기억",
+          "decision": "approved",
+          "rationale": "상상이 재조합하고 이야기가 구조화하는 경험 요소의 원천이다."
+        },
+        {
+          "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+          "concept_name": "인터넷",
+          "decision": "rejected",
+          "rationale": "이야기와 상상의 상호 발전에 필수적인 의미가 아니다."
+        }
+      ],
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+    },
+    {
+      "answer_sha256": "3dcf78162d1c066a64bdb577c7fb2bdf6cb80d5cb02de85c04663e2b114d509b",
+      "labels": [
+        {
+          "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+          "concept_name": "말해줘",
+          "decision": "rejected",
+          "rationale": "요청형 speech-act이며 답변 의미가 아니다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "rejected",
+          "rationale": "사람과 세상의 피드백 관계를 설명하지 않는다."
+        },
+        {
+          "concept_id": "569f9646-15dd-4b93-9773-841ab564296d",
+          "concept_name": "형의",
+          "decision": "rejected",
+          "rationale": "소유격 조사 결합 조각으로 일반 의미 Concept가 아니다."
+        },
+        {
+          "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+          "concept_name": "문장",
+          "decision": "rejected",
+          "rationale": "사람-세계 상호작용의 핵심 의미가 아니다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "approved",
+          "rationale": "사람의 행동과 세상의 피드백이라는 상호 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96",
+          "concept_name": "형은",
+          "decision": "rejected",
+          "rationale": "조사 결합 어형으로 일반 사람-세계 관계의 의미가 아니다."
+        },
+        {
+          "concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f",
+          "concept_name": "Search_dictionary",
+          "decision": "rejected",
+          "rationale": "도구 이름으로 사람-세계 상호작용의 답변 의미가 아니다."
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜",
+          "decision": "rejected",
+          "rationale": "질문 의미와 무관하다."
+        }
+      ],
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286"
+    }
+  ],
+  "learning_enabled": false,
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "phase": "J1.1A",
+  "raw_score_pack_sha256": "d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853",
+  "reference_answer_pack_sha256": "b2c0465f072994fdb39fffc54f7d85263544fb91f2c3fa40e25227a82434b456",
+  "review_status": "user_reviewed",
+  "reviewed_at": "2026-07-16T11:49:50.277089+00:00",
+  "reviewer_role": "user"
+}

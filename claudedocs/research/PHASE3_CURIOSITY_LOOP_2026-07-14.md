@@ -719,3 +719,35 @@ capture다. calibrator를 fit하기 전 probability/JSD 성능 수치를 만들�
 성능 증거가 아니라 사용자 답변으로 양성·음성 calibration label을 만들기 위한 train-only 재료다. 자동 라벨은
 금지하며, 사용자 6답변 뒤 후보별 의미 라벨을 다시 명시 승인받은 후에만 calibrator를 fit한다. capture 후
 품질감사에서 후보 이름을 확인했으므로 완전 블라인드 답변 표본으로 주장하지도 않는다.
+
+## [J-1.1A] Answer-source amendment + teacher answer/label draft (2026-07-16)
+
+일반지식 질문을 사용자가 매번 답하는 병목을 교정했다. 기존 manifest/raw pack은 무변경이며 amendment
+`89c9f71d…`가 public knowledge는 external teacher, personal/safety는 user, sensor/tool은 실제 outcome source로
+라우팅한다. 6개 기준답변은 `external_teacher_drafted`이고 teacher model snapshot을 가진 것처럼 가장하지 않는다.
+48개 후보 label draft는 answer/question/raw-pack hash와 묶었지만 사용자 review 전 calibration truth가 아니다.
+
+제안 approved/rejected/uncertain=`12/30/6`. 컴퓨터-로봇 문항에는 정상 positive candidate가 없고 손상 어형
+`컴퓨터라/컴퓨터요`만 uncertain이라 positive coverage는 `5/6=false`다. 후보 universe도 Graph top-k에서만 왔으므로
+fairness gate=false다. 이에 따라 모든 calibrator/JSD/확률/학습/DB/held-out/production gate를 차단했다. 다음은
+답변+라벨 묶음 1회 사용자 검토 후, 독립 Graph top-k와 Local-Core top-k의 합집합 candidate universe v2다.
+
+## [J-1.1B] Independent candidate universe v2 (2026-07-16 cohort)
+
+사용자가 J1.1A의 기준답변 6개와 48개 의미 라벨을 묶음 승인했다. 초안을 수정하지 않고 별도 reviewed answer
+`b2c0465f…`와 reviewed label `9243d456…`을 봉인했다. 기존 Graph-only 후보 coverage는 여전히 `5/6`이라 그
+데이터로 calibrator를 fit하지 않았다.
+
+Neo4j 전체 Concept 1,111개를 read-only로 조회하고 predictor 결과나 의미 라벨을 쓰기 전에 발화 명령, 테스트/도구
+identifier, 중복 이름, missing ID 42개를 제외했다. 질문별 exact cue와 좁은 조사/발화 표면형도 제외해 1,064~1,067개
+후보를 만들었다. Graph와 Local Core는 이 동일 후보 전체를 독립 raw-score로 채점했고, 각 top-8의 합집합 15~16개를
+두 score/rank와 함께 봉인했다. vocabulary=`bc06ed54…`, capture=`afebaaf5…`; DB write와 학습은 없었다.
+
+공정한 후보선정 gate는 true지만 품질 gate는 별개다. Local Core는 대부분의 질문에서 `감정/질문/상호작용/알고리즘`
+같은 일반어를 반복했고 Graph-Local top-8 overlap은 5문항 0, 1문항 1이었다. 이는 disagreement가 유익하다는 증거가
+아니라 score interface와 질문 조건화의 추가 진단 대상이다.
+
+user-reviewed 기준답변을 바탕으로 독립 union 95개 label draft `b0bbada9…`를 만들었다. proposed
+approved/rejected/uncertain=`23/56/16`; Graph와 Local 모두 문항별 positive coverage `6/6`이다. 새 draft의 사용자
+batch review가 아직 없으므로 calibrator/JSD/heldout/performance/production은 모두 false다. 다음은 이 6묶음을 한
+번에 검토받고, 승인 뒤 train-only calibrator fit이 통계적으로 타당한지 별도 audit하는 단계다.

@@ -1,0 +1,33 @@
+{
+  "block_reasons": [
+    "graph_and_local_core_full_vocabulary_raw_scores_not_captured"
+  ],
+  "calibrator_fit_gate": false,
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "created_at": "2026-07-17T11:09:15.856299+00:00",
+  "database_writes": false,
+  "eligible_concept_count": 1069,
+  "fair_candidate_universe_gate": false,
+  "gpu_inference_executed": false,
+  "heldout_gate": false,
+  "independent_full_vocabulary_raw_score_gate": false,
+  "learning_enabled": false,
+  "minimum_question_eligible_count": 1064,
+  "next_step": "capture_graph_and_local_core_full_vocabulary_raw_scores_read_only_then_build_independent_top_k_union",
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_scope_count": 6,
+  "rejected_concept_count": 42,
+  "rejection_counts": {
+    "audited_invalid_surface": 7,
+    "code_identifier": 23,
+    "duplicate_normalized_name": 4,
+    "generic_speech_act": 7,
+    "missing_concept_id": 1
+  },
+  "source_concept_count": 1111,
+  "status": "ready_for_read_only_independent_raw_score_capture",
+  "vocabulary_contract_gate": true
+}

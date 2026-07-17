@@ -1,0 +1,22 @@
+{
+  "amendment_sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+  "answer_source_amendment_version": 1,
+  "batch_user_review_required": true,
+  "calibrator_fit_allowed": false,
+  "contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "created_at": "2026-07-16T09:58:35.093444+00:00",
+  "database_writes": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "original_artifacts_mutated": false,
+  "performance_claim_gate": false,
+  "phase": "J1.1A",
+  "production_promotion_gate": false,
+  "raw_score_pack_sha256": "d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853",
+  "replacement_data_role": "teacher_labeled_calibration_bootstrap",
+  "replacement_next_step": "draft_external_teacher_answers_and_candidate_labels_then_stop_for_batch_user_review",
+  "status": "active",
+  "superseded_next_step": "collect_new_user_answers_then_review_candidate_labels_and_fit_train_only_calibrators",
+  "user_direct_answers_required": false
+}

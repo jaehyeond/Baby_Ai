@@ -235,6 +235,11 @@ local core의 raw score와 model snapshot hash를 함께 봉인하는 단계다.
 질문의 probability/JSD 선택을 시작한다. local-core shadow inference는 GPU 학습이 아니라 read-only 추론이지만,
 현재 턴에는 실행하지 않았다.
 
+**J1.1A 진행 교정**: 일반지식을 사용자가 반복 답변하는 절차를 external-teacher calibration bootstrap으로
+분리했다. 현재 48개 draft label은 positive coverage가 `5/6`이고 후보 universe가 Graph-selected-only여서
+calibrator/JSD로 진행하지 않는다. 사용자 batch review 뒤에도 독립 Graph top-k와 Local-Core top-k의 합집합
+universe v2가 먼저다. 이는 teacher compression과 외부정보 획득을 구분하는 교사 의존성 stop rule의 실제 적용이다.
+
 신규 J1 targeted test `8 passed`였다. 당시 전체 canonical suite를 `146 passed`로 기록했지만 J1.1 재감사에서
 현재 pushed HEAD 단독 `136 passed`가 재현됐고 삭제·실패 테스트는 없었다. 146은 다른/중복 범위가 섞인
 부정확한 집계로 교정한다. py_compile과 diff check는 통과했다.
@@ -300,6 +305,22 @@ contract는 완료됐고 기존 6개는 probability provenance 부족으로 bloc
 
 이 세 조건이 성립하면 별도의 heldout 질문을 수집하고 J1 학습을 시작한다. 성립하지 않으면 model 규모가 아니라 outcome
 ontology와 predictor interface를 먼저 고친다.
+
+### J1.1A/J1.1B 실행 결과 교정
+
+일반지식 6개를 사용자가 매번 답하는 대신 external teacher가 기준답변을 만들고 사용자가 한 번에 검토하는 source
+contract를 적용했다. 기존 6답변과 48라벨은 user-reviewed successor로 분리 봉인했지만, 원래 universe가 Graph top-8
+전용이고 컴퓨터-로봇 문항의 정상 양성이 0이라 그대로 calibrator를 fit하지 않았다.
+
+J1.1B에서는 score/label과 무관한 형식 필터를 먼저 고정한 뒤 Graph와 Local Core가 질문마다 같은 전체 유효 Concept
+1,064~1,067개를 모두 raw-score로 채점하고 각 top-8 합집합을 만들었다. 이로써 후보선정 공정성은 확보했지만 Local
+Core top-8이 여러 질문에서 `감정`, `질문`, `상호작용`, `알고리즘` 같은 일반어를 반복해 질문 조건화가 약하다는 새
+병목이 드러났다. 따라서 fair-universe gate=true는 predictor 품질이나 JARVIS형 성장의 증거가 아니다.
+
+독립 union 95개에 대해 external-teacher semantic draft를 만들었고 proposed approved/rejected/uncertain=`23/56/16`,
+Graph/Local 양성 coverage는 각각 `6/6`이다. 그러나 이 95라벨은 아직 user-reviewed가 아니므로 probability,
+calibrator, JSD, heldout와 성능 주장을 계속 차단한다. 다음은 사용자가 6묶음 approved/uncertain 요약을 한 번 검토한
+후에도 곧바로 fit하지 않고, 6 train 질문으로 두 개의 score scale을 안정적으로 보정할 수 있는지 설계 audit하는 것이다.
 
 ## 11. 1차 출처
 

@@ -1,0 +1,80 @@
+{
+  "answer_count": 6,
+  "answer_provenance": "external_teacher_drafted",
+  "answer_source_amendment_sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+  "answers": [
+    {
+      "answer": "기억은 경험에서 얻은 정보를 저장하고 다시 사용할 수 있게 하며, 학습은 새로운 경험을 통해 지식과 행동을 바꾸는 과정이다. 학습은 기존 기억을 만들거나 수정하고, 꺼내 쓴 기억은 새 정보를 해석하고 다음 학습을 안내한다. 그래서 기억과 학습은 서로를 계속 갱신하는 순환 관계에 있다.",
+      "answer_sha256": "0c99c413bf7ed819890c9408185c68b365f47103130f980c3cb69ed462095a15",
+      "answer_source": "external_teacher",
+      "order": 0,
+      "question": "기억과 학습은 서로 어떻게 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31",
+      "question_type": "public_knowledge"
+    },
+    {
+      "answer": "컴퓨터는 프로그램에 따라 정보를 계산하고 처리하는 범용 장치다. 로봇은 센서로 환경을 관찰하고 구동기로 물리적 행동을 수행하는 시스템이며, 보통 내부 제어를 위해 컴퓨터를 포함한다. 둘은 계산과 제어에서 연결되지만, 로봇은 물리적 몸과 환경과의 상호작용을 가진다는 점이 다르다.",
+      "answer_sha256": "4f2099d89bce2926d71bf39708b05cb3586244d2cd775b06779037f997e9132b",
+      "answer_source": "external_teacher",
+      "order": 1,
+      "question": "컴퓨터와 로봇은 어떤 점에서 연결되고 달라?",
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9",
+      "question_type": "public_knowledge"
+    },
+    {
+      "answer": "시간이 흐르는 것만으로 경험의 의미가 자동으로 바뀌는 것은 아니다. 이후에 생긴 사건, 새로 배운 지식, 감정 변화와 망각이 과거 경험을 바라보는 맥락을 바꾸고, 기억을 다시 떠올릴 때 재해석과 재구성이 일어나기 때문에 같은 경험의 의미와 영향이 달라질 수 있다.",
+      "answer_sha256": "8a43ade5ac33fea193878e5d911d1a99a8441c1e083d77b2a6a4cbd68edfacd9",
+      "answer_source": "external_teacher",
+      "order": 2,
+      "question": "시간의 흐름이 경험을 바꾸는 이유는 무엇일까?",
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b",
+      "question_type": "public_knowledge"
+    },
+    {
+      "answer": "궁금증은 내가 무엇을 모르는지 알려 주는 신호이고, 질문은 그 지식의 빈틈을 확인 가능한 형태로 만든다. 질문을 바탕으로 검색, 관찰, 대화나 실험을 하면 답과 증거를 얻을 수 있고, 이를 기존 지식과 비교해 수정하거나 연결하면서 새로운 지식이 형성된다.",
+      "answer_sha256": "90f8f2daaa2ff04f879db335c744e4f19a970b254b521cf4604dfaeed5653d67",
+      "answer_source": "external_teacher",
+      "order": 3,
+      "question": "질문과 궁금증은 어떻게 새로운 지식으로 이어져?",
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795",
+      "question_type": "public_knowledge"
+    },
+    {
+      "answer": "상상은 기억과 경험의 요소를 새롭게 조합해 아직 없는 인물, 사건과 세계를 만든다. 이야기는 그 상상을 인과관계와 시간 순서가 있는 구조로 표현하고 다른 사람과 공유하게 한다. 만들어진 이야기는 다시 새로운 장면과 가능성을 제공해 상상을 자극하므로 둘은 서로를 반복해서 확장한다.",
+      "answer_sha256": "290c77225a0f6df5ea2459152e8a8fd995546cb82a6479c011ee4ab1c70b1208",
+      "answer_source": "external_teacher",
+      "order": 4,
+      "question": "이야기와 상상은 서로를 어떻게 발전시켜?",
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a",
+      "question_type": "public_knowledge"
+    },
+    {
+      "answer": "사람은 행동과 선택을 통해 자연환경, 사회, 기술과 문화를 변화시킨다. 반대로 그 환경과 제도, 다른 사람과 기술은 사람에게 기회와 제약을 주고 생각과 행동을 바꾼다. 사람의 행동이 세상을 바꾸고 바뀐 세상이 다시 사람에게 영향을 주는 피드백 관계다.",
+      "answer_sha256": "3dcf78162d1c066a64bdb577c7fb2bdf6cb80d5cb02de85c04663e2b114d509b",
+      "answer_source": "external_teacher",
+      "order": 5,
+      "question": "사람과 세상은 어떻게 서로 영향을 주고받아?",
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286",
+      "question_type": "public_knowledge"
+    }
+  ],
+  "calibrator_fit_allowed": false,
+  "contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "created_at": "2026-07-16T09:58:35.093444+00:00",
+  "evidence_type": "general_conceptual_synthesis",
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "phase": "J1.1A",
+  "raw_score_pack_sha256": "d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853",
+  "reference_answer_pack_sha256": "a1c9882a4a56fc79aa52c39e2797ac8faeaf4f2a3c1932730d214393584aa857",
+  "reference_answer_pack_version": 1,
+  "review_status": "awaiting_batch_user_review",
+  "teacher_identity": "codex_assistant",
+  "teacher_identity_scope": "conversation_assistant_not_model_snapshot",
+  "user_direct_answers": false
+}

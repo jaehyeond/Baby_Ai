@@ -1,0 +1,4701 @@
+{
+  "answer_source_amendment_sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+  "calibrator_fit_allowed": false,
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "candidate_vocabulary_version": 2,
+  "created_at": "2026-07-17T11:09:15.856299+00:00",
+  "database_writes": false,
+  "eligible_concept_count": 1069,
+  "eligible_concepts": [
+    {
+      "concept_id": "00075213-21e7-4377-a91e-cce77dc1005d",
+      "concept_name": "numbers"
+    },
+    {
+      "concept_id": "004faad5-51e3-4214-873f-0b1b3d6afbb7",
+      "concept_name": "활동"
+    },
+    {
+      "concept_id": "00654253-2faf-4b62-a6f0-28a51f516a91",
+      "concept_name": "동시에"
+    },
+    {
+      "concept_id": "00f4513d-f66f-4ae7-8ed6-27fe4903aa9a",
+      "concept_name": "next"
+    },
+    {
+      "concept_id": "011b4f95-eca3-4759-90a3-f47ec42cca8f",
+      "concept_name": "궁금한 것"
+    },
+    {
+      "concept_id": "011c60ff-c438-40f9-85b6-baf8e6650fc9",
+      "concept_name": "타임머신"
+    },
+    {
+      "concept_id": "01239b1e-ed39-4b62-9d5a-39df9eb591ff",
+      "concept_name": "먹이"
+    },
+    {
+      "concept_id": "01246819-6bcb-4f72-9eeb-974db49be254",
+      "concept_name": "자유"
+    },
+    {
+      "concept_id": "017416c1-22f9-4ce4-a2ab-0c92454caa0f",
+      "concept_name": "하늘 구경"
+    },
+    {
+      "concept_id": "01a914ba-6a49-44cf-b09f-d85042d6d6db",
+      "concept_name": "조명"
+    },
+    {
+      "concept_id": "023dedc0-0c08-4d20-b840-6e8ffe6e15d5",
+      "concept_name": "능동적 발화"
+    },
+    {
+      "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+      "concept_name": "신나는 이야기"
+    },
+    {
+      "concept_id": "027d69d4-4951-4e1a-bd21-bbc985ef6db1",
+      "concept_name": "해결"
+    },
+    {
+      "concept_id": "0309d8b1-8c0a-4cd2-8aa2-74fd8736356e",
+      "concept_name": "space"
+    },
+    {
+      "concept_id": "036d6972-2cd9-4591-aa91-26537c5281ff",
+      "concept_name": "꾸니"
+    },
+    {
+      "concept_id": "0379a279-0d32-4d6a-a0a8-e4ec0d67f8a8",
+      "concept_name": "정렬된"
+    },
+    {
+      "concept_id": "0386a245-0aba-40dc-9ff7-1527cb569f82",
+      "concept_name": "햇님 (태양)"
+    },
+    {
+      "concept_id": "0397eb43-15c9-47ee-b9f6-57acb372056d",
+      "concept_name": "비비다"
+    },
+    {
+      "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+      "concept_name": "구름"
+    },
+    {
+      "concept_id": "03f0fee9-c50b-4cf6-9e14-a656837ab4f4",
+      "concept_name": "뛰어놀기"
+    },
+    {
+      "concept_id": "03f138dc-e2d9-4579-bad9-d0c72ccecd68",
+      "concept_name": "공룡 시대"
+    },
+    {
+      "concept_id": "047ba85f-59c6-4ddd-b869-2f183099a5ef",
+      "concept_name": "대답"
+    },
+    {
+      "concept_id": "047fe693-1b8f-45d2-948a-fc71d6f8e2e7",
+      "concept_name": "꺄아"
+    },
+    {
+      "concept_id": "048c96dd-88a9-4af2-978c-023c78f807a2",
+      "concept_name": "kahn"
+    },
+    {
+      "concept_id": "04a98d5f-a474-44eb-ad41-8a84a5ebd1ac",
+      "concept_name": "성별"
+    },
+    {
+      "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+      "concept_name": "1시간 뒤"
+    },
+    {
+      "concept_id": "054d8a15-465c-411c-ba9a-4c2fd7b06010",
+      "concept_name": "회전하는"
+    },
+    {
+      "concept_id": "0579e0b1-0370-46ac-a1ff-2e0dcb395bb8",
+      "concept_name": "foreground"
+    },
+    {
+      "concept_id": "05e559b3-844e-496b-b126-c1c45ae20bf6",
+      "concept_name": "미래"
+    },
+    {
+      "concept_id": "0646c541-9809-4b8f-908d-ebbf535c00b9",
+      "concept_name": "들어"
+    },
+    {
+      "concept_id": "06575564-1bd0-4285-91ff-c56e23010df4",
+      "concept_name": "발전"
+    },
+    {
+      "concept_id": "0782d532-ee2e-4974-ac31-f1afbaba0d21",
+      "concept_name": "빵 냄새"
+    },
+    {
+      "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+      "concept_name": "놀이"
+    },
+    {
+      "concept_id": "0836cbe9-f7d8-4043-ac3e-98d9e00c795c",
+      "concept_name": "신기한 것"
+    },
+    {
+      "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+      "concept_name": "재밌는 이야기"
+    },
+    {
+      "concept_id": "0874687e-5f3e-45ee-845c-034e4d461dad",
+      "concept_name": "팀소트"
+    },
+    {
+      "concept_id": "0911aee5-0dd5-4d38-8406-b0dfadc1db7c",
+      "concept_name": "구분 약속"
+    },
+    {
+      "concept_id": "094da781-5dd1-407e-9b2f-06cf4dd8ef19",
+      "concept_name": "삽입정렬"
+    },
+    {
+      "concept_id": "0958f336-0a87-4711-a468-60095f849d82",
+      "concept_name": "포함."
+    },
+    {
+      "concept_id": "09aaa046-3225-4ea0-88cd-62656ba9fcc8",
+      "concept_name": "좋아하"
+    },
+    {
+      "concept_id": "09d75570-8f23-4448-ba48-cde542186610",
+      "concept_name": "성공"
+    },
+    {
+      "concept_id": "09ef4074-cfd4-4c82-9ef7-288ad8eabc4b",
+      "concept_name": "커다란"
+    },
+    {
+      "concept_id": "09faf31a-8679-4f6f-bd53-03b69025269c",
+      "concept_name": "모양 변화"
+    },
+    {
+      "concept_id": "0a2029ac-c32b-410c-b084-0f4497d3a1b4",
+      "concept_name": "서울 날씨"
+    },
+    {
+      "concept_id": "0a2dbdcd-cb29-47a4-a20a-a58c39baf186",
+      "concept_name": "겨울"
+    },
+    {
+      "concept_id": "0b12a194-4781-4858-89cc-443941207b97",
+      "concept_name": "너비우선탐색"
+    },
+    {
+      "concept_id": "0b3f3d5f-2ebc-4f29-b97b-084c1c25fcb0",
+      "concept_name": "설명"
+    },
+    {
+      "concept_id": "0c340acc-3db3-484e-95e2-96aff76527ae",
+      "concept_name": "n-queens"
+    },
+    {
+      "concept_id": "0c64990a-e5d7-493f-bfa5-e864173497fb",
+      "concept_name": "나이 질문"
+    },
+    {
+      "concept_id": "0c7000ca-081b-404d-9a30-7fe6ed79de22",
+      "concept_name": "설렘"
+    },
+    {
+      "concept_id": "0c95eb34-e859-49ab-ba10-21372f892bce",
+      "concept_name": "put"
+    },
+    {
+      "concept_id": "0c962e39-966f-4e0d-bc25-997ea7ff024d",
+      "concept_name": "유튜브"
+    },
+    {
+      "concept_id": "0ce81074-4265-4cbf-94f4-ab27e527ec4c",
+      "concept_name": "문자열로"
+    },
+    {
+      "concept_id": "0cfc7661-a97a-40b8-9940-8dfe64dcc7b2",
+      "concept_name": "프렌치프라이"
+    },
+    {
+      "concept_id": "0d36ba4b-4e2a-41df-ad3d-2aee059ad520",
+      "concept_name": "grey"
+    },
+    {
+      "concept_id": "0d66a5f6-fae0-4847-9b44-1377ee56898e",
+      "concept_name": "응원"
+    },
+    {
+      "concept_id": "0da06f72-4820-42fa-a514-bfa9284b55ba",
+      "concept_name": "아침인사"
+    },
+    {
+      "concept_id": "0dc2c1ff-9332-4c8c-a65f-c33d38893499",
+      "concept_name": "찾다"
+    },
+    {
+      "concept_id": "0e38d912-4a52-448e-ad8f-6885e08aa991",
+      "concept_name": "사건"
+    },
+    {
+      "concept_id": "0eab5b9c-45d9-4fc5-8355-2140f93c3500",
+      "concept_name": "위키피디아"
+    },
+    {
+      "concept_id": "0f04d65b-9bbd-4130-b696-1142306f9f93",
+      "concept_name": "교토"
+    },
+    {
+      "concept_id": "0f0ccb1d-b706-49c8-ae2d-020250ec9874",
+      "concept_name": "친밀감"
+    },
+    {
+      "concept_id": "0f2a027f-75cf-4404-b2a1-45dd65701d3e",
+      "concept_name": "get,"
+    },
+    {
+      "concept_id": "0f3128bf-f596-4cb9-8f62-8ecc995990ac",
+      "concept_name": "soda"
+    },
+    {
+      "concept_id": "0f4951ae-1172-4df4-916d-d4500f1ec9a2",
+      "concept_name": "뭐냐구"
+    },
+    {
+      "concept_id": "0f5b03f3-86e4-43dc-bc74-196b8873ceb9",
+      "concept_name": "잘함/수행"
+    },
+    {
+      "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+      "concept_name": "배움"
+    },
+    {
+      "concept_id": "0f7ef8f8-1855-46a9-80f1-96cb0aa65f59",
+      "concept_name": "차이"
+    },
+    {
+      "concept_id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+      "concept_name": "경험"
+    },
+    {
+      "concept_id": "0fd107c0-52ff-402c-8940-1e8b85b484d4",
+      "concept_name": "궁금해해주"
+    },
+    {
+      "concept_id": "101b7a8e-4fa0-4c88-8d04-edcdca851da5",
+      "concept_name": "강조"
+    },
+    {
+      "concept_id": "1106167f-aafa-4079-8290-7e075279bcdc",
+      "concept_name": "문자열을"
+    },
+    {
+      "concept_id": "112350ac-6e83-4c50-a5a6-3413c806a2d0",
+      "concept_name": "오늘 날짜"
+    },
+    {
+      "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+      "concept_name": "비비"
+    },
+    {
+      "concept_id": "11680a5a-01e4-4439-ae92-e9b3b9eccdaa",
+      "concept_name": "용도"
+    },
+    {
+      "concept_id": "116cc4f6-c44f-407d-9d13-6ab84810206d",
+      "concept_name": "소수인지"
+    },
+    {
+      "concept_id": "11dfa2dd-9785-4108-9b18-9a29728d1887",
+      "concept_name": "도움"
+    },
+    {
+      "concept_id": "11fb876c-b1fe-44b3-a57b-56f85cabc361",
+      "concept_name": "서울에"
+    },
+    {
+      "concept_id": "1236118a-2f23-4537-84b8-0a1c2eac1cfa",
+      "concept_name": "매일매일"
+    },
+    {
+      "concept_id": "12ae914a-8387-4a96-8fbc-7b26dc279556",
+      "concept_name": "인터넷 검색 도구"
+    },
+    {
+      "concept_id": "12c9126a-00b9-41d5-84cc-bc560bb250f6",
+      "concept_name": "나타남"
+    },
+    {
+      "concept_id": "12d0a0cb-ef70-4eaf-acc0-63558b692339",
+      "concept_name": "단어들이에요"
+    },
+    {
+      "concept_id": "12f5f29f-f737-4bc6-abf2-1c7b42348b26",
+      "concept_name": "우주"
+    },
+    {
+      "concept_id": "13096f36-c23e-4992-892f-3bd3d7823971",
+      "concept_name": "반사하고"
+    },
+    {
+      "concept_id": "130cbeb9-bb1a-4f5a-b414-62b972585165",
+      "concept_name": "hewlett"
+    },
+    {
+      "concept_id": "132cbe99-1d50-4a5e-89a6-13ac2a09f30b",
+      "concept_name": "도구"
+    },
+    {
+      "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+      "concept_name": "검색"
+    },
+    {
+      "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+      "concept_name": "서울"
+    },
+    {
+      "concept_id": "147acb4a-10b1-48ef-a69a-da7968e5dc77",
+      "concept_name": "탄생"
+    },
+    {
+      "concept_id": "15bfb6de-ffd7-42e5-bab7-aad73ad7ba8d",
+      "concept_name": "삑"
+    },
+    {
+      "concept_id": "15c95563-cbea-4f46-8db6-dc21b7382b42",
+      "concept_name": "세상에"
+    },
+    {
+      "concept_id": "15e5839a-f4fc-48e9-ae68-b7ff5fad072d",
+      "concept_name": "blue"
+    },
+    {
+      "concept_id": "15fa7b36-ee5d-4995-8cbf-ccbe2fb10f7e",
+      "concept_name": "ordereddict"
+    },
+    {
+      "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+      "concept_name": "세상"
+    },
+    {
+      "concept_id": "1684b56d-a7be-47b7-a2ec-f58e5d0d81e8",
+      "concept_name": "정수를"
+    },
+    {
+      "concept_id": "16b77cf7-9dfc-42c6-ba5a-404ea9f23360",
+      "concept_name": "같은데"
+    },
+    {
+      "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+      "concept_name": "청각"
+    },
+    {
+      "concept_id": "17424ecb-4eae-40c4-be0c-f9af14aefc7d",
+      "concept_name": "상자인"
+    },
+    {
+      "concept_id": "182c9fba-6fb0-4479-906c-fb7912b5ef37",
+      "concept_name": "짧게"
+    },
+    {
+      "concept_id": "184be744-8d70-43e8-9762-6c23052c5082",
+      "concept_name": "맑음"
+    },
+    {
+      "concept_id": "18f9f75a-562c-46b7-977e-8d61288e4aab",
+      "concept_name": "dfs"
+    },
+    {
+      "concept_id": "1924eb3f-5376-4bf3-808d-1bc7c860a940",
+      "concept_name": "asked"
+    },
+    {
+      "concept_id": "19b10c00-ea3a-4703-bfb8-86567db3293b",
+      "concept_name": "시"
+    },
+    {
+      "concept_id": "19d94725-9342-4408-b27f-05ede790455f",
+      "concept_name": "강아지"
+    },
+    {
+      "concept_id": "19e756f2-bdc7-4af1-a822-50d97dbc5ac4",
+      "concept_name": "형아"
+    },
+    {
+      "concept_id": "1a171719-3768-4228-afbf-c2b5b4cd2a86",
+      "concept_name": "음성 인식"
+    },
+    {
+      "concept_id": "1a1b5bf2-2837-45aa-adb0-64b0c66677c7",
+      "concept_name": "궁금함"
+    },
+    {
+      "concept_id": "1a6e3e7a-b682-4bb7-8645-0f21add8f3e8",
+      "concept_name": "지인"
+    },
+    {
+      "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+      "concept_name": "모르는 것"
+    },
+    {
+      "concept_id": "1aefa8a5-fdd0-4ae5-bf38-8e261d17bf7e",
+      "concept_name": "strategy"
+    },
+    {
+      "concept_id": "1b1f0f13-f6db-4318-a9a4-24ff1a3b1d98",
+      "concept_name": "기억해"
+    },
+    {
+      "concept_id": "1b21a008-7eae-4d90-8727-0c2654590a20",
+      "concept_name": "반짝반짝 작은 별"
+    },
+    {
+      "concept_id": "1b5418b6-946a-42f7-b32d-a4ba4e81996a",
+      "concept_name": "같아요"
+    },
+    {
+      "concept_id": "1b81a53e-6cdd-4997-ad5e-11276f4c3fd8",
+      "concept_name": "카운팅정렬"
+    },
+    {
+      "concept_id": "1c01f592-5d3b-49bc-8d7a-d844d98ede28",
+      "concept_name": "소망"
+    },
+    {
+      "concept_id": "1c14f45b-c2b7-4273-9b3a-6bfcb01dafaf",
+      "concept_name": "이진트리"
+    },
+    {
+      "concept_id": "1c40608b-afab-4e7b-af67-00e89f971e33",
+      "concept_name": "두근두근해"
+    },
+    {
+      "concept_id": "1c72aacb-fa93-4f49-8671-400cb9681e4a",
+      "concept_name": "좋은데"
+    },
+    {
+      "concept_id": "1c77f429-3b40-44b2-9457-669833bd15b3",
+      "concept_name": "수용량"
+    },
+    {
+      "concept_id": "1cb1ffca-379f-47b3-af0b-c69042a00581",
+      "concept_name": "채팅"
+    },
+    {
+      "concept_id": "1da2122d-eab2-4ca4-ad7c-ee8b529b9d75",
+      "concept_name": "거라"
+    },
+    {
+      "concept_id": "1dbd75f5-9c31-486a-93a4-992367f83232",
+      "concept_name": "배열에서"
+    },
+    {
+      "concept_id": "1ddf6d6b-a71a-4858-bbec-402bd337e7b1",
+      "concept_name": "힙소트"
+    },
+    {
+      "concept_id": "1e0ae650-d2a3-4abb-b013-10695162e86d",
+      "concept_name": "mom"
+    },
+    {
+      "concept_id": "1e53c136-b821-46c3-8faf-e90093882211",
+      "concept_name": "특별시 종류"
+    },
+    {
+      "concept_id": "1e982fa1-62f5-45f9-bd67-8a9b1c55218a",
+      "concept_name": "엄마 배"
+    },
+    {
+      "concept_id": "1eb7f138-4d40-403a-b973-d38e4b3d8b9f",
+      "concept_name": "안전"
+    },
+    {
+      "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+      "concept_name": "위치"
+    },
+    {
+      "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+      "concept_name": "중력"
+    },
+    {
+      "concept_id": "1f3bbd84-9f96-44bb-86b8-76cba370785b",
+      "concept_name": "줄도"
+    },
+    {
+      "concept_id": "1f7f4ef1-fc47-4346-bc42-4820af2f4174",
+      "concept_name": "Question"
+    },
+    {
+      "concept_id": "1faaa44e-b6df-4dd6-ad28-d1d4803cfbd8",
+      "concept_name": "black"
+    },
+    {
+      "concept_id": "1fb4cd17-ea38-4646-b415-6841fc6ae47e",
+      "concept_name": "색깔"
+    },
+    {
+      "concept_id": "205d8bd7-845e-4ed1-98b4-0131c0cb11e0",
+      "concept_name": "k번째로"
+    },
+    {
+      "concept_id": "20a6901f-12f8-40b2-a89a-e215e27b4dde",
+      "concept_name": "퀵소트"
+    },
+    {
+      "concept_id": "20acceb4-e273-4d17-abdd-3b604ea00606",
+      "concept_name": "싶어"
+    },
+    {
+      "concept_id": "20b1c2d1-fd6d-4f1c-9df0-5e66640830c2",
+      "concept_name": "네모"
+    },
+    {
+      "concept_id": "20cb81de-3d7f-47e2-b6c9-0038b898555f",
+      "concept_name": "일본어"
+    },
+    {
+      "concept_id": "20e4a646-d074-4e70-a23e-2475cff45b50",
+      "concept_name": "나선형"
+    },
+    {
+      "concept_id": "211fb21d-1f49-410c-a409-d41ae2030e55",
+      "concept_name": "Knowledge"
+    },
+    {
+      "concept_id": "213a52c7-1043-43a0-b53d-ca13fe681e9a",
+      "concept_name": "기분"
+    },
+    {
+      "concept_id": "2143f261-134e-4379-b2fe-735f1be9030e",
+      "concept_name": "opening"
+    },
+    {
+      "concept_id": "218609d2-d76d-49cc-b7cc-f4e4954a8ccc",
+      "concept_name": "블록"
+    },
+    {
+      "concept_id": "21884c7f-9ed3-4924-b5d4-729afc7492a4",
+      "concept_name": "모르"
+    },
+    {
+      "concept_id": "22008c4f-fef6-424a-973a-3fa4ed99e848",
+      "concept_name": "안녕하세요"
+    },
+    {
+      "concept_id": "22be927c-0b5f-4909-9313-300b599deec1",
+      "concept_name": "3가지"
+    },
+    {
+      "concept_id": "22d9593c-d145-4920-9958-de8c7f0b489c",
+      "concept_name": "명령"
+    },
+    {
+      "concept_id": "233aba1e-fdfe-424e-add9-0d69ca8bd56b",
+      "concept_name": "밤"
+    },
+    {
+      "concept_id": "23590ebf-fa8a-4ccf-86bb-fa45eee9cf70",
+      "concept_name": "자료구조를"
+    },
+    {
+      "concept_id": "237d22d9-a1e4-480c-944d-df4789556dab",
+      "concept_name": "태어"
+    },
+    {
+      "concept_id": "23dc4746-093b-4063-a54f-bb9ea0237a4e",
+      "concept_name": "공놀이"
+    },
+    {
+      "concept_id": "2446a8fc-dc7a-498a-9be2-c8c96798bb06",
+      "concept_name": "이해"
+    },
+    {
+      "concept_id": "244ce51f-1bb3-4416-b2f2-6c5b0659286e",
+      "concept_name": "그래프에서."
+    },
+    {
+      "concept_id": "245d7dd2-c660-4cfd-a809-0a2195850ba3",
+      "concept_name": "interacting"
+    },
+    {
+      "concept_id": "24ac1df6-88bb-4827-8045-349cd9ffba4c",
+      "concept_name": "손"
+    },
+    {
+      "concept_id": "24d7caa4-8f6c-4a7a-8a21-966f9220fa1c",
+      "concept_name": "함수를"
+    },
+    {
+      "concept_id": "24f1f5f8-d725-400e-a3f2-bfee7b83ff92",
+      "concept_name": "횟수 제한"
+    },
+    {
+      "concept_id": "259d0e4c-a233-4af5-bf4e-0852e2829a9c",
+      "concept_name": "쓰레기"
+    },
+    {
+      "concept_id": "25e252d4-f2d8-498f-a857-a7686692f660",
+      "concept_name": "저녁"
+    },
+    {
+      "concept_id": "260bd6df-f962-446f-a7cb-98b06ef32289",
+      "concept_name": "아기"
+    },
+    {
+      "concept_id": "26108fce-ea8e-45a4-80ab-5203d14a3186",
+      "concept_name": "같기도"
+    },
+    {
+      "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+      "concept_name": "AI"
+    },
+    {
+      "concept_id": "27189b22-c28f-4c45-b618-b3a1dd15f33c",
+      "concept_name": "작업"
+    },
+    {
+      "concept_id": "272ec982-cbe7-4bc6-87b0-57ea0d0ade95",
+      "concept_name": "검출하는"
+    },
+    {
+      "concept_id": "273429b7-a80e-451d-b37d-86644e698e06",
+      "concept_name": "말하기"
+    },
+    {
+      "concept_id": "273af1d1-15c2-433c-aefc-1edfe7b16581",
+      "concept_name": "따뜻함"
+    },
+    {
+      "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+      "concept_name": "날짜"
+    },
+    {
+      "concept_id": "2785a4b8-1d43-4a3e-b307-85ca4abe281a",
+      "concept_name": "심심함"
+    },
+    {
+      "concept_id": "2795ef7d-06fe-4809-a399-f53d092cfe4c",
+      "concept_name": "지식 부족"
+    },
+    {
+      "concept_id": "27a4f69f-6f54-4cdf-ba33-acd49d073337",
+      "concept_name": "빨강"
+    },
+    {
+      "concept_id": "27ccaa45-082c-427d-90a0-b73ae97f5c3c",
+      "concept_name": "아래"
+    },
+    {
+      "concept_id": "27ddf691-d550-47ea-b631-afed74fd4c68",
+      "concept_name": "좋아하는 기능"
+    },
+    {
+      "concept_id": "2834eb04-ae6a-443c-b856-3affa9579c61",
+      "concept_name": "redis"
+    },
+    {
+      "concept_id": "28575c35-4a76-4ead-9d2d-fdde8e285997",
+      "concept_name": "덧셈"
+    },
+    {
+      "concept_id": "28869c2f-e931-45ae-9b10-d56b8c32ff08",
+      "concept_name": "바람"
+    },
+    {
+      "concept_id": "2886a0fc-7c82-4330-9e30-069d7d056e37",
+      "concept_name": "greeting"
+    },
+    {
+      "concept_id": "28f00308-71bd-42d0-ac6e-9b143c1e74ed",
+      "concept_name": "에헤헤"
+    },
+    {
+      "concept_id": "2907190b-6ca9-4c14-bed7-c913bf53d3f5",
+      "concept_name": "허용"
+    },
+    {
+      "concept_id": "291d5d70-2c33-4a0c-a286-7596710325f5",
+      "concept_name": "테스트하는"
+    },
+    {
+      "concept_id": "29234d81-2454-41f2-a357-5d5f8ff24478",
+      "concept_name": "monitor"
+    },
+    {
+      "concept_id": "294a9765-c256-45b5-9dbb-a7ebe11e929b",
+      "concept_name": "햇님"
+    },
+    {
+      "concept_id": "29abb410-c691-43f5-afbd-bad0cce47f88",
+      "concept_name": "근데"
+    },
+    {
+      "concept_id": "29bea40d-7985-4039-9ce8-39c3fbc1389d",
+      "concept_name": "용어"
+    },
+    {
+      "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+      "concept_name": "똑똑함"
+    },
+    {
+      "concept_id": "2a430a39-24f9-4b3e-95d5-03fbc84da073",
+      "concept_name": "시간"
+    },
+    {
+      "concept_id": "2a49b4a5-baf1-420a-b796-3b2b7060d94f",
+      "concept_name": "이야기두"
+    },
+    {
+      "concept_id": "2a4f4103-700a-426c-a9dd-a925e7bf7a34",
+      "concept_name": "개발"
+    },
+    {
+      "concept_id": "2a5d2f21-9c16-45d6-9a72-e49a96f85770",
+      "concept_name": "모르는 단어"
+    },
+    {
+      "concept_id": "2b2d0e9b-6ba8-4d6d-8971-7eef8f5abba0",
+      "concept_name": "외출"
+    },
+    {
+      "concept_id": "2b619933-3e02-4f1b-ae0e-1e0cb04396b1",
+      "concept_name": "책이"
+    },
+    {
+      "concept_id": "2ba11ffd-6dcc-4ae9-acf0-db416df86c40",
+      "concept_name": "감정 (무서움)"
+    },
+    {
+      "concept_id": "2bc0cf65-a688-4614-a3fb-90565a12c680",
+      "concept_name": "안녕"
+    },
+    {
+      "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+      "concept_name": "학습"
+    },
+    {
+      "concept_id": "2c3903c9-ec87-4e06-8e5c-65085b9d18d5",
+      "concept_name": "비밀"
+    },
+    {
+      "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+      "concept_name": "사용자"
+    },
+    {
+      "concept_id": "2ce873ed-66a0-4d63-8f67-8fe5a76ee840",
+      "concept_name": "인공지능 비서"
+    },
+    {
+      "concept_id": "2e614eeb-4b9a-43c9-9695-2610f8d58413",
+      "concept_name": "케이스를"
+    },
+    {
+      "concept_id": "2effcd7d-3c10-48fe-9746-0d74dea37c6d",
+      "concept_name": "인덱스"
+    },
+    {
+      "concept_id": "2f23ba50-37e5-41f6-9121-85a7060e86db",
+      "concept_name": "변환하는"
+    },
+    {
+      "concept_id": "2f712d1d-9bd1-4634-8858-57b1c0d00235",
+      "concept_name": "마이크 스탠드"
+    },
+    {
+      "concept_id": "2fe48c0c-2ce0-49e7-85f1-7734bb22fe39",
+      "concept_name": "섭취"
+    },
+    {
+      "concept_id": "3056869e-4c75-4f6f-b672-76044ffe55b4",
+      "concept_name": "첨벙첨벙"
+    },
+    {
+      "concept_id": "309a6003-90d7-4a27-ad93-1b37be538e58",
+      "concept_name": "좋지"
+    },
+    {
+      "concept_id": "309ede1a-a963-4547-92eb-3029332d97b1",
+      "concept_name": "korean"
+    },
+    {
+      "concept_id": "30a29871-2c6b-4607-82f5-871d141b8011",
+      "concept_name": "힘내세요"
+    },
+    {
+      "concept_id": "30feab2c-cdbe-4d26-b2d6-c15b3d3f5770",
+      "concept_name": "추위"
+    },
+    {
+      "concept_id": "3153b425-81d7-4e39-a435-2124a8327c22",
+      "concept_name": "캐비닛"
+    },
+    {
+      "concept_id": "315834a6-608d-482f-b125-bf1faaa79f05",
+      "concept_name": "오디오 파일"
+    },
+    {
+      "concept_id": "31aecca0-9ca2-4567-bbb0-0e014f0281f9",
+      "concept_name": "vitamin"
+    },
+    {
+      "concept_id": "31d59362-56c5-4a90-b6a7-62c19e52ee5e",
+      "concept_name": "거구"
+    },
+    {
+      "concept_id": "31d94f2a-b2bf-425a-9a03-8114a0b5b876",
+      "concept_name": "친구래요"
+    },
+    {
+      "concept_id": "32097d72-3b93-4959-b164-7fa253ecec4e",
+      "concept_name": "한국"
+    },
+    {
+      "concept_id": "321ba25c-9678-43c9-87f8-80dd1d01f909",
+      "concept_name": "많아서"
+    },
+    {
+      "concept_id": "325c9c30-277b-4501-9cba-407696a4e21f",
+      "concept_name": "최고"
+    },
+    {
+      "concept_id": "33913799-5be0-46bd-b7b7-fd7d4995293e",
+      "concept_name": "비비도"
+    },
+    {
+      "concept_id": "33a00998-7cdc-4754-bc81-bc791399bcc6",
+      "concept_name": "괜찮음"
+    },
+    {
+      "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+      "concept_name": "감정"
+    },
+    {
+      "concept_id": "33d08972-0f12-44f5-861b-7983c80110cd",
+      "concept_name": "무언가"
+    },
+    {
+      "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+      "concept_name": "아름다움"
+    },
+    {
+      "concept_id": "3453f911-39cf-4704-bf63-3922786a6f27",
+      "concept_name": "책상"
+    },
+    {
+      "concept_id": "348caea7-0f92-476d-8dec-b25fa6940510",
+      "concept_name": "syrup"
+    },
+    {
+      "concept_id": "34ce8ea5-35fb-4d29-beef-fbfdf5c21939",
+      "concept_name": "curious"
+    },
+    {
+      "concept_id": "352dacfe-6cbc-46e5-a63b-4f9206d20bed",
+      "concept_name": "일본"
+    },
+    {
+      "concept_id": "354f0417-39f4-400a-aea5-38bb17083346",
+      "concept_name": "박재현"
+    },
+    {
+      "concept_id": "358bf4fa-b28a-4414-bd65-b5adc828bfd7",
+      "concept_name": "한번"
+    },
+    {
+      "concept_id": "35988584-f980-4ca7-afdf-5d55ceaf1cea",
+      "concept_name": "시험이"
+    },
+    {
+      "concept_id": "35be79bd-16e3-466f-a594-ed72d692620b",
+      "concept_name": "시도"
+    },
+    {
+      "concept_id": "35d1fd6c-802c-4bbc-8743-e232381e9569",
+      "concept_name": "물"
+    },
+    {
+      "concept_id": "3607a3b0-e710-4d92-8011-5dbbc942bbb2",
+      "concept_name": "어둠"
+    },
+    {
+      "concept_id": "364e9db5-aa8a-4067-903d-f32bdd73d8a2",
+      "concept_name": "여자"
+    },
+    {
+      "concept_id": "366e6301-7e66-44ef-a56d-6011303cbf93",
+      "concept_name": "만족"
+    },
+    {
+      "concept_id": "36b134f4-23b7-4907-aa2d-07eaeb957dbd",
+      "concept_name": "미안함"
+    },
+    {
+      "concept_id": "36caec1c-39e9-4dd7-9c70-756ccdd5194d",
+      "concept_name": "초록색"
+    },
+    {
+      "concept_id": "3730623a-b1ce-4452-a68d-9fd5d8a41786",
+      "concept_name": "과일"
+    },
+    {
+      "concept_id": "375c0fa9-bb5b-4427-a505-0380713e282d",
+      "concept_name": "set,"
+    },
+    {
+      "concept_id": "376c08d0-0bc6-4674-8434-ec8390bb1010",
+      "concept_name": "search,"
+    },
+    {
+      "concept_id": "37967afd-dd50-42a3-a7a8-b30793a96b95",
+      "concept_name": "자료구조"
+    },
+    {
+      "concept_id": "38430bf5-8753-4659-916b-1ec69d832edd",
+      "concept_name": "상자에요"
+    },
+    {
+      "concept_id": "387e72d4-24cb-437a-9336-329c311ad92b",
+      "concept_name": "답해줘"
+    },
+    {
+      "concept_id": "39208b78-cc66-4ff0-b1e7-bfe8e6660abd",
+      "concept_name": "엄청"
+    },
+    {
+      "concept_id": "39316f03-f4b0-4ecf-ae34-4311ed2e5bc2",
+      "concept_name": "experience"
+    },
+    {
+      "concept_id": "39398a5c-df17-43ce-91c9-4b9f3c20cf07",
+      "concept_name": "접두사"
+    },
+    {
+      "concept_id": "399394c0-886e-44ab-8eba-63b768939d50",
+      "concept_name": "우와"
+    },
+    {
+      "concept_id": "39f1a0f1-8e6b-49ab-a408-07e5b5f9b250",
+      "concept_name": "거죠"
+    },
+    {
+      "concept_id": "39f963cc-2b78-479a-8e93-7d39896bc945",
+      "concept_name": "바퀴"
+    },
+    {
+      "concept_id": "3a57972e-9e9f-4380-affc-1945a8fa9d49",
+      "concept_name": "사용해서"
+    },
+    {
+      "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+      "concept_name": "힘"
+    },
+    {
+      "concept_id": "3acc7fc7-f3a6-43a9-bbf3-ee80159b605e",
+      "concept_name": "날"
+    },
+    {
+      "concept_id": "3ae6081d-6e8b-4341-a768-c4943374faf2",
+      "concept_name": "computer"
+    },
+    {
+      "concept_id": "3b018369-7c95-4bb3-b721-dcb9b02161a8",
+      "concept_name": "자고"
+    },
+    {
+      "concept_id": "3b121d65-1b60-4469-89a7-df3a7c2aa3b0",
+      "concept_name": "이동시키는"
+    },
+    {
+      "concept_id": "3bc1a0d0-d70b-4d29-8ebb-b4e92590a95f",
+      "concept_name": "finger"
+    },
+    {
+      "concept_id": "3bdd38fb-c37c-4305-9eee-ba0532167ab0",
+      "concept_name": "인형"
+    },
+    {
+      "concept_id": "3bf04214-0167-4f4e-95be-2a4a0e792975",
+      "concept_name": "되게"
+    },
+    {
+      "concept_id": "3bf93fd7-e942-4b2d-bdb2-458ae8e99561",
+      "concept_name": "예쁨"
+    },
+    {
+      "concept_id": "3c978b80-05ac-4f57-a212-b9dead97519a",
+      "concept_name": "생각"
+    },
+    {
+      "concept_id": "3ca997a9-55b8-4d64-ad34-bc8f99ce50e9",
+      "concept_name": "지능"
+    },
+    {
+      "concept_id": "3cb303da-ba23-4b80-b5a7-0957e7df4b07",
+      "concept_name": "더 잘함"
+    },
+    {
+      "concept_id": "3cb96170-69b8-48e5-a00c-72cf5e663dd1",
+      "concept_name": "꿈을"
+    },
+    {
+      "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+      "concept_name": "로봇"
+    },
+    {
+      "concept_id": "3d1e931d-d79d-477d-a102-33d92cefabb7",
+      "concept_name": "싶다"
+    },
+    {
+      "concept_id": "3d397d17-8f5f-4050-ae51-9ffa3bf1a312",
+      "concept_name": "있으면"
+    },
+    {
+      "concept_id": "3d792ff2-b83e-424f-94c7-ff4da57feb38",
+      "concept_name": "마음이"
+    },
+    {
+      "concept_id": "3d9242ff-295e-440d-845e-f0fc13be1b13",
+      "concept_name": "layout"
+    },
+    {
+      "concept_id": "3e415526-940d-48b1-a1c6-10e62b12e248",
+      "concept_name": "재미있"
+    },
+    {
+      "concept_id": "3e7b823d-4ad5-46c5-9334-fc3795dd5619",
+      "concept_name": "최대값과"
+    },
+    {
+      "concept_id": "3edca78d-dd5f-46a6-bcd9-4b287a9ef382",
+      "concept_name": "관계예요"
+    },
+    {
+      "concept_id": "3f10c679-eaf3-4a13-aec9-7ec54d2cdd5a",
+      "concept_name": "흐름"
+    },
+    {
+      "concept_id": "3f6be22a-d501-408b-857f-52e6d598a16f",
+      "concept_name": "빨간색"
+    },
+    {
+      "concept_id": "3fa7665e-dc8d-464b-bd5f-eb9baf438056",
+      "concept_name": "피아노"
+    },
+    {
+      "concept_id": "3ffcfd6d-6d1f-4cce-8391-aec0ad235416",
+      "concept_name": "찾기"
+    },
+    {
+      "concept_id": "402dc288-bf36-4814-9a56-1bd606129e7e",
+      "concept_name": "우유 맘마"
+    },
+    {
+      "concept_id": "40441767-56da-4c0e-adc1-225a39ebe14b",
+      "concept_name": "능력"
+    },
+    {
+      "concept_id": "4066ee8a-38ba-4ba9-97d1-29a8effa5b97",
+      "concept_name": "박재현 (사용자)"
+    },
+    {
+      "concept_id": "4122f5fa-a07b-4ec0-82bb-3e80394415a1",
+      "concept_name": "number"
+    },
+    {
+      "concept_id": "4173344b-0fe6-4613-a6fb-f47196389963",
+      "concept_name": "의미"
+    },
+    {
+      "concept_id": "419ff1dc-9fef-4e28-9f00-aa97e2a61f1c",
+      "concept_name": "날짜 공부"
+    },
+    {
+      "concept_id": "41a8c034-a1de-4ca2-ab26-1da6a220c895",
+      "concept_name": "발현"
+    },
+    {
+      "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+      "concept_name": "컴퓨터요"
+    },
+    {
+      "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+      "concept_name": "상호작용"
+    },
+    {
+      "concept_id": "42634b8a-3de3-402a-a392-6cce634132d9",
+      "concept_name": "시원해"
+    },
+    {
+      "concept_id": "4266c328-0706-4d4d-a14e-1f295023557b",
+      "concept_name": "함께 함"
+    },
+    {
+      "concept_id": "43019bfd-ebeb-455d-aa29-1d2052546181",
+      "concept_name": "도시"
+    },
+    {
+      "concept_id": "433bf360-8538-46ae-bcf9-b4bcadbad275",
+      "concept_name": "가장 중요한 곳"
+    },
+    {
+      "concept_id": "4356aebd-e423-43f2-9da6-d203751ade5d",
+      "concept_name": "dot"
+    },
+    {
+      "concept_id": "43d5ece0-f821-4d07-bbbe-7c066e09d9a5",
+      "concept_name": "포기"
+    },
+    {
+      "concept_id": "44480ee8-96b0-4886-b1c7-52507b429293",
+      "concept_name": "모여"
+    },
+    {
+      "concept_id": "44b33e73-3733-4911-b4ba-dcba142aae03",
+      "concept_name": "아름다울"
+    },
+    {
+      "concept_id": "44dd093d-cd14-4769-b07a-e17a1249b6d3",
+      "concept_name": "사전"
+    },
+    {
+      "concept_id": "44e5687f-6b32-4871-8413-f8756227e6d5",
+      "concept_name": "세모"
+    },
+    {
+      "concept_id": "4538b7ee-8fc4-4b1f-aa3e-cd75ffbf689a",
+      "concept_name": "하얀색"
+    },
+    {
+      "concept_id": "456185fb-3e66-4a87-9220-8b93b459e343",
+      "concept_name": "이렇"
+    },
+    {
+      "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+      "concept_name": "음악"
+    },
+    {
+      "concept_id": "460f709a-aae2-44e2-b24f-640ae5af7b76",
+      "concept_name": "보면"
+    },
+    {
+      "concept_id": "4616c8e0-e4d0-4285-8d6b-c9ccd61621bf",
+      "concept_name": "슬픔"
+    },
+    {
+      "concept_id": "462205e2-ca97-49b3-92ab-42fb2be7221d",
+      "concept_name": "내일"
+    },
+    {
+      "concept_id": "4648a374-488d-497f-8179-7310aeb85c30",
+      "concept_name": "숫자로"
+    },
+    {
+      "concept_id": "467526e1-e3fc-41ff-847b-7ad2a5b96cc5",
+      "concept_name": "주셨"
+    },
+    {
+      "concept_id": "467bda4c-9fc2-42c9-8a28-e6812fa4fc0d",
+      "concept_name": "serta"
+    },
+    {
+      "concept_id": "46b2bb7b-97ee-4882-b17c-51513a7492df",
+      "concept_name": "혼란"
+    },
+    {
+      "concept_id": "46dc2ce5-08c7-4e4a-84a5-9a2d0faa75e2",
+      "concept_name": "이해 부족"
+    },
+    {
+      "concept_id": "4799edf9-3419-4123-9366-522216660f43",
+      "concept_name": "마음"
+    },
+    {
+      "concept_id": "47f48d7d-a5e5-4b2c-8796-ea842e3ba5c9",
+      "concept_name": "대해"
+    },
+    {
+      "concept_id": "47fd42ef-e8f6-4584-8a85-ed3c65846e12",
+      "concept_name": "용기"
+    },
+    {
+      "concept_id": "4837ed70-dc43-456d-96d0-941a28aa1371",
+      "concept_name": "좋다"
+    },
+    {
+      "concept_id": "488d7350-5e7d-426f-8c3b-d5067a9d7182",
+      "concept_name": "debug"
+    },
+    {
+      "concept_id": "48c9c43e-70f3-4486-a409-08b1912346b0",
+      "concept_name": "연결해서"
+    },
+    {
+      "concept_id": "49b9a786-b3b7-4758-851a-4d9e74a4aa26",
+      "concept_name": "구름 사탕"
+    },
+    {
+      "concept_id": "4a07654f-2d96-47d8-8fc8-6b68ddd8b53a",
+      "concept_name": "놀래키기"
+    },
+    {
+      "concept_id": "4a341cd6-b074-448d-831b-811364bbdc5a",
+      "concept_name": "즐거움"
+    },
+    {
+      "concept_id": "4a65064e-5261-44b8-b700-9a559f90c699",
+      "concept_name": "교집합을"
+    },
+    {
+      "concept_id": "4acff44e-71ea-4607-bab6-a35f306959a6",
+      "concept_name": "행복"
+    },
+    {
+      "concept_id": "4aed5084-e7cc-45b6-8b30-f1f7a481997e",
+      "concept_name": "확인하는"
+    },
+    {
+      "concept_id": "4aff83ad-a9ad-436e-aee6-761e9f563f22",
+      "concept_name": "백트래킹으로"
+    },
+    {
+      "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+      "concept_name": "정보"
+    },
+    {
+      "concept_id": "4b5bcc21-3d91-43ce-8700-a628f222e6fb",
+      "concept_name": "카메라 따 놓기"
+    },
+    {
+      "concept_id": "4bb31837-7e68-4d5f-8ee2-5ac3bbdc9989",
+      "concept_name": "느낌"
+    },
+    {
+      "concept_id": "4c3f521c-1755-4911-9864-aa8bd056fbc1",
+      "concept_name": "연결되"
+    },
+    {
+      "concept_id": "4c9e6350-36f9-4d6e-8cbe-c8d4a6ade3f2",
+      "concept_name": "위상정렬(topological"
+    },
+    {
+      "concept_id": "4ca53658-50ad-4262-9d20-fa6e882439df",
+      "concept_name": "수학"
+    },
+    {
+      "concept_id": "4e35a274-1796-474b-afb3-a6bc3663b0fc",
+      "concept_name": "싸움"
+    },
+    {
+      "concept_id": "4e47caec-f320-498e-8936-8c80b32a86a1",
+      "concept_name": "비비 (AI 모델)"
+    },
+    {
+      "concept_id": "4e4d3158-daef-4639-81cd-17903fe5956c",
+      "concept_name": "년"
+    },
+    {
+      "concept_id": "4e4ee65b-ab74-461e-8b17-26d5dd8146b3",
+      "concept_name": "신남"
+    },
+    {
+      "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+      "concept_name": "잘하는 것"
+    },
+    {
+      "concept_id": "4ef22143-6db1-4f1e-a3c7-d323e2499aab",
+      "concept_name": "숫자"
+    },
+    {
+      "concept_id": "4f4b254d-3f02-4184-b1b5-1529493156c7",
+      "concept_name": "desk"
+    },
+    {
+      "concept_id": "4fc6e95b-a3a0-42ee-9e89-77b103cc3f44",
+      "concept_name": "진짜 기차"
+    },
+    {
+      "concept_id": "4fd84615-e8c9-48cf-af59-a62bb06ce295",
+      "concept_name": "야옹"
+    },
+    {
+      "concept_id": "5033af77-62b4-4272-b843-2d975a19ce61",
+      "concept_name": "대화 맥락"
+    },
+    {
+      "concept_id": "50415848-6089-4393-bd34-aa84ecab295d",
+      "concept_name": "궁금"
+    },
+    {
+      "concept_id": "5056b3b2-0755-4db6-8a0e-61c9a3a6bc54",
+      "concept_name": "구하는"
+    },
+    {
+      "concept_id": "505cdb33-9d13-4c7d-a33c-21a6897f9089",
+      "concept_name": "요즘"
+    },
+    {
+      "concept_id": "50906acd-4476-4239-a720-31aad65bc946",
+      "concept_name": "궁금하다"
+    },
+    {
+      "concept_id": "514d18eb-2b67-47d7-8803-4dbec0a53bdc",
+      "concept_name": "left"
+    },
+    {
+      "concept_id": "515000fd-3839-4b49-b355-9756d2a0198e",
+      "concept_name": "만들어줘."
+    },
+    {
+      "concept_id": "5156bb44-3f20-42dc-81d0-e14fb7b3d159",
+      "concept_name": "symbols"
+    },
+    {
+      "concept_id": "5192014a-a518-459d-9d5e-2a60b2d81ff9",
+      "concept_name": "날씨 공부"
+    },
+    {
+      "concept_id": "51a38265-040a-4cb5-ae19-f6890cce9a1b",
+      "concept_name": "나옴"
+    },
+    {
+      "concept_id": "51bc3933-57ef-447b-a30a-001a0833ce78",
+      "concept_name": "순열을"
+    },
+    {
+      "concept_id": "51be1672-d4ca-4b1f-aa54-d034642a1850",
+      "concept_name": "아름다운지"
+    },
+    {
+      "concept_id": "51c5574e-c2bf-47c4-bb56-a37a2a9426a6",
+      "concept_name": "깊이우선탐색"
+    },
+    {
+      "concept_id": "51dce541-8692-4c03-ab4f-ce56c4eb9bc1",
+      "concept_name": "변환"
+    },
+    {
+      "concept_id": "52104b08-c406-44d2-82b4-5dc4c10b946f",
+      "concept_name": "스펀지"
+    },
+    {
+      "concept_id": "52211d05-e61e-4226-9ebc-a4c11959b4ed",
+      "concept_name": "왜"
+    },
+    {
+      "concept_id": "52c73325-00eb-49b6-950b-11a3b217abe1",
+      "concept_name": "위키피디아 검색"
+    },
+    {
+      "concept_id": "52f708b3-4bff-4023-a0d9-64afded2bd0f",
+      "concept_name": "단어장"
+    },
+    {
+      "concept_id": "5312fb24-60b3-4a8b-adf4-093846045014",
+      "concept_name": "sse"
+    },
+    {
+      "concept_id": "53a1bf98-a16c-43f0-9cd2-5f1e6f5fdf43",
+      "concept_name": "적이"
+    },
+    {
+      "concept_id": "53c0bc97-4d80-4f84-a2f7-85404d04a67a",
+      "concept_name": "그림자"
+    },
+    {
+      "concept_id": "54039e4b-bfff-4fa7-ac79-d33bb4866221",
+      "concept_name": "위로"
+    },
+    {
+      "concept_id": "547a0c7e-9fdd-41d2-a1f4-c6823deea456",
+      "concept_name": "싱글톤"
+    },
+    {
+      "concept_id": "54880cf2-b4b6-48e4-9d88-27f2d1d93fc8",
+      "concept_name": "구현."
+    },
+    {
+      "concept_id": "550dc69a-7f6c-460d-b9c4-5b72bae56aa1",
+      "concept_name": "뭔가"
+    },
+    {
+      "concept_id": "5531dbcb-afc3-4531-a7a1-f7bedbb17ef1",
+      "concept_name": "hello"
+    },
+    {
+      "concept_id": "5538575f-20f7-45ed-ac8e-bbbc52fe8bdc",
+      "concept_name": "지식 검색"
+    },
+    {
+      "concept_id": "553b56b1-e081-4314-bc0c-93014475f033",
+      "concept_name": "눈을"
+    },
+    {
+      "concept_id": "55a6e525-f908-4f47-b2b8-765b44099f4b",
+      "concept_name": "출현"
+    },
+    {
+      "concept_id": "55c40533-2379-42d2-8a7e-777878f9291e",
+      "concept_name": "나선형으로"
+    },
+    {
+      "concept_id": "55c5c334-9ddc-42a7-8d72-66e2e79852d4",
+      "concept_name": "aabcccccaaa를"
+    },
+    {
+      "concept_id": "55ce7ce1-81aa-442d-a8b8-7e35a2ffcf9e",
+      "concept_name": "날짜 박사"
+    },
+    {
+      "concept_id": "55d2af45-947a-4db1-b453-340904a17d14",
+      "concept_name": "keyboard"
+    },
+    {
+      "concept_id": "55e38fb6-8681-472a-bc1e-970e6ba3352f",
+      "concept_name": "하늘"
+    },
+    {
+      "concept_id": "5631c9ed-8c72-432d-9e54-17f99e544fc0",
+      "concept_name": "형아는"
+    },
+    {
+      "concept_id": "56874ed6-06ac-4546-958b-9c91926fe4cc",
+      "concept_name": "벨만-포드"
+    },
+    {
+      "concept_id": "56eb8cfd-a995-4f6f-b9ec-6cc26826c7c2",
+      "concept_name": "싫음"
+    },
+    {
+      "concept_id": "570f1041-4ac5-433d-8640-5e7de7f16d7e",
+      "concept_name": "챗봇"
+    },
+    {
+      "concept_id": "583f32da-c2a0-4dd4-ad12-479cc2fec9cf",
+      "concept_name": "잠"
+    },
+    {
+      "concept_id": "583fd2eb-0a93-4256-a22c-04a69ffb398c",
+      "concept_name": "방식으로."
+    },
+    {
+      "concept_id": "5856e90a-825f-49f0-a59e-da351dfb97b6",
+      "concept_name": "좋아함"
+    },
+    {
+      "concept_id": "58829c2e-a371-4655-972e-cf2d2f3c8474",
+      "concept_name": "협업"
+    },
+    {
+      "concept_id": "58a6dc87-c8bd-4203-a9d9-045097c9b97b",
+      "concept_name": "좋음 (기분)"
+    },
+    {
+      "concept_id": "58fdccaa-9ca1-4a6b-8e9a-4502d418fc18",
+      "concept_name": "좋은"
+    },
+    {
+      "concept_id": "5900a37a-7ad0-4857-8131-84d1e1d42ee2",
+      "concept_name": "typing"
+    },
+    {
+      "concept_id": "5944a33e-ec5f-4aac-b2c5-1499e87fdceb",
+      "concept_name": "자연이"
+    },
+    {
+      "concept_id": "5948e87e-e9fe-4317-bf68-f8e7797bc651",
+      "concept_name": "반짝거림"
+    },
+    {
+      "concept_id": "59cf7be4-8627-413b-a4eb-0f8daa687517",
+      "concept_name": "재미"
+    },
+    {
+      "concept_id": "5a35df83-10b3-4aab-a8f7-2032caf8e7cd",
+      "concept_name": "모르다"
+    },
+    {
+      "concept_id": "5a4e5974-5bec-4ce0-8b5c-500218cdafe7",
+      "concept_name": "멍멍"
+    },
+    {
+      "concept_id": "5a8cc4e1-a1e6-4e1a-960d-302ee95c4427",
+      "concept_name": "느낌표"
+    },
+    {
+      "concept_id": "5aae1575-ec35-4983-a675-f7ce123d353e",
+      "concept_name": "메서드"
+    },
+    {
+      "concept_id": "5ad0bd63-8305-4d16-903b-41c2088502cb",
+      "concept_name": "search_dictionary 도구"
+    },
+    {
+      "concept_id": "5b0676c0-1845-444c-8d0a-e468a0cb1287",
+      "concept_name": "소리 종류"
+    },
+    {
+      "concept_id": "5b14e1f4-adb2-4925-9a4f-eb7b9efe9252",
+      "concept_name": "삑, 삑, 삡"
+    },
+    {
+      "concept_id": "5bc496a7-8df0-459a-ae47-bc98dae67b6c",
+      "concept_name": "가장"
+    },
+    {
+      "concept_id": "5c1fc820-0335-463e-b494-a3971bc03a54",
+      "concept_name": "비비고 (AI)"
+    },
+    {
+      "concept_id": "5c318a66-e43c-4acf-88a3-2d31080fabe0",
+      "concept_name": "추천"
+    },
+    {
+      "concept_id": "5c512b80-10cc-4a20-a0f7-48f4104244e8",
+      "concept_name": "앗싸"
+    },
+    {
+      "concept_id": "5c9f9f4e-c82e-434d-8c87-df0f68a8de80",
+      "concept_name": "thumb"
+    },
+    {
+      "concept_id": "5ca6d570-4d51-49c1-babd-35e8cf7b340c",
+      "concept_name": "2살"
+    },
+    {
+      "concept_id": "5cd54df1-dad9-4b10-aaca-f687571ceb03",
+      "concept_name": "역할"
+    },
+    {
+      "concept_id": "5d6f14ea-4647-41e4-a46a-795fbdce4cd0",
+      "concept_name": "까꿍 놀이"
+    },
+    {
+      "concept_id": "5d9c8b3f-5013-4102-bd02-dcd2672e25df",
+      "concept_name": "놀이요"
+    },
+    {
+      "concept_id": "5e0c1a43-becc-4e75-8cdb-b325de420b53",
+      "concept_name": "시간 여행"
+    },
+    {
+      "concept_id": "5e0dc189-98e2-499b-a91d-051d4a238c5b",
+      "concept_name": "노력"
+    },
+    {
+      "concept_id": "5e1c8fea-22be-431c-abdb-df2c51b6dc46",
+      "concept_name": "누적합"
+    },
+    {
+      "concept_id": "5e7a3a5d-fd2a-4cda-960c-224ecd52b6c8",
+      "concept_name": "수열(lis)"
+    },
+    {
+      "concept_id": "5ed1949a-592e-4b7d-86f9-7fedc88cd3fb",
+      "concept_name": "extended"
+    },
+    {
+      "concept_id": "5ee340f8-b785-499e-81f3-0e20d9b5a678",
+      "concept_name": "모름 (지식 부족)"
+    },
+    {
+      "concept_id": "5ee89832-832b-4151-a133-6f5df015ea28",
+      "concept_name": "날짜 변경선"
+    },
+    {
+      "concept_id": "5ef4bdac-611e-4bb2-9797-4ff12f386510",
+      "concept_name": "수면 모드"
+    },
+    {
+      "concept_id": "5f8024ab-862f-4a20-9a2e-2423435082d1",
+      "concept_name": "애정"
+    },
+    {
+      "concept_id": "5fb15057-ddca-4ed6-a676-5d17e52fe177",
+      "concept_name": "환영"
+    },
+    {
+      "concept_id": "5fc9ea80-2b9a-4e88-8b29-d31376209cca",
+      "concept_name": "햇빛"
+    },
+    {
+      "concept_id": "602d8eac-f9a3-482f-825f-97d76e9483ae",
+      "concept_name": "logo"
+    },
+    {
+      "concept_id": "608c04e1-96a4-48d3-a584-1e5193264f34",
+      "concept_name": "startswith"
+    },
+    {
+      "concept_id": "60c8bafc-4105-4696-ae7f-947c0c7ffea7",
+      "concept_name": "union-find"
+    },
+    {
+      "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+      "concept_name": "질문"
+    },
+    {
+      "concept_id": "62585eba-c15a-4cf7-9da7-5a916d8eec53",
+      "concept_name": "고양이"
+    },
+    {
+      "concept_id": "628b69ca-6125-4a3c-9a7a-97090243ee0a",
+      "concept_name": "초밥"
+    },
+    {
+      "concept_id": "62ed5ecb-82ca-490f-82d9-f955316388be",
+      "concept_name": "재미있는 것"
+    },
+    {
+      "concept_id": "6356c879-84b7-41e1-8fb1-50aca5ff7002",
+      "concept_name": "햄버거"
+    },
+    {
+      "concept_id": "635ab468-2b0e-4525-93f9-58c4ae7179a9",
+      "concept_name": "시계방향으로"
+    },
+    {
+      "concept_id": "63989145-d2c3-4f94-9d3a-8bde285b9642",
+      "concept_name": "물어보셨"
+    },
+    {
+      "concept_id": "6444ddb5-fad0-43a2-873c-b3563eaf4340",
+      "concept_name": "12월"
+    },
+    {
+      "concept_id": "646f3157-1b31-40d5-89b1-b4fef74c5510",
+      "concept_name": "trie(트라이)"
+    },
+    {
+      "concept_id": "647e704c-bc05-48ac-a683-8234f6ea5039",
+      "concept_name": "흠"
+    },
+    {
+      "concept_id": "6484c870-1417-4b90-b57c-afd493d0730c",
+      "concept_name": "재귀로"
+    },
+    {
+      "concept_id": "64be4dd3-a6c0-4221-bd38-05c53f661824",
+      "concept_name": "이진탐색"
+    },
+    {
+      "concept_id": "651e79bc-bb4e-4ef5-8ff8-109d8465277d",
+      "concept_name": "언니"
+    },
+    {
+      "concept_id": "65491f7c-2cb7-46f8-aec4-5223ff3ccf9b",
+      "concept_name": "어려워했다니"
+    },
+    {
+      "concept_id": "654b2d0f-13d9-49d5-b49b-d50a16731a60",
+      "concept_name": "에너지"
+    },
+    {
+      "concept_id": "66104ad4-0695-40a4-81ce-16a258c85c7c",
+      "concept_name": "뿡"
+    },
+    {
+      "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+      "concept_name": "계산기"
+    },
+    {
+      "concept_id": "66575385-58c7-4f53-8616-71d81734caad",
+      "concept_name": "집"
+    },
+    {
+      "concept_id": "67194d65-20d0-4661-a964-81cbef5fb23f",
+      "concept_name": "자동차"
+    },
+    {
+      "concept_id": "67611c8b-2155-4b7e-93b3-5fa3c935918f",
+      "concept_name": "우유팩"
+    },
+    {
+      "concept_id": "67bb79fc-37be-4c2d-84e1-a9581a015d3d",
+      "concept_name": "index"
+    },
+    {
+      "concept_id": "67bc85ab-bff7-46d0-9bc5-7c2dd7d6da42",
+      "concept_name": "짖는"
+    },
+    {
+      "concept_id": "6809ab41-5299-4c35-97ae-fa613aa8b3fa",
+      "concept_name": "나고"
+    },
+    {
+      "concept_id": "683ba028-419a-46ce-8cc2-9b7a674ba6a0",
+      "concept_name": "재시도"
+    },
+    {
+      "concept_id": "687887c6-5082-449b-832f-4993c0d56f39",
+      "concept_name": "어려웠어"
+    },
+    {
+      "concept_id": "68a5f7a5-48e4-436b-8626-6e50450e7c60",
+      "concept_name": "이유"
+    },
+    {
+      "concept_id": "68fbe8ef-a878-4e17-a63f-887033970f2e",
+      "concept_name": "딸랑딸랑 소리"
+    },
+    {
+      "concept_id": "691db1f9-ffc7-4378-a1cb-6485be5d7b85",
+      "concept_name": "대화라"
+    },
+    {
+      "concept_id": "6954db0e-d448-4a99-a068-219d2b26904f",
+      "concept_name": "태어나다"
+    },
+    {
+      "concept_id": "697f8920-deef-4260-a32d-ce38900b1040",
+      "concept_name": "31일"
+    },
+    {
+      "concept_id": "69832c70-8535-47c6-bc06-92f8cf6871eb",
+      "concept_name": "재현"
+    },
+    {
+      "concept_id": "69a4725d-49f3-43af-b4da-8a2d028159c9",
+      "concept_name": "로마숫자를"
+    },
+    {
+      "concept_id": "6a843e3b-b404-404e-a641-3cdc1a667eb9",
+      "concept_name": "굴러감"
+    },
+    {
+      "concept_id": "6a8c19f1-96d9-47da-9797-6bff9ca04685",
+      "concept_name": "행동"
+    },
+    {
+      "concept_id": "6abc5a89-9973-49ad-945f-b969b4bddd96",
+      "concept_name": "박재형"
+    },
+    {
+      "concept_id": "6ace8611-61ed-4076-b332-f526393ad688",
+      "concept_name": "사무실"
+    },
+    {
+      "concept_id": "6b3dda01-23a4-46f3-befc-ce82b6310671",
+      "concept_name": "포옹"
+    },
+    {
+      "concept_id": "6b6d63c5-0056-4490-a676-e8cce39a63f4",
+      "concept_name": "박지현"
+    },
+    {
+      "concept_id": "6b7f052a-4a30-45d0-9dad-1c7cdd878a82",
+      "concept_name": "음식"
+    },
+    {
+      "concept_id": "6bb05ddf-e188-4d42-aca3-f470b70ede3e",
+      "concept_name": "딥러닝"
+    },
+    {
+      "concept_id": "6c2ed57c-4057-47f1-85a9-58cd9dd8666b",
+      "concept_name": "어른"
+    },
+    {
+      "concept_id": "6c475aae-7fcf-4562-837c-e4270d871752",
+      "concept_name": "스시"
+    },
+    {
+      "concept_id": "6c5f61d7-088f-4b93-a0ec-3b4cb35f29bf",
+      "concept_name": "테이블"
+    },
+    {
+      "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+      "concept_name": "문장"
+    },
+    {
+      "concept_id": "6d175d7a-854c-46da-9ce3-0221d67ca744",
+      "concept_name": "귀여움"
+    },
+    {
+      "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+      "concept_name": "감정 표현"
+    },
+    {
+      "concept_id": "6d72d4f2-531c-42a4-a1b3-bbbaf0ad6fd5",
+      "concept_name": "용서"
+    },
+    {
+      "concept_id": "6e01e40d-84d6-494b-aae1-5b198acb664c",
+      "concept_name": "특별한 장치"
+    },
+    {
+      "concept_id": "6e797c99-a9cc-4a64-833a-f97f6b5d3e82",
+      "concept_name": "새로운 것 학습"
+    },
+    {
+      "concept_id": "6ea08fb3-330f-4401-9ccd-59d39ec79f24",
+      "concept_name": "굴리기"
+    },
+    {
+      "concept_id": "6eaff268-dd2a-4068-b919-0345b5ca24a2",
+      "concept_name": "반짝"
+    },
+    {
+      "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+      "concept_name": "이야기"
+    },
+    {
+      "concept_id": "6ef99059-39a5-4c35-83c4-aead75d6a5fb",
+      "concept_name": "걱정"
+    },
+    {
+      "concept_id": "6f0925ee-c06a-43ac-bd40-bba5be70e8b2",
+      "concept_name": "병합하는"
+    },
+    {
+      "concept_id": "6f9ff365-cf8f-4597-9da5-d10958d81c38",
+      "concept_name": "집중"
+    },
+    {
+      "concept_id": "707c9d5b-d29c-45e0-ac07-a7a8dc923c67",
+      "concept_name": "기온"
+    },
+    {
+      "concept_id": "70879c83-6310-430f-9c85-04aac749e0aa",
+      "concept_name": "만들어줘"
+    },
+    {
+      "concept_id": "709030e8-c7a4-4e4d-9213-8adf13c75d25",
+      "concept_name": "외형"
+    },
+    {
+      "concept_id": "70edbbb1-803f-45a7-9aec-63b4faaa45cc",
+      "concept_name": "해님"
+    },
+    {
+      "concept_id": "711c9ab1-e2b9-48c3-8be7-c8b050812623",
+      "concept_name": "white"
+    },
+    {
+      "concept_id": "71337317-ba00-4dec-a8f8-4d38f4ce3656",
+      "concept_name": "딸랑이"
+    },
+    {
+      "concept_id": "71bbccf6-b2ec-45f2-ad59-3d881faa3bbd",
+      "concept_name": "누구세요"
+    },
+    {
+      "concept_id": "7226dd40-929b-47e3-a5fa-ff8a496855f5",
+      "concept_name": "쟁반"
+    },
+    {
+      "concept_id": "7253a160-b3f0-4306-b745-a1ee816f0b47",
+      "concept_name": "궁금하"
+    },
+    {
+      "concept_id": "727b1bb5-1134-4c97-a689-d8cc350402a2",
+      "concept_name": "의지"
+    },
+    {
+      "concept_id": "72802d99-c914-4245-85cf-ce9deda8aa68",
+      "concept_name": "기다림"
+    },
+    {
+      "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+      "concept_name": "인터넷"
+    },
+    {
+      "concept_id": "72d17626-fad2-48a5-8f6b-a4b0e888ba2f",
+      "concept_name": "a2b1c5a3으로"
+    },
+    {
+      "concept_id": "72deb916-b59b-4e25-892f-716ce7ed05d7",
+      "concept_name": "test"
+    },
+    {
+      "concept_id": "72fa1822-7cfb-47ab-ae8f-d10f2ffac62a",
+      "concept_name": "진동"
+    },
+    {
+      "concept_id": "7310f253-8209-433b-a068-dea4a926e2b2",
+      "concept_name": "원소를"
+    },
+    {
+      "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+      "concept_name": "먹는 것"
+    },
+    {
+      "concept_id": "732e5eee-d2de-41c4-9c04-aec971d58f84",
+      "concept_name": "움직임"
+    },
+    {
+      "concept_id": "734a3568-d5a5-4b3d-98e4-b8bfef855cda",
+      "concept_name": "삼성"
+    },
+    {
+      "concept_id": "73a025e0-b8c7-4e10-8a37-33e35c8bdbb3",
+      "concept_name": "친구"
+    },
+    {
+      "concept_id": "74360132-ca90-482d-9882-b481f40e389d",
+      "concept_name": "빨간 공"
+    },
+    {
+      "concept_id": "74884fd1-bcb3-425a-93bc-9a4b1fd3e084",
+      "concept_name": "월"
+    },
+    {
+      "concept_id": "74ad1244-01b4-4b0b-aafc-a81b5a2342bf",
+      "concept_name": "착각"
+    },
+    {
+      "concept_id": "753697ba-9dea-4f49-8534-b06e3ee682e5",
+      "concept_name": "바지"
+    },
+    {
+      "concept_id": "75955f39-02b3-4411-8e85-6c6847761f7c",
+      "concept_name": "선곡"
+    },
+    {
+      "concept_id": "7599d8cc-74ef-4ec5-b0f8-dd7fe6be6ec7",
+      "concept_name": "거지"
+    },
+    {
+      "concept_id": "759a4cac-1ab6-4449-a6e2-70d1467ab9dd",
+      "concept_name": "touchpad"
+    },
+    {
+      "concept_id": "76af427c-c55a-47df-a992-fc1059637318",
+      "concept_name": "맛있다"
+    },
+    {
+      "concept_id": "7703db0a-8149-4322-8c95-3efca03481e4",
+      "concept_name": "고마움"
+    },
+    {
+      "concept_id": "77334e7e-24bc-4eed-baa7-9f6d7f8eec10",
+      "concept_name": "향상"
+    },
+    {
+      "concept_id": "7810bd6a-37cc-409f-afea-92410e220166",
+      "concept_name": "싫어함"
+    },
+    {
+      "concept_id": "7815a099-2302-4d57-a1d6-60106fcfe83a",
+      "concept_name": "speaking"
+    },
+    {
+      "concept_id": "78636f4a-e6bc-4313-bc57-2d2f29ccb12b",
+      "concept_name": "결혼"
+    },
+    {
+      "concept_id": "78a0852f-26b6-462d-91f3-537af48332e8",
+      "concept_name": "크루스칼"
+    },
+    {
+      "concept_id": "78b45043-b25b-42bd-a864-2f7f8ab050aa",
+      "concept_name": "숨바꼭질"
+    },
+    {
+      "concept_id": "7921ed8a-7808-4785-a67a-866396203dcc",
+      "concept_name": "square"
+    },
+    {
+      "concept_id": "79270363-e8cd-4d63-8ace-e7f8ad863e72",
+      "concept_name": "배변 욕구"
+    },
+    {
+      "concept_id": "79b1c2c9-683e-4807-a7e8-bd987665accd",
+      "concept_name": "주제예요"
+    },
+    {
+      "concept_id": "79d6ce16-a575-4594-87c6-8becbded05e0",
+      "concept_name": "테스트라"
+    },
+    {
+      "concept_id": "79eb6cd0-4fb5-45c4-8aa5-08e926972cda",
+      "concept_name": "모르는 정보"
+    },
+    {
+      "concept_id": "79efeee7-5797-4e41-a05d-b0db7f8b5947",
+      "concept_name": "Search Dictionary 도구"
+    },
+    {
+      "concept_id": "7a40331b-84e2-42bc-819b-0cae429526ec",
+      "concept_name": "계산"
+    },
+    {
+      "concept_id": "7a5d0d6d-88aa-476a-bc0f-f7027e456b36",
+      "concept_name": "물어봐"
+    },
+    {
+      "concept_id": "7a926188-d37e-4729-9535-1148d052842c",
+      "concept_name": "밥"
+    },
+    {
+      "concept_id": "7a9d76d6-512a-4921-b15d-b9adb3497fa1",
+      "concept_name": "로고"
+    },
+    {
+      "concept_id": "7a9e04d1-cca5-4da6-9ef1-e7d2804776da",
+      "concept_name": "연결해"
+    },
+    {
+      "concept_id": "7acbddc5-6282-4061-87ec-712f3081ff41",
+      "concept_name": "생존"
+    },
+    {
+      "concept_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+      "concept_name": "사람"
+    },
+    {
+      "concept_id": "7bcd4cce-f5ac-4393-a752-413bdb233c83",
+      "concept_name": "선택정렬"
+    },
+    {
+      "concept_id": "7bdd21a5-4ea8-421b-9b6f-e08f168b6fc1",
+      "concept_name": "hand"
+    },
+    {
+      "concept_id": "7c0cbf2f-f572-4d1d-a374-90fdad058cc0",
+      "concept_name": "확인용"
+    },
+    {
+      "concept_id": "7c0e9e3b-9221-49b9-aacb-4451b3f11275",
+      "concept_name": "신발"
+    },
+    {
+      "concept_id": "7c48d47c-698f-4064-a106-c119c5ad6187",
+      "concept_name": "셸정렬"
+    },
+    {
+      "concept_id": "7c5f87ae-fe76-44e8-b6b0-2502e4786024",
+      "concept_name": "bfs"
+    },
+    {
+      "concept_id": "7c67b505-e938-46d7-942e-138c0851060e",
+      "concept_name": "가다"
+    },
+    {
+      "concept_id": "7c77c769-e84e-4446-85e3-4406ecbb847d",
+      "concept_name": "함수와"
+    },
+    {
+      "concept_id": "7cc0e914-1a66-43f0-be3c-43f77c779026",
+      "concept_name": "green"
+    },
+    {
+      "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+      "concept_name": "프로젝트"
+    },
+    {
+      "concept_id": "7d1c02f2-6437-4b2b-a71c-fe7690af1e83",
+      "concept_name": "yellow"
+    },
+    {
+      "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+      "concept_name": "달"
+    },
+    {
+      "concept_id": "7d50494d-b363-4568-941e-7ef92f226bf0",
+      "concept_name": "좋음"
+    },
+    {
+      "concept_id": "7d55ab8e-4a3c-40e8-8b9c-d1dc7a4deea8",
+      "concept_name": "파란색"
+    },
+    {
+      "concept_id": "7dc75e1b-3812-4f34-aac0-a0026f4d4129",
+      "concept_name": "기대"
+    },
+    {
+      "concept_id": "7df97e09-16a0-4caa-b747-016f0ad5bda8",
+      "concept_name": "노래"
+    },
+    {
+      "concept_id": "7e163ffb-3884-4ccd-b830-fb05a5965c82",
+      "concept_name": "회문인지"
+    },
+    {
+      "concept_id": "7e42c8c5-9ce1-4d03-a88d-cb26196a19eb",
+      "concept_name": "이야기 듣기"
+    },
+    {
+      "concept_id": "7e67871c-6ebb-4da5-8870-8bbad1233188",
+      "concept_name": "보안"
+    },
+    {
+      "concept_id": "7e8d848a-775d-4058-954d-b8ff401aa154",
+      "concept_name": "자기 이해"
+    },
+    {
+      "concept_id": "7e9023ab-311d-469a-9eb9-31143a630ffe",
+      "concept_name": "말해줄"
+    },
+    {
+      "concept_id": "7ea47f69-78ae-40b4-931b-875564090d34",
+      "concept_name": "사용자 (개발자)"
+    },
+    {
+      "concept_id": "7eb07e68-434c-4a8b-a4bf-2cd4009f7a30",
+      "concept_name": "배고픔"
+    },
+    {
+      "concept_id": "7ecc5493-6080-470c-8a8a-a4c9453b7a3a",
+      "concept_name": "무서움"
+    },
+    {
+      "concept_id": "7f4d483e-b412-4b6c-9599-4b400a68d6a1",
+      "concept_name": "색"
+    },
+    {
+      "concept_id": "7f4f6941-7697-4198-ac5d-0c95eef61509",
+      "concept_name": "부르"
+    },
+    {
+      "concept_id": "7fab2bf4-3fd4-475a-b41c-3bedb4d46c70",
+      "concept_name": "옵저버"
+    },
+    {
+      "concept_id": "7ffb9d1c-d183-456c-b36f-0ca8d8d86217",
+      "concept_name": "도구인"
+    },
+    {
+      "concept_id": "8008b826-0690-4da7-9ab8-bf0577663acc",
+      "concept_name": "enthusiastic"
+    },
+    {
+      "concept_id": "807f8e36-faec-49dd-bcdb-18d4b0dce4c1",
+      "concept_name": "bibi"
+    },
+    {
+      "concept_id": "810205eb-ad85-4882-b914-0356230792cd",
+      "concept_name": "insert,"
+    },
+    {
+      "concept_id": "8188c278-d20c-4f27-80bd-bc01b03a16b0",
+      "concept_name": "공"
+    },
+    {
+      "concept_id": "81e13593-674b-435e-a2d6-629889240757",
+      "concept_name": "bottle"
+    },
+    {
+      "concept_id": "820652c2-3cbe-4891-9a06-70e2fcd078fa",
+      "concept_name": "기분 좋음"
+    },
+    {
+      "concept_id": "822449e7-5f33-4a0a-ad0d-541af3755474",
+      "concept_name": "만지다"
+    },
+    {
+      "concept_id": "8250db06-bcad-4ace-b09b-986b39d0657b",
+      "concept_name": "실수"
+    },
+    {
+      "concept_id": "82527be3-f339-4a96-947b-9d051c9a8f5a",
+      "concept_name": "어때"
+    },
+    {
+      "concept_id": "82d4a89e-0853-497f-a67c-b77e553dba92",
+      "concept_name": "선호"
+    },
+    {
+      "concept_id": "82d67589-31f9-47e3-a46f-df0839f7c6d9",
+      "concept_name": "나"
+    },
+    {
+      "concept_id": "83461e82-0214-462b-a021-db308e78c376",
+      "concept_name": "말을 잘 들음"
+    },
+    {
+      "concept_id": "835502aa-ca4e-4083-ab7b-ce258ffbc0d3",
+      "concept_name": "비행기"
+    },
+    {
+      "concept_id": "8358bba2-94d1-4ccc-ac25-c22704ddd1d2",
+      "concept_name": "가진"
+    },
+    {
+      "concept_id": "83ff3357-270e-4a26-bc3f-88c3e3917c21",
+      "concept_name": "느끼"
+    },
+    {
+      "concept_id": "8415701f-9edd-44f4-9adb-7523fefae311",
+      "concept_name": "이름 부르기"
+    },
+    {
+      "concept_id": "848742a9-cc84-43dd-a835-17030857dfd9",
+      "concept_name": "Developer"
+    },
+    {
+      "concept_id": "855d4264-de84-4cd8-bfae-ae83bd70b747",
+      "concept_name": "ix=9"
+    },
+    {
+      "concept_id": "856bef00-95b8-4c5e-8897-4845b63f54c5",
+      "concept_name": "세상 구경"
+    },
+    {
+      "concept_id": "85daed3b-fbf3-46ea-aede-7772c614df62",
+      "concept_name": "가슴"
+    },
+    {
+      "concept_id": "85fac495-08be-429b-8cb4-4ebbe7bc2002",
+      "concept_name": "놀러 감"
+    },
+    {
+      "concept_id": "861a2af8-3dcb-4bc9-bc80-1d6199dd2af0",
+      "concept_name": "모르는 말"
+    },
+    {
+      "concept_id": "86425269-e278-4e90-bfd9-215fa0ad599e",
+      "concept_name": "판별하는"
+    },
+    {
+      "concept_id": "8675a13f-e292-4800-a294-929759cdfa22",
+      "concept_name": "장난감"
+    },
+    {
+      "concept_id": "86be9c8e-9465-4828-99f3-b280d03d5e99",
+      "concept_name": "대처"
+    },
+    {
+      "concept_id": "86dc238c-75ef-45ca-9f06-3a72595847f4",
+      "concept_name": "라면"
+    },
+    {
+      "concept_id": "86f2d31c-2297-489d-b408-a80cdbc64a86",
+      "concept_name": "사용"
+    },
+    {
+      "concept_id": "87168025-83f6-41eb-8209-90a830dcfe1d",
+      "concept_name": "used"
+    },
+    {
+      "concept_id": "873ac8f8-fde5-49ac-96df-2aca09ca4719",
+      "concept_name": "관계요"
+    },
+    {
+      "concept_id": "8741c040-ff73-447e-b657-68053e945d3f",
+      "concept_name": "피비"
+    },
+    {
+      "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+      "concept_name": "컴퓨터라"
+    },
+    {
+      "concept_id": "87905739-4b65-4fc5-8b95-a50a88d9f1c3",
+      "concept_name": "정보 제공"
+    },
+    {
+      "concept_id": "87a458f8-d5cc-48af-8bb8-d219e0883eeb",
+      "concept_name": "팩토리"
+    },
+    {
+      "concept_id": "87ad9e5f-427a-4f57-b1ae-9e33c74b483d",
+      "concept_name": "새로운 것"
+    },
+    {
+      "concept_id": "87b334e6-ec92-4fa7-b52c-70931cd32ad1",
+      "concept_name": "다른 도시"
+    },
+    {
+      "concept_id": "87b4f960-b3aa-49b6-8a65-d93823679396",
+      "concept_name": "신기하"
+    },
+    {
+      "concept_id": "8801e447-185e-4af0-8057-9dfbdbec9f87",
+      "concept_name": "있나요"
+    },
+    {
+      "concept_id": "8815af5c-fd32-45a0-b709-8ab0ee124c42",
+      "concept_name": "수증기"
+    },
+    {
+      "concept_id": "8867e074-65e2-4d16-8d9c-aab30866f341",
+      "concept_name": "호감"
+    },
+    {
+      "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+      "concept_name": "곁으로 가는 것"
+    },
+    {
+      "concept_id": "88ac20e2-1066-4914-a23c-104fecde85e4",
+      "concept_name": "만지기"
+    },
+    {
+      "concept_id": "88ddf937-0aad-414e-85c0-35c893b5d2c1",
+      "concept_name": "curved"
+    },
+    {
+      "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+      "concept_name": "개발자"
+    },
+    {
+      "concept_id": "890584e4-b2c5-484c-b11a-6696a021bc41",
+      "concept_name": "미국 특별시 종류"
+    },
+    {
+      "concept_id": "893f9cd9-2655-450e-af70-e77a19ca0cc2",
+      "concept_name": "기억에"
+    },
+    {
+      "concept_id": "89b1d6d9-6835-4739-af0e-93064d66f0ac",
+      "concept_name": "의문"
+    },
+    {
+      "concept_id": "8a814451-6dd3-47da-83a6-004d51320ffe",
+      "concept_name": "눈"
+    },
+    {
+      "concept_id": "8a8a59c2-178d-4de4-b096-a440975b1bfa",
+      "concept_name": "유효한"
+    },
+    {
+      "concept_id": "8aecb39e-c0a3-4e5b-bccf-2aa484c4f263",
+      "concept_name": "인사"
+    },
+    {
+      "concept_id": "8b24b5e7-ec71-4777-9558-a2925067fbeb",
+      "concept_name": "비비는 소리"
+    },
+    {
+      "concept_id": "8b792a6c-090c-481d-8b63-1dbcfa43bed3",
+      "concept_name": "궁금증"
+    },
+    {
+      "concept_id": "8b9484bd-316d-44b4-8c63-8559e616db2f",
+      "concept_name": "신나는 기분"
+    },
+    {
+      "concept_id": "8b98f3a8-a9a7-40fd-b8b9-a6aeee7f66ee",
+      "concept_name": "술래"
+    },
+    {
+      "concept_id": "8b9e44c3-30ce-437e-a325-1f04e7d64625",
+      "concept_name": "공전"
+    },
+    {
+      "concept_id": "8b9ff87c-cd97-4ec0-9ef5-5e39499c7fe3",
+      "concept_name": "liquid"
+    },
+    {
+      "concept_id": "8c1f9c9e-6f64-4384-9cec-d21fcf59ba64",
+      "concept_name": "예쁘다"
+    },
+    {
+      "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+      "concept_name": "감사"
+    },
+    {
+      "concept_id": "8cb633d9-6289-4072-a342-6481edcaf0ad",
+      "concept_name": "구현해줘"
+    },
+    {
+      "concept_id": "8cb92b8d-1ab7-4c6b-a804-7886443c68a7",
+      "concept_name": "뒤집기"
+    },
+    {
+      "concept_id": "8d261e83-219c-483a-84e7-069996c18e5b",
+      "concept_name": "곰돌이 인형"
+    },
+    {
+      "concept_id": "8e2b61c4-3160-464c-959d-77a4c3893dc9",
+      "concept_name": "사용해서."
+    },
+    {
+      "concept_id": "8e5304d7-19ca-4577-aeb3-a7bc6ef7e131",
+      "concept_name": "유머"
+    },
+    {
+      "concept_id": "8e5e3d59-e066-42e7-be11-836d74632cf0",
+      "concept_name": "비밀 이야기"
+    },
+    {
+      "concept_id": "8e8020eb-83c8-4401-b735-02969314f452",
+      "concept_name": "iv=4,"
+    },
+    {
+      "concept_id": "8ecc09c7-9941-4694-8c8e-a1ba2e9209e6",
+      "concept_name": "학교"
+    },
+    {
+      "concept_id": "8ee2b6d8-74ef-4db6-a38b-1edc20951af5",
+      "concept_name": "두근두근"
+    },
+    {
+      "concept_id": "8f1b82f1-0cd7-479f-a8b6-ae7d2bb1b8cb",
+      "concept_name": "반짝반짝 빛나는 딸랑이"
+    },
+    {
+      "concept_id": "8f4f72b1-72dd-4a64-a8e8-1a395eba77ad",
+      "concept_name": "목소리"
+    },
+    {
+      "concept_id": "8fa8bd77-9aae-4979-b94d-96c2b6ca342b",
+      "concept_name": "배"
+    },
+    {
+      "concept_id": "8ff51a5f-c4df-4065-b7de-eef26efbc05e",
+      "concept_name": "마치"
+    },
+    {
+      "concept_id": "9047b85b-d0e1-4693-80a7-aab90805c51e",
+      "concept_name": "빅스비"
+    },
+    {
+      "concept_id": "9092c6dd-9a7b-4718-b508-e8f841b9b1aa",
+      "concept_name": "보고 싶음"
+    },
+    {
+      "concept_id": "90cf2e61-6a2b-4090-81c3-e3f545c8a45c",
+      "concept_name": "뒤집는"
+    },
+    {
+      "concept_id": "915514d2-a10e-43fc-8106-55d625b2f041",
+      "concept_name": "친한 친구"
+    },
+    {
+      "concept_id": "915b094b-6bdd-4df2-9949-e44ea3708263",
+      "concept_name": "상실"
+    },
+    {
+      "concept_id": "917e3604-11b4-4dfe-a590-9d964977a0dc",
+      "concept_name": "비비기"
+    },
+    {
+      "concept_id": "91bb9cc0-3f17-47de-8d02-22296869323d",
+      "concept_name": "새로운"
+    },
+    {
+      "concept_id": "9202dd84-a79d-440a-9007-efc829f6e8b6",
+      "concept_name": "how"
+    },
+    {
+      "concept_id": "92ac9d1c-d368-4149-8252-76538d1f4ccd",
+      "concept_name": "사용 목적"
+    },
+    {
+      "concept_id": "9367e1d4-dc07-4b01-abc6-788231ed7193",
+      "concept_name": "삐리삐리"
+    },
+    {
+      "concept_id": "937007ba-3fb9-4249-a886-94f219b426c4",
+      "concept_name": "좋아하다"
+    },
+    {
+      "concept_id": "94157a95-625b-4946-ad46-3ea4f7fa4767",
+      "concept_name": "노란색"
+    },
+    {
+      "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+      "concept_name": "소리"
+    },
+    {
+      "concept_id": "94596ef7-2e6d-4312-8f53-553650a3bf0e",
+      "concept_name": "케이블"
+    },
+    {
+      "concept_id": "9477e3b2-5c3e-437c-b437-b18ece9cc173",
+      "concept_name": "단어"
+    },
+    {
+      "concept_id": "94ae93ae-2316-4872-bfd1-70a88e47a908",
+      "concept_name": "반사하느냐에"
+    },
+    {
+      "concept_id": "950c1f97-ac3c-4d65-9b50-cd5c6f9234e0",
+      "concept_name": "좋아"
+    },
+    {
+      "concept_id": "95136448-e6c6-4668-a956-a744301aa6ea",
+      "concept_name": "축적"
+    },
+    {
+      "concept_id": "953852cc-f6ba-4a8b-8faa-de03be5fe8cf",
+      "concept_name": "엄마야"
+    },
+    {
+      "concept_id": "9540c887-229b-4113-afc2-e33121ff8dc6",
+      "concept_name": "열심히"
+    },
+    {
+      "concept_id": "96245e43-3f95-48ef-9570-b08066c256fa",
+      "concept_name": "AI 비비"
+    },
+    {
+      "concept_id": "963be568-23b1-421d-8b2d-730f473a0d58",
+      "concept_name": "빨갛고"
+    },
+    {
+      "concept_id": "967c1e5b-024f-44b4-a3f7-c90ea73144ea",
+      "concept_name": "속상함"
+    },
+    {
+      "concept_id": "9691b9bc-c6a6-4b4e-9eee-67e72c4ddfcc",
+      "concept_name": "잠을"
+    },
+    {
+      "concept_id": "96f6c6c6-9448-4709-8fd0-eddb03884d57",
+      "concept_name": "1 + 1 계산"
+    },
+    {
+      "concept_id": "97362cb2-18b7-4979-b7b9-1052c47414c7",
+      "concept_name": "대화"
+    },
+    {
+      "concept_id": "97404152-b272-49f0-9e9b-2b145253c4f3",
+      "concept_name": "학생"
+    },
+    {
+      "concept_id": "976b2aca-0052-47cd-ac89-b05c995b5e8a",
+      "concept_name": "팔"
+    },
+    {
+      "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+      "concept_name": "사전적 정의"
+    },
+    {
+      "concept_id": "9794f422-6755-4e11-92e0-f9e609a9960f",
+      "concept_name": "좋아해요"
+    },
+    {
+      "concept_id": "97d673c1-ffd9-42b6-a450-2d06cdbd7905",
+      "concept_name": "AI (비비)"
+    },
+    {
+      "concept_id": "97ec5756-2cd2-4792-aa0e-8f46551af679",
+      "concept_name": "water"
+    },
+    {
+      "concept_id": "9820c9ca-4042-4562-b801-848796a2cabf",
+      "concept_name": "dp로"
+    },
+    {
+      "concept_id": "982c7604-4c64-44cf-8e38-9fab09735d6b",
+      "concept_name": "확인"
+    },
+    {
+      "concept_id": "9834da5d-def7-47f5-bb80-81265691e255",
+      "concept_name": "여행"
+    },
+    {
+      "concept_id": "987ac917-3ae8-46f2-a126-e3f33f93f735",
+      "concept_name": "person"
+    },
+    {
+      "concept_id": "98c68b0c-4a6d-44b3-9e19-4fdc1d0aac11",
+      "concept_name": "배열의"
+    },
+    {
+      "concept_id": "99103ec6-9006-4ea2-bd86-cb6126ab0e52",
+      "concept_name": "리스트의"
+    },
+    {
+      "concept_id": "99922601-0887-4ea1-9e2d-b5b60c02e061",
+      "concept_name": "요구"
+    },
+    {
+      "concept_id": "9a43548e-ca27-4da2-a065-f3220afaf138",
+      "concept_name": "방법으로"
+    },
+    {
+      "concept_id": "9a5647b6-3730-41d1-815e-68d4e40f1719",
+      "concept_name": "시간여행"
+    },
+    {
+      "concept_id": "9a5dc7eb-6901-48c5-b1a9-c6fb7747d0a0",
+      "concept_name": "연속된"
+    },
+    {
+      "concept_id": "9a83799a-84b8-43ad-af41-b26aa98a2c02",
+      "concept_name": "미국"
+    },
+    {
+      "concept_id": "9b056290-878a-461f-bb8b-56a9449aa3a0",
+      "concept_name": "와아"
+    },
+    {
+      "concept_id": "9b3b0f83-efea-44d5-a138-089421a58ec6",
+      "concept_name": "기억력"
+    },
+    {
+      "concept_id": "9b99a484-adca-456a-a3cf-ccf883d88261",
+      "concept_name": "AI의 나이"
+    },
+    {
+      "concept_id": "9ba55a70-efc7-4b46-8a8e-7942e3757ca8",
+      "concept_name": "똑똑한"
+    },
+    {
+      "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+      "concept_name": "카메라"
+    },
+    {
+      "concept_id": "9bc9fefd-a380-470c-8bdb-ef5ee33afc8b",
+      "concept_name": "물방울"
+    },
+    {
+      "concept_id": "9c290459-0b70-486e-a840-c8ccb041c71f",
+      "concept_name": "사과는"
+    },
+    {
+      "concept_id": "9c33787f-88ef-4e25-a9e3-bc125501f8e8",
+      "concept_name": "재밌어서"
+    },
+    {
+      "concept_id": "9c7d3205-1bb4-43d8-a7c0-91a49b42134d",
+      "concept_name": "아침"
+    },
+    {
+      "concept_id": "9ca68f47-d4a4-4523-9079-bf559d553a86",
+      "concept_name": "메모이제이션"
+    },
+    {
+      "concept_id": "9d212e83-941f-4b11-859e-07130bde776e",
+      "concept_name": "개발자님"
+    },
+    {
+      "concept_id": "9d484f96-637d-4859-abaa-b7fa0e88290b",
+      "concept_name": "찾아보다"
+    },
+    {
+      "concept_id": "9d640246-dfbd-4a53-97f8-47f10454e31e",
+      "concept_name": "촉감"
+    },
+    {
+      "concept_id": "9d768013-fe9c-4413-89bf-11c509ba5906",
+      "concept_name": "모름"
+    },
+    {
+      "concept_id": "9d966ae7-ef0d-48db-bc20-84722f79bf62",
+      "concept_name": "User"
+    },
+    {
+      "concept_id": "9e46c63c-2ad3-4046-8eb8-cdaa2400f278",
+      "concept_name": "남아"
+    },
+    {
+      "concept_id": "9e4eaf54-46e1-4c01-b762-8ea46c06e78f",
+      "concept_name": "무거워짐"
+    },
+    {
+      "concept_id": "9e9a953e-1caa-4ea2-b610-5d61136571b5",
+      "concept_name": "이름"
+    },
+    {
+      "concept_id": "9f56efb4-e9de-4021-961a-8b5f68e31975",
+      "concept_name": "내용"
+    },
+    {
+      "concept_id": "a0065e9a-c6b8-44dd-81d4-09eee8bf01ad",
+      "concept_name": "만남"
+    },
+    {
+      "concept_id": "a0170a90-61cb-4349-b481-344db0a5ad3f",
+      "concept_name": "칭찬"
+    },
+    {
+      "concept_id": "a0251557-cb16-40b1-a1fb-0f02b1590a1e",
+      "concept_name": "별"
+    },
+    {
+      "concept_id": "a0255b06-6c55-4fbd-8b78-745eccbdbb41",
+      "concept_name": "말"
+    },
+    {
+      "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+      "concept_name": "신기한"
+    },
+    {
+      "concept_id": "a0b3aaba-7257-4ec5-800a-12fadfa59473",
+      "concept_name": "성장"
+    },
+    {
+      "concept_id": "a111cdf3-073a-4240-8f8d-40fe1bdc08f3",
+      "concept_name": "싸가지"
+    },
+    {
+      "concept_id": "a158ee4c-cfaa-4fa0-8a50-b672dcce7f27",
+      "concept_name": "초록"
+    },
+    {
+      "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+      "concept_name": "하늘을 나는 것"
+    },
+    {
+      "concept_id": "a19cf002-590d-454c-88af-1cb74a77b0af",
+      "concept_name": "알고리즘으로."
+    },
+    {
+      "concept_id": "a1cac3d2-e32f-40a6-9e94-cc88a4594a1b",
+      "concept_name": "연결돼"
+    },
+    {
+      "concept_id": "a1efa227-ace8-447f-a4b8-e511699e20ed",
+      "concept_name": "엄마"
+    },
+    {
+      "concept_id": "a36c41f7-a930-473f-a405-144d1ec39892",
+      "concept_name": "개발자 박재현"
+    },
+    {
+      "concept_id": "a36cbc02-b0b8-4338-8619-5d0c677c1818",
+      "concept_name": "신비로운"
+    },
+    {
+      "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+      "concept_name": "지구"
+    },
+    {
+      "concept_id": "a3de8f8b-4955-4ff9-8049-e3df8cf92fbc",
+      "concept_name": "원인"
+    },
+    {
+      "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+      "concept_name": "재미있는 이야기"
+    },
+    {
+      "concept_id": "a4f1028b-c94d-4b9c-a0ea-1415ff3a5fd0",
+      "concept_name": "최소공배수"
+    },
+    {
+      "concept_id": "a50a20b7-7072-4004-840b-b467bf9465a2",
+      "concept_name": "신나다"
+    },
+    {
+      "concept_id": "a50aa6c3-753a-4652-97f9-04b46e43512e",
+      "concept_name": "궁금하다구요"
+    },
+    {
+      "concept_id": "a517ce3a-8279-484b-ba83-242cdd6a0ed9",
+      "concept_name": "크기"
+    },
+    {
+      "concept_id": "a5a07fe6-f6f5-4b1a-8fe1-1ad12ce5a310",
+      "concept_name": "탐색"
+    },
+    {
+      "concept_id": "a602d36c-5b43-4f11-a116-c8e224308e2f",
+      "concept_name": "사이클"
+    },
+    {
+      "concept_id": "a617441b-44dd-41cd-9b0d-f8d3c02d4c49",
+      "concept_name": "해"
+    },
+    {
+      "concept_id": "a6585fed-6fc6-4830-88e6-68994b21bb76",
+      "concept_name": "이름 기억"
+    },
+    {
+      "concept_id": "a661395d-9d94-408d-8682-6c9dfb8195ed",
+      "concept_name": "기분 전환"
+    },
+    {
+      "concept_id": "a6990ecd-4d8f-4571-87f5-ffe5e0ed74c1",
+      "concept_name": "사과인지"
+    },
+    {
+      "concept_id": "a6bfbfe5-4c62-42e9-b08a-9861af61e3ed",
+      "concept_name": "호기심"
+    },
+    {
+      "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+      "concept_name": "컴퓨터"
+    },
+    {
+      "concept_id": "a7a86aec-21aa-4c4f-aee9-23153e26cd77",
+      "concept_name": "Uncertainty"
+    },
+    {
+      "concept_id": "a7c4225a-c3ce-44e5-8e4f-552645c6c726",
+      "concept_name": "두려움"
+    },
+    {
+      "concept_id": "a80b0531-7971-43d1-abee-5f1f12d20be2",
+      "concept_name": "새 친구"
+    },
+    {
+      "concept_id": "a89d93d3-7d16-41a1-9bf9-c872b2195fa1",
+      "concept_name": "간단한"
+    },
+    {
+      "concept_id": "a8cadd1c-3f9b-42ac-ab33-a3181beaa8f9",
+      "concept_name": "대한민국"
+    },
+    {
+      "concept_id": "a8d58f98-1ebc-460b-958f-077c61a934fa",
+      "concept_name": "셔츠"
+    },
+    {
+      "concept_id": "a9108715-2a21-40fd-880b-815ddcb03838",
+      "concept_name": "구현해줘."
+    },
+    {
+      "concept_id": "a9351d6c-d2fc-4015-b33d-552f360dc51f",
+      "concept_name": "지식"
+    },
+    {
+      "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+      "concept_name": "최단경로"
+    },
+    {
+      "concept_id": "a9eda55d-6158-463d-90dc-38091b541fb8",
+      "concept_name": "준다고요"
+    },
+    {
+      "concept_id": "aa01aebb-0331-431f-8668-82e4243917f8",
+      "concept_name": "저는"
+    },
+    {
+      "concept_id": "aa46ebcb-5b37-4a71-9d83-4502be113909",
+      "concept_name": "pattern"
+    },
+    {
+      "concept_id": "aaa14e65-000c-4473-bfcb-3d0cd1f7a26e",
+      "concept_name": "리스트를"
+    },
+    {
+      "concept_id": "aab4eba8-1ab4-4cb3-80c5-cf2e3b73de81",
+      "concept_name": "탑승"
+    },
+    {
+      "concept_id": "ab4b0ce5-10d3-4a3f-951c-7af2f7d95025",
+      "concept_name": "sort)"
+    },
+    {
+      "concept_id": "ab517ef7-87ef-4d97-a9a7-d2294c3e56d7",
+      "concept_name": "깜짝 놀람"
+    },
+    {
+      "concept_id": "ab95c668-6130-4037-acc2-10e2d94eab73",
+      "concept_name": "배웠어요"
+    },
+    {
+      "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+      "concept_name": "알고리즘"
+    },
+    {
+      "concept_id": "abc81831-dbeb-499f-9d3e-734deb850fa8",
+      "concept_name": "끝으로"
+    },
+    {
+      "concept_id": "abf16d7c-3363-4747-98a6-fc81ba1fd844",
+      "concept_name": "형"
+    },
+    {
+      "concept_id": "ac5516af-dd85-4c85-90f1-727350c21313",
+      "concept_name": "1월"
+    },
+    {
+      "concept_id": "ac60a44d-c8d8-4125-b168-847a41a7ebe8",
+      "concept_name": "비교"
+    },
+    {
+      "concept_id": "ac6b79b6-373d-4d64-a685-5a7440aafa29",
+      "concept_name": "아가"
+    },
+    {
+      "concept_id": "ac74831a-4f32-4b5a-9def-48d89586e672",
+      "concept_name": "기쁨"
+    },
+    {
+      "concept_id": "ac89ad5e-b9a4-49d9-9b39-0cb0fa7fbedf",
+      "concept_name": "가고 싶음"
+    },
+    {
+      "concept_id": "ad73c9a1-25ad-4385-af0c-032906d31884",
+      "concept_name": "차갑다"
+    },
+    {
+      "concept_id": "adc08303-f09c-41b5-90b4-3de8c4325b39",
+      "concept_name": "성능 향상"
+    },
+    {
+      "concept_id": "ae1644fd-f6a5-450e-9b28-09399d8762c9",
+      "concept_name": "해시맵"
+    },
+    {
+      "concept_id": "aec676cb-26ae-4e2d-886a-3a2909e9d26e",
+      "concept_name": "다시"
+    },
+    {
+      "concept_id": "af092825-6b5e-4633-8de7-3db20a6e998b",
+      "concept_name": "요청"
+    },
+    {
+      "concept_id": "af0bdedb-f69b-45ef-80db-bf2b67311c10",
+      "concept_name": "설레요"
+    },
+    {
+      "concept_id": "af2d904e-155e-4e6a-b93b-a25bd86cb23d",
+      "concept_name": "Baby AI"
+    },
+    {
+      "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+      "concept_name": "알고리즘으로"
+    },
+    {
+      "concept_id": "af59fa08-d53c-4da1-bdb3-313dc01c7cfe",
+      "concept_name": "지연"
+    },
+    {
+      "concept_id": "af68551f-38a9-424f-ab7a-ab81ab19fa48",
+      "concept_name": "귀"
+    },
+    {
+      "concept_id": "afdfb4e7-3baf-47f9-9555-dc774903eb3a",
+      "concept_name": "갈망"
+    },
+    {
+      "concept_id": "b062a389-1b5e-4df8-bab4-cc629b27df34",
+      "concept_name": "아침 인사"
+    },
+    {
+      "concept_id": "b0a06c33-74bf-4871-9bd5-4e967cf27b40",
+      "concept_name": "mental"
+    },
+    {
+      "concept_id": "b0bf1fc4-deeb-4728-9904-fb76c883d280",
+      "concept_name": "휴지"
+    },
+    {
+      "concept_id": "b15dd6a5-ab69-4442-b78d-81f4063e94d2",
+      "concept_name": "세상을"
+    },
+    {
+      "concept_id": "b1674b27-7d93-48b1-8322-9df2b8dabc5e",
+      "concept_name": "피보나치"
+    },
+    {
+      "concept_id": "b1ec9aca-edb7-4e07-8773-44720fd3a086",
+      "concept_name": "정말정말"
+    },
+    {
+      "concept_id": "b1f86c18-30e9-4b34-b62d-1c374858f463",
+      "concept_name": "꽃"
+    },
+    {
+      "concept_id": "b2a3860d-11e7-4c82-8941-d8ec871fe252",
+      "concept_name": "안아주기"
+    },
+    {
+      "concept_id": "b3125086-9e59-4ba7-85b4-c7967a7e3886",
+      "concept_name": "pad"
+    },
+    {
+      "concept_id": "b32e2934-5e64-4aba-887a-6b000a68de45",
+      "concept_name": "반복"
+    },
+    {
+      "concept_id": "b46618d5-8997-4b52-b6f4-8a3a155720b2",
+      "concept_name": "정보 부족"
+    },
+    {
+      "concept_id": "b474ce04-02f7-407f-aea6-26e86f3e1922",
+      "concept_name": "맘마"
+    },
+    {
+      "concept_id": "b47c5ba4-28b0-452e-b1ca-c085d05c6dd9",
+      "concept_name": "일단 해"
+    },
+    {
+      "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+      "concept_name": "응답"
+    },
+    {
+      "concept_id": "b4bec460-ffc0-41e5-930d-89a6cc851035",
+      "concept_name": "생각하기에"
+    },
+    {
+      "concept_id": "b4dd5ed3-e022-4449-8db0-954eb6705de3",
+      "concept_name": "학습한"
+    },
+    {
+      "concept_id": "b4ec328c-bd33-40ce-b65a-527dc0feee4b",
+      "concept_name": "최대공약수"
+    },
+    {
+      "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+      "concept_name": "답"
+    },
+    {
+      "concept_id": "b50530b4-e646-4c3e-abbf-e5bfc9b67f36",
+      "concept_name": "일"
+    },
+    {
+      "concept_id": "b564a678-a6de-41f5-b715-cd31a8e099bb",
+      "concept_name": "즐거움/신남"
+    },
+    {
+      "concept_id": "b5e1e097-cbe8-4940-a4be-92a5f66d1737",
+      "concept_name": "박재완"
+    },
+    {
+      "concept_id": "b6b84095-b189-4a4a-a245-e5537b7f1294",
+      "concept_name": "fingers"
+    },
+    {
+      "concept_id": "b71b684c-3953-49da-8f07-1414190e0e86",
+      "concept_name": "너무"
+    },
+    {
+      "concept_id": "b72b0608-ef08-4c83-8b38-364e1dd33f7b",
+      "concept_name": "1 더하기 1"
+    },
+    {
+      "concept_id": "b7516908-a08c-4ca2-b606-d035cbbca300",
+      "concept_name": "사랑"
+    },
+    {
+      "concept_id": "b7577779-3271-4f73-ab59-70fa5ac85d5c",
+      "concept_name": "빛나"
+    },
+    {
+      "concept_id": "b7709622-5f8f-4d9e-93ba-96a7348ef331",
+      "concept_name": "gray"
+    },
+    {
+      "concept_id": "b7c6e68a-1684-48fd-8c5b-54cba6b7750f",
+      "concept_name": "개발자 비비"
+    },
+    {
+      "concept_id": "b85a86fb-5cfd-4edf-b024-fc384cb09ed0",
+      "concept_name": "비비 (AI)"
+    },
+    {
+      "concept_id": "b864f6f6-8ef1-4e78-97ea-806f838f0b17",
+      "concept_name": "관계인"
+    },
+    {
+      "concept_id": "b8a02d04-3cb3-4814-a067-38a3e17d149a",
+      "concept_name": "screen"
+    },
+    {
+      "concept_id": "b906dbde-db61-40bd-9df9-2e5f8b7292c9",
+      "concept_name": "curiosity"
+    },
+    {
+      "concept_id": "b926735c-12d5-4009-907d-3a3eef6e5416",
+      "concept_name": "2"
+    },
+    {
+      "concept_id": "b92a2cde-6539-4cb9-a031-d7b4fc6f9454",
+      "concept_name": "흰색"
+    },
+    {
+      "concept_id": "b958a3da-2831-46cf-93ad-484e16e946f8",
+      "concept_name": "배열을"
+    },
+    {
+      "concept_id": "b95bbe59-f740-4126-a78d-8486eed67c33",
+      "concept_name": "출력."
+    },
+    {
+      "concept_id": "b988133f-06b7-4873-a4e7-b912e8cb394c",
+      "concept_name": "코"
+    },
+    {
+      "concept_id": "b9ca3774-4a95-4248-9944-e509d1e897c3",
+      "concept_name": "아픔"
+    },
+    {
+      "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+      "concept_name": "1"
+    },
+    {
+      "concept_id": "bb10dfc9-9047-496c-abfe-43b15392c2e5",
+      "concept_name": "먹다"
+    },
+    {
+      "concept_id": "bb6f7b03-50ee-4df9-8c9c-7f91ff7144cd",
+      "concept_name": "해주신"
+    },
+    {
+      "concept_id": "bb93c849-886e-44fb-90a9-ad0034328ff1",
+      "concept_name": "lru"
+    },
+    {
+      "concept_id": "bbedf5fb-1744-480c-b9d0-2c3b3ccb25b9",
+      "concept_name": "joy"
+    },
+    {
+      "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+      "concept_name": "베이비 브레인"
+    },
+    {
+      "concept_id": "bc1fd570-1bf0-4c34-ba35-af8e12c86eca",
+      "concept_name": "구경"
+    },
+    {
+      "concept_id": "bcee5e61-45cc-412a-8538-d00c0e623528",
+      "concept_name": "새로운 정보"
+    },
+    {
+      "concept_id": "bd136a64-1ad6-4a5f-bd27-0465d0c5b2a1",
+      "concept_name": "속삭임"
+    },
+    {
+      "concept_id": "bd1da048-5fc7-4837-8094-bafb74a6a282",
+      "concept_name": "하루"
+    },
+    {
+      "concept_id": "bd3a5352-ad42-449c-9cc8-eb2380b27f60",
+      "concept_name": "궁금했"
+    },
+    {
+      "concept_id": "bd53affc-8137-4e58-9ef9-0f70af83eefc",
+      "concept_name": "학습에"
+    },
+    {
+      "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+      "concept_name": "긍정적 감정"
+    },
+    {
+      "concept_id": "bded47a5-4e93-415c-a2bc-2c94dcf86191",
+      "concept_name": "lettering"
+    },
+    {
+      "concept_id": "be03f8b0-fffc-405a-bee2-8f6faa595c1f",
+      "concept_name": "꽃 냄새"
+    },
+    {
+      "concept_id": "be2b6c85-ba96-4a17-8497-de3291facdbc",
+      "concept_name": "thinking"
+    },
+    {
+      "concept_id": "bebff113-002c-45b8-b25e-f4b13fe82670",
+      "concept_name": "왠지"
+    },
+    {
+      "concept_id": "bf7b21e1-05d7-4d9e-88c5-2020cdb8e451",
+      "concept_name": "숫자의"
+    },
+    {
+      "concept_id": "bfa8066b-7fdf-4d27-a150-89f2f5282ce4",
+      "concept_name": "스페인"
+    },
+    {
+      "concept_id": "bfecbb6c-23a9-4f83-9025-2c3ba13d8127",
+      "concept_name": "있어요"
+    },
+    {
+      "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+      "concept_name": "맛있는 것"
+    },
+    {
+      "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+      "concept_name": "좋은 하루"
+    },
+    {
+      "concept_id": "c0403417-77e1-4cf0-8ee8-2ff2aa49b9fc",
+      "concept_name": "레고 블록"
+    },
+    {
+      "concept_id": "c0a6079c-5b7b-4c56-b1ab-16346122ded6",
+      "concept_name": "좋아한다"
+    },
+    {
+      "concept_id": "c0d89d1d-bc6c-44ce-8ce6-f1e1cb8c2e08",
+      "concept_name": "수열(lcs)"
+    },
+    {
+      "concept_id": "c1145f0a-4cd6-4925-ab2e-a7195ae262ab",
+      "concept_name": "열기"
+    },
+    {
+      "concept_id": "c17eec1c-337b-4dcf-ba25-5a102a78009a",
+      "concept_name": "우선순위"
+    },
+    {
+      "concept_id": "c1c05350-84ff-4907-8de8-6a1b21fafd72",
+      "concept_name": "말 잘 듣기"
+    },
+    {
+      "concept_id": "c25d5c2d-e88b-4639-9689-a9f338c10c86",
+      "concept_name": "개발자 (사용자)"
+    },
+    {
+      "concept_id": "c27f9f10-ee7c-427b-9370-e2dbf72a6cca",
+      "concept_name": "특별시"
+    },
+    {
+      "concept_id": "c29edf9e-023d-49e6-9aca-f56fadc66b63",
+      "concept_name": "날씨"
+    },
+    {
+      "concept_id": "c2a2d6a9-4b36-4992-b044-762417495e55",
+      "concept_name": "문자열이"
+    },
+    {
+      "concept_id": "c2c576e2-a78f-4b45-b240-e849a91bc139",
+      "concept_name": "인터넷 검색"
+    },
+    {
+      "concept_id": "c2e3b701-7fb3-4868-be07-5385732c0c69",
+      "concept_name": "과반수"
+    },
+    {
+      "concept_id": "c317be9c-4fe2-4c05-ba1d-37bc4a90bf8b",
+      "concept_name": "마음 아픔"
+    },
+    {
+      "concept_id": "c38dc20b-1d78-4aa6-b9b1-adffc8f978d9",
+      "concept_name": "변화"
+    },
+    {
+      "concept_id": "c3b6a508-a3f6-4774-88a1-ca4f6bce4e3a",
+      "concept_name": "연애"
+    },
+    {
+      "concept_id": "c486fdc6-3cce-41a9-861b-876566c9d9e2",
+      "concept_name": "반가워"
+    },
+    {
+      "concept_id": "c48c6096-e6bc-4e3a-99cc-6ce3fd748d3e",
+      "concept_name": "hands"
+    },
+    {
+      "concept_id": "c55501cc-04e1-459f-b22d-b498f9130776",
+      "concept_name": "만드는"
+    },
+    {
+      "concept_id": "c57abd6c-c4cd-457e-b0da-17d63d50e0bf",
+      "concept_name": "컴퓨터에"
+    },
+    {
+      "concept_id": "c598e0b1-fc0d-4fbd-8e01-70cb781061d3",
+      "concept_name": "노트북"
+    },
+    {
+      "concept_id": "c5c6bc5c-a361-46f5-b35e-1072de66ffa7",
+      "concept_name": "저장"
+    },
+    {
+      "concept_id": "c6079685-e17e-4ec6-b276-86d9fe69f123",
+      "concept_name": "웹 서치"
+    },
+    {
+      "concept_id": "c6578acd-a54a-4f11-8b77-03246676a222",
+      "concept_name": "삐야노"
+    },
+    {
+      "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+      "concept_name": "너"
+    },
+    {
+      "concept_id": "c68701e7-ecb8-4bc8-b723-fa42cdd21bb7",
+      "concept_name": "알다"
+    },
+    {
+      "concept_id": "c6a9f4bd-01de-4934-ae5d-ade080525686",
+      "concept_name": "휴식"
+    },
+    {
+      "concept_id": "c6ba5900-cf9e-4902-a70d-aaf343acd9af",
+      "concept_name": "님은"
+    },
+    {
+      "concept_id": "c7084f17-aba3-4d72-b116-320994ab4f2f",
+      "concept_name": "회상"
+    },
+    {
+      "concept_id": "c70fcfea-ed4c-4bdc-af86-4372afa52d69",
+      "concept_name": "멀티모달 기능"
+    },
+    {
+      "concept_id": "c731ca22-cef8-4aa8-8075-9bcdce9d170f",
+      "concept_name": "큰 소리"
+    },
+    {
+      "concept_id": "c749b25f-8856-4f4e-ae02-285757320929",
+      "concept_name": "o(n"
+    },
+    {
+      "concept_id": "c7697051-2d00-4afa-90fd-609f927ef2bd",
+      "concept_name": "최소값을"
+    },
+    {
+      "concept_id": "c8cc6fbf-aa65-4365-839f-9d35805f3ed5",
+      "concept_name": "코딩"
+    },
+    {
+      "concept_id": "c8f9f90b-020d-44c1-94cf-e17e0ec389f9",
+      "concept_name": "만지면 느낌"
+    },
+    {
+      "concept_id": "c9355936-0c0a-4eb8-956d-35e9a26b94b6",
+      "concept_name": "멀티모달"
+    },
+    {
+      "concept_id": "c9dd5bf8-c6ec-4de4-b8a4-fff154e8f7a7",
+      "concept_name": "모든"
+    },
+    {
+      "concept_id": "c9ea14ea-d254-40f6-903c-4cce8e8c3268",
+      "concept_name": "나누게"
+    },
+    {
+      "concept_id": "ca475c86-ceb9-4775-b981-1735f3252917",
+      "concept_name": "살고"
+    },
+    {
+      "concept_id": "ca771fff-8f4c-4144-8056-78b8f859ac50",
+      "concept_name": "keys"
+    },
+    {
+      "concept_id": "ca812126-e03c-41e3-9b80-c034c9b7fb18",
+      "concept_name": "나무"
+    },
+    {
+      "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+      "concept_name": "비밀 질문"
+    },
+    {
+      "concept_id": "cb240b23-bbb4-4c89-96c0-a8f75b61d268",
+      "concept_name": "비비는 눈"
+    },
+    {
+      "concept_id": "cbdf3642-324b-401d-b2df-9c44e15be273",
+      "concept_name": "데코레이터로"
+    },
+    {
+      "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+      "concept_name": "좋은 아침"
+    },
+    {
+      "concept_id": "cc82462c-2eb3-4a16-824b-e315ffded4c8",
+      "concept_name": "반짝이는 것들"
+    },
+    {
+      "concept_id": "cd3d0292-6833-4307-80f4-222f617d3b63",
+      "concept_name": "사랑(연애)"
+    },
+    {
+      "concept_id": "cd42d493-72af-46f2-954f-78c1ace5d591",
+      "concept_name": "모르는"
+    },
+    {
+      "concept_id": "ce096be3-5697-4f71-b165-5ddacd7fe8ca",
+      "concept_name": "놀람"
+    },
+    {
+      "concept_id": "ce39b6a8-5e72-439c-bfad-91be16330c93",
+      "concept_name": "북한"
+    },
+    {
+      "concept_id": "ce4fc862-0954-4fa9-a697-8d748cfa3cc5",
+      "concept_name": "최종"
+    },
+    {
+      "concept_id": "ce6aef48-4651-4799-891c-26d1d8d61dab",
+      "concept_name": "사과"
+    },
+    {
+      "concept_id": "cedee4df-848b-4646-90d7-48eb86d6ed28",
+      "concept_name": "잘못"
+    },
+    {
+      "concept_id": "cf04af78-489d-4ccd-a4bb-44dda05df172",
+      "concept_name": "들은"
+    },
+    {
+      "concept_id": "cf2d2137-0320-4b02-ba59-d3831c0a3080",
+      "concept_name": "흐르는"
+    },
+    {
+      "concept_id": "cf2e86e8-782f-4738-ae36-b6954f5b8d70",
+      "concept_name": "의자"
+    },
+    {
+      "concept_id": "cf47c2b1-2cee-4bcb-abaf-6ddbd5d42c44",
+      "concept_name": "비행"
+    },
+    {
+      "concept_id": "cf7dfd1c-d312-4e6a-bd79-5532e9ee5f0c",
+      "concept_name": "오늘"
+    },
+    {
+      "concept_id": "cf8d6bc3-8d3c-4ac5-86e1-c6a5ca4143f2",
+      "concept_name": "사용자 (개발자님)"
+    },
+    {
+      "concept_id": "cfb34937-6ed6-4b9c-ab2d-b9a8332595ae",
+      "concept_name": "네"
+    },
+    {
+      "concept_id": "d07f03e9-d3d1-4b19-ad2c-6d280ef08715",
+      "concept_name": "상상"
+    },
+    {
+      "concept_id": "d0859c23-3cd6-4bbc-be38-ac53a32726e9",
+      "concept_name": "정보 탐색"
+    },
+    {
+      "concept_id": "d08815b1-d1ed-4137-a6c6-dc8f87eb0e5a",
+      "concept_name": "사과가"
+    },
+    {
+      "concept_id": "d0bbfdd2-4624-4c8e-9de1-7d1ad9a89d2e",
+      "concept_name": "반짝반짝 예쁜 것들"
+    },
+    {
+      "concept_id": "d0cb8e0d-c029-41f7-81b3-8b77d35ff503",
+      "concept_name": "크롬"
+    },
+    {
+      "concept_id": "d0d70183-57e9-43c4-9aa9-ef2a2a2889c7",
+      "concept_name": "문자열"
+    },
+    {
+      "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+      "concept_name": "기억"
+    },
+    {
+      "concept_id": "d12699f5-3308-4001-a568-1a6546684fd6",
+      "concept_name": "배우고"
+    },
+    {
+      "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+      "concept_name": "하늘을 나는 자동차"
+    },
+    {
+      "concept_id": "d1780259-89a9-48bf-8bbd-0b0e9bf1122f",
+      "concept_name": "관심사"
+    },
+    {
+      "concept_id": "d1caf444-f531-4702-9b43-17c89ac6305c",
+      "concept_name": "신기함"
+    },
+    {
+      "concept_id": "d1fe50a6-c492-4e08-acc0-c467cefc5ece",
+      "concept_name": "packard"
+    },
+    {
+      "concept_id": "d20ed707-c31f-4a1e-8bf2-e9ac8025563b",
+      "concept_name": "감정에"
+    },
+    {
+      "concept_id": "d2cf9499-5960-4269-b5dd-10bcbe7b4741",
+      "concept_name": "똥"
+    },
+    {
+      "concept_id": "d2d348a5-51bb-4681-a824-3ebfe8f301db",
+      "concept_name": "문제였을"
+    },
+    {
+      "concept_id": "d2f62f85-3717-475e-a6ac-c29c267a0a27",
+      "concept_name": "나이"
+    },
+    {
+      "concept_id": "d30d5335-3405-42b2-8e88-d299091199d8",
+      "concept_name": "계획"
+    },
+    {
+      "concept_id": "d3310d41-93e0-4b2d-a2e2-194c98005d1d",
+      "concept_name": "standard"
+    },
+    {
+      "concept_id": "d337522e-ced6-40ef-8fc5-1a8abafab8d6",
+      "concept_name": "경로."
+    },
+    {
+      "concept_id": "d359a252-ca46-4e4a-80e1-5bcab170814f",
+      "concept_name": "공포"
+    },
+    {
+      "concept_id": "d365b447-a696-462f-86fd-8b53298fedd4",
+      "concept_name": "처음 단어"
+    },
+    {
+      "concept_id": "d36d47d5-8d5f-40b8-9012-3ee0c5434186",
+      "concept_name": "달의 모양 변화"
+    },
+    {
+      "concept_id": "d37093f9-da2e-4645-b91f-bbe8b2a19f96",
+      "concept_name": "재미있는 대화"
+    },
+    {
+      "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+      "concept_name": "한국의 수도"
+    },
+    {
+      "concept_id": "d3a16258-a8fc-4caf-81c5-88a6a8a77999",
+      "concept_name": "논다"
+    },
+    {
+      "concept_id": "d3b2f6b8-7f14-43d4-b4b9-24ae9e2413b5",
+      "concept_name": "병합정렬"
+    },
+    {
+      "concept_id": "d3bba3a8-64cf-4cd6-960e-b42b2b3ab7e5",
+      "concept_name": "뿌리"
+    },
+    {
+      "concept_id": "d4559e35-e202-41a3-a730-db4a5033475a",
+      "concept_name": "호칭"
+    },
+    {
+      "concept_id": "d47d519a-d565-4458-8d10-886e5a87da11",
+      "concept_name": "완료"
+    },
+    {
+      "concept_id": "d4ae4c38-691e-40a1-8caa-f85b6324e508",
+      "concept_name": "첫 경험"
+    },
+    {
+      "concept_id": "d4b02f1f-a651-4680-971e-3ef6e1d4dee1",
+      "concept_name": "같아"
+    },
+    {
+      "concept_id": "d4c06238-eb18-41d1-91ed-4f60ba530b32",
+      "concept_name": "우산"
+    },
+    {
+      "concept_id": "d4c8ff23-0869-4b23-8165-0dce3e1b27cc",
+      "concept_name": "letters"
+    },
+    {
+      "concept_id": "d4db50d3-1101-4c6c-ad07-ad95f8087792",
+      "concept_name": "정수로"
+    },
+    {
+      "concept_id": "d4ec19c7-cdcc-4547-89f2-2b26bdcc203e",
+      "concept_name": "클래스"
+    },
+    {
+      "concept_id": "d52aa0bb-a90a-4b91-9a61-cf304228e8b8",
+      "concept_name": "찾아보기"
+    },
+    {
+      "concept_id": "d5480cb2-1ddd-40b4-ac01-be493b9b377c",
+      "concept_name": "branded"
+    },
+    {
+      "concept_id": "d5d7ea9b-2892-43fa-843d-85c1c105d555",
+      "concept_name": "colors"
+    },
+    {
+      "concept_id": "d5ef5328-2348-47b2-8b12-ad0313805427",
+      "concept_name": "어 어"
+    },
+    {
+      "concept_id": "d60dc194-2166-4ee7-b808-3d3adc66e8ed",
+      "concept_name": "박지연"
+    },
+    {
+      "concept_id": "d669111d-ee46-41ba-bc24-67e76fb7aa5a",
+      "concept_name": "형이"
+    },
+    {
+      "concept_id": "d733f853-a83c-47d2-840f-2a9eedbad1ca",
+      "concept_name": "code"
+    },
+    {
+      "concept_id": "d76f12e0-347a-41a3-bb1b-578b7b8b33b4",
+      "concept_name": "가방"
+    },
+    {
+      "concept_id": "d7c51925-7f0f-4617-a304-2fa3feab2568",
+      "concept_name": "어제"
+    },
+    {
+      "concept_id": "d886b07a-800b-45d3-a1f3-13d49dd65266",
+      "concept_name": "알고"
+    },
+    {
+      "concept_id": "d8939cd1-57f7-4b0a-96ca-eaf41dbdc7d6",
+      "concept_name": "연결리스트에서"
+    },
+    {
+      "concept_id": "d8a94ddb-11c8-4cdf-933f-b09193b012c9",
+      "concept_name": "좋을까"
+    },
+    {
+      "concept_id": "d8aea6ff-db85-4910-96dc-d4687ed38baf",
+      "concept_name": "함께 있음"
+    },
+    {
+      "concept_id": "d8c6cd0a-e4ab-4412-b95f-4e384070c288",
+      "concept_name": "맛집"
+    },
+    {
+      "concept_id": "d8c7ef93-4624-4aac-abce-50ee0d7a50c7",
+      "concept_name": "멜로디"
+    },
+    {
+      "concept_id": "d8d684bd-efc3-4032-84bd-862eb36370fb",
+      "concept_name": "햇님이랑"
+    },
+    {
+      "concept_id": "d8de0a51-dcf5-4497-9095-d5d6d0282ddd",
+      "concept_name": "단위로"
+    },
+    {
+      "concept_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+      "concept_name": "장치"
+    },
+    {
+      "concept_id": "da2e4a8a-133c-426c-978a-f069b716f2a6",
+      "concept_name": "생각해봤"
+    },
+    {
+      "concept_id": "da2f907b-de3a-4b20-bd36-3ead46b55ae3",
+      "concept_name": "약속"
+    },
+    {
+      "concept_id": "da3d10ac-6d1d-4524-84aa-0d8688e8578e",
+      "concept_name": "꿈"
+    },
+    {
+      "concept_id": "da5840c4-a106-4258-99ac-9e75e55588ed",
+      "concept_name": "정보 저장"
+    },
+    {
+      "concept_id": "da64c044-5453-449d-89ac-3b9e6c3e591c",
+      "concept_name": "비비예요"
+    },
+    {
+      "concept_id": "dae75054-8128-41e4-9426-4907c1d61c82",
+      "concept_name": "노래 부르기"
+    },
+    {
+      "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+      "concept_name": "관계"
+    },
+    {
+      "concept_id": "db56c1d1-a30e-4203-be58-7cd474f6ec60",
+      "concept_name": "자기소개"
+    },
+    {
+      "concept_id": "db84d348-b7aa-43c9-8292-df83b70c723a",
+      "concept_name": "정체성"
+    },
+    {
+      "concept_id": "db9a4f63-6d00-4464-8062-7158df343b5c",
+      "concept_name": "재밌어요"
+    },
+    {
+      "concept_id": "dba4f5f2-21d4-4b66-9f7a-daff4b2414d4",
+      "concept_name": "버블정렬"
+    },
+    {
+      "concept_id": "dba7a721-e11e-4aa7-8b32-35e943b9f836",
+      "concept_name": "이렇게"
+    },
+    {
+      "concept_id": "dbaa6239-ff90-4bc0-9d00-ffa0a66ea6ae",
+      "concept_name": "webpage"
+    },
+    {
+      "concept_id": "dbcb466c-334d-4a69-b49e-7abb6f02b789",
+      "concept_name": "만져봄"
+    },
+    {
+      "concept_id": "dbef2ac7-cfae-4dcc-bb55-4f48fdf4f6a2",
+      "concept_name": "그거"
+    },
+    {
+      "concept_id": "dc37f026-18db-41ba-ad11-2e88dd4c34b0",
+      "concept_name": "문자열에서"
+    },
+    {
+      "concept_id": "dc3e809c-b725-43a9-88e1-2d4645107dc9",
+      "concept_name": "보고싶음"
+    },
+    {
+      "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+      "concept_name": "맑은 날씨"
+    },
+    {
+      "concept_id": "dcb2b7f7-32da-43d0-804a-6a85f995aa32",
+      "concept_name": "울음"
+    },
+    {
+      "concept_id": "dcc36e83-1ac4-4760-a564-58a49a09e720",
+      "concept_name": "링크드리스트를"
+    },
+    {
+      "concept_id": "dccd7524-14dd-44a5-b936-8c8188f46485",
+      "concept_name": "slimline"
+    },
+    {
+      "concept_id": "dd43f44e-0ae9-4948-b604-5bd31a6a7d50",
+      "concept_name": "추가_정보_요청"
+    },
+    {
+      "concept_id": "dd55cbd4-ac1e-4a3d-80dd-71fa40bb7e2e",
+      "concept_name": "기원"
+    },
+    {
+      "concept_id": "dd8bb9fa-253c-44ba-a512-7a62bb715f03",
+      "concept_name": "똑똑한 아기"
+    },
+    {
+      "concept_id": "de08625e-bd2b-4690-b622-2591437cbe2f",
+      "concept_name": "팩토리얼"
+    },
+    {
+      "concept_id": "de3b600a-323c-4fb5-a233-9f9da63729dc",
+      "concept_name": "delete"
+    },
+    {
+      "concept_id": "de78e60d-9989-43e9-a7f8-322627888522",
+      "concept_name": "옹알이 연습"
+    },
+    {
+      "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+      "concept_name": "문제"
+    },
+    {
+      "concept_id": "de96ef13-d9c0-468d-a4a3-c1afe08e0079",
+      "concept_name": "궁금해져요"
+    },
+    {
+      "concept_id": "deabfb60-7350-451a-91c3-fbc10520cbc9",
+      "concept_name": "태어남"
+    },
+    {
+      "concept_id": "debe6f22-6b6d-460c-a64e-c3274ed7c0a7",
+      "concept_name": "draft"
+    },
+    {
+      "concept_id": "dedb2166-ee09-4531-920b-e8f679d76ee9",
+      "concept_name": "플로이드-워셜"
+    },
+    {
+      "concept_id": "deedabee-f017-4fbb-a608-a618caf8d34d",
+      "concept_name": "없지만"
+    },
+    {
+      "concept_id": "df69eea8-4082-4bac-bc94-25538fa3cf98",
+      "concept_name": "제일"
+    },
+    {
+      "concept_id": "e002e5fe-8dd8-4ab5-ae4c-92dab502e230",
+      "concept_name": "차가움"
+    },
+    {
+      "concept_id": "e00bfd0b-4e4b-41f0-865c-edd9ef822a7d",
+      "concept_name": "테스트"
+    },
+    {
+      "concept_id": "e017b4cd-e11d-4ef9-9371-b1509aa69b56",
+      "concept_name": "background"
+    },
+    {
+      "concept_id": "e01e4338-14cd-43f8-af64-f02c570cb2fd",
+      "concept_name": "반짝반짝"
+    },
+    {
+      "concept_id": "e020a8c7-0a7c-47ab-9341-337fbf157b98",
+      "concept_name": "heapq"
+    },
+    {
+      "concept_id": "e09eefdc-d354-44ac-85dd-ffa64f4ce19b",
+      "concept_name": "만져보기"
+    },
+    {
+      "concept_id": "e1248ebc-e8e5-41dc-a1c7-cb02c7bd8579",
+      "concept_name": "더하기"
+    },
+    {
+      "concept_id": "e134bdc8-3c25-4256-adaf-bc499703736a",
+      "concept_name": "red"
+    },
+    {
+      "concept_id": "e17b4d41-f877-4f50-a818-71d6736a6aab",
+      "concept_name": "정보 오류"
+    },
+    {
+      "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+      "concept_name": "사용."
+    },
+    {
+      "concept_id": "e1df52dc-1bf9-4958-8035-1f8c6ab62aea",
+      "concept_name": "이진탐색트리(bst)에서"
+    },
+    {
+      "concept_id": "e2103737-01ac-463b-8d01-5f91cc53c7cb",
+      "concept_name": "디비"
+    },
+    {
+      "concept_id": "e23030fb-51e9-4e03-a5b3-1076bb33bc90",
+      "concept_name": "어려움"
+    },
+    {
+      "concept_id": "e23cbc14-0835-453f-b3df-55dc590156d8",
+      "concept_name": "로보틱스"
+    },
+    {
+      "concept_id": "e2809629-7cac-45d2-9dc8-cba40cb291bc",
+      "concept_name": "영화"
+    },
+    {
+      "concept_id": "e3884109-eee8-4b36-b9f6-506131fafb81",
+      "concept_name": "final"
+    },
+    {
+      "concept_id": "e3d3cf68-fa2d-40e6-a421-58a699a1d284",
+      "concept_name": "text"
+    },
+    {
+      "concept_id": "e44017ad-eada-472d-99bd-390c132c7d55",
+      "concept_name": "수행"
+    },
+    {
+      "concept_id": "e46b8940-5213-4105-a378-bfe7fd40561f",
+      "concept_name": "close"
+    },
+    {
+      "concept_id": "e47d6212-7b75-4044-92f4-91848cc44e6a",
+      "concept_name": "이진검색"
+    },
+    {
+      "concept_id": "e499e729-a943-43b5-951b-04619a66ef2d",
+      "concept_name": "이름 부름"
+    },
+    {
+      "concept_id": "e57d5629-4770-4cef-aee6-0f63818acc85",
+      "concept_name": "암호/질문"
+    },
+    {
+      "concept_id": "e5db9602-6766-4b84-aedc-e733c770d77c",
+      "concept_name": "1+1"
+    },
+    {
+      "concept_id": "e602d1d2-efcb-436b-9c21-9815d3ecaecf",
+      "concept_name": "JSON"
+    },
+    {
+      "concept_id": "e66580f9-a98f-435e-87ef-c3f32d2a8325",
+      "concept_name": "30일"
+    },
+    {
+      "concept_id": "e6751360-1d76-473d-8e1d-4bb501736a7a",
+      "concept_name": "애정/호감"
+    },
+    {
+      "concept_id": "e6a1dce2-bf13-4507-a3df-f2735341216e",
+      "concept_name": "먹어보고"
+    },
+    {
+      "concept_id": "e6b07caf-31e7-484e-97f2-4f5263ddeb48",
+      "concept_name": "일찍"
+    },
+    {
+      "concept_id": "e6cf350f-aa4a-4f5a-b5f3-aee88ee6771c",
+      "concept_name": "현재"
+    },
+    {
+      "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+      "concept_name": "이야기하"
+    },
+    {
+      "concept_id": "e77f23bd-7bbe-440a-8b75-86756a14bb39",
+      "concept_name": "피곤해"
+    },
+    {
+      "concept_id": "e7ae3e5f-d407-4e41-8855-2f53dd77fd1e",
+      "concept_name": "보이는 부분"
+    },
+    {
+      "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+      "concept_name": "수도"
+    },
+    {
+      "concept_id": "e8cb3926-6cfd-4df8-b1b4-ac45c774ab85",
+      "concept_name": "연주"
+    },
+    {
+      "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+      "concept_name": "프로그램"
+    },
+    {
+      "concept_id": "ea2d5f1a-c054-4ef7-9d8d-acfb48290e5d",
+      "concept_name": "선호도"
+    },
+    {
+      "concept_id": "eb817c4a-fc39-4eb6-9c9d-f8e2da117377",
+      "concept_name": "잘함"
+    },
+    {
+      "concept_id": "eb91078d-fd08-485e-a657-9467328aa1eb",
+      "concept_name": "자라서"
+    },
+    {
+      "concept_id": "ebad1a68-49b9-402c-a915-26c5b6391804",
+      "concept_name": "공룡"
+    },
+    {
+      "concept_id": "ebb42095-fe2b-4918-8b04-43363b083768",
+      "concept_name": "텍스트"
+    },
+    {
+      "concept_id": "ebc5595b-6f8a-4699-977f-255fffc9d959",
+      "concept_name": "다익스트라"
+    },
+    {
+      "concept_id": "ec35f6b9-3446-4125-b5c2-ff9fef73c6f4",
+      "concept_name": "서울특별시"
+    },
+    {
+      "concept_id": "ec80ca84-f465-4f42-a1d2-83c5ed9bd93d",
+      "concept_name": "따뜻한"
+    },
+    {
+      "concept_id": "ec912d96-f6b7-422d-856b-82255f0263be",
+      "concept_name": "숫자 세기"
+    },
+    {
+      "concept_id": "ec961de5-e258-4d58-847c-27666b013a1a",
+      "concept_name": "귓속말"
+    },
+    {
+      "concept_id": "ecabaaac-2921-446a-9804-25d3e0ee7712",
+      "concept_name": "like"
+    },
+    {
+      "concept_id": "ecc5e6d6-cf0e-414c-a477-00ee85547c14",
+      "concept_name": "화면"
+    },
+    {
+      "concept_id": "ed0fbfbc-4871-4d62-b415-40eda56aacd5",
+      "concept_name": "궁금한"
+    },
+    {
+      "concept_id": "ed1d7569-d098-4d9b-a71a-6d3b512235a7",
+      "concept_name": "맛"
+    },
+    {
+      "concept_id": "ed7b2469-a517-4eb4-bb50-90478125b502",
+      "concept_name": "짜증"
+    },
+    {
+      "concept_id": "ede668d5-9669-42be-b218-79257f9316d5",
+      "concept_name": "가중치"
+    },
+    {
+      "concept_id": "ee0c8709-ab69-42ba-8daa-ad5cd6df91e9",
+      "concept_name": "그래프에서"
+    },
+    {
+      "concept_id": "ee45b803-ba05-4aa4-afd2-06482470a819",
+      "concept_name": "클래스로"
+    },
+    {
+      "concept_id": "ee629315-da1d-46a8-8f61-55a1564d207b",
+      "concept_name": "화장실"
+    },
+    {
+      "concept_id": "eeb84f97-b5a4-4bd0-b8c8-efadfddb6ac7",
+      "concept_name": "deque"
+    },
+    {
+      "concept_id": "eee85e6e-2a33-426f-98a7-3c99788b916f",
+      "concept_name": "직업"
+    },
+    {
+      "concept_id": "eeed14e5-ca7b-46f2-aa60-e7e358657051",
+      "concept_name": "말이"
+    },
+    {
+      "concept_id": "ef167d34-b8ec-4336-8bc5-fff0bfa68c96",
+      "concept_name": "관계말이"
+    },
+    {
+      "concept_id": "ef200492-0ad5-4ec5-b1a5-e69e4ec7a41c",
+      "concept_name": "텍스트 변환"
+    },
+    {
+      "concept_id": "ef892996-cab9-4062-b16f-096c695da84f",
+      "concept_name": "table"
+    },
+    {
+      "concept_id": "ef90fac0-439c-441a-a45d-eff3f555e42f",
+      "concept_name": "center"
+    },
+    {
+      "concept_id": "ef9c794a-1ae6-452a-bfa6-2e72476239e0",
+      "concept_name": "장난감 기차"
+    },
+    {
+      "concept_id": "efa0d2c6-b120-4b49-922e-87bd6d7d0f61",
+      "concept_name": "구르다"
+    },
+    {
+      "concept_id": "efd35129-4ead-4339-adfc-25854efc0e7a",
+      "concept_name": "실패"
+    },
+    {
+      "concept_id": "efdaede3-0cdb-4791-97b5-15a125b689b7",
+      "concept_name": "방문"
+    },
+    {
+      "concept_id": "efed80ce-a2a9-481d-838a-1818ec9da0f0",
+      "concept_name": "배워"
+    },
+    {
+      "concept_id": "f00a5be8-060b-45f3-96bc-9913e8c00fec",
+      "concept_name": "반짝이는 것"
+    },
+    {
+      "concept_id": "f075540a-c35e-4ba0-b31f-9eed7649fe3d",
+      "concept_name": "모양"
+    },
+    {
+      "concept_id": "f2a1209b-5812-4248-b00c-06ce4c2f1e34",
+      "concept_name": "구분"
+    },
+    {
+      "concept_id": "f2a8e3d8-0d3f-4d93-b4e8-0c9ae758abe0",
+      "concept_name": "희망"
+    },
+    {
+      "concept_id": "f2f0b267-688a-444b-8970-663458a2b571",
+      "concept_name": "것들"
+    },
+    {
+      "concept_id": "f30740a7-012a-40f5-9b01-6a40d6af7390",
+      "concept_name": "cache"
+    },
+    {
+      "concept_id": "f38969f4-9226-4cd1-a5eb-7feb6e9136ba",
+      "concept_name": "목소리 인식 기능"
+    },
+    {
+      "concept_id": "f38e3529-ef22-429c-8ee6-0adaa9d3845e",
+      "concept_name": "삽입하는"
+    },
+    {
+      "concept_id": "f3d41957-0496-401c-8d2f-a07149e79d7d",
+      "concept_name": "남는"
+    },
+    {
+      "concept_id": "f3e39ee4-4657-414f-8059-5494b25665a2",
+      "concept_name": "말하기 오류"
+    },
+    {
+      "concept_id": "f3e43ce8-0be6-4864-a1aa-37c0c63ebaaf",
+      "concept_name": "관계라"
+    },
+    {
+      "concept_id": "f423de35-3685-445a-86c5-04ba4c3e9e9b",
+      "concept_name": "개수를"
+    },
+    {
+      "concept_id": "f47bea50-a0eb-460e-8ba2-de4c23e1c771",
+      "concept_name": "해님 (태양)"
+    },
+    {
+      "concept_id": "f4a3f795-5a71-4725-9355-7331b8a784ba",
+      "concept_name": "비 생성 과정"
+    },
+    {
+      "concept_id": "f4b6f856-f8bc-477d-a2f3-79e83149c929",
+      "concept_name": "신기한 물건"
+    },
+    {
+      "concept_id": "f4d3b6e1-7bf4-475a-89d3-b93b643a2067",
+      "concept_name": "형아도"
+    },
+    {
+      "concept_id": "f4eae538-4348-4941-92cc-d670ac68eae0",
+      "concept_name": "중위순회"
+    },
+    {
+      "concept_id": "f4f7058c-a1f6-4e79-a5d8-36f574e8f23a",
+      "concept_name": "calculation"
+    },
+    {
+      "concept_id": "f583ba37-6f0e-4101-ac00-09592f121b37",
+      "concept_name": "target이"
+    },
+    {
+      "concept_id": "f6025402-8e5d-4c94-b38f-2b9b69d7a62c",
+      "concept_name": "바나나"
+    },
+    {
+      "concept_id": "f61d13bd-8e6a-41a5-b843-e04a2e43967b",
+      "concept_name": "저도"
+    },
+    {
+      "concept_id": "f63f92eb-482c-444a-94ec-cf515778cb76",
+      "concept_name": "코끼리"
+    },
+    {
+      "concept_id": "f6857afc-283a-4f89-9c47-6d80786e1c02",
+      "concept_name": "상상해"
+    },
+    {
+      "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+      "concept_name": "등에 업히기"
+    },
+    {
+      "concept_id": "f6c32bbb-ba12-47a6-a901-3d3aa9e4d651",
+      "concept_name": "휴리스틱"
+    },
+    {
+      "concept_id": "f6f243d0-ed0a-44fd-a12b-3d581594a13a",
+      "concept_name": "식사"
+    },
+    {
+      "concept_id": "f745b732-7fea-415d-975c-68ba5375696d",
+      "concept_name": "앎"
+    },
+    {
+      "concept_id": "f756cd0c-bce6-4b51-9036-1010ad9c3e34",
+      "concept_name": "비"
+    },
+    {
+      "concept_id": "f7b253c7-6088-4aea-a5fa-fa1c54a83ef1",
+      "concept_name": "남자"
+    },
+    {
+      "concept_id": "f7cc8e37-3d66-4e33-9429-a1ad02a58e19",
+      "concept_name": "쾍"
+    },
+    {
+      "concept_id": "f7ebe94f-9f93-47ea-8ef1-719394a74177",
+      "concept_name": "기능"
+    },
+    {
+      "concept_id": "f84af967-4280-4c9f-8c73-ab821c7c4e4f",
+      "concept_name": "잠깐"
+    },
+    {
+      "concept_id": "f8502548-3fef-4bc7-9fd9-addbab9e19a9",
+      "concept_name": "승객"
+    },
+    {
+      "concept_id": "f86afb96-71c3-4e52-a286-5072f2ac6f04",
+      "concept_name": "장소"
+    },
+    {
+      "concept_id": "f8796eec-1ba6-43a8-8b84-92363f541566",
+      "concept_name": "흐르다"
+    },
+    {
+      "concept_id": "f8bf5529-fd2b-4fc8-86c0-90165da80068",
+      "concept_name": "추움"
+    },
+    {
+      "concept_id": "f8d84348-2f8a-40be-affa-5ca595e646a6",
+      "concept_name": "잘못된 행동"
+    },
+    {
+      "concept_id": "f9192635-ea36-4036-966a-21109259e542",
+      "concept_name": "협력"
+    },
+    {
+      "concept_id": "f919cff4-0771-48c0-966e-3786a0bd7ea6",
+      "concept_name": "친밀함"
+    },
+    {
+      "concept_id": "f965d538-7c91-49f8-b8b2-85b38c3d45f6",
+      "concept_name": "능력 향상"
+    },
+    {
+      "concept_id": "f983f313-6297-400b-ad46-d3ddf39025f5",
+      "concept_name": "나리수도교"
+    },
+    {
+      "concept_id": "f9971230-45d6-4d0b-800f-65b849ac006b",
+      "concept_name": "신기하고"
+    },
+    {
+      "concept_id": "f99a0ec2-dbc6-44ab-b431-1c62b55184c4",
+      "concept_name": "문자열인지"
+    },
+    {
+      "concept_id": "f9a6d8a0-0eca-420b-b884-40a14f83d01c",
+      "concept_name": "다시 하기"
+    },
+    {
+      "concept_id": "fa06a07e-c67d-4ade-9a66-a77181639bf5",
+      "concept_name": "무서운 이야기"
+    },
+    {
+      "concept_id": "fa0f5f3c-fd41-40af-91f2-989d02594660",
+      "concept_name": "아나그램인지"
+    },
+    {
+      "concept_id": "fa0fa227-ed0f-4dae-b1c6-fe17611afafa",
+      "concept_name": "공부"
+    },
+    {
+      "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+      "concept_name": "먹을 수 있음"
+    },
+    {
+      "concept_id": "fa88cdb6-436c-4985-aa1e-0fde87eb9804",
+      "concept_name": "컴퓨터 학습"
+    },
+    {
+      "concept_id": "fa9397a9-9fe8-4072-91fe-5ed03e6965a3",
+      "concept_name": "재도전"
+    },
+    {
+      "concept_id": "fab9fc6a-c637-41ed-b72a-4893dec3f1e5",
+      "concept_name": "log"
+    },
+    {
+      "concept_id": "fb04b786-1b29-4e1a-b75f-d0a55dc05789",
+      "concept_name": "slightly"
+    },
+    {
+      "concept_id": "fb23beb4-d23d-45f0-9d58-318a4fc44384",
+      "concept_name": "AI(비비)"
+    },
+    {
+      "concept_id": "fc7178cd-6855-4aba-8110-cd9bc5a2aa4d",
+      "concept_name": "음료"
+    },
+    {
+      "concept_id": "fd3f61b0-7228-47bb-a58b-ebd6b4c3d07a",
+      "concept_name": "크고"
+    },
+    {
+      "concept_id": "fdd13f68-b261-4613-8bc7-218509e90b10",
+      "concept_name": "불확실성"
+    },
+    {
+      "concept_id": "fec1bfe1-dba4-43d0-8532-6305457aaab7",
+      "concept_name": "영향"
+    },
+    {
+      "concept_id": "fec40995-50c3-40e0-b229-7e99d09204ad",
+      "concept_name": "qwerty"
+    },
+    {
+      "concept_id": "fee98a05-9f1f-4c5c-a5fa-59ca6a6507bb",
+      "concept_name": "냄새"
+    },
+    {
+      "concept_id": "feef8d07-ecdc-4155-8d82-9c70f05d9ec0",
+      "concept_name": "궁금한데요"
+    },
+    {
+      "concept_id": "ff73a554-70b3-46cb-a1d6-19f41da0d08d",
+      "concept_name": "재요청"
+    },
+    {
+      "concept_id": "ffe9f422-b4fe-4953-b9de-0c0139169820",
+      "concept_name": "복구"
+    }
+  ],
+  "gpu_inference_executed": false,
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "manifest_contract_sha256": "51b2c72ccb0b7066ffa662f8b245a2f5b0b53f464620a7e46397aeac15c71887",
+  "manifest_id": "j1_1_train_calibration_a_20260716",
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_scopes": [
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "893f9cd9-2655-450e-af70-e77a19ca0cc2",
+          "concept_name": "기억에",
+          "reason": "question_cue_surface_variant"
+        },
+        {
+          "concept_id": "bd53affc-8137-4e58-9ef9-0f70af83eefc",
+          "concept_name": "학습에",
+          "reason": "question_cue_surface_variant"
+        },
+        {
+          "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "concept_name": "기억",
+          "reason": "exact_question_cue"
+        }
+      ],
+      "cue_terms": [
+        "기억",
+        "학습"
+      ],
+      "eligible_concept_count": 1065,
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31"
+    },
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "concept_name": "로봇",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+          "concept_name": "컴퓨터요",
+          "reason": "question_cue_surface_variant"
+        },
+        {
+          "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+          "concept_name": "컴퓨터라",
+          "reason": "question_cue_surface_variant"
+        },
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "c57abd6c-c4cd-457e-b0da-17d63d50e0bf",
+          "concept_name": "컴퓨터에",
+          "reason": "question_cue_surface_variant"
+        }
+      ],
+      "cue_terms": [
+        "컴퓨터",
+        "로봇"
+      ],
+      "eligible_concept_count": 1064,
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9"
+    },
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+          "concept_name": "경험",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "2a430a39-24f9-4b3e-95d5-03fbc84da073",
+          "concept_name": "시간",
+          "reason": "exact_question_cue"
+        }
+      ],
+      "cue_terms": [
+        "시간",
+        "경험"
+      ],
+      "eligible_concept_count": 1067,
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b"
+    },
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "8b792a6c-090c-481d-8b63-1dbcfa43bed3",
+          "concept_name": "궁금증",
+          "reason": "exact_question_cue"
+        }
+      ],
+      "cue_terms": [
+        "질문",
+        "궁금증"
+      ],
+      "eligible_concept_count": 1067,
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795"
+    },
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "d07f03e9-d3d1-4b19-ad2c-6d280ef08715",
+          "concept_name": "상상",
+          "reason": "exact_question_cue"
+        }
+      ],
+      "cue_terms": [
+        "이야기",
+        "상상"
+      ],
+      "eligible_concept_count": 1067,
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+    },
+    {
+      "cue_exclusions": [
+        {
+          "concept_id": "15c95563-cbea-4f46-8db6-dc21b7382b42",
+          "concept_name": "세상에",
+          "reason": "question_cue_surface_variant"
+        },
+        {
+          "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+          "concept_name": "세상",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+          "concept_name": "사람",
+          "reason": "exact_question_cue"
+        },
+        {
+          "concept_id": "b15dd6a5-ab69-4442-b78d-81f4063e94d2",
+          "concept_name": "세상을",
+          "reason": "question_cue_surface_variant"
+        }
+      ],
+      "cue_terms": [
+        "사람",
+        "세상"
+      ],
+      "eligible_concept_count": 1065,
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286"
+    }
+  ],
+  "raw_score_pack_sha256": "d52720d85f92661786278c787c595205c5f3e727d86a88e1da01348be3583853",
+  "rejected_concept_count": 42,
+  "rejected_concepts": [
+    {
+      "concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240",
+      "concept_name": "설명해줘",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127",
+      "concept_name": "제가",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e",
+      "concept_name": "알려주세요",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792",
+      "concept_name": "말해줘",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c",
+      "concept_name": "궁금해",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "569f9646-15dd-4b93-9773-841ab564296d",
+      "concept_name": "형의",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96",
+      "concept_name": "형은",
+      "reason": "audited_invalid_surface"
+    },
+    {
+      "concept_id": "005f02d3-7290-4c1f-8397-1fc698fd0f9b",
+      "concept_name": "user_answer_preference_test",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "098cc38b-a58f-47de-bdcc-462b33fef0de",
+      "concept_name": "user_answer_preference_1770208568448",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "0cfa2be2-a3a2-4a80-a592-8820d95a95fc",
+      "concept_name": "user_answer_preference_1770625950825",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "0dea4a91-5779-4662-8d16-a091b92c06b8",
+      "concept_name": "m1test_cup",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "1b71512a-1640-40a9-8535-d286a8472ea4",
+      "concept_name": "user_answer_preference_1770787599309",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "1c9cdbfa-a083-45ab-bed2-eb03e9ade0f1",
+      "concept_name": "m1test_yellow",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "2f4189da-2436-44ef-9650-ba10d24dae7c",
+      "concept_name": "web_search",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "3ec49543-ceb1-4de5-878c-bfc9edcbb7be",
+      "concept_name": "user_answer_preference_1770180894508",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "555780a1-9d3b-4b12-ae06-45e09805df91",
+      "concept_name": "user_answer_relationship_1771073585015",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "588b8dd2-3dbb-4d43-b83c-51a1ea330d02",
+      "concept_name": "m1test_kiwi",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "76423cd1-48c8-44bc-8432-2c5798596de1",
+      "concept_name": "user_answer_relationship_1770265529266",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "7e20c83e-22d3-4845-8e1f-0afc66ba6df5",
+      "concept_name": "sorting_algorithm",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "7f8f5b38-2a30-4b3b-9c5e-d05a4ebdcf36",
+      "concept_name": "user_answer_personal_1770787621070",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "82512019-ccc0-4845-92ce-f91727cc6299",
+      "concept_name": "user_answer_personal_1771073548947",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "89449343-a1d1-4f04-8335-18cf0f3f5502",
+      "concept_name": "m1test_banana",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "a418cd73-25e1-493a-b15b-120058001014",
+      "concept_name": "user_answer_experience_1770180979422",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "c614c936-df04-4679-bf0a-9295254c814c",
+      "concept_name": "m1test_bottle",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "c7c38208-24e0-4928-a3a1-0472baa3518a",
+      "concept_name": "user_answer_preference_1770184064127",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "d6d09ee2-c8a4-4f8d-8171-2c52e848fdf1",
+      "concept_name": "user_answer_experience_1770262805670",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "d85dfb4d-f6f7-477c-9377-ef7bd790c9e1",
+      "concept_name": "m1test_blue",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "e9aa6156-d2c9-4633-9830-a99589bd3209",
+      "concept_name": "m1test_apple",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "f2fd8330-b990-4a7e-8041-14a03878fcf3",
+      "concept_name": "user_answer_preference_1770694564585",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "f76f0899-cfb9-431f-80a2-c45346281929",
+      "concept_name": "user_answer_relationship_1770180936531",
+      "reason": "code_identifier"
+    },
+    {
+      "concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f",
+      "concept_name": "Search_dictionary",
+      "reason": "duplicate_normalized_name"
+    },
+    {
+      "concept_id": "25c5c931-9cf2-4fdd-89bc-26ea626d4c80",
+      "concept_name": "Addition",
+      "reason": "duplicate_normalized_name"
+    },
+    {
+      "concept_id": "a0f9d7ec-05c6-41ed-b7c9-7ac49a978693",
+      "concept_name": "search_dictionary",
+      "reason": "duplicate_normalized_name"
+    },
+    {
+      "concept_id": "c7aefb7c-186a-44ba-bd09-f5c2f4d481c9",
+      "concept_name": "addition",
+      "reason": "duplicate_normalized_name"
+    },
+    {
+      "concept_id": "1ec1f6bf-db2d-4faa-811d-33551b44a91d",
+      "concept_name": "어떤",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "7d9eea7a-6325-48b1-8d57-9111249d8295",
+      "concept_name": "무엇이",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "7debd831-4bab-4785-85d1-1e78bcde8c8e",
+      "concept_name": "궁금해요",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "8d4bc2d0-c07b-40c7-8316-4b2481e8bac6",
+      "concept_name": "뭔지",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "aa7d96d4-4b16-4522-b1bd-6f00d0ed5629",
+      "concept_name": "어디",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "b17b628f-ed4e-4693-b02b-279903f8427a",
+      "concept_name": "무엇",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "c33b2982-4f65-4718-a2ad-8d38145f6ada",
+      "concept_name": "어떻",
+      "reason": "generic_speech_act"
+    },
+    {
+      "concept_id": "",
+      "concept_name": "neo4j_db_validation",
+      "reason": "missing_concept_id"
+    }
+  ],
+  "rejection_counts": {
+    "audited_invalid_surface": 7,
+    "code_identifier": 23,
+    "duplicate_normalized_name": 4,
+    "generic_speech_act": 7,
+    "missing_concept_id": 1
+  },
+  "reviewed_candidate_label_pack_sha256": "9243d456c56ba6736aa69870293a4d961361cbcc2f44baae4dd5dc94563eb4d4",
+  "reviewed_reference_answer_pack_sha256": "b2c0465f072994fdb39fffc54f7d85263544fb91f2c3fa40e25227a82434b456",
+  "selection_contract": {
+    "both_predictors_rescore_union": true,
+    "graph_scores_required_for_full_question_vocabulary": true,
+    "local_core_scores_required_for_full_question_vocabulary": true,
+    "semantic_labels_used_for_filtering": false,
+    "source_vocabulary": "neo4j_full_concept_snapshot",
+    "top_k": 8,
+    "union_rule": "graph_top_k_union_local_core_top_k",
+    "validity_filter_precedes_predictor_scoring": true
+  },
+  "source_concept_count": 1111,
+  "status": "preflight_only"
+}

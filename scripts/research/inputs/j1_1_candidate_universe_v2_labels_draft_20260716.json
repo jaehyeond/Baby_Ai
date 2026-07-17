@@ -1,0 +1,642 @@
+{
+  "calibrator_fit_allowed": false,
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "created_at": "2026-07-17T11:36:29.166990+00:00",
+  "database_writes": false,
+  "entries": [
+    {
+      "answer_sha256": "0c99c413bf7ed819890c9408185c68b365f47103130f980c3cb69ed462095a15",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "proposed_rejected",
+          "rationale": "비비은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "proposed_rejected",
+          "rationale": "AI은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+          "concept_name": "정보",
+          "decision": "proposed_approved",
+          "rationale": "기억이 저장하고 학습이 갱신하는 핵심 대상이다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "proposed_rejected",
+          "rationale": "신기한은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "proposed_approved",
+          "rationale": "기억과 학습이 서로를 갱신하는 순환 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색",
+          "decision": "proposed_rejected",
+          "rationale": "검색은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "462205e2-ca97-49b3-92ab-42fb2be7221d",
+          "concept_name": "내일",
+          "decision": "proposed_rejected",
+          "rationale": "내일은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "5e0dc189-98e2-499b-a91d-051d4a238c5b",
+          "concept_name": "노력",
+          "decision": "proposed_rejected",
+          "rationale": "노력은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_rejected",
+          "rationale": "감정은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+          "concept_name": "상호작용",
+          "decision": "proposed_approved",
+          "rationale": "기억이 학습을 안내하고 학습이 기억을 수정하는 상호 영향을 나타낸다."
+        },
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "decision": "proposed_rejected",
+          "rationale": "질문은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+          "concept_name": "응답",
+          "decision": "proposed_rejected",
+          "rationale": "응답은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+          "concept_name": "아름다움",
+          "decision": "proposed_rejected",
+          "rationale": "아름다움은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "proposed_rejected",
+          "rationale": "알고리즘은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+          "concept_name": "베이비 브레인",
+          "decision": "proposed_rejected",
+          "rationale": "베이비 브레인은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "a89d93d3-7d16-41a1-9bf9-c872b2195fa1",
+          "concept_name": "간단한",
+          "decision": "proposed_rejected",
+          "rationale": "간단한은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        }
+      ],
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "question_sha256": "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31"
+    },
+    {
+      "answer_sha256": "4f2099d89bce2926d71bf39708b05cb3586244d2cd775b06779037f997e9132b",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "proposed_rejected",
+          "rationale": "비비은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+          "concept_name": "놀이",
+          "decision": "proposed_rejected",
+          "rationale": "놀이은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜",
+          "decision": "proposed_rejected",
+          "rationale": "날짜은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+          "concept_name": "등에 업히기",
+          "decision": "proposed_rejected",
+          "rationale": "등에 업히기은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "proposed_rejected",
+          "rationale": "신기한은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "e23cbc14-0835-453f-b3df-55dc590156d8",
+          "concept_name": "로보틱스",
+          "decision": "proposed_approved",
+          "rationale": "컴퓨터 제어와 물리적 로봇을 함께 다루는 직접 관련 분야다."
+        },
+        {
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "concept_name": "프로그램",
+          "decision": "proposed_approved",
+          "rationale": "컴퓨터의 정보 처리와 로봇 제어를 연결하는 핵심 수단이다."
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "proposed_uncertain",
+          "rationale": "컴퓨터와 로봇에 사용될 수 있지만 둘의 필수 정의 요소는 아니다."
+        },
+        {
+          "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+          "concept_name": "상호작용",
+          "decision": "proposed_approved",
+          "rationale": "로봇이 물리적 환경을 감지하고 행동한다는 차이를 직접 나타낸다."
+        },
+        {
+          "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+          "concept_name": "사용자",
+          "decision": "proposed_uncertain",
+          "rationale": "일부 컴퓨터와 로봇이 사용자와 상호작용하지만 일반적 구조 차이의 핵심은 아니다."
+        },
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "decision": "proposed_rejected",
+          "rationale": "질문은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_rejected",
+          "rationale": "감정은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "proposed_approved",
+          "rationale": "컴퓨터의 계산과 로봇의 제어 절차를 구성하는 공통 요소다."
+        },
+        {
+          "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+          "concept_name": "베이비 브레인",
+          "decision": "proposed_rejected",
+          "rationale": "베이비 브레인은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "86f2d31c-2297-489d-b408-a80cdbc64a86",
+          "concept_name": "사용",
+          "decision": "proposed_uncertain",
+          "rationale": "두 장치의 활용과 연결될 수 있으나 의미가 지나치게 일반적이다."
+        },
+        {
+          "concept_id": "adc08303-f09c-41b5-90b4-3de8c4325b39",
+          "concept_name": "성능 향상",
+          "decision": "proposed_rejected",
+          "rationale": "성능 향상은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        }
+      ],
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "question_sha256": "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9"
+    },
+    {
+      "answer_sha256": "8a43ade5ac33fea193878e5d911d1a99a8441c1e083d77b2a6a4cbd68edfacd9",
+      "labels": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "proposed_rejected",
+          "rationale": "AI은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990",
+          "concept_name": "1시간 뒤",
+          "decision": "proposed_approved",
+          "rationale": "시간 경과와 이후 맥락이라는 질문 축을 직접 나타낸다."
+        },
+        {
+          "concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109",
+          "concept_name": "배움",
+          "decision": "proposed_approved",
+          "rationale": "새로 배운 지식이 과거 경험을 해석하는 맥락을 바꾼다."
+        },
+        {
+          "concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7",
+          "concept_name": "똑똑함",
+          "decision": "proposed_rejected",
+          "rationale": "똑똑함은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습",
+          "decision": "proposed_approved",
+          "rationale": "후속 학습이 기억과 경험의 의미를 수정하는 요인이다."
+        },
+        {
+          "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+          "concept_name": "사전적 정의",
+          "decision": "proposed_rejected",
+          "rationale": "사전적 정의은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+          "concept_name": "세상",
+          "decision": "proposed_uncertain",
+          "rationale": "후속 사건이 생기는 외부 맥락으로 연결되지만 직접 메커니즘은 아니다."
+        },
+        {
+          "concept_id": "7a9e04d1-cca5-4da6-9ef1-e7d2804776da",
+          "concept_name": "연결해",
+          "decision": "proposed_rejected",
+          "rationale": "연결해은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_approved",
+          "rationale": "감정 변화가 같은 경험의 의미와 영향을 달라지게 할 수 있다."
+        },
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "decision": "proposed_rejected",
+          "rationale": "질문은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+          "concept_name": "아름다움",
+          "decision": "proposed_rejected",
+          "rationale": "아름다움은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+          "concept_name": "감사",
+          "decision": "proposed_rejected",
+          "rationale": "감사은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+          "concept_name": "상호작용",
+          "decision": "proposed_uncertain",
+          "rationale": "새 사건과 환경 접촉을 포괄할 수 있지만 기준답변보다 의미가 넓다."
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "proposed_rejected",
+          "rationale": "알고리즘은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+          "concept_name": "감정 표현",
+          "decision": "proposed_uncertain",
+          "rationale": "감정 변화와 관련될 수 있으나 표현 자체가 경험 재해석의 원인은 아니다."
+        },
+        {
+          "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+          "concept_name": "사용자",
+          "decision": "proposed_rejected",
+          "rationale": "사용자은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        }
+      ],
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "question_sha256": "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b"
+    },
+    {
+      "answer_sha256": "90f8f2daaa2ff04f879db335c744e4f19a970b254b521cf4604dfaeed5653d67",
+      "labels": [
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "proposed_rejected",
+          "rationale": "AI은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "proposed_rejected",
+          "rationale": "비비은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+          "concept_name": "검색",
+          "decision": "proposed_approved",
+          "rationale": "질문을 바탕으로 답과 증거를 얻는 대표 행동이다."
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "decision": "proposed_approved",
+          "rationale": "궁금증과 질문이 드러내는 지식의 빈틈이다."
+        },
+        {
+          "concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9",
+          "concept_name": "위치",
+          "decision": "proposed_rejected",
+          "rationale": "위치은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+          "concept_name": "개발자",
+          "decision": "proposed_rejected",
+          "rationale": "개발자은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+          "concept_name": "답",
+          "decision": "proposed_approved",
+          "rationale": "질문으로 얻어 기존 지식과 비교하는 핵심 결과다."
+        },
+        {
+          "concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b",
+          "concept_name": "비밀 질문",
+          "decision": "proposed_uncertain",
+          "rationale": "질문의 한 종류지만 새로운 지식 형성의 일반 메커니즘은 아니다."
+        },
+        {
+          "concept_id": "91bb9cc0-3f17-47de-8d02-22296869323d",
+          "concept_name": "새로운",
+          "decision": "proposed_approved",
+          "rationale": "질문과 증거 연결을 통해 형성되는 새 지식을 직접 나타낸다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_rejected",
+          "rationale": "감정은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+          "concept_name": "감사",
+          "decision": "proposed_rejected",
+          "rationale": "감사은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "proposed_rejected",
+          "rationale": "알고리즘은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+          "concept_name": "아름다움",
+          "decision": "proposed_rejected",
+          "rationale": "아름다움은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+          "concept_name": "사용자",
+          "decision": "proposed_uncertain",
+          "rationale": "질문 주체가 될 수 있으나 지식 형성 과정의 핵심 개념은 아니다."
+        },
+        {
+          "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+          "concept_name": "응답",
+          "decision": "proposed_approved",
+          "rationale": "대화나 탐구에서 질문에 대한 정보를 제공하는 결과다."
+        }
+      ],
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "question_sha256": "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795"
+    },
+    {
+      "answer_sha256": "290c77225a0f6df5ea2459152e8a8fd995546cb82a6479c011ee4ab1c70b1208",
+      "labels": [
+        {
+          "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+          "concept_name": "비비",
+          "decision": "proposed_rejected",
+          "rationale": "비비은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+          "concept_name": "AI",
+          "decision": "proposed_rejected",
+          "rationale": "AI은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "decision": "proposed_uncertain",
+          "rationale": "상상의 예시는 될 수 있지만 상호 발전 메커니즘 자체는 아니다."
+        },
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "proposed_uncertain",
+          "rationale": "상상의 정서적 결과일 수 있지만 핵심 관계는 아니다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "proposed_approved",
+          "rationale": "이야기와 상상이 서로 확장하는 상호 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450",
+          "concept_name": "학습",
+          "decision": "proposed_approved",
+          "rationale": "이야기에서 얻은 새 구조와 요소가 다음 상상을 넓히는 과정과 연결된다."
+        },
+        {
+          "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "concept_name": "기억",
+          "decision": "proposed_approved",
+          "rationale": "상상이 재조합하고 이야기가 구조화하는 경험 요소의 원천이다."
+        },
+        {
+          "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+          "concept_name": "인터넷",
+          "decision": "proposed_rejected",
+          "rationale": "인터넷은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_uncertain",
+          "rationale": "이야기와 상상을 자극할 수 있지만 기준답변의 직접 축은 아니다."
+        },
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "decision": "proposed_rejected",
+          "rationale": "질문은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+          "concept_name": "응답",
+          "decision": "proposed_rejected",
+          "rationale": "응답은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+          "concept_name": "상호작용",
+          "decision": "proposed_approved",
+          "rationale": "상상이 이야기를 만들고 이야기가 다시 상상을 자극하는 순환을 나타낸다."
+        },
+        {
+          "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+          "concept_name": "아름다움",
+          "decision": "proposed_rejected",
+          "rationale": "아름다움은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "proposed_rejected",
+          "rationale": "알고리즘은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+          "concept_name": "프로젝트",
+          "decision": "proposed_rejected",
+          "rationale": "프로젝트은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+          "concept_name": "베이비 브레인",
+          "decision": "proposed_rejected",
+          "rationale": "베이비 브레인은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        }
+      ],
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "question_sha256": "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+    },
+    {
+      "answer_sha256": "3dcf78162d1c066a64bdb577c7fb2bdf6cb80d5cb02de85c04663e2b114d509b",
+      "labels": [
+        {
+          "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+          "concept_name": "신기한",
+          "decision": "proposed_rejected",
+          "rationale": "신기한은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9",
+          "concept_name": "문장",
+          "decision": "proposed_rejected",
+          "rationale": "문장은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "decision": "proposed_approved",
+          "rationale": "사람의 행동과 세상의 피드백이라는 상호 연결을 직접 나타낸다."
+        },
+        {
+          "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+          "concept_name": "날짜",
+          "decision": "proposed_rejected",
+          "rationale": "날짜은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "67611c8b-2155-4b7e-93b3-5fa3c935918f",
+          "concept_name": "우유팩",
+          "decision": "proposed_rejected",
+          "rationale": "우유팩은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "6bb05ddf-e188-4d42-aca3-f470b70ede3e",
+          "concept_name": "딥러닝",
+          "decision": "proposed_uncertain",
+          "rationale": "사람과 세상이 주고받는 기술 영향의 예지만 범위가 좁다."
+        },
+        {
+          "concept_id": "c6079685-e17e-4ec6-b276-86d9fe69f123",
+          "concept_name": "웹 서치",
+          "decision": "proposed_uncertain",
+          "rationale": "기술 환경과 사람 행동의 접점이지만 일반 피드백 관계의 일부 사례다."
+        },
+        {
+          "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+          "concept_name": "인터넷",
+          "decision": "proposed_approved",
+          "rationale": "사람이 만들고 사용하면서 다시 행동과 기회를 바꾸는 기술 환경의 예다."
+        },
+        {
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "decision": "proposed_uncertain",
+          "rationale": "환경이 사람에게 미치는 영향과 연결될 수 있으나 기준답변에 직접 명시되지는 않았다."
+        },
+        {
+          "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+          "concept_name": "상호작용",
+          "decision": "proposed_approved",
+          "rationale": "사람이 환경을 바꾸고 환경이 다시 사람을 바꾸는 과정을 나타낸다."
+        },
+        {
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "decision": "proposed_rejected",
+          "rationale": "질문은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+          "concept_name": "감사",
+          "decision": "proposed_rejected",
+          "rationale": "감사은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+          "concept_name": "아름다움",
+          "decision": "proposed_rejected",
+          "rationale": "아름다움은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+          "concept_name": "응답",
+          "decision": "proposed_rejected",
+          "rationale": "응답은(는) 이 기준답변의 핵심 메커니즘을 직접 나타내지 않는다."
+        },
+        {
+          "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+          "concept_name": "사용자",
+          "decision": "proposed_uncertain",
+          "rationale": "디지털 환경 속 사람을 가리키지만 사람 전체를 대표하기에는 좁다."
+        },
+        {
+          "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+          "concept_name": "긍정적 감정",
+          "decision": "proposed_uncertain",
+          "rationale": "세상의 영향 결과일 수 있지만 일반 상호작용 메커니즘은 아니다."
+        }
+      ],
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "question_sha256": "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286"
+    }
+  ],
+  "heldout_gate": false,
+  "independent_score_capture_sha256": "afebaaf55942a27dcdbba91559e5a456cc9fd93855317845e37ce0211be46d15",
+  "label_count": 95,
+  "learning_enabled": false,
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "review_status": "awaiting_user_review",
+  "reviewed_at": null,
+  "reviewed_reference_answer_pack_sha256": "b2c0465f072994fdb39fffc54f7d85263544fb91f2c3fa40e25227a82434b456",
+  "reviewer_role": "assistant_draft",
+  "semantic_label_source": "external_teacher_drafted_against_user_reviewed_reference_answers",
+  "union_label_pack_sha256": "b0bbada96256eea1ff4aaf10ff25e1bd95f8780a4660075c2c08f903fa7d832f",
+  "union_label_pack_version": 1,
+  "user_direct_answers": false
+}

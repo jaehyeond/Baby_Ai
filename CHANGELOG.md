@@ -5,6 +5,42 @@
 
 ---
 
+## 2026-07-16 cohort (J-1.1A approval + J-1.1B independent candidate universe v2)
+
+### 사용자 승인과 불변 artifact
+- 사용자가 J1.1A 기준답변 6개, 기존 후보 라벨 48개, 컴퓨터-로봇 정상 양성 후보 0개 진단을 묶음 승인했다. 초안은 덮어쓰지 않고 별도 user-reviewed answer pack `b2c0465f…`와 label pack `9243d456…`를 만들었다.
+- 승인 누락은 해소됐지만 기존 Graph-only 후보는 양성 coverage `5/6`이고 공정한 universe가 아니므로 calibrator는 계속 차단했다. 원본 J1.1 manifest `51b2c72c…`, raw pack `d52720d8…`, J1.1A draft artifact는 변경하지 않았다.
+
+### J1.1B predictor-neutral preflight와 read-only capture
+- 전체 Neo4j Concept `1,111`개를 read-only로 조회했다. predictor score나 의미 라벨을 보기 전에 발화 명령, 테스트/도구 identifier, 중복 이름, missing ID를 결정론적으로 제외해 `1,069`개를 유지했다. 질문 cue와 `컴퓨터라/컴퓨터요/컴퓨터에` 같은 좁은 표면형도 질문별로 제외했다. vocabulary hash는 `bc06ed54…`다.
+- Graph와 Local Core가 질문마다 정확히 같은 `1,064~1,067`개 전체 후보를 독립 채점한 뒤 각 top-8 합집합만 만들었다. Graph가 먼저 고른 8개에 Local Core를 종속시키던 편향을 제거했고 raw-score capture `afebaaf5…`를 봉인했다.
+- Local Core는 기존 Qwen2.5-0.5B adapter를 `cuda:0`, batch 16, trainable parameter 0, inference-only로 실행했다. peak allocated CUDA memory는 `1,375,212,544 bytes`였다. DB write, gradient, optimizer, model save, probability, calibrator fit은 없었다.
+
+### 비판적 결과와 다음 gate
+- 구조적 fair-universe gate는 true지만 predictor 품질 주장은 false다. Local Core top-8은 여러 질문에서 `감정/질문/상호작용/알고리즘`을 반복해 질문 조건화가 약했고 Graph도 hub/잡음 후보가 많았다. top-8 overlap은 5문항 `0`, 1문항 `1`이었다.
+- user-reviewed 기준답변과 독립 union 95개를 대조한 external-teacher label draft `b0bbada9…`를 만들었다. proposed approved/rejected/uncertain=`23/56/16`; Graph와 Local Core 모두 6/6 문항에서 최소 1개 양성 후보를 포함한다.
+- 새 95개 라벨은 아직 사용자에게 공개·승인되지 않았으므로 calibration truth가 아니다. 현재 block reason은 `explicit_user_review_of_independent_union_labels_missing` 하나이며 calibrator/JSD/heldout/performance/production은 모두 false다. 다음은 6묶음 approved/uncertain 요약을 1회 batch review받고, 승인 뒤에도 calibrator 설계를 별도 audit한 후에만 train-only fit을 고려한다.
+- 신규 targeted `9 passed`, 전체 canonical `152 passed`. 4개 artifact 독립 audit, py_compile, pip check, diff check, literal secret scan 0건이 통과했고 보호 handler HEAD/current blob은 모두 `054d974…`다. 실행 당시 로컬 시계는 `2026-07-17 KST`였지만 파일명은 사전등록 cohort `20260716`을 유지한다.
+- artifacts: `scripts/research/inputs/j1_1_teacher_answers_reviewed_20260716.json`, `scripts/research/inputs/j1_1_candidate_labels_reviewed_20260716.json`, `scripts/research/inputs/j1_1_candidate_vocabulary_v2_20260716.json`, `scripts/research/inputs/j1_1_candidate_universe_v2_raw_scores_20260716.json`, `scripts/research/inputs/j1_1_candidate_universe_v2_labels_draft_20260716.json`.
+
+## 2026-07-16 (J-1.1A answer-source amendment + teacher answer/label draft)
+
+### push 기준과 방법론 교정
+- 시작 시 `DB_Renewal` local/remote HEAD가 사용자 push `5b1952e`로 일치하고 ahead/behind=`0/0`, worktree clean이었다.
+- 일반지식 6개를 사용자가 매번 장문 답변하는 방식은 사용자 병목이고 외부정보 획득 실험도 아니라는 비판을 반영했다. 기존 J1.1 manifest `51b2c72c…`와 raw pack `d52720d8…`는 수정하지 않고, amendment `89c9f71d…`가 기존 next step만 명시적으로 supersede한다.
+
+### 구현과 provenance
+- `answer_source.py`: `public_knowledge→external_teacher`, `current_fact→authoritative_retrieval`, `personal_context/safety_permission→user`, `sensor_observation→sensor`, `tool_outcome→tool`, `unresolved→abstain`의 deterministic pure contract를 추가했다. DB/API/handler/torch를 import하지 않는다.
+- 일반 개념 6개 기준답변을 `external_teacher_drafted`, teacher identity scope=`conversation_assistant_not_model_snapshot`으로 정직하게 기록했다. 사용자 직접 답변으로 가장하지 않고 answer pack `a1c9882a…`로 봉인했다.
+- sealed candidate universe 48개를 전부 proposed approved/rejected/uncertain으로 결정한 draft `064f4b6c…`를 만들었다. assistant draft는 사용자 review 전 calibration truth가 될 수 없고 `calibrator_fit_allowed=false`다.
+
+### 비판적 결과와 stop gate
+- proposed approved/rejected/uncertain=`12/30/6`. 6문항 중 5개만 정상 positive candidate가 있다. 컴퓨터-로봇 문항은 `컴퓨터라`, `컴퓨터요` 같은 조사 결합 어형만 uncertain이고 정상 approved candidate는 0이라 coverage gate=`5/6=false`다.
+- 독립 후보 생성이 아니라 Graph top-8로 universe가 정해졌으므로 fair candidate universe gate도 false다. 사용자 batch review가 누락된 상태까지 합쳐 block reason은 `explicit_user_batch_review_missing`, `candidate_positive_coverage_5_of_6`, `candidate_universe_is_graph_selected_only` 세 가지다.
+- 따라서 provisional calibrator, question-selection calibrator, JSD, probability, DB write, learning, held-out, performance claim, production gate는 모두 false다. 다음은 사용자에게 답변·라벨 묶음을 한 번만 검토받고, Graph와 Local Core가 독립 생성한 top-k 합집합 universe v2를 만든 뒤 새 calibration capture를 설계하는 것이다.
+- 신규 J1.1A 단독 `4 passed`, J1 관련 targeted `18 passed`, 전체 canonical `147 passed`, `pip check`, py_compile, artifact audit, diff check가 통과했다. 보호 handler blob은 HEAD와 동일하고 live predictor는 변경하지 않았다.
+- artifacts: `claudedocs/research/j1_1_answer_source_contract_20260716.json`, `scripts/research/inputs/j1_1_answer_source_amendment_20260716.json`, `scripts/research/inputs/j1_1_teacher_answers_20260716.json`, `scripts/research/inputs/j1_1_candidate_labels_draft_20260716.json`.
+
 ## 2026-07-16 (J-1.1 preregistered train-calibration raw-score capture)
 
 ### 승인·사전등록

@@ -1,0 +1,185 @@
+{
+  "block_reasons": [
+    "independent_union_semantic_labels_not_reviewed"
+  ],
+  "calibrator_fit_gate": false,
+  "captured_at": "2026-07-17T11:16:08.526307+00:00",
+  "database_writes": false,
+  "fair_candidate_universe_gate": true,
+  "heldout_gate": false,
+  "independent_full_vocabulary_raw_score_gate": true,
+  "independent_score_capture_sha256": "afebaaf55942a27dcdbba91559e5a456cc9fd93855317845e37ce0211be46d15",
+  "learning_enabled": false,
+  "next_step": "draft_semantic_labels_for_independent_union_against_reviewed_reference_answers_then_stop_before_calibrator_fit",
+  "per_question": [
+    {
+      "eligible_concept_count": 1065,
+      "graph_top_k_names": [
+        "비비",
+        "AI",
+        "정보",
+        "신기한",
+        "관계",
+        "검색",
+        "내일",
+        "노력"
+      ],
+      "local_core_top_k_names": [
+        "감정",
+        "상호작용",
+        "질문",
+        "응답",
+        "아름다움",
+        "알고리즘",
+        "베이비 브레인",
+        "간단한"
+      ],
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "top_k_overlap_count": 0,
+      "union_count": 16
+    },
+    {
+      "eligible_concept_count": 1064,
+      "graph_top_k_names": [
+        "비비",
+        "놀이",
+        "날짜",
+        "등에 업히기",
+        "신기한",
+        "로보틱스",
+        "프로그램",
+        "AI"
+      ],
+      "local_core_top_k_names": [
+        "상호작용",
+        "사용자",
+        "질문",
+        "감정",
+        "알고리즘",
+        "베이비 브레인",
+        "사용",
+        "성능 향상"
+      ],
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "top_k_overlap_count": 0,
+      "union_count": 16
+    },
+    {
+      "eligible_concept_count": 1067,
+      "graph_top_k_names": [
+        "AI",
+        "1시간 뒤",
+        "배움",
+        "똑똑함",
+        "학습",
+        "사전적 정의",
+        "세상",
+        "연결해"
+      ],
+      "local_core_top_k_names": [
+        "감정",
+        "질문",
+        "아름다움",
+        "감사",
+        "상호작용",
+        "알고리즘",
+        "감정 표현",
+        "사용자"
+      ],
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "top_k_overlap_count": 0,
+      "union_count": 16
+    },
+    {
+      "eligible_concept_count": 1067,
+      "graph_top_k_names": [
+        "AI",
+        "비비",
+        "검색",
+        "모르는 것",
+        "위치",
+        "개발자",
+        "답",
+        "비밀 질문"
+      ],
+      "local_core_top_k_names": [
+        "새로운",
+        "감정",
+        "감사",
+        "답",
+        "알고리즘",
+        "아름다움",
+        "사용자",
+        "응답"
+      ],
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "top_k_overlap_count": 1,
+      "union_count": 15
+    },
+    {
+      "eligible_concept_count": 1067,
+      "graph_top_k_names": [
+        "비비",
+        "AI",
+        "하늘을 나는 것",
+        "신기한",
+        "관계",
+        "학습",
+        "기억",
+        "인터넷"
+      ],
+      "local_core_top_k_names": [
+        "감정",
+        "질문",
+        "응답",
+        "상호작용",
+        "아름다움",
+        "알고리즘",
+        "프로젝트",
+        "베이비 브레인"
+      ],
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "top_k_overlap_count": 0,
+      "union_count": 16
+    },
+    {
+      "eligible_concept_count": 1065,
+      "graph_top_k_names": [
+        "신기한",
+        "문장",
+        "관계",
+        "날짜",
+        "우유팩",
+        "딥러닝",
+        "웹 서치",
+        "인터넷"
+      ],
+      "local_core_top_k_names": [
+        "감정",
+        "상호작용",
+        "질문",
+        "감사",
+        "아름다움",
+        "응답",
+        "사용자",
+        "긍정적 감정"
+      ],
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "top_k_overlap_count": 0,
+      "union_count": 16
+    }
+  ],
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "status": "raw_scores_sealed_pending_union_semantic_review",
+  "union_semantic_review_gate": false
+}

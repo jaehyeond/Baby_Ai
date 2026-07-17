@@ -1,0 +1,158 @@
+{
+  "amendment": {
+    "answer_source_amendment_version": 1,
+    "phase": "J1.1A",
+    "status": "active",
+    "superseded_next_step": "collect_new_user_answers_then_review_candidate_labels_and_fit_train_only_calibrators",
+    "replacement_data_role": "teacher_labeled_calibration_bootstrap",
+    "replacement_next_step": "draft_external_teacher_answers_and_candidate_labels_then_stop_for_batch_user_review",
+    "original_artifacts_mutated": false,
+    "user_direct_answers_required": false,
+    "batch_user_review_required": true,
+    "calibrator_fit_allowed": false,
+    "database_writes": false,
+    "learning_enabled": false,
+    "heldout_gate": false,
+    "performance_claim_gate": false,
+    "production_promotion_gate": false
+  },
+  "reference_answer_pack": {
+    "reference_answer_pack_version": 1,
+    "phase": "J1.1A",
+    "teacher_identity": "codex_assistant",
+    "teacher_identity_scope": "conversation_assistant_not_model_snapshot",
+    "answer_provenance": "external_teacher_drafted",
+    "evidence_type": "general_conceptual_synthesis",
+    "review_status": "awaiting_batch_user_review",
+    "user_direct_answers": false,
+    "calibrator_fit_allowed": false,
+    "answers": [
+      {
+        "order": 0,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "기억은 경험에서 얻은 정보를 저장하고 다시 사용할 수 있게 하며, 학습은 새로운 경험을 통해 지식과 행동을 바꾸는 과정이다. 학습은 기존 기억을 만들거나 수정하고, 꺼내 쓴 기억은 새 정보를 해석하고 다음 학습을 안내한다. 그래서 기억과 학습은 서로를 계속 갱신하는 순환 관계에 있다."
+      },
+      {
+        "order": 1,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "컴퓨터는 프로그램에 따라 정보를 계산하고 처리하는 범용 장치다. 로봇은 센서로 환경을 관찰하고 구동기로 물리적 행동을 수행하는 시스템이며, 보통 내부 제어를 위해 컴퓨터를 포함한다. 둘은 계산과 제어에서 연결되지만, 로봇은 물리적 몸과 환경과의 상호작용을 가진다는 점이 다르다."
+      },
+      {
+        "order": 2,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "시간이 흐르는 것만으로 경험의 의미가 자동으로 바뀌는 것은 아니다. 이후에 생긴 사건, 새로 배운 지식, 감정 변화와 망각이 과거 경험을 바라보는 맥락을 바꾸고, 기억을 다시 떠올릴 때 재해석과 재구성이 일어나기 때문에 같은 경험의 의미와 영향이 달라질 수 있다."
+      },
+      {
+        "order": 3,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "궁금증은 내가 무엇을 모르는지 알려 주는 신호이고, 질문은 그 지식의 빈틈을 확인 가능한 형태로 만든다. 질문을 바탕으로 검색, 관찰, 대화나 실험을 하면 답과 증거를 얻을 수 있고, 이를 기존 지식과 비교해 수정하거나 연결하면서 새로운 지식이 형성된다."
+      },
+      {
+        "order": 4,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "상상은 기억과 경험의 요소를 새롭게 조합해 아직 없는 인물, 사건과 세계를 만든다. 이야기는 그 상상을 인과관계와 시간 순서가 있는 구조로 표현하고 다른 사람과 공유하게 한다. 만들어진 이야기는 다시 새로운 장면과 가능성을 제공해 상상을 자극하므로 둘은 서로를 반복해서 확장한다."
+      },
+      {
+        "order": 5,
+        "question_type": "public_knowledge",
+        "answer_source": "external_teacher",
+        "answer": "사람은 행동과 선택을 통해 자연환경, 사회, 기술과 문화를 변화시킨다. 반대로 그 환경과 제도, 다른 사람과 기술은 사람에게 기회와 제약을 주고 생각과 행동을 바꾼다. 사람의 행동이 세상을 바꾸고 바뀐 세상이 다시 사람에게 영향을 주는 피드백 관계다."
+      }
+    ]
+  },
+  "candidate_label_pack": {
+    "candidate_label_pack_version": 1,
+    "phase": "J1.1A",
+    "review_status": "awaiting_user_review",
+    "reviewer_role": "assistant_draft",
+    "reviewed_at": null,
+    "calibrator_fit_allowed": false,
+    "database_writes": false,
+    "learning_enabled": false,
+    "entries": [
+      {
+        "order": 0,
+        "labels": [
+          {"concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163", "concept_name": "비비", "decision": "proposed_rejected", "rationale": "개별 정체성 이름이며 일반 기억-학습 관계의 직접 의미가 아니다."},
+          {"concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea", "concept_name": "AI", "decision": "proposed_rejected", "rationale": "질문은 AI에 한정되지 않은 일반 인지 관계를 묻는다."},
+          {"concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484", "concept_name": "정보", "decision": "proposed_approved", "rationale": "기억이 저장하고 학습이 갱신하는 핵심 대상이다."},
+          {"concept_id": "1ecb14e2-ce20-4c25-b8c9-2883c1a7b240", "concept_name": "설명해줘", "decision": "proposed_rejected", "rationale": "요청형 speech-act이며 답변 의미가 아니다."},
+          {"concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b", "concept_name": "신기한", "decision": "proposed_rejected", "rationale": "감상 표현으로 기억-학습 메커니즘을 설명하지 않는다."},
+          {"concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e", "concept_name": "관계", "decision": "proposed_approved", "rationale": "기억과 학습이 서로 갱신하는 순환 연결을 직접 나타낸다."},
+          {"concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792", "concept_name": "말해줘", "decision": "proposed_rejected", "rationale": "요청형 speech-act이며 답변 의미가 아니다."},
+          {"concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f", "concept_name": "검색", "decision": "proposed_rejected", "rationale": "기억-학습 관계의 핵심 설명에 포함되지 않는다."}
+        ]
+      },
+      {
+        "order": 1,
+        "labels": [
+          {"concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163", "concept_name": "비비", "decision": "proposed_rejected", "rationale": "개별 정체성 이름으로 컴퓨터-로봇 비교와 무관하다."},
+          {"concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a", "concept_name": "컴퓨터라", "decision": "proposed_uncertain", "rationale": "컴퓨터를 가리키는 조사 결합 어형으로 보이지만 정규 Concept로는 손상됐다."},
+          {"concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b", "concept_name": "놀이", "decision": "proposed_rejected", "rationale": "컴퓨터와 로봇의 구조적 연결이나 차이를 나타내지 않는다."},
+          {"concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea", "concept_name": "날짜", "decision": "proposed_rejected", "rationale": "질문 의미와 무관하다."},
+          {"concept_id": "2bb53f30-9da7-4d75-94d0-fb2e148b774e", "concept_name": "알려주세요", "decision": "proposed_rejected", "rationale": "요청형 speech-act이며 답변 의미가 아니다."},
+          {"concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc", "concept_name": "등에 업히기", "decision": "proposed_rejected", "rationale": "컴퓨터-로봇 비교의 일반 의미와 무관하다."},
+          {"concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3", "concept_name": "컴퓨터요", "decision": "proposed_uncertain", "rationale": "컴퓨터를 가리키는 조사 결합 어형으로 보이지만 정규 Concept로는 손상됐다."},
+          {"concept_id": "42307f5a-d3a7-4684-a75f-7ed631b4399c", "concept_name": "궁금해", "decision": "proposed_rejected", "rationale": "호기심 표현이며 컴퓨터-로봇 관계의 답변 의미가 아니다."}
+        ]
+      },
+      {
+        "order": 2,
+        "labels": [
+          {"concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea", "concept_name": "AI", "decision": "proposed_rejected", "rationale": "질문은 AI에 한정되지 않은 일반 경험 변화다."},
+          {"concept_id": "04cf5df9-fd2d-4a02-a0a0-5c4f3e08e990", "concept_name": "1시간 뒤", "decision": "proposed_approved", "rationale": "시간 경과와 이후 맥락이라는 질문 축을 직접 나타낸다."},
+          {"concept_id": "0f63a52b-3cca-4573-8a9a-c31bf8125109", "concept_name": "배움", "decision": "proposed_approved", "rationale": "새로 배운 내용이 과거 경험의 해석을 바꾸는 요인이다."},
+          {"concept_id": "29c51c0c-d465-4e17-9fc9-b64330d2eae7", "concept_name": "똑똑함", "decision": "proposed_rejected", "rationale": "경험 재해석의 직접 메커니즘이 아니다."},
+          {"concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450", "concept_name": "학습", "decision": "proposed_approved", "rationale": "후속 학습이 기존 경험의 의미와 기억을 수정할 수 있다."},
+          {"concept_id": "9776b927-0cbc-40d0-822e-2963345f600a", "concept_name": "사전적 정의", "decision": "proposed_rejected", "rationale": "경험 변화의 원인이나 결과를 나타내지 않는다."},
+          {"concept_id": "16603cac-174b-4f18-a36d-0803236d7e61", "concept_name": "세상", "decision": "proposed_uncertain", "rationale": "새 사건의 외부 맥락으로는 연결되지만 답변의 핵심 개념은 아니다."},
+          {"concept_id": "20cf8ff4-3ebf-4f4e-a977-61abc052e127", "concept_name": "제가", "decision": "proposed_rejected", "rationale": "대명사 조각으로 의미 Concept가 아니다."}
+        ]
+      },
+      {
+        "order": 3,
+        "labels": [
+          {"concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea", "concept_name": "AI", "decision": "proposed_rejected", "rationale": "질문-궁금증-지식 과정은 AI에 한정되지 않는다."},
+          {"concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163", "concept_name": "비비", "decision": "proposed_rejected", "rationale": "개별 정체성 이름이며 일반 지식 형성과 무관하다."},
+          {"concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f", "concept_name": "검색", "decision": "proposed_approved", "rationale": "질문에 대한 정보와 증거를 얻는 대표 행동이다."},
+          {"concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0", "concept_name": "모르는 것", "decision": "proposed_approved", "rationale": "궁금증과 질문이 드러내는 지식의 빈틈이다."},
+          {"concept_id": "1ec02ee2-1e57-47d0-a97c-ffde03f31ca9", "concept_name": "위치", "decision": "proposed_rejected", "rationale": "특정 위치 정보는 일반 지식 형성 과정과 무관하다."},
+          {"concept_id": "88f28732-645f-43ef-8f28-861f3b126afd", "concept_name": "개발자", "decision": "proposed_rejected", "rationale": "특정 역할이며 질문-지식 과정의 핵심이 아니다."},
+          {"concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40", "concept_name": "답", "decision": "proposed_approved", "rationale": "질문에 대한 답과 증거가 새로운 지식의 재료가 된다."},
+          {"concept_id": "caf7f2d6-407f-4130-bcb3-68de2594a15b", "concept_name": "비밀 질문", "decision": "proposed_uncertain", "rationale": "질문의 한 종류지만 새로운 지식 형성의 일반 메커니즘은 아니다."}
+        ]
+      },
+      {
+        "order": 4,
+        "labels": [
+          {"concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163", "concept_name": "비비", "decision": "proposed_rejected", "rationale": "개별 정체성 이름이며 이야기-상상 관계의 일반 의미가 아니다."},
+          {"concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea", "concept_name": "AI", "decision": "proposed_rejected", "rationale": "질문은 AI에 한정되지 않은 창작 관계다."},
+          {"concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f", "concept_name": "하늘을 나는 것", "decision": "proposed_uncertain", "rationale": "상상의 예시는 될 수 있지만 상호 발전 메커니즘 자체는 아니다."},
+          {"concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b", "concept_name": "신기한", "decision": "proposed_uncertain", "rationale": "상상의 정서적 결과일 수 있지만 핵심 관계는 아니다."},
+          {"concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e", "concept_name": "관계", "decision": "proposed_approved", "rationale": "이야기와 상상이 서로 확장하는 상호 연결을 직접 나타낸다."},
+          {"concept_id": "2c1611cc-b151-4cf4-8ebb-6982fdf39450", "concept_name": "학습", "decision": "proposed_approved", "rationale": "이야기에서 얻은 새 구조와 요소가 상상을 확장하는 과정과 연결된다."},
+          {"concept_id": "d11356da-d629-4a87-800d-d574ff842ba4", "concept_name": "기억", "decision": "proposed_approved", "rationale": "상상이 재조합하고 이야기가 구조화하는 경험 요소의 원천이다."},
+          {"concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72", "concept_name": "인터넷", "decision": "proposed_rejected", "rationale": "이야기와 상상의 상호 발전에 필수적인 의미가 아니다."}
+        ]
+      },
+      {
+        "order": 5,
+        "labels": [
+          {"concept_id": "36f922a1-663f-41b2-8abe-35c295e9e792", "concept_name": "말해줘", "decision": "proposed_rejected", "rationale": "요청형 speech-act이며 답변 의미가 아니다."},
+          {"concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b", "concept_name": "신기한", "decision": "proposed_rejected", "rationale": "사람과 세상의 피드백 관계를 설명하지 않는다."},
+          {"concept_id": "569f9646-15dd-4b93-9773-841ab564296d", "concept_name": "형의", "decision": "proposed_rejected", "rationale": "소유격 조사 결합 조각으로 일반 의미 Concept가 아니다."},
+          {"concept_id": "6cf9cfd7-bafc-4e76-9e45-2cdefda58bf9", "concept_name": "문장", "decision": "proposed_rejected", "rationale": "사람-세계 상호작용의 핵심 의미가 아니다."},
+          {"concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e", "concept_name": "관계", "decision": "proposed_approved", "rationale": "사람의 행동과 세상의 피드백이라는 상호 연결을 직접 나타낸다."},
+          {"concept_id": "7e778991-2b88-4c1f-87d4-cdb823601d96", "concept_name": "형은", "decision": "proposed_rejected", "rationale": "조사 결합 어형으로 일반 사람-세계 관계의 의미가 아니다."},
+          {"concept_id": "0a1431ff-8ba3-4273-950d-b51b1a628c3f", "concept_name": "Search_dictionary", "decision": "proposed_rejected", "rationale": "도구 이름으로 사람-세계 상호작용의 답변 의미가 아니다."},
+          {"concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea", "concept_name": "날짜", "decision": "proposed_rejected", "rationale": "질문 의미와 무관하다."}
+        ]
+      }
+    ]
+  }
+}
