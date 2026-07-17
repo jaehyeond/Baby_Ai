@@ -1,0 +1,33 @@
+{
+  "block_reasons": [],
+  "calibrator_design_audit_sha256": "1b11df5ac8c62cc249c59bcb262cf96ded57da7d44c8c62694f07d492644f58b",
+  "calibrator_fit_gate": true,
+  "cross_validation_metrics": {
+    "accuracy_at_0_5": 0.6962025316455697,
+    "auc_roc": 0.6746894409937888,
+    "brier": 0.1935473482068661,
+    "ece": 0.038186128455875906,
+    "log_loss": 0.5649735195710763,
+    "negative_count": 56,
+    "positive_count": 23,
+    "row_count": 79
+  },
+  "database_writes": false,
+  "evaluation_scope": "leave_one_question_out_on_train_calibration_only",
+  "excluded_uncertain_count": 16,
+  "fit_row_count": 79,
+  "fold_count": 6,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "model_type": "l2_logistic_regression_binary_relevance_v1",
+  "next_step": "audit_question_selection_probability_snapshot_before_runtime_use",
+  "offline_probabilities_computed": true,
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "production_promotion_gate": false,
+  "runtime_probabilities_computed": false,
+  "status": "train_only_calibrator_fit_completed_offline_not_promoted",
+  "train_only_calibrator_fit_sha256": "fd3965f02616b55d7ff9c01785050fd3dcc211bccfde542621a67e61dcedf049",
+  "train_only_fit_execution_gate": true,
+  "training_scope": "train_calibration_only"
+}

@@ -23,6 +23,7 @@ from neural.baby.question_calibration import rank_raw_scores
 CANDIDATE_VOCABULARY_VERSION = 2
 INDEPENDENT_SCORE_CAPTURE_VERSION = 1
 UNION_LABEL_PACK_VERSION = 1
+UNION_REVIEW_DECISION_PACK_VERSION = 1
 PHASE = "J1.1B"
 DEFAULT_TOP_K = 8
 _CODE_IDENTIFIER_RE = re.compile(r"^[a-z][a-z0-9]*_[a-z0-9_]+$", re.IGNORECASE)
@@ -399,6 +400,128 @@ def seal_union_label_pack(payload: Mapping[str, Any]) -> dict[str, Any]:
     normalized.pop("union_label_pack_sha256", None)
     normalized["union_label_pack_sha256"] = canonical_json_sha256(normalized)
     return normalized
+
+
+def _require_zoned_iso_timestamp(value: Any, field_name: str) -> str:
+    timestamp = str(value or "")
+    try:
+        parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError(f"{field_name} must be an ISO timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError(f"{field_name} must include a timezone")
+    return timestamp
+
+
+def build_user_reviewed_union_label_pack(
+    capture: Mapping[str, Any],
+    answer_pack: Mapping[str, Any],
+    draft_label_pack: Mapping[str, Any],
+    review_decision_pack: Mapping[str, Any],
+    *,
+    reviewed_at: str | None = None,
+) -> dict[str, Any]:
+    """Create a reviewed successor from a complete user decision artifact.
+
+    The assistant draft is never mutated.  The review decision artifact must
+    cover every sealed union candidate exactly once; unchanged draft rationales
+    may be retained, but changed decisions must supply a rationale.
+    """
+
+    draft = validate_union_label_pack(capture, answer_pack, draft_label_pack)
+    if draft.get("review_status") != "awaiting_user_review":
+        raise ValueError("union label pack is not awaiting user review")
+    decisions = json.loads(json.dumps(review_decision_pack, ensure_ascii=False))
+    if decisions.get("review_decision_pack_version") != (
+        UNION_REVIEW_DECISION_PACK_VERSION
+    ):
+        raise ValueError("unsupported review_decision_pack_version")
+    if decisions.get("phase") != PHASE:
+        raise ValueError("review decision pack must be J1.1B")
+    if decisions.get("decision_source") != "user_batch_review":
+        raise ValueError("review decision source must be user_batch_review")
+    if decisions.get("reviewer_role") != "user":
+        raise ValueError("review decision pack requires reviewer_role=user")
+    if decisions.get("source_union_label_pack_sha256") != draft.get(
+        "union_label_pack_sha256"
+    ):
+        raise ValueError("review decisions are not bound to the draft labels")
+    if decisions.get("independent_score_capture_sha256") != capture.get(
+        "independent_score_capture_sha256"
+    ):
+        raise ValueError("review decisions are not bound to the score capture")
+    if decisions.get("reviewed_reference_answer_pack_sha256") != answer_pack.get(
+        "reference_answer_pack_sha256"
+    ):
+        raise ValueError("review decisions are not bound to the reviewed answers")
+
+    decision_reviewed_at = decisions.get("reviewed_at")
+    if reviewed_at is not None and decision_reviewed_at not in (None, reviewed_at):
+        raise ValueError("reviewed_at argument and decision pack reviewed_at differ")
+    final_reviewed_at = _require_zoned_iso_timestamp(
+        reviewed_at if reviewed_at is not None else decision_reviewed_at,
+        "reviewed_at",
+    )
+
+    draft_entries = {
+        int(entry["order"]): entry for entry in draft.get("entries") or []
+    }
+    decision_entries = {
+        int(entry["order"]): entry for entry in decisions.get("entries") or []
+    }
+    if set(decision_entries) != set(draft_entries):
+        raise ValueError("review decisions must cover every draft question")
+
+    reviewed = json.loads(json.dumps(draft, ensure_ascii=False))
+    for reviewed_entry in reviewed.get("entries") or []:
+        order = int(reviewed_entry["order"])
+        decision_entry = decision_entries[order]
+        draft_entry = draft_entries[order]
+        for field in ("question_id", "question_sha256", "answer_sha256"):
+            if decision_entry.get(field) != draft_entry.get(field):
+                raise ValueError(f"review decision {field} mismatch")
+        draft_labels = {
+            label["concept_id"]: label for label in draft_entry.get("labels") or []
+        }
+        review_labels = {
+            str(label.get("concept_id") or ""): label
+            for label in decision_entry.get("labels") or []
+        }
+        if set(review_labels) != set(draft_labels):
+            raise ValueError("review decisions must exactly cover every union label")
+        for label in reviewed_entry.get("labels") or []:
+            concept_id = label["concept_id"]
+            review_label = review_labels[concept_id]
+            if review_label.get("concept_name") != label.get("concept_name"):
+                raise ValueError("review decision concept_name mismatch")
+            decision = str(review_label.get("decision") or "")
+            if decision not in _REVIEWED_LABEL_DECISIONS:
+                raise ValueError("review decision is invalid")
+            draft_decision = str(draft_labels[concept_id].get("decision") or "")
+            draft_reviewed_decision = draft_decision.removeprefix("proposed_")
+            rationale = str(review_label.get("rationale") or "").strip()
+            if decision != draft_reviewed_decision and not rationale:
+                raise ValueError("changed review decisions require a rationale")
+            label["decision"] = decision
+            if rationale:
+                label["rationale"] = rationale
+
+    reviewed.update({
+        "review_status": "user_reviewed",
+        "reviewer_role": "user",
+        "reviewed_at": final_reviewed_at,
+        "calibrator_fit_allowed": False,
+        "database_writes": False,
+        "learning_enabled": False,
+        "probabilities_computed": False,
+        "heldout_gate": False,
+        "performance_claim_gate": False,
+        "production_promotion_gate": False,
+    })
+    reviewed = seal_union_label_pack(reviewed)
+    return validate_union_label_pack(
+        capture, answer_pack, reviewed, require_user_review=True
+    )
 
 
 def validate_union_label_pack(

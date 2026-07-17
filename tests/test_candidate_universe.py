@@ -5,6 +5,7 @@ import pytest
 from neural.baby.candidate_universe import (
     build_independent_union,
     build_union_label_readiness_report,
+    build_user_reviewed_union_label_pack,
     classify_candidate_vocabulary,
     exclude_question_cue_surfaces,
     seal_candidate_vocabulary,
@@ -211,3 +212,150 @@ def test_sealed_capture_and_union_labels_remain_blocked_until_review() -> None:
     incomplete = seal_union_label_pack(incomplete)
     with pytest.raises(ValueError, match="complete independent union"):
         validate_union_label_pack(capture, answers, incomplete)
+
+
+def _union_review_fixture() -> tuple[dict, dict, dict]:
+    capture = {
+        "independent_score_capture_sha256": "a" * 64,
+        "questions": [{
+            "order": 0,
+            "question_id": "q0",
+            "question_sha256": "b" * 64,
+            "independent_union": {
+                "graph_top_k_ids": ["c0"],
+                "local_core_top_k_ids": ["c1"],
+                "union": [
+                    {"concept_id": "c0", "concept_name": "memory"},
+                    {"concept_id": "c1", "concept_name": "learning"},
+                ],
+            },
+        }],
+    }
+    answers = {
+        "reference_answer_pack_sha256": "c" * 64,
+        "review_status": "user_reviewed",
+        "answers": [{"order": 0, "answer_sha256": "d" * 64}],
+    }
+    draft = seal_union_label_pack({
+        "union_label_pack_version": 1,
+        "phase": "J1.1B",
+        "independent_score_capture_sha256": capture[
+            "independent_score_capture_sha256"
+        ],
+        "reviewed_reference_answer_pack_sha256": "c" * 64,
+        "semantic_label_source": (
+            "external_teacher_drafted_against_user_reviewed_reference_answers"
+        ),
+        "review_status": "awaiting_user_review",
+        "reviewer_role": "assistant_draft",
+        "reviewed_at": None,
+        "label_count": 2,
+        "entries": [{
+            "order": 0,
+            "question_id": "q0",
+            "question_sha256": "b" * 64,
+            "answer_sha256": "d" * 64,
+            "labels": [
+                {
+                    "concept_id": "c0",
+                    "concept_name": "memory",
+                    "decision": "proposed_approved",
+                    "rationale": "memory is relevant",
+                },
+                {
+                    "concept_id": "c1",
+                    "concept_name": "learning",
+                    "decision": "proposed_rejected",
+                    "rationale": "learning was initially rejected",
+                },
+            ],
+        }],
+        "user_direct_answers": False,
+        "database_writes": False,
+        "learning_enabled": False,
+        "probabilities_computed": False,
+        "calibrator_fit_allowed": False,
+        "heldout_gate": False,
+        "performance_claim_gate": False,
+        "production_promotion_gate": False,
+    })
+    return capture, answers, draft
+
+
+def test_user_reviewed_union_label_pack_is_separate_successor() -> None:
+    capture, answers, draft = _union_review_fixture()
+    decisions = {
+        "review_decision_pack_version": 1,
+        "phase": "J1.1B",
+        "decision_source": "user_batch_review",
+        "source_union_label_pack_sha256": draft["union_label_pack_sha256"],
+        "independent_score_capture_sha256": capture[
+            "independent_score_capture_sha256"
+        ],
+        "reviewed_reference_answer_pack_sha256": "c" * 64,
+        "reviewer_role": "user",
+        "reviewed_at": "2026-07-18T10:00:00+09:00",
+        "entries": [{
+            "order": 0,
+            "question_id": "q0",
+            "question_sha256": "b" * 64,
+            "answer_sha256": "d" * 64,
+            "labels": [
+                {
+                    "concept_id": "c0",
+                    "concept_name": "memory",
+                    "decision": "approved",
+                },
+                {
+                    "concept_id": "c1",
+                    "concept_name": "learning",
+                    "decision": "approved",
+                    "rationale": "user marked learning as relevant too",
+                },
+            ],
+        }],
+    }
+
+    reviewed = build_user_reviewed_union_label_pack(
+        capture, answers, draft, decisions
+    )
+    validate_union_label_pack(capture, answers, reviewed, require_user_review=True)
+    report = build_union_label_readiness_report(capture, answers, reviewed)
+
+    assert draft["review_status"] == "awaiting_user_review"
+    assert reviewed["review_status"] == "user_reviewed"
+    assert reviewed["reviewer_role"] == "user"
+    assert reviewed["calibrator_fit_allowed"] is False
+    assert report["explicit_user_review_gate"] is True
+    assert report["dual_predictor_positive_coverage_gate"] is True
+    assert report["calibrator_fit_gate"] is False
+
+
+def test_user_review_decisions_must_cover_every_union_label() -> None:
+    capture, answers, draft = _union_review_fixture()
+    decisions = {
+        "review_decision_pack_version": 1,
+        "phase": "J1.1B",
+        "decision_source": "user_batch_review",
+        "source_union_label_pack_sha256": draft["union_label_pack_sha256"],
+        "independent_score_capture_sha256": capture[
+            "independent_score_capture_sha256"
+        ],
+        "reviewed_reference_answer_pack_sha256": "c" * 64,
+        "reviewer_role": "user",
+        "reviewed_at": "2026-07-18T10:00:00+09:00",
+        "entries": [{
+            "order": 0,
+            "question_id": "q0",
+            "question_sha256": "b" * 64,
+            "answer_sha256": "d" * 64,
+            "labels": [{
+                "concept_id": "c0",
+                "concept_name": "memory",
+                "decision": "approved",
+            }],
+        }],
+    }
+
+    with pytest.raises(ValueError, match="exactly cover every union label"):
+        build_user_reviewed_union_label_pack(capture, answers, draft, decisions)

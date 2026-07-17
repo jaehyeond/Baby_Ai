@@ -1,0 +1,159 @@
+{
+  "block_reasons": [],
+  "calibrator_fit_gate": false,
+  "candidate_label_count": 95,
+  "conversation_handler_changed": false,
+  "created_at": "2026-07-17T17:20:22.445319+00:00",
+  "database_writes": false,
+  "decision_counts": {
+    "approved": 23,
+    "rejected": 56,
+    "uncertain": 16
+  },
+  "dual_predictor_positive_coverage_gate": true,
+  "explicit_user_review_gate": true,
+  "fair_candidate_universe_gate": true,
+  "graph_positive_coverage_count": 6,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "live_predictor_changed": false,
+  "local_core_positive_coverage_count": 6,
+  "next_step": "audit_train_only_calibrator_design_before_any_fit",
+  "per_question": [
+    {
+      "approved_names": [
+        "정보",
+        "관계",
+        "상호작용"
+      ],
+      "decision_counts": {
+        "approved": 3,
+        "rejected": 13,
+        "uncertain": 0
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 0,
+      "uncertain_names": []
+    },
+    {
+      "approved_names": [
+        "로보틱스",
+        "프로그램",
+        "상호작용",
+        "알고리즘"
+      ],
+      "decision_counts": {
+        "approved": 4,
+        "rejected": 9,
+        "uncertain": 3
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 1,
+      "uncertain_names": [
+        "AI",
+        "사용자",
+        "사용"
+      ]
+    },
+    {
+      "approved_names": [
+        "1시간 뒤",
+        "배움",
+        "학습",
+        "감정"
+      ],
+      "decision_counts": {
+        "approved": 4,
+        "rejected": 9,
+        "uncertain": 3
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 2,
+      "uncertain_names": [
+        "세상",
+        "상호작용",
+        "감정 표현"
+      ]
+    },
+    {
+      "approved_names": [
+        "검색",
+        "모르는 것",
+        "답",
+        "새로운",
+        "응답"
+      ],
+      "decision_counts": {
+        "approved": 5,
+        "rejected": 8,
+        "uncertain": 2
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 3,
+      "uncertain_names": [
+        "비밀 질문",
+        "사용자"
+      ]
+    },
+    {
+      "approved_names": [
+        "관계",
+        "학습",
+        "기억",
+        "상호작용"
+      ],
+      "decision_counts": {
+        "approved": 4,
+        "rejected": 9,
+        "uncertain": 3
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 4,
+      "uncertain_names": [
+        "하늘을 나는 것",
+        "신기한",
+        "감정"
+      ]
+    },
+    {
+      "approved_names": [
+        "관계",
+        "인터넷",
+        "상호작용"
+      ],
+      "decision_counts": {
+        "approved": 3,
+        "rejected": 8,
+        "uncertain": 5
+      },
+      "graph_positive_coverage": true,
+      "local_core_positive_coverage": true,
+      "order": 5,
+      "uncertain_names": [
+        "딥러닝",
+        "웹 서치",
+        "감정",
+        "사용자",
+        "긍정적 감정"
+      ]
+    }
+  ],
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "question_positive_coverage_count": 6,
+  "review_decision_pack_sha256": "a04fd5f7099240ba58805baecf850d0146bd2d72e6a5334fc34adc742abfa138",
+  "review_status": "user_reviewed",
+  "reviewed_at": "2026-07-17T17:20:22.445319+00:00",
+  "reviewer_role": "user",
+  "source_union_label_pack_sha256": "b0bbada96256eea1ff4aaf10ff25e1bd95f8780a4660075c2c08f903fa7d832f",
+  "status": "reviewed_pending_calibrator_design_audit",
+  "union_label_pack_sha256": "518e5e6adb50d6abcfecf3b6bdbb3241c4129f7c106eb4be7aa2113f2110e21d"
+}
