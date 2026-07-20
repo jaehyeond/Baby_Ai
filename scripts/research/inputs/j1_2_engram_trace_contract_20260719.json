@@ -1,0 +1,673 @@
+{
+  "activation_write_gate": false,
+  "answer_source_amendment_sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+  "block_reasons": [
+    "fresh_never_labeled_capture_not_yet_produced",
+    "behavioral_sufficiency_necessity_core_not_wired_to_wake_conversation_handler_v30_protected",
+    "causal_sufficiency_necessity_require_weight_editing_forbidden",
+    "local_core_numbers_leakage_contaminated_pending_pair_disjoint_3seed_rerun_and_sealed_canary",
+    "lora_delta_estimator_is_paper_case2_collapse_only_merged_full_weight_localization_read_only_permitted",
+    "durable_reactivation_log_absent_activation_nodes_deleted_30s",
+    "per_example_gradient_and_perstep_loss_not_stored",
+    "probability_layer_is_outcome_instrument_not_engram_locus",
+    "provenance_layer_is_audit_substrate_not_engram_measurement",
+    "graph_measurements_require_degree_normalization_and_multipath_controls_before_valid",
+    "sample_6_questions_79_rows_23_positives_auc_0.675_below_inference_threshold_descriptive_only",
+    "reviewed_79plus16_labels_are_calibrator_train_split_reuse_is_in_sample_and_post_hoc_future_info",
+    "graph_necessity_edge_masking_near_tautological_degree_dominated_requires_permutation_null",
+    "local_core_growth_runs_show_rising_training_loss_mrr_gain_not_clean_lm_learning"
+  ],
+  "calibrator_design_audit_sha256": "1b11df5ac8c62cc249c59bcb262cf96ded57da7d44c8c62694f07d492644f58b",
+  "calibrator_probability_snapshot_sha256": "2c4ad22d558653e1438a0dc9fa47bf1f8ab37bf02225706a50d5dc0d9a6d1c12",
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "covariance_capture_gate": false,
+  "criteria": [
+    "specificity",
+    "reactivation",
+    "sufficiency",
+    "necessity"
+  ],
+  "criteria_mappings": [
+    {
+      "blocked_reason": "graph_measurements_require_degree_normalization_and_multipath_controls_before_valid",
+      "computation": "degree-normalized reference-leakage fraction: share of spreading activation mass from a target cue that reaches reference-cue concepts, read-only via get_spreading_activation (MATCH-only)",
+      "criterion": "specificity",
+      "degree_normalization_required": true,
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "graph_memory",
+      "mapping_kind": "descriptive_only_underpowered",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "sparsity mistaken for specificity; hub concepts light up for any cue, so an undnormalized score reflects degree, not a trace",
+      "multipath_counting_required": true,
+      "n_available": null,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "local_core_numbers_leakage_contaminated_pending_pair_disjoint_3seed_rerun_and_sealed_canary",
+      "computation": "||W+||/||W|| localization plus residual response on reference inputs, computed only on merged full weights (W_pt+BA) held in a throwaway in-memory copy that is never persisted or served",
+      "criterion": "specificity",
+      "estimator_conditional": true,
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "local_core_predictor",
+      "lora_delta_substitution_forbidden": true,
+      "mapping_kind": "genuine_after_leakage_safe_rerun",
+      "merged_full_weight_only": true,
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "reads as validated localization although the estimator itself is an unverified preprint result and the current numbers are leakage contaminated",
+      "n_available": null,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "probability_layer_is_outcome_instrument_not_engram_locus",
+      "computation": "concentration of calibrated per-candidate probabilities per question (top mass, mean mass)",
+      "criterion": "specificity",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "question_selection_probability",
+      "mapping_kind": "outcome_instrument_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "concentration is calibrator discriminative power, not parameter-space specificity; it is a readout, not a trace",
+      "n_available": 6,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "provenance_layer_is_audit_substrate_not_engram_measurement",
+      "computation": "single-source attributability of each reviewed reference answer under the answer-source route contract",
+      "criterion": "specificity",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "source_provenance",
+      "mapping_kind": "audit_substrate_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "attributability seals reproducibility only; it never measures how selectively a memory is stored",
+      "n_available": 6,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "durable_reactivation_log_absent_activation_nodes_deleted_30s",
+      "computation": "overlap between the predicted concept set from prepare_curiosity_prediction (MATCH-only) and the actual reactivated set read read-only from already persisted Experience.curiosity_actual_concept_ids / predicted_concept_ids / curiosity_cue_ids, or re-derived in memory over MATCH (e:Experience)-[:INVOLVES]->(c:Concept)",
+      "criterion": "reactivation",
+      "degree_normalization_required": true,
+      "event_count_must_be_established_before_any_measurable_tag": true,
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "graph_memory",
+      "mapping_kind": "descriptive_only_underpowered",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "record_curiosity_outcome must never be called to obtain the actual set: it SETs Concept/BrainRegion/Experience and MERGEs CuriosityLog/TRIGGERED_BY, which is a database write",
+      "multipath_counting_required": true,
+      "n_available": null,
+      "read_only": true,
+      "read_only_citable_functions": [
+        "prepare_curiosity_prediction",
+        "get_spreading_activation"
+      ]
+    },
+    {
+      "blocked_reason": "per_example_gradient_and_perstep_loss_not_stored",
+      "computation": "no definition available: hidden pre-activation states Z are not stored, forward hooks are not implemented, and re-running the scorer reproduces rankings rather than internal states",
+      "criterion": "reactivation",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "local_core_predictor",
+      "mapping_kind": "not_definable_now",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "re-running the predictor looks like reactivation but only replays an output ranking",
+      "n_available": null,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "probability_layer_is_outcome_instrument_not_engram_locus",
+      "computation": "per-candidate calibrated probability magnitude treated as reactivation strength",
+      "criterion": "reactivation",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "question_selection_probability",
+      "mapping_kind": "outcome_instrument_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "an output probability is not an internal state; calling it reactivation strength imports a mechanism that was never measured",
+      "n_available": 6,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "provenance_layer_is_audit_substrate_not_engram_measurement",
+      "computation": "reactivation ORDER only, from pre-registered NEXT_EXTERNAL_TURN and NEXT_FRAME sequence links",
+      "criterion": "reactivation",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "source_provenance",
+      "mapping_kind": "audit_substrate_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "ordering of small pre-registered sequences is not evidence that a trace was reactivated",
+      "n_available": null,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "causal_sufficiency_necessity_require_weight_editing_forbidden",
+      "computation": "recall-from-trace-only on a masked view (1 - prediction_error), which is pattern completion from a partial cue on a graph that already holds the memory",
+      "criterion": "sufficiency",
+      "execution_status": "asserted_not_executed",
+      "gain_of_function_not_constructible_read_only": true,
+      "inferential_claim_supported": false,
+      "layer": "graph_memory",
+      "mapping_kind": "pattern_completion_analog_not_gain_of_function",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "the paper's sufficiency injects a trace into a null state so an ABSENT memory appears; a read-only graph cannot construct that null state, so this measures a different property entirely",
+      "n_available": null,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "local_core_growth_runs_show_rising_training_loss_mrr_gain_not_clean_lm_learning",
+      "computation": "causal form requires injecting W+ into a null-state model, which is weight editing and is forbidden; the read-only substitute is an adapter-versus-base ranking comparison",
+      "criterion": "sufficiency",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "local_core_predictor",
+      "mapping_kind": "forbidden_intervention",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "the adapter-versus-base MRR gain is contaminated twice: pair-overlap leakage, and both growth runs show training loss RISING while MRR rose, so the gain is not attributable to clean language-model learning",
+      "n_available": null,
+      "read_only": false,
+      "rising_loss_evidence_path": "claudedocs/monitoring/local_core_growth.jsonl"
+    },
+    {
+      "blocked_reason": "probability_layer_is_outcome_instrument_not_engram_locus",
+      "computation": "calibrated probability of a candidate treated as evidence the trace suffices to recover it",
+      "criterion": "sufficiency",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "question_selection_probability",
+      "mapping_kind": "outcome_instrument_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "a calibrated readout cannot establish a gain-of-function claim",
+      "n_available": 6,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "provenance_layer_is_audit_substrate_not_engram_measurement",
+      "computation": "whether a sealed source record alone reproduces the reference answer",
+      "criterion": "sufficiency",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "source_provenance",
+      "mapping_kind": "audit_substrate_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "reproducing a record is provenance replay, not memory sufficiency",
+      "n_available": 6,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "graph_necessity_edge_masking_near_tautological_degree_dominated_requires_permutation_null",
+      "computation": "query-masking COUNTERFACTUAL only: recall(full) - recall(trace-masked) for the target, plus a reference-preservation check; no edge is ever deleted and decay_connections is never called",
+      "criterion": "necessity",
+      "degree_normalization_required": true,
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "graph_memory",
+      "mapping_kind": "descriptive_only_underpowered",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "masking a target's own edges makes the delta trivially positive, and a redundant target gives about zero, so the metric is degree and redundancy dominated; without an edge-shuffle permutation null no necessity delta can be shown to exceed chance",
+      "multipath_counting_required": true,
+      "n_available": null,
+      "permutation_null_baseline_required": true,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "causal_sufficiency_necessity_require_weight_editing_forbidden",
+      "computation": "per-concept form requires subtracting alpha*W+ from live weights, which is weight editing and is forbidden; per-concept necessity is additionally unmeasured because per-example gradients are discarded and no lesion harness exists",
+      "criterion": "necessity",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "local_core_predictor",
+      "mapping_kind": "forbidden_intervention",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "a coarse whole-adapter base-versus-adapter ablation is read-only but is concept-nonspecific and leakage contaminated, so it cannot stand in for per-concept necessity",
+      "n_available": null,
+      "read_only": false
+    },
+    {
+      "blocked_reason": "reviewed_79plus16_labels_are_calibrator_train_split_reuse_is_in_sample_and_post_hoc_future_info",
+      "computation": "feature-family ablation: drop graph_* or local_core_* features and recompute the calibrated-probability delta",
+      "criterion": "necessity",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "is_calibrator_feature_ablation_not_parameter_space_necessity": true,
+      "layer": "question_selection_probability",
+      "mapping_kind": "RO-now_in_sample_label_reuse",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "the calibrator was fit on the same 79 reviewed rows it would be scored against, so this is in-sample; worse, those rows are post-hoc human approve/reject decisions, which injects information from after the pre-question snapshot the trace supposedly produced",
+      "n_available": 79,
+      "read_only": true
+    },
+    {
+      "blocked_reason": "provenance_layer_is_audit_substrate_not_engram_measurement",
+      "computation": "leave-one-source-out over the answer-source routes",
+      "criterion": "necessity",
+      "execution_status": "asserted_not_executed",
+      "inferential_claim_supported": false,
+      "layer": "source_provenance",
+      "mapping_kind": "audit_substrate_only",
+      "min_n_for_inference": null,
+      "min_n_for_inference_status": "undefined_pending_power_analysis",
+      "misread_risk": "definable in principle but not exercised: every reviewed answer currently routes to a single external-teacher source, so the leave-one-out contrast does not exist",
+      "n_available": null,
+      "read_only": true
+    }
+  ],
+  "database_writes": false,
+  "discipline": {
+    "activation_write_gate_semantics": "forbids_any_CREATE_or_DELETE_of_Activation_nodes_in_audit_context_ephemeral_included",
+    "adapter_digest_recheck_is_advisory_report_field_not_validator_assertion": true,
+    "does_not_modify_sealed_artifacts": true,
+    "measures_nothing_in_this_artifact": true,
+    "offline_audit_registers_no_api_server_routes_or_hooks_calls_no_http_endpoints_opens_neo4j_read_only_match_return_only": true,
+    "preserves_declared_next_step": "capture_real_fresh_pre_question_shadow_inputs_read_only_before_runtime_selection",
+    "read_only_citable_graph_functions": [
+      "prepare_curiosity_prediction",
+      "get_spreading_activation"
+    ]
+  },
+  "engram_ablation_gate": false,
+  "engram_criteria_attribution": "specificity_reactivation_sufficiency_necessity_are_josselyn_tonegawa_engram_criteria_predating_arxiv_2606.14997_not_originated_by_it",
+  "engram_criteria_policy": "specificity_reactivation_sufficiency_necessity_offline_audit_only",
+  "engram_injection_gate": false,
+  "engram_measurement_executed_gate": false,
+  "engram_object_locus": "Only the local-core layer holds the paper's weight-space engram object (W+); the graph, probability, and provenance layers contain NO paper-engram object - they are cognitive-neuroscience analogs (Josselyn/Tonegawa framing) and are NOT the estimator's W+.",
+  "engram_source_reference": {
+    "arxiv_id": "2606.14997",
+    "independent_index_status": "semantic_scholar_venue_and_citation_empty",
+    "intervention_class": "destructive_weight_editing_forbidden",
+    "lora_supported_by_paper": false,
+    "title": "AI Engram: In Search of Memory Traces in Artificial Intelligence",
+    "venue_claim": "icml_2026_oral_self_reported_on_arxiv",
+    "verification_status": "unverified_preprint"
+  },
+  "engram_trace_contract_gate": true,
+  "engram_trace_contract_scope": "graph_local_core_engram_offline_audit_definition",
+  "engram_trace_contract_sha256": "1112d9ef7b592076d57cce71f466201154b8f859920d69363c010f1dc8983eed",
+  "engram_trace_contract_version": 1,
+  "engram_track_next_step": "define_read_only_graph_engram_measurement_harness_offline_before_runtime",
+  "estimator_verification_status": "closed_form_estimator_W+=W.Sigma+(Sigma+ + Sigma-)dagger_and_case2_collapse_0.818_to_0.446_are_self_reported_unverified_preprint",
+  "feature_names": [
+    "graph_raw_score",
+    "local_core_raw_score",
+    "graph_rank",
+    "local_core_rank",
+    "graph_rank_percentile",
+    "local_core_rank_percentile",
+    "in_graph_top_k",
+    "in_local_core_top_k",
+    "in_both_top_k"
+  ],
+  "feature_schema_sha256": "69bbe4d302fe152cb80bf6eaa1f5a39ffb2acbc62bc05dc3c4867a30f663cd15",
+  "forbidden_operations": [
+    "apply_engram",
+    "edit_llm",
+    "EngramEditor.apply",
+    "W_new=W-alpha*W_engram",
+    "W+W_engram_injection",
+    "lora_delta_substitution_into_estimator",
+    "merged_weight_save_to_disk",
+    "models_local_core_adapter_overwrite",
+    "record_curiosity_outcome_invocation",
+    "cleanup_old_activations_invocation",
+    "decay_connections_live_write",
+    "durable_or_ephemeral_Activation_node_write",
+    "ANSWER_EVIDENCES_CONCEPT_db_write",
+    "conversation_handler_v30_edit",
+    "api_server_route_or_hook_registration",
+    "any_weight_or_knowledge_editing_or_unlearning"
+  ],
+  "fresh_pre_question_input_pack_sha256": "3369c1202d080920ccca9a3b097b3617d6b3d7c0d821c1385f28a585f36416c7",
+  "fresh_pre_question_shadow_probability_snapshot_sha256": "494cdd41845ac4f50ae4825db47fcaad63745f0c332bc9bc0ebac7a31209a491",
+  "fresh_pre_question_snapshot_input_contract_sha256": "6ef040e24c9c74c62f6dbf7e15d7e186f0187bf1c4c45e691b990d09d153fa13",
+  "fresh_shadow_question_selection_sha256": "eb874fe9ee5ca53f24f816308c390a1c469f99d2fbf12211735d656e8ec97af9",
+  "fresh_snapshot_runtime_gate": false,
+  "graph_lesion_write_gate": false,
+  "hash_bindings": [
+    {
+      "enforcement": "recomputed_and_self_consistent_only",
+      "hash_key": "fresh_shadow_question_selection_sha256",
+      "no_stored_in_reason": "chain_tip_no_upstream_artifact_references_it_by_construction",
+      "sha256": "eb874fe9ee5ca53f24f816308c390a1c469f99d2fbf12211735d656e8ec97af9",
+      "source_artifact": "fresh_shadow_question_selection",
+      "source_self_hash_field": "fresh_shadow_question_selection_sha256",
+      "stored_in": [],
+      "stored_in_count": 0
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "fresh_pre_question_shadow_probability_snapshot_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "494cdd41845ac4f50ae4825db47fcaad63745f0c332bc9bc0ebac7a31209a491",
+      "source_artifact": "fresh_pre_question_shadow_probability_snapshot",
+      "source_self_hash_field": "fresh_pre_question_shadow_probability_snapshot_sha256",
+      "stored_in": [
+        {
+          "artifact": "fresh_shadow_question_selection",
+          "field": "fresh_pre_question_shadow_probability_snapshot_sha256"
+        }
+      ],
+      "stored_in_count": 1
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "fresh_pre_question_input_pack_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "3369c1202d080920ccca9a3b097b3617d6b3d7c0d821c1385f28a585f36416c7",
+      "source_artifact": "fresh_pre_question_input_pack",
+      "source_self_hash_field": "fresh_pre_question_input_pack_sha256",
+      "stored_in": [
+        {
+          "artifact": "fresh_pre_question_shadow_probability_snapshot",
+          "field": "fresh_pre_question_input_pack_sha256"
+        },
+        {
+          "artifact": "fresh_shadow_question_selection",
+          "field": "fresh_pre_question_input_pack_sha256"
+        }
+      ],
+      "stored_in_count": 2
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "fresh_pre_question_snapshot_input_contract_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "6ef040e24c9c74c62f6dbf7e15d7e186f0187bf1c4c45e691b990d09d153fa13",
+      "source_artifact": "fresh_pre_question_snapshot_input_contract",
+      "source_self_hash_field": "fresh_pre_question_snapshot_input_contract_sha256",
+      "stored_in": [
+        {
+          "artifact": "fresh_pre_question_input_pack",
+          "field": "fresh_pre_question_snapshot_input_contract_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_shadow_probability_snapshot",
+          "field": "fresh_pre_question_snapshot_input_contract_sha256"
+        },
+        {
+          "artifact": "fresh_shadow_question_selection",
+          "field": "fresh_pre_question_snapshot_input_contract_sha256"
+        }
+      ],
+      "stored_in_count": 3
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "train_only_calibrator_fit_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "fd3965f02616b55d7ff9c01785050fd3dcc211bccfde542621a67e61dcedf049",
+      "source_artifact": "train_only_calibrator_fit",
+      "source_self_hash_field": "train_only_calibrator_fit_sha256",
+      "stored_in": [
+        {
+          "artifact": "calibrator_probability_snapshot",
+          "field": "train_only_calibrator_fit_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_shadow_probability_snapshot",
+          "field": "train_only_calibrator_fit_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_snapshot_input_contract",
+          "field": "train_only_calibrator_fit_sha256"
+        },
+        {
+          "artifact": "fresh_shadow_question_selection",
+          "field": "train_only_calibrator_fit_sha256"
+        },
+        {
+          "artifact": "question_selection_contract",
+          "field": "train_only_calibrator_fit_sha256"
+        }
+      ],
+      "stored_in_count": 5
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "calibrator_design_audit_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "1b11df5ac8c62cc249c59bcb262cf96ded57da7d44c8c62694f07d492644f58b",
+      "source_artifact": "calibrator_design_audit",
+      "source_self_hash_field": "calibrator_design_audit_sha256",
+      "stored_in": [
+        {
+          "artifact": "calibrator_probability_snapshot",
+          "field": "calibrator_design_audit_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_shadow_probability_snapshot",
+          "field": "calibrator_design_audit_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_snapshot_input_contract",
+          "field": "calibrator_design_audit_sha256"
+        },
+        {
+          "artifact": "question_selection_contract",
+          "field": "calibrator_design_audit_sha256"
+        },
+        {
+          "artifact": "train_only_calibrator_fit",
+          "field": "calibrator_design_audit_sha256"
+        }
+      ],
+      "stored_in_count": 5
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "calibrator_probability_snapshot_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "2c4ad22d558653e1438a0dc9fa47bf1f8ab37bf02225706a50d5dc0d9a6d1c12",
+      "source_artifact": "calibrator_probability_snapshot",
+      "source_self_hash_field": "calibrator_probability_snapshot_sha256",
+      "stored_in": [
+        {
+          "artifact": "fresh_pre_question_snapshot_input_contract",
+          "field": "calibrator_probability_snapshot_sha256"
+        },
+        {
+          "artifact": "question_selection_contract",
+          "field": "calibrator_probability_snapshot_sha256"
+        }
+      ],
+      "stored_in_count": 2
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "question_selection_contract_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "200421ce2c88956b0328770a2217250343f9f4af2257406beafbc0fe36666c7a",
+      "source_artifact": "question_selection_contract",
+      "source_self_hash_field": "question_selection_contract_sha256",
+      "stored_in": [
+        {
+          "artifact": "fresh_pre_question_snapshot_input_contract",
+          "field": "question_selection_contract_sha256"
+        }
+      ],
+      "stored_in_count": 1
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "independent_score_capture_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "afebaaf55942a27dcdbba91559e5a456cc9fd93855317845e37ce0211be46d15",
+      "source_artifact": "independent_score_capture",
+      "source_self_hash_field": "independent_score_capture_sha256",
+      "stored_in": [
+        {
+          "artifact": "calibrator_design_audit",
+          "field": "independent_score_capture_sha256"
+        },
+        {
+          "artifact": "calibrator_probability_snapshot",
+          "field": "independent_score_capture_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_input_pack",
+          "field": "source_independent_score_capture_sha256"
+        },
+        {
+          "artifact": "fresh_pre_question_shadow_probability_snapshot",
+          "field": "source_independent_score_capture_sha256"
+        },
+        {
+          "artifact": "train_only_calibrator_fit",
+          "field": "independent_score_capture_sha256"
+        },
+        {
+          "artifact": "union_label_pack",
+          "field": "independent_score_capture_sha256"
+        }
+      ],
+      "stored_in_count": 6
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "candidate_vocabulary_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+      "source_artifact": "candidate_vocabulary",
+      "source_self_hash_field": "candidate_vocabulary_sha256",
+      "stored_in": [
+        {
+          "artifact": "independent_score_capture",
+          "field": "candidate_vocabulary_sha256"
+        },
+        {
+          "artifact": "union_label_pack",
+          "field": "candidate_vocabulary_sha256"
+        }
+      ],
+      "stored_in_count": 2
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "union_label_pack_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "518e5e6adb50d6abcfecf3b6bdbb3241c4129f7c106eb4be7aa2113f2110e21d",
+      "source_artifact": "union_label_pack",
+      "source_self_hash_field": "union_label_pack_sha256",
+      "stored_in": [
+        {
+          "artifact": "calibrator_design_audit",
+          "field": "union_label_pack_sha256"
+        },
+        {
+          "artifact": "calibrator_probability_snapshot",
+          "field": "union_label_pack_sha256"
+        },
+        {
+          "artifact": "train_only_calibrator_fit",
+          "field": "union_label_pack_sha256"
+        }
+      ],
+      "stored_in_count": 3
+    },
+    {
+      "enforcement": "declared_equals_recomputed_equals_stored_in_upstream",
+      "hash_key": "answer_source_amendment_sha256",
+      "no_stored_in_reason": null,
+      "sha256": "89c9f71d63ec6e3b040479c32892826747247db6addccaa06e5c38da82d62ac2",
+      "source_artifact": "answer_source_amendment",
+      "source_self_hash_field": "amendment_sha256",
+      "stored_in": [
+        {
+          "artifact": "candidate_vocabulary",
+          "field": "answer_source_amendment_sha256"
+        }
+      ],
+      "stored_in_count": 1
+    }
+  ],
+  "heldout_gate": false,
+  "independent_score_capture_sha256": "afebaaf55942a27dcdbba91559e5a456cc9fd93855317845e37ce0211be46d15",
+  "knowledge_editing_gate": false,
+  "layers": [
+    "graph_memory",
+    "local_core_predictor",
+    "question_selection_probability",
+    "source_provenance"
+  ],
+  "learning_enabled": false,
+  "local_core_engram_interpretation_gate": false,
+  "local_core_identity": {
+    "adapter_digest_algorithm": "sorted_rglob_files_then_len_prefixed_relpath_plus_size_plus_content_see_j1_1_capture_raw_scores._sha256_directory",
+    "adapter_sha256": "dd60ed3cd31b82098522ea7b2efff104efe86cb0aeb10b98cb591259fe3cdb8b",
+    "adapter_sha256_scope": "directory_digest_over_models_local_core_adapter_not_single_file_hash",
+    "base_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "base_model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "on_disk_recheck_is_reported_not_sealed": true,
+    "single_file_hash_is_not_comparable_to_this_digest": true,
+    "trainable_parameter_count": 0
+  },
+  "local_core_intervention_gate": false,
+  "lora_delta_estimator_gate": false,
+  "next_step": "capture_real_fresh_pre_question_shadow_inputs_read_only_before_runtime_selection",
+  "own_gate_semantics": "definition_wellformed_and_sealed_no_engram_measured",
+  "performance_claim_gate": false,
+  "phase": "J1.2",
+  "production_promotion_gate": false,
+  "question_selection_contract_sha256": "200421ce2c88956b0328770a2217250343f9f4af2257406beafbc0fe36666c7a",
+  "question_selection_runtime_gate": false,
+  "revalidated_upstream_artifacts": [
+    "validate_calibrator_design_audit",
+    "validate_train_only_calibrator_fit",
+    "validate_calibrator_probability_snapshot",
+    "validate_question_selection_contract",
+    "validate_candidate_vocabulary",
+    "validate_independent_score_capture",
+    "validate_fresh_pre_question_snapshot_input_contract",
+    "validate_fresh_pre_question_snapshot_input_pack",
+    "validate_fresh_pre_question_shadow_probability_snapshot",
+    "validate_fresh_shadow_question_selection"
+  ],
+  "reviewed_labels_are_train_split_not_engram_ground_truth": true,
+  "runtime_probability_snapshot_gate": false,
+  "sample_scale": {
+    "binary_label_row_count": 79,
+    "min_n_for_inference_status": "undefined_pending_power_analysis",
+    "negative_label_count": 56,
+    "positive_label_count": 23,
+    "question_count": 6,
+    "reviewed_label_total": 95,
+    "sample_scale_source_fields": {
+      "binary_label_row_count": "train_only_calibrator_fit.cross_validation_metrics.row_count",
+      "negative_label_count": "train_only_calibrator_fit.cross_validation_metrics.negative_count",
+      "positive_label_count": "train_only_calibrator_fit.cross_validation_metrics.positive_count",
+      "question_count": "fresh_pre_question_shadow_probability_snapshot.question_count",
+      "reviewed_label_total": "union_label_pack.label_count",
+      "train_only_auc_roc": "train_only_calibrator_fit.cross_validation_metrics.auc_roc",
+      "uncertain_label_count": "train_only_calibrator_fit.excluded_uncertain_count"
+    },
+    "train_only_auc_roc": 0.6746894409937888,
+    "uncertain_label_count": 16
+  },
+  "selected_order_at_chain_tip": 5,
+  "selected_question_id_at_chain_tip": "j1-1-cal-a-05",
+  "selection_policy": "max_mean_binary_entropy_tie_uncertainty_band_then_order",
+  "statistical_power_gate": false,
+  "status": "engram_trace_contract_defined_measurement_blocked_not_runtime",
+  "train_only_calibrator_fit_sha256": "fd3965f02616b55d7ff9c01785050fd3dcc211bccfde542621a67e61dcedf049",
+  "union_label_pack_sha256": "518e5e6adb50d6abcfecf3b6bdbb3241c4129f7c106eb4be7aa2113f2110e21d",
+  "unlearning_gate": false,
+  "weight_editing_gate": false
+}

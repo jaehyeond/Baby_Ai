@@ -1,0 +1,72 @@
+{
+  "block_reasons": [],
+  "calibrator_design_audit_sha256": "1b11df5ac8c62cc249c59bcb262cf96ded57da7d44c8c62694f07d492644f58b",
+  "calibrator_probability_snapshot_sha256": "2c4ad22d558653e1438a0dc9fa47bf1f8ab37bf02225706a50d5dc0d9a6d1c12",
+  "database_writes": false,
+  "feature_names": [
+    "graph_raw_score",
+    "local_core_raw_score",
+    "graph_rank",
+    "local_core_rank",
+    "graph_rank_percentile",
+    "local_core_rank_percentile",
+    "in_graph_top_k",
+    "in_local_core_top_k",
+    "in_both_top_k"
+  ],
+  "feature_schema_sha256": "69bbe4d302fe152cb80bf6eaa1f5a39ffb2acbc62bc05dc3c4867a30f663cd15",
+  "forbidden_input_fields": [
+    "answer",
+    "answer_sha256",
+    "answer_text",
+    "calibrated_probability",
+    "decision",
+    "label",
+    "outcome",
+    "post_question_captured_at",
+    "probability",
+    "rationale",
+    "review_status",
+    "selected_order",
+    "selected_question_id",
+    "target",
+    "user_review"
+  ],
+  "fresh_pre_question_snapshot_input_contract_gate": true,
+  "fresh_pre_question_snapshot_input_contract_sha256": "6ef040e24c9c74c62f6dbf7e15d7e186f0187bf1c4c45e691b990d09d153fa13",
+  "fresh_pre_question_snapshot_input_contract_version": 1,
+  "fresh_snapshot_runtime_gate": false,
+  "freshness_requirements": {
+    "answers_labels_reviews_and_probabilities_forbidden": true,
+    "features_must_be_captured_before_question_is_shown": true,
+    "pre_question_captured_at_requires_timezone": true,
+    "question_text_must_be_hash_bound_not_included": true
+  },
+  "heldout_gate": false,
+  "input_contract_scope": "fresh_pre_question_shadow_input_contract",
+  "input_pack_scope": "fresh_pre_question_shadow_input_pack",
+  "input_pack_version": 1,
+  "learning_enabled": false,
+  "next_step": "capture_fresh_pre_question_snapshot_shadow_read_only_before_runtime_selection",
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "production_promotion_gate": false,
+  "question_selection_contract_sha256": "200421ce2c88956b0328770a2217250343f9f4af2257406beafbc0fe36666c7a",
+  "question_selection_runtime_gate": false,
+  "required_candidate_question_count_min": 2,
+  "required_candidate_row_fields": [
+    "concept_id",
+    "feature_values"
+  ],
+  "required_question_fields": [
+    "order",
+    "question_id",
+    "question_sha256",
+    "pre_question_captured_at",
+    "candidate_rows"
+  ],
+  "runtime_probability_snapshot_gate": false,
+  "selection_policy": "max_mean_binary_entropy_tie_uncertainty_band_then_order",
+  "status": "fresh_pre_question_snapshot_input_contract_ready_not_runtime",
+  "train_only_calibrator_fit_sha256": "fd3965f02616b55d7ff9c01785050fd3dcc211bccfde542621a67e61dcedf049"
+}

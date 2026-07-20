@@ -1,0 +1,81 @@
+{
+  "block_reasons": [],
+  "candidate_row_count": 95,
+  "database_writes": false,
+  "fresh_pre_question_input_pack_sha256": "3369c1202d080920ccca9a3b097b3617d6b3d7c0d821c1385f28a585f36416c7",
+  "fresh_pre_question_shadow_probability_snapshot_sha256": "494cdd41845ac4f50ae4825db47fcaad63745f0c332bc9bc0ebac7a31209a491",
+  "fresh_pre_question_snapshot_input_contract_sha256": "6ef040e24c9c74c62f6dbf7e15d7e186f0187bf1c4c45e691b990d09d153fa13",
+  "fresh_shadow_probability_snapshot_gate": true,
+  "fresh_snapshot_runtime_gate": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "next_step": "select_fresh_shadow_question_offline_before_runtime_selection",
+  "performance_claim_gate": false,
+  "phase": "J1.1B",
+  "probability_count": 95,
+  "probability_policy": "train_only_calibrator_final_model_probability_replay",
+  "probability_scope": "fresh_pre_question_shadow_pack_offline_replay",
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "question_selection_runtime_gate": false,
+  "ranked_question_preview": [
+    {
+      "mean_binary_entropy": 0.8375901271152193,
+      "order": 5,
+      "question_id": "j1-1-cal-a-05",
+      "rank": 1,
+      "top_concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+      "top_probability": 0.5029006907217407,
+      "uncertainty_band_count_0_4_to_0_6": 6
+    },
+    {
+      "mean_binary_entropy": 0.8223128828092621,
+      "order": 2,
+      "question_id": "j1-1-cal-a-02",
+      "rank": 2,
+      "top_concept_id": "16603cac-174b-4f18-a36d-0803236d7e61",
+      "top_probability": 0.5459184153703002,
+      "uncertainty_band_count_0_4_to_0_6": 8
+    },
+    {
+      "mean_binary_entropy": 0.8028717456528871,
+      "order": 1,
+      "question_id": "j1-1-cal-a-01",
+      "rank": 3,
+      "top_concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+      "top_probability": 0.48891517354809527,
+      "uncertainty_band_count_0_4_to_0_6": 5
+    },
+    {
+      "mean_binary_entropy": 0.7631316022335242,
+      "order": 3,
+      "question_id": "j1-1-cal-a-03",
+      "rank": 4,
+      "top_concept_id": "b4f56fa9-54fe-4813-aaa1-abf8a6463a40",
+      "top_probability": 0.9893050776560305,
+      "uncertainty_band_count_0_4_to_0_6": 4
+    },
+    {
+      "mean_binary_entropy": 0.7524545861442288,
+      "order": 4,
+      "question_id": "j1-1-cal-a-04",
+      "rank": 5,
+      "top_concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+      "top_probability": 0.5350787526264614,
+      "uncertainty_band_count_0_4_to_0_6": 4
+    },
+    {
+      "mean_binary_entropy": 0.6467881089452971,
+      "order": 0,
+      "question_id": "j1-1-cal-a-00",
+      "rank": 6,
+      "top_concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+      "top_probability": 0.4724150539125017,
+      "uncertainty_band_count_0_4_to_0_6": 2
+    }
+  ],
+  "runtime_probability_snapshot_gate": false,
+  "selection_policy": "max_mean_binary_entropy_tie_uncertainty_band_then_order",
+  "status": "fresh_pre_question_shadow_probabilities_ready_not_runtime",
+  "train_only_calibrator_fit_sha256": "fd3965f02616b55d7ff9c01785050fd3dcc211bccfde542621a67e61dcedf049"
+}
