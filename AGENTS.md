@@ -3,11 +3,11 @@
 > **크로스툴 단일 진입점.** Codex는 이 파일을 자동 로드한다. Claude Code는 `CLAUDE.md` 최상단의 `@AGENTS.md`로 임포트한다.
 > ⚠️ **Claude auto-memory(`C:\Users\SOGANG\.claude\projects\E--A2A\memory\`)는 Claude 전용 — Codex는 못 읽는다.** Codex는 아래 "상세 문서"의 경로를 직접 열어라. **세션 인계는 반드시 이 파일 + repo 공유 파일을 통해서만** 한다.
 
-## 🔖 현재 상태 / 재개 (2026-07-16 체크포인트)
+## 🔖 현재 상태 / 재개 (2026-07-21 체크포인트)
 **"이어서 하자"면 여기부터.** 상세 이력·수치는 `CHANGELOG.md` 최상단 + `claudedocs/**/2026-07*.md`.
 
 ### 어디까지 왔나 (한눈에)
-**자기학습 구성요소는 구현됐지만 JARVIS형 폐루프는 미검증** (현재 push 기준 `DB_Renewal` local/remote HEAD `5b1952e`; J1.1A 승인본과 J1.1B independent-universe 변경은 현재 미커밋).
+**자기학습 구성요소는 구현됐지만 JARVIS형 폐루프는 미검증** (현재 push 기준 `DB_Renewal` local/remote HEAD `f861b62`; J1-EXP-1 구현·capture는 현재 미커밋 worktree).
 - Phase 0 기반 ✅ · **Phase 1 가소성 ✅**: RW 음성증거(w_ab→P(b|a))=자기학습 신호, **다양성 주도**(prequential서 빈도·암기 초과, time-shuffle서 붕괴=진짜 시간학습). `PHASE1_PLASTICITY_FINDINGS.md`.
 - **Phase 2 코어 내재학습 ⚠️ 증거 재감사 필요** (`PHASE2_SLEEP_DISTILL_2026-07-13.md`): 학습코어·CLS·LoRA weight update·어댑터 영속·opt-in 야간 훅은 실제 구현돼 있다. 다만 2026-07-16 감사에서 실 Neo4j 실험의 관계-row split이 동일 concept pair를 train/test에 겹치게 할 수 있고, 야간 job은 평가쌍을 같은 run replay에 직접 포함한 것을 확인했다. 현재 그래프 재현에서 기존 split의 pair overlap은 `18/250=7.2%`. 과거 identity MRR와 누적 MRR은 **fit/weight change/persistence의 탐색 증거**로 강등하며, pair-disjoint 3-seed 재실험 전 일반화·자기성장 확정 근거로 쓰지 않는다. 코드에는 pair canonicalization, train/eval 완전분리, 비퇴행 adapter save gate를 추가했다.
 - **Phase 4 embodiment**: 파이프라인 준비됨(pose/depth 캡처·`NEXT_FRAME` 시퀀스)이나 **Quest 데이터 없음=병목**. `EMBODIMENT_PIPELINE_2026-07-12.md`.
@@ -17,7 +17,8 @@
 1. **"배우지만 무기력" 일부 해소**: 그래프의 turn별 prequential 예측오차가 이제 learning-progress를 통해 **통합 우선순위와 호기심 타깃에 영향**. 단 로컬 trainable 코어 자체는 여전히 wake 응답/Gemini prompt에 직접 쓰이지 않으므로 행동 영향은 아직 부분적.
 2. 병목은 데이터 밀도만이 아니다. **평가 누수 방지, action-conditioned grounded outcome, learned core→wake 행동 연결, continual promotion/rollback**도 독립적인 필수 병목이다. Quest 다양장면은 embodiment 데이터 병목을 풀지만 이것만으로 JARVIS가 되지는 않는다.
 
-### 다음 작업 플랜 (2-트랙)
+### 다음 작업 플랜
+- **[J1-EXP-1] 탐색 pre-answer capture 완료(2026-07-21)**: 6문항은 이미 Git에 공개됐으므로 confirmatory fresh/held-out으로 주장하지 않고 `confirmatory_reuse_allowed=false`로 격리했다. Neo4j Concept 1,111개 중 1,069개를 유지하고 질문별 1,066~1,067개를 Graph/Local Core가 read-only 점수화했다. adapter digest `dd60ed3c…`, trainable parameter 0, artifact `b3f0b66f…`; DB/write/learning/probability/calibrator/performance/production은 false다. 예측 이름은 사용자 답변 전 비공개다. **다음=사용자 6답변 수집 후 lightweight exploratory signal audit.**
 - **[A] 사용자 몫(근본 레버)**: Quest **다양장면** 수집(방·주방·야외·사람, 머리 움직이며; 스케일링연구=다양성>밀도) + 살아있는 코어 **켜기**(`LOCAL_CORE_DISTILL=1` + Neo4j 상시). 계약 `docs/QUEST_APK_CONTRACT.md`.
 - **[B] Phase 3 예측오차 루프 ✅ 합성검증+라이브 배선+실 대화 운영검증(2026-07-14)**: `live_curiosity.py` + endpoint pre/post snapshot + Neo4j concept/region EMA. raw surprise는 관측만 하고 **오차 감소량만** `integration_priority`와 `CuriosityLog(source=learning_progress)`를 구동. Redis는 신규 `baby_ai_robot_v4`로 전체 SSE 경로 복구.
 - **[B-2] cue 품질 개선 ✅**: endpoint 전용 조사 정규화와 cue/이웃 2단계 조회. speech-act 일반어(`설명해줘`, `궁금해`, `무엇이` 등)는 cue에서 제외하고 사용자 입력에서 복제된 비-cue Concept도 outcome 점수에서 제외한다. 실제 snapshot은 세 문장 모두 cue=`컴퓨터`만 선택. `conversation_handler.py` blob `054d974…` 무변경.
@@ -37,9 +38,9 @@
 - **[J-1.0] Question-as-Experiment offline contract 완료·legacy readiness blocked(2026-07-16)**: graph/local-core 동일 universe probability, JSD 질문 선택, multi-label Brier/log-loss/ECE/top-k, exact question/label/model/calibrator hash와 pre-question timestamp를 fail-closed로 구현했다. 임의 softmax를 막기 위해 calibration dataset/calibrator hash와 양성·음성 표본 provenance도 요구한다. 기존 6개는 reviewed target 25개와 graph ranked ID만 있고 calibrated graph/local-core probability, multi-candidate decision, pre-question model/calibrator seal이 없어 `contract_gate=false`; DB/write/learning/heldout/production 모두 false다. 남은 legacy CuriosityLog 8개 중 graph-eligible 3개도 문장 품질·중복 때문에 채택하지 않았다. 신규 targeted `8 passed`; 당시 기록한 전체 `146 passed`는 J1.1 재감사에서 재현되지 않았고, 현재 pushed HEAD 단독 canonical 결과는 `136 passed`로 교정한다. handler blob은 동일하다.
 - **[J-1.1] train-calibration 질문 사전등록·raw-score capture 완료(2026-07-16)**: 새 6질문은 contract `51b2c72c…`로 결과 확인 전에 봉인했고, 질문 공개 전에 Neo4j read-only graph와 `Qwen2.5-0.5B-Instruct`+기존 adapter를 `cuda:0`/inference mode/학습 가능 파라미터 0으로 실행했다. 동일 후보 8개씩 예측기당 raw score 48개를 pack `d52720d8…`로 봉인했다. DB write·gradient·optimizer·확률·calibrator·held-out·production은 모두 false다.
 - **[J-1.1A] answer-source amendment + 사용자 승인본 완료(2026-07-16)**: public knowledge→external teacher, personal/safety→user, sensor/tool→실제 source 계약을 유지한다. 초안은 보존하고 기준답변 6개 `b2c0465f…`와 기존 48라벨 `9243d456…`를 user-reviewed successor로 별도 봉인했다. 그러나 기존 후보 coverage `5/6`와 Graph-only 편향 때문에 calibrator는 계속 차단했다.
-- **[J-1.1B] independent candidate universe v2 capture 완료 — 새 95라벨 사용자 batch review 대기(2026-07-16 cohort)**: 전체 Concept 1,111개를 read-only preflight해 predictor-neutral 필터 뒤 1,069개를 유지하고, 질문별 cue 표면형을 제외한 1,064~1,067개를 Graph/Local Core가 모두 독립 점수화했다. vocabulary `bc06ed54…`, raw capture `afebaaf5…`; fair-universe gate=true. 하지만 Local Core가 여러 질문에서 일반어 top-8을 반복해 성능은 미검증이다. union label draft `b0bbada9…`는 approved/rejected/uncertain=`23/56/16`, dual-predictor positive coverage=`6/6`이지만 user review 전이다. **다음=새 95라벨의 6묶음 batch review. calibrator/JSD/heldout/성능/production은 계속 금지.**
+- **[J-1.1B/J-1.2] offline chain 완료·성능 주장은 차단**: 95라벨 review 뒤 train-only calibrator를 fit했지만 표본은 79행/23양성, LOQO AUC `0.674689`, held-out/performance/production=false다. fresh-shadow는 기존 train capture replay라 실제 fresh 증거가 아니다. J1.2 Engram은 정의 계약만 있으며 measurement count 0, measurement gate=false다.
 - **[C] 자율·대안**: 운영화(실제 켜서 며칠 성장추적) + collapse(effective rank≈2) 장기감시.
-- **⚠️ 메타**: B5.9 label content는 user-reviewed라 validity=true지만 train-only라 predictor 성능 증거는 아니다. B5.8 source-aware 2-hop은 train top-8 hit 0이며 Phase 2의 기존 실그래프/야간 MRR도 leakage-safe 재현 전 과대해석 금지다. threshold와 production predictor는 유지하고 relation schema 검토 전 DB write, clean train signal 전 held-out/승격을 금지한다. J-0의 GDSI/DCSC도 연구 가설이지 JARVIS 가능성의 실험 증거가 아니다. J1 probability는 calibration provenance 없이는 생성·보고 금지다. J1.1B는 후보선정 공정성만 고쳤고 Local Core 질문 조건화는 약하다. 새 95라벨 user review와 calibrator 설계 audit 전 fit/JSD/성능 주장을 금지한다.
+- **⚠️ 메타**: B5.9 label content와 J1.1B calibrator는 train-only라 predictor 성능 증거가 아니다. B5.8 source-aware 2-hop은 train top-8 hit 0이며 Phase 2의 기존 실그래프/야간 MRR도 leakage-safe 재현 전 과대해석 금지다. J1-EXP-1도 exploratory diagnostic일 뿐 held-out·확증·성능 증거가 아니다. threshold와 production predictor는 유지하고 relation schema 검토 전 DB write, clean signal 전 held-out/승격을 금지한다.
 - (보류·비가역, 사용자 확인 후) 방향성 엣지 마이그레이션 + RW 프로덕션 `hebbian_update` 반영.
 
 ### 전제

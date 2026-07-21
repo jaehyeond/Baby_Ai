@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-07-21 (J1-EXP-1 exploratory pre-answer capture)
+
+### 확증 봉인에서 탐색 probe로 전환
+- push된 HEAD `f861b62`의 6문항 draft를 사전등록·held-out 후보로 봉인하지 않았다. 질문은 이미 Git에 공개됐음을 `questions_public_before_raw_capture=true`로 기록하고, `confirmatory_reuse_allowed=false`인 탐색 batch `j1_exploratory_probe_b_20260721`로 전환했다.
+- `neural/baby/exploratory_question_probe.py`에 탐색 manifest/capture validator를, `scripts/research/j1_exploratory_question_probe.py`에 실제 호출점을 추가했다. 기존 J1 Graph/Local-Core 전체후보 scoring을 재사용하지만 probability, calibrator, reviewed label pack, DB write, learning, held-out, performance claim은 실행하지 않는다.
+
+### 실제 read-only pre-answer capture
+- Neo4j Concept `1,111`개 중 predictor-neutral 형식 필터를 통과한 `1,069`개를 사용했고 질문별 exact cue surface 제외 후 `1,066~1,067`개를 Graph와 frozen Local Core가 모두 점수화했다. 전체 raw-score 목록은 artifact에 복제하지 않고 predictor별 digest와 top-8/union만 저장했다.
+- Local Core는 `cuda:0`, trainable parameter `0`, adapter directory digest `dd60ed3c…`로 실행됐다. capture는 사용자 답변 전에 완료됐고 artifact `b3f0b66f…`를 `scripts/research/inputs/j1_exploratory_pre_answer_probe_b_20260721.json`에 새로 기록했다.
+- artifact audit은 manifest ID/text/hash/cue, predictor metadata, 전체 score count/digest, top-k/union 정합성, self-hash를 재검증했다. 예측 이름은 답변 오염을 막기 위해 아직 사용자에게 공개하지 않는다.
+
+### 검증과 다음 단계
+- focused `59 passed`, 전체 canonical `295 passed`, py_compile, `git diff --check` 통과. `conversation_handler.py`, DB schema, sealed J1/J1.2 artifact, model weights는 수정하지 않았다.
+- 결과는 `exploratory_not_for_claim=true`이며 확증·성능 증거로 인용할 수 없다. **다음=6문항 사용자 답변을 받은 뒤 non-cue answer concept와 사전 Graph/Local-Core top-k를 비교하는 lightweight exploratory signal audit.**
+
 ## 2026-07-16 cohort (J-1.1A approval + J-1.1B independent candidate universe v2)
 
 ### 사용자 승인과 불변 artifact

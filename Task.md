@@ -1,21 +1,21 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-23 (본문) · **2026-07-16 배너 갱신**
+**최종 업데이트**: 2026-02-23 (본문) · **2026-07-21 배너 갱신**
 
 ---
 
-## ⚡ 2026-07-16 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
+## ⚡ 2026-07-21 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: [J-1.1B] 독립 candidate universe v2 raw-score capture 완료, 새 95개 의미 라벨 batch review 대기** — J1.1A의 6답변/48라벨은 사용자 승인본으로 분리 봉인했다. 전체 Neo4j Concept 1,111개에서 score/label과 무관한 형식 필터를 먼저 적용하고, 질문마다 Graph와 Local Core가 같은 1,064~1,067개를 모두 독립 채점한 뒤 top-8 합집합을 만들었다. fair-universe gate는 true지만 Local Core의 일반어 반복으로 predictor 성능은 미검증이다. 새 draft approved/rejected/uncertain=`23/56/16`, dual-predictor positive coverage=`6/6`; 사용자 review 전 calibrator/JSD/heldout/performance/production은 false다.
+> **현재 진입점: [J1-EXP-1] 탐색 pre-answer capture 완료, 사용자 6답변 대기** — 6문항은 이미 Git에 공개됐으므로 confirmatory fresh/held-out으로 봉인하지 않고 `exploratory_not_for_claim=true`, `confirmatory_reuse_allowed=false`로 격리했다. Neo4j Concept 1,111개 중 1,069개를 유지하고 질문별 1,066~1,067개를 Graph와 frozen Local Core가 답변 전에 read-only 점수화했다. artifact `b3f0b66f…`, adapter `dd60ed3c…`, trainable parameter 0이며 DB/write/learning/probability/calibrator/performance/production은 false다. 다음은 사용자 답변 후 lightweight signal audit이다.
 > **이번 세션 추가 감사**: Phase 2 실그래프 row split에서 현재 그래프 기준 test pair `18/250(7.2%)`가 train에도 존재했고, 기존 야간 job은 test pair를 replay에 직접 포함했다. 기존 MRR은 fit/영속 탐색 증거로 강등했다. pair-disjoint split과 비퇴행 adapter save gate를 구현·단위검증했지만 GPU 재학습은 하지 않았다. 보호 handler는 무변경이다. 상세 `CHANGELOG.md` 최상단.
 > **J-0 상세**: `claudedocs/research/JARVIS_GROUNDED_DEVELOPMENTAL_SELF_IMPROVEMENT_2026-07-16.md`. GDSI/DCSC는 구현 방향을 반증 가능한 단계로 줄인 가설이며 새 분야·AGI 달성 주장이 아니다.
 > **UI/Ops 격리 결정**: Zoey OS Reel은 상위 program roadmap의 병렬 `관측/UI` 참고자료다. J1–J3 연구 critical path나 능력 주장에 포함하지 않으며, 실제 predictor provenance가 생기기 전 UI 구현·가짜 agent 상태 표시는 금지한다.
 > **J-1.0 artifact**: `claudedocs/research/j1_question_as_experiment_readiness_20260716.json`. graph ranked ID를 확률로 변환하지 않았고 local-core GPU shadow inference도 실행하지 않았다.
 > **J-1.1 artifacts**: `scripts/research/manifests/j1_1_train_calibration_a_20260716.json`, `scripts/research/inputs/j1_1_train_calibration_a_20260716_raw_scores_sealed.json`, `claudedocs/research/j1_1_train_calibration_capture_20260716.json`. raw score만 있으며 probability/calibrator는 아직 없다.
 > **J-1.1A artifacts**: `scripts/research/inputs/j1_1_answer_source_amendment_20260716.json`, `scripts/research/inputs/j1_1_teacher_answers_20260716.json`, `scripts/research/inputs/j1_1_candidate_labels_draft_20260716.json`, `claudedocs/research/j1_1_answer_source_contract_20260716.json`. assistant draft라 calibration truth가 아니며, coverage/fairness gate도 false다.
-> **J-1.1B artifacts**: J1.1A 승인본 `j1_1_teacher_answers_reviewed_20260716.json`/`j1_1_candidate_labels_reviewed_20260716.json`, vocabulary `bc06ed54…`, independent raw capture `afebaaf5…`, union label draft `b0bbada9…`. 다음은 새 95라벨의 1회 batch review이며 보정기 fit 자체는 아직 승인·실행되지 않았다.
+> **J-1.1B/J-1.2 이후**: 95라벨 review와 train-only calibrator fit은 완료됐지만 79행/23양성, LOQO AUC `0.674689`로 held-out/performance/production은 false다. fresh-shadow는 train replay이며 J1.2 Engram은 definition-only, measurement count 0이다. J1-EXP-1 artifact는 `scripts/research/inputs/j1_exploratory_pre_answer_probe_b_20260721.json`이다.
 
 ---
 
