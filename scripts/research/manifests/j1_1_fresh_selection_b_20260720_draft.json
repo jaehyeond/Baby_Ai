@@ -1,0 +1,80 @@
+{
+  "question_calibration_manifest_version": 1,
+  "phase": "J1.1",
+  "manifest_id": "j1_1_fresh_selection_b_20260720",
+  "split": "fresh_selection",
+  "purpose": "never_labeled_question_selection_only",
+  "draft_status": "awaiting_user_approval_not_sealed",
+  "approval_note": "This draft is NOT sealed. Sealing stamps approval_recorded_at and is the pre-registration act. user_approval_scope is deliberately ABSENT: neural/baby/question_calibration.py:79-85 requires it to contain local_core_gpu_read_only_inference and new_question_answer_collection, and granting those is the user's decision, not the drafter's.",
+  "blockers_before_sealing": {
+    "user_approval_scope_absent": "must be granted by the user; the validator rejects a manifest without it",
+    "split_rejected_by_validator": "question_calibration.SPLIT is hardcoded to 'train_calibration'; a fresh split needs either an additive validator change or a fresh-specific manifest validator",
+    "purpose_rejected_by_validator": "question_calibration.PURPOSE is hardcoded to 'probability_calibration_only'"
+  },
+  "constraints": {
+    "calibrator_fit_before_reviewed_answers": false,
+    "database_writes": false,
+    "heldout_collection": false,
+    "learning_enabled": false,
+    "production_promotion": false,
+    "questions_revealed_before_raw_capture": false
+  },
+  "cue_selection_evidence": {
+    "train_cues_excluded": ["경험", "궁금증", "기억", "로봇", "사람", "상상", "세상", "시간", "이야기", "질문", "컴퓨터", "학습"],
+    "cue_graph_degree_verified_2026_07_20": {
+      "카메라": 41,
+      "영화": 34,
+      "도시": 34,
+      "날씨": 51,
+      "프로그램": 54,
+      "개발": 33,
+      "생각": 36,
+      "이해": 45,
+      "정보": 51,
+      "인터넷 검색": 48,
+      "이름": 60,
+      "감정": 30
+    },
+    "speech_act_generics_avoided": true,
+    "all_cues_are_content_nouns_present_in_graph": true
+  },
+  "question_count": 6,
+  "questions": [
+    {
+      "order": 0,
+      "question_id": "j1-1-fresh-b-00",
+      "question": "카메라와 영화는 서로 어떻게 이어져 있어?",
+      "cue_terms": ["카메라", "영화"]
+    },
+    {
+      "order": 1,
+      "question_id": "j1-1-fresh-b-01",
+      "question": "도시와 날씨는 서로에게 어떤 영향을 줘?",
+      "cue_terms": ["도시", "날씨"]
+    },
+    {
+      "order": 2,
+      "question_id": "j1-1-fresh-b-02",
+      "question": "프로그램과 개발은 어떻게 서로를 필요로 해?",
+      "cue_terms": ["프로그램", "개발"]
+    },
+    {
+      "order": 3,
+      "question_id": "j1-1-fresh-b-03",
+      "question": "생각과 이해는 어떤 점에서 다르고 또 이어져?",
+      "cue_terms": ["생각", "이해"]
+    },
+    {
+      "order": 4,
+      "question_id": "j1-1-fresh-b-04",
+      "question": "정보와 인터넷 검색은 서로 어떻게 연결돼?",
+      "cue_terms": ["정보", "인터넷 검색"]
+    },
+    {
+      "order": 5,
+      "question_id": "j1-1-fresh-b-05",
+      "question": "이름과 감정은 서로 어떤 관계가 있어?",
+      "cue_terms": ["이름", "감정"]
+    }
+  ]
+}
