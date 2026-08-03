@@ -1,0 +1,2221 @@
+{
+  "actual_digest_match_count": 6,
+  "actual_score_reproduction_gate": true,
+  "aggregate_comparisons": {
+    "mean_actual_vs_content_free_spearman": 0.9564669374570073,
+    "mean_actual_vs_content_free_top_k_jaccard": 0.6053872053872054,
+    "mean_actual_vs_shuffled_spearman": 0.9596132735811481,
+    "mean_actual_vs_shuffled_top_k_jaccard": 0.6942760942760943
+  },
+  "audited_at": "2026-07-21T23:37:53.744935+00:00",
+  "block_reasons": [
+    "exploratory_questions_were_public_before_capture",
+    "controls_are_diagnostic_not_a_heldout_benchmark",
+    "warning_thresholds_are_engineering_heuristics_not_inferential_tests"
+  ],
+  "calibrator_fit_allowed": false,
+  "conditioning_ablation_gate": true,
+  "confirmatory_reuse_allowed": false,
+  "control_contract": {
+    "content_free_control": "empty_question_text_same_chat_template",
+    "content_free_question_text": "",
+    "same_candidate_scope_per_question": true,
+    "shuffle_control": "cyclic_next_question_text_same_candidate_scope",
+    "shuffle_offset": 1,
+    "warning_spearman_threshold": 0.9,
+    "warning_top_k_jaccard_threshold": 0.75
+  },
+  "database_writes": false,
+  "diagnostic_warnings": {
+    "content_free_prior_dominance": false,
+    "question_shuffle_insensitivity": false
+  },
+  "evidence_scope": "diagnostic_only_not_confirmatory_evidence",
+  "exploratory_answer_pack_sha256": "6eef400049813c36745bebbbfd4bed1c93d9bccdce993229a2ed2e1af11f3438",
+  "exploratory_only_not_for_claim": true,
+  "exploratory_pre_answer_capture_sha256": "b3f0b66fdd7b03431f0ecefc1400786aa7ec8647718566f161e6435e8521f4d5",
+  "gradient_enabled": false,
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "local_core_conditioning_ablation_sha256": "cc5ff82dd0da11fdf8742c086504751c3cdc29b52f13e9c38e4977745988dcff",
+  "local_core_conditioning_ablation_version": 1,
+  "manifest_snapshot_sha256": "0e2364db802bd543127455524b0f9e5b3d0ffd4612e6d1165b657caa23998444",
+  "model_save_allowed": false,
+  "next_step": "separate_prompt_prior_correction_from_training_then_address_vocabulary_coverage_and_wake_behavior_wiring",
+  "optimizer_enabled": false,
+  "performance_claim_gate": false,
+  "phase": "J1-EXP-1",
+  "predictor_metadata": {
+    "ablation_implementation_sha256": "40ad41b731395c6cacfee1365ba3a2428113a5bdcd3c9878b96752626ed8bf6c",
+    "adapter_sha256": "dd60ed3cd31b82098522ea7b2efff104efe86cb0aeb10b98cb591259fe3cdb8b",
+    "base_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "base_model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "batch_size": 16,
+    "device": "cuda:0",
+    "model_snapshot_sha256": "df4f20cf1e7aa323674bf07bc6ddd512882f8e87bf2888e7eaeac988b648179d",
+    "peak_cuda_memory_bytes": 1365324800,
+    "score_implementation_sha256": "7071f30ab74f2a3e2877bda1057be2060f07b8de4cf8c5e716633b959395f61d",
+    "scoring_contract": "mean_conditional_token_log_probability_v1",
+    "trainable_parameter_count": 0
+  },
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "questions": [
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.952628157991582,
+        "max_absolute_score_delta": 3.393136978149414,
+        "mean_absolute_score_delta": 0.5658765114012899,
+        "top_k_jaccard": 0.6,
+        "top_k_overlap_count": 6
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.9632307667414023,
+        "max_absolute_score_delta": 3.486863374710083,
+        "mean_absolute_score_delta": 0.4184442112796644,
+        "top_k_jaccard": 0.45454545454545453,
+        "top_k_overlap_count": 5
+      },
+      "candidate_count": 1067,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 0,
+      "question": "카메라와 영화는 서로 어떻게 이어져 있어?",
+      "question_id": "j1-exp-b-00",
+      "question_sha256": "c6eaad21f9418fcfe0405f7d61766831fd388ea40741b8203078dfd4c2b03c4d",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 1,
+            "raw_score": -1.5045323371887207
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.7312450408935547
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 3,
+            "raw_score": -1.8110418319702148
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.9302061796188354
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5,
+            "raw_score": -1.9699783325195312
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6,
+            "raw_score": -2.2518389225006104
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 7,
+            "raw_score": -2.2948687076568604
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8,
+            "raw_score": -2.348914623260498
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.009235143661499
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 3,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 5,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 7,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 8,
+            "raw_score": -2.040219306945801
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "b926735c-12d5-4009-907d-3a3eef6e5416",
+            "concept_name": "2",
+            "rank": 1,
+            "raw_score": 3.393136978149414
+          },
+          {
+            "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+            "concept_name": "1",
+            "rank": 2,
+            "raw_score": 3.21923828125
+          },
+          {
+            "concept_id": "aab4eba8-1ab4-4cb3-80c5-cf2e3b73de81",
+            "concept_name": "탑승",
+            "rank": 3,
+            "raw_score": 3.118398666381836
+          },
+          {
+            "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+            "concept_name": "힘",
+            "rank": 4,
+            "raw_score": 2.984415054321289
+          },
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 5,
+            "raw_score": 2.565011978149414
+          },
+          {
+            "concept_id": "ecc5e6d6-cf0e-414c-a477-00ee85547c14",
+            "concept_name": "화면",
+            "rank": 6,
+            "raw_score": 2.419796943664551
+          },
+          {
+            "concept_id": "5ca6d570-4d51-49c1-babd-35e8cf7b340c",
+            "concept_name": "2살",
+            "rank": 7,
+            "raw_score": 2.4074172973632812
+          },
+          {
+            "concept_id": "6444ddb5-fad0-43a2-873c-b3563eaf4340",
+            "concept_name": "12월",
+            "rank": 8,
+            "raw_score": 2.365899085998535
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "11dfa2dd-9785-4108-9b18-9a29728d1887",
+            "concept_name": "도움",
+            "rank": 1,
+            "raw_score": 2.4010090827941895
+          },
+          {
+            "concept_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+            "concept_name": "장치",
+            "rank": 2,
+            "raw_score": 2.0511770248413086
+          },
+          {
+            "concept_id": "132cbe99-1d50-4a5e-89a6-13ac2a09f30b",
+            "concept_name": "도구",
+            "rank": 3,
+            "raw_score": 1.9791340827941895
+          },
+          {
+            "concept_id": "af59fa08-d53c-4da1-bdb3-313dc01c7cfe",
+            "concept_name": "지연",
+            "rank": 4,
+            "raw_score": 1.9578561782836914
+          },
+          {
+            "concept_id": "aab4eba8-1ab4-4cb3-80c5-cf2e3b73de81",
+            "concept_name": "탑승",
+            "rank": 5,
+            "raw_score": 1.8415107727050781
+          },
+          {
+            "concept_id": "6f9ff365-cf8f-4597-9da5-d10958d81c38",
+            "concept_name": "집중",
+            "rank": 6,
+            "raw_score": 1.8079338073730469
+          },
+          {
+            "concept_id": "fa9397a9-9fe8-4072-91fe-5ed03e6965a3",
+            "concept_name": "재도전",
+            "rank": 7,
+            "raw_score": 1.7606959342956543
+          },
+          {
+            "concept_id": "ff73a554-70b3-46cb-a1d6-19f41da0d08d",
+            "concept_name": "재요청",
+            "rank": 8,
+            "raw_score": 1.7487506866455078
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.608891487121582
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 2,
+            "raw_score": -1.644867181777954
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 3,
+            "raw_score": -1.698148250579834
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 4,
+            "raw_score": -1.7613210678100586
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 5,
+            "raw_score": -2.063720703125
+          },
+          {
+            "concept_id": "87b334e6-ec92-4fa7-b52c-70931cd32ad1",
+            "concept_name": "다른 도시",
+            "rank": 6,
+            "raw_score": -2.078382968902588
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 7,
+            "raw_score": -2.2585642337799072
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 8,
+            "raw_score": -2.2671775817871094
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "8593acda1f07191a974a386c833d6b15a5ed135715800c9d7f7f5222c021c114",
+        "content_free": "37c417e71d3457b7e4c4311c2ace5d5385800072283b635cdd80483c0940709e",
+        "shuffled": "19013f1ad9df50ffaf8aed216c886436a9e0678092af8306bfc846783d7b7d50"
+      },
+      "shuffled_question_id": "j1-exp-b-01",
+      "shuffled_question_order": 1,
+      "shuffled_question_sha256": "294c845c3915ca02475d6b4f7d21541f40ec1f6acad8d99e14aaee51d90052e8",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "촬영"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "영상"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "ranks": {
+            "actual": 191,
+            "content_free": 186,
+            "content_free_delta": 567,
+            "shuffle_delta": 205,
+            "shuffled": 279
+          },
+          "scores": {
+            "actual": -4.218113899230957,
+            "actual_minus_content_free": -0.04829692840576172,
+            "actual_minus_shuffled": 0.4133729934692383,
+            "content_free": -4.169816970825195,
+            "shuffled": -4.631486892700195
+          },
+          "target_concept": "소리"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "ranks": {
+            "actual": 73,
+            "content_free": 147,
+            "content_free_delta": 243,
+            "shuffle_delta": 162,
+            "shuffled": 154
+          },
+          "scores": {
+            "actual": -3.455507755279541,
+            "actual_minus_content_free": 0.5369493961334229,
+            "actual_minus_shuffled": 0.5054419040679932,
+            "content_free": -3.992457151412964,
+            "shuffled": -3.960949659347534
+          },
+          "target_concept": "이야기"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+          "concept_name": "감정",
+          "ranks": {
+            "actual": 18,
+            "content_free": 1,
+            "content_free_delta": 1051,
+            "shuffle_delta": 1034,
+            "shuffled": 1
+          },
+          "scores": {
+            "actual": -2.698709487915039,
+            "actual_minus_content_free": -1.68947434425354,
+            "actual_minus_shuffled": -1.089818000793457,
+            "content_free": -1.009235143661499,
+            "shuffled": -1.608891487121582
+          },
+          "target_concept": "감정"
+        }
+      ]
+    },
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.9510971578364706,
+        "max_absolute_score_delta": 3.550410270690918,
+        "mean_absolute_score_delta": 0.5654086312514772,
+        "top_k_jaccard": 0.45454545454545453,
+        "top_k_overlap_count": 5
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.9549822001376304,
+        "max_absolute_score_delta": 3.661675453186035,
+        "mean_absolute_score_delta": 0.4940500896225047,
+        "top_k_jaccard": 0.7777777777777778,
+        "top_k_overlap_count": 7
+      },
+      "candidate_count": 1067,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 1,
+      "question": "도시와 날씨는 서로에게 어떤 영향을 줘?",
+      "question_id": "j1-exp-b-01",
+      "question_sha256": "294c845c3915ca02475d6b4f7d21541f40ec1f6acad8d99e14aaee51d90052e8",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.608891487121582
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 2,
+            "raw_score": -1.644867181777954
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 3,
+            "raw_score": -1.698148250579834
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 4,
+            "raw_score": -1.7613210678100586
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 5,
+            "raw_score": -2.063720703125
+          },
+          {
+            "concept_id": "87b334e6-ec92-4fa7-b52c-70931cd32ad1",
+            "concept_name": "다른 도시",
+            "rank": 6,
+            "raw_score": -2.078382968902588
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 7,
+            "raw_score": -2.2585642337799072
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 8,
+            "raw_score": -2.2671775817871094
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.009235143661499
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 3,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 5,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 7,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 8,
+            "raw_score": -2.040219306945801
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "707c9d5b-d29c-45e0-ac07-a7a8dc923c67",
+            "concept_name": "기온",
+            "rank": 1,
+            "raw_score": 2.7788028717041016
+          },
+          {
+            "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+            "concept_name": "한국의 수도",
+            "rank": 2,
+            "raw_score": 2.7763748168945312
+          },
+          {
+            "concept_id": "55e38fb6-8681-472a-bc1e-970e6ba3352f",
+            "concept_name": "하늘",
+            "rank": 3,
+            "raw_score": 2.549837112426758
+          },
+          {
+            "concept_id": "fec1bfe1-dba4-43d0-8532-6305457aaab7",
+            "concept_name": "영향",
+            "rank": 4,
+            "raw_score": 2.5465519428253174
+          },
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 5,
+            "raw_score": 2.5449647903442383
+          },
+          {
+            "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+            "concept_name": "1",
+            "rank": 6,
+            "raw_score": 2.526017189025879
+          },
+          {
+            "concept_id": "6444ddb5-fad0-43a2-873c-b3563eaf4340",
+            "concept_name": "12월",
+            "rank": 7,
+            "raw_score": 2.4652509689331055
+          },
+          {
+            "concept_id": "20b1c2d1-fd6d-4f1c-9df0-5e66640830c2",
+            "concept_name": "네모",
+            "rank": 8,
+            "raw_score": 2.3626670837402344
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "707c9d5b-d29c-45e0-ac07-a7a8dc923c67",
+            "concept_name": "기온",
+            "rank": 1,
+            "raw_score": 3.426136016845703
+          },
+          {
+            "concept_id": "fec1bfe1-dba4-43d0-8532-6305457aaab7",
+            "concept_name": "영향",
+            "rank": 2,
+            "raw_score": 2.7413318157196045
+          },
+          {
+            "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+            "concept_name": "한국의 수도",
+            "rank": 3,
+            "raw_score": 2.6779603958129883
+          },
+          {
+            "concept_id": "2b2d0e9b-6ba8-4d6d-8971-7eef8f5abba0",
+            "concept_name": "외출",
+            "rank": 4,
+            "raw_score": 2.297098159790039
+          },
+          {
+            "concept_id": "b7516908-a08c-4ca2-b606-d035cbbca300",
+            "concept_name": "사랑",
+            "rank": 5,
+            "raw_score": 2.2227816581726074
+          },
+          {
+            "concept_id": "ed1d7569-d098-4d9b-a71a-6d3b512235a7",
+            "concept_name": "맛",
+            "rank": 6,
+            "raw_score": 1.9867620468139648
+          },
+          {
+            "concept_id": "55e38fb6-8681-472a-bc1e-970e6ba3352f",
+            "concept_name": "하늘",
+            "rank": 7,
+            "raw_score": 1.9161863327026367
+          },
+          {
+            "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+            "concept_name": "달",
+            "rank": 8,
+            "raw_score": 1.8629131317138672
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1,
+            "raw_score": -1.3557640314102173
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2,
+            "raw_score": -1.5422391891479492
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3,
+            "raw_score": -1.5909864902496338
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4,
+            "raw_score": -1.6461114883422852
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5,
+            "raw_score": -1.8078911304473877
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 6,
+            "raw_score": -1.81866455078125
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 7,
+            "raw_score": -1.820513129234314
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 8,
+            "raw_score": -2.143695592880249
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "995a051d6918c1e0f9294f0f6e071d5d53d65f0a3197a8fd93df96d0221fb3d3",
+        "content_free": "0ec0155271e6709691c0d73cc384ed181e594ccb9d2e31edac42c6485adb84c7",
+        "shuffled": "2e93f54198105246aa0b3d7c4c5ccffa6dde528f742a23f0ef6481e93894bd14"
+      },
+      "shuffled_question_id": "j1-exp-b-02",
+      "shuffled_question_order": 2,
+      "shuffled_question_sha256": "6699b0673b3eff53d40a83155a4480068b8c27373875ebb2e7de7288c1853210",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "건물"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "도로"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "인구"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "28869c2f-e931-45ae-9b10-d56b8c32ff08",
+          "concept_name": "바람",
+          "ranks": {
+            "actual": 663,
+            "content_free": 683,
+            "content_free_delta": 390,
+            "shuffle_delta": 873,
+            "shuffled": 580
+          },
+          "scores": {
+            "actual": -6.72641658782959,
+            "actual_minus_content_free": 0.28827953338623047,
+            "actual_minus_shuffled": -0.4603867530822754,
+            "content_free": -7.01469612121582,
+            "shuffled": -6.2660298347473145
+          },
+          "target_concept": "바람"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "교통"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "654b2d0f-13d9-49d5-b49b-d50a16731a60",
+          "concept_name": "에너지",
+          "ranks": {
+            "actual": 956,
+            "content_free": 984,
+            "content_free_delta": 32,
+            "shuffle_delta": 24,
+            "shuffled": 979
+          },
+          "scores": {
+            "actual": -11.092856407165527,
+            "actual_minus_content_free": 1.6465272903442383,
+            "actual_minus_shuffled": 1.4722881317138672,
+            "content_free": -12.739383697509766,
+            "shuffled": -12.565144538879395
+          },
+          "target_concept": "에너지"
+        }
+      ]
+    },
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.9660859717872937,
+        "max_absolute_score_delta": 2.545332908630371,
+        "mean_absolute_score_delta": 0.4669602700450651,
+        "top_k_jaccard": 0.6,
+        "top_k_overlap_count": 6
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.9666819775902056,
+        "max_absolute_score_delta": 2.8399906158447266,
+        "mean_absolute_score_delta": 0.4395875194526322,
+        "top_k_jaccard": 0.7777777777777778,
+        "top_k_overlap_count": 7
+      },
+      "candidate_count": 1067,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 2,
+      "question": "프로그램과 개발은 어떻게 서로를 필요로 해?",
+      "question_id": "j1-exp-b-02",
+      "question_sha256": "6699b0673b3eff53d40a83155a4480068b8c27373875ebb2e7de7288c1853210",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1,
+            "raw_score": -1.3557640314102173
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2,
+            "raw_score": -1.5422391891479492
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3,
+            "raw_score": -1.5909864902496338
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4,
+            "raw_score": -1.6461114883422852
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5,
+            "raw_score": -1.8078911304473877
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 6,
+            "raw_score": -1.81866455078125
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 7,
+            "raw_score": -1.820513129234314
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 8,
+            "raw_score": -2.143695592880249
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.009235143661499
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 3,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 5,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 7,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 8,
+            "raw_score": -2.040219306945801
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "d30d5335-3405-42b2-8e88-d299091199d8",
+            "concept_name": "계획",
+            "rank": 1,
+            "raw_score": 2.545332908630371
+          },
+          {
+            "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+            "concept_name": "1",
+            "rank": 2,
+            "raw_score": 2.492527961730957
+          },
+          {
+            "concept_id": "d733f853-a83c-47d2-840f-2a9eedbad1ca",
+            "concept_name": "code",
+            "rank": 3,
+            "raw_score": 2.4214839935302734
+          },
+          {
+            "concept_id": "8fa8bd77-9aae-4979-b94d-96c2b6ca342b",
+            "concept_name": "배",
+            "rank": 4,
+            "raw_score": 2.368464469909668
+          },
+          {
+            "concept_id": "b926735c-12d5-4009-907d-3a3eef6e5416",
+            "concept_name": "2",
+            "rank": 5,
+            "raw_score": 2.025801658630371
+          },
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 6,
+            "raw_score": 1.963301658630371
+          },
+          {
+            "concept_id": "e020a8c7-0a7c-47ab-9341-337fbf157b98",
+            "concept_name": "heapq",
+            "rank": 7,
+            "raw_score": 1.8524351119995117
+          },
+          {
+            "concept_id": "848742a9-cc84-43dd-a835-17030857dfd9",
+            "concept_name": "Developer",
+            "rank": 8,
+            "raw_score": 1.826582908630371
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "d733f853-a83c-47d2-840f-2a9eedbad1ca",
+            "concept_name": "code",
+            "rank": 1,
+            "raw_score": 2.5547142028808594
+          },
+          {
+            "concept_id": "debe6f22-6b6d-460c-a64e-c3274ed7c0a7",
+            "concept_name": "draft",
+            "rank": 2,
+            "raw_score": 2.4480953216552734
+          },
+          {
+            "concept_id": "eee85e6e-2a33-426f-98a7-3c99788b916f",
+            "concept_name": "직업",
+            "rank": 3,
+            "raw_score": 2.2687482833862305
+          },
+          {
+            "concept_id": "848742a9-cc84-43dd-a835-17030857dfd9",
+            "concept_name": "Developer",
+            "rank": 4,
+            "raw_score": 2.166844367980957
+          },
+          {
+            "concept_id": "7e67871c-6ebb-4da5-8870-8bbad1233188",
+            "concept_name": "보안",
+            "rank": 5,
+            "raw_score": 2.1521968841552734
+          },
+          {
+            "concept_id": "d4ec19c7-cdcc-4547-89f2-2b26bdcc203e",
+            "concept_name": "클래스",
+            "rank": 6,
+            "raw_score": 2.074171543121338
+          },
+          {
+            "concept_id": "0f2a027f-75cf-4404-b2a1-45dd65701d3e",
+            "concept_name": "get,",
+            "rank": 7,
+            "raw_score": 1.9864215850830078
+          },
+          {
+            "concept_id": "15fa7b36-ee5d-4995-8cbf-ccbe2fb10f7e",
+            "concept_name": "ordereddict",
+            "rank": 8,
+            "raw_score": 1.9644947052001953
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.19977867603302
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.5430195331573486
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 3,
+            "raw_score": -1.6954281330108643
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 4,
+            "raw_score": -1.964069128036499
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5,
+            "raw_score": -2.007260322570801
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 6,
+            "raw_score": -2.0903730392456055
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 7,
+            "raw_score": -2.1829910278320312
+          },
+          {
+            "concept_id": "fdd13f68-b261-4613-8bc7-218509e90b10",
+            "concept_name": "불확실성",
+            "rank": 8,
+            "raw_score": -2.2199907302856445
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "60a1087cda397b4968b819754e287aa9029b1be8a692505fdb547d6c8464af8c",
+        "content_free": "3991f561d585517adaa4eff2045dc3ca764d17d2ed5f6f81a1a07946409be1db",
+        "shuffled": "51394325f4d4e6eb844627470a3c112e00b085d2557521793e4aeae38f472f90"
+      },
+      "shuffled_question_id": "j1-exp-b-03",
+      "shuffled_question_order": 3,
+      "shuffled_question_sha256": "e4511eeaa541de2abd2bedd6b5e0bab622e04404d7ff7595024b9700fcffd98c",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "분석"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "코드"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "시험"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "수정"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "개선"
+        }
+      ]
+    },
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.9598903524763738,
+        "max_absolute_score_delta": 3.1597390174865723,
+        "mean_absolute_score_delta": 0.5203837861272924,
+        "top_k_jaccard": 0.6,
+        "top_k_overlap_count": 6
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.9640886302335704,
+        "max_absolute_score_delta": 2.8659305572509766,
+        "mean_absolute_score_delta": 0.46506370097091515,
+        "top_k_jaccard": 0.7777777777777778,
+        "top_k_overlap_count": 7
+      },
+      "candidate_count": 1067,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 3,
+      "question": "생각과 이해는 어떤 점에서 다르고 또 이어져?",
+      "question_id": "j1-exp-b-03",
+      "question_sha256": "e4511eeaa541de2abd2bedd6b5e0bab622e04404d7ff7595024b9700fcffd98c",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.19977867603302
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.5430195331573486
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 3,
+            "raw_score": -1.6954281330108643
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 4,
+            "raw_score": -1.964069128036499
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5,
+            "raw_score": -2.007260322570801
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 6,
+            "raw_score": -2.0903730392456055
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 7,
+            "raw_score": -2.1829910278320312
+          },
+          {
+            "concept_id": "fdd13f68-b261-4613-8bc7-218509e90b10",
+            "concept_name": "불확실성",
+            "rank": 8,
+            "raw_score": -2.2199907302856445
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.009235143661499
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 3,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 5,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 7,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 8,
+            "raw_score": -2.040219306945801
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 1,
+            "raw_score": 3.1597390174865723
+          },
+          {
+            "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+            "concept_name": "힘",
+            "rank": 2,
+            "raw_score": 2.708566665649414
+          },
+          {
+            "concept_id": "b926735c-12d5-4009-907d-3a3eef6e5416",
+            "concept_name": "2",
+            "rank": 3,
+            "raw_score": 2.128488540649414
+          },
+          {
+            "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+            "concept_name": "사용.",
+            "rank": 4,
+            "raw_score": 2.08981990814209
+          },
+          {
+            "concept_id": "e020a8c7-0a7c-47ab-9341-337fbf157b98",
+            "concept_name": "heapq",
+            "rank": 5,
+            "raw_score": 2.0719261169433594
+          },
+          {
+            "concept_id": "20b1c2d1-fd6d-4f1c-9df0-5e66640830c2",
+            "concept_name": "네모",
+            "rank": 6,
+            "raw_score": 1.996884822845459
+          },
+          {
+            "concept_id": "d30d5335-3405-42b2-8e88-d299091199d8",
+            "concept_name": "계획",
+            "rank": 7,
+            "raw_score": 1.976144790649414
+          },
+          {
+            "concept_id": "0f7ef8f8-1855-46a9-80f1-96cb0aa65f59",
+            "concept_name": "차이",
+            "rank": 8,
+            "raw_score": 1.9139175415039062
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "4616c8e0-e4d0-4285-8d6b-c9ccd61621bf",
+            "concept_name": "슬픔",
+            "rank": 1,
+            "raw_score": 2.8659305572509766
+          },
+          {
+            "concept_id": "be2b6c85-ba96-4a17-8497-de3291facdbc",
+            "concept_name": "thinking",
+            "rank": 2,
+            "raw_score": 2.5536441802978516
+          },
+          {
+            "concept_id": "b0a06c33-74bf-4871-9bd5-4e967cf27b40",
+            "concept_name": "mental",
+            "rank": 3,
+            "raw_score": 2.1493473052978516
+          },
+          {
+            "concept_id": "213a52c7-1043-43a0-b53d-ca13fe681e9a",
+            "concept_name": "기분",
+            "rank": 4,
+            "raw_score": 2.056788206100464
+          },
+          {
+            "concept_id": "39316f03-f4b0-4ecf-ae34-4311ed2e5bc2",
+            "concept_name": "experience",
+            "rank": 5,
+            "raw_score": 1.8737821578979492
+          },
+          {
+            "concept_id": "69832c70-8535-47c6-bc06-92f8cf6871eb",
+            "concept_name": "재현",
+            "rank": 6,
+            "raw_score": 1.8544588088989258
+          },
+          {
+            "concept_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+            "concept_name": "사람",
+            "rank": 7,
+            "raw_score": 1.846092700958252
+          },
+          {
+            "concept_id": "8a814451-6dd3-47da-83a6-004d51320ffe",
+            "concept_name": "눈",
+            "rank": 8,
+            "raw_score": 1.737238883972168
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1,
+            "raw_score": -1.605139970779419
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2,
+            "raw_score": -1.7002538442611694
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3,
+            "raw_score": -1.8391859531402588
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4,
+            "raw_score": -1.9071513414382935
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5,
+            "raw_score": -2.100062131881714
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6,
+            "raw_score": -2.1017963886260986
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 7,
+            "raw_score": -2.194951057434082
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8,
+            "raw_score": -2.31483793258667
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "f2a09442357c39737bd353b005a73795aa9f44ac3ed343ed88f8836513c838ef",
+        "content_free": "3a578ce4e3238c38b01b86e3d6d65b59c075d34ccb5b024c45f951a8150c2955",
+        "shuffled": "a340fd7ad2e5a0936d46f105bc092daf05160c598be2ea8b0fe60f0af027aa6f"
+      },
+      "shuffled_question_id": "j1-exp-b-04",
+      "shuffled_question_order": 4,
+      "shuffled_question_sha256": "2fe637e6be38cd8fc5df53c638653eb62990d9b20ab65cbf6c4d0ac77adae8d9",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+          "concept_name": "정보",
+          "ranks": {
+            "actual": 781,
+            "content_free": 562,
+            "content_free_delta": 1044,
+            "shuffle_delta": 1062,
+            "shuffled": 454
+          },
+          "scores": {
+            "actual": -7.575738430023193,
+            "actual_minus_content_free": -1.2875971794128418,
+            "actual_minus_shuffled": -1.8330731391906738,
+            "content_free": -6.288141250610352,
+            "shuffled": -5.7426652908325195
+          },
+          "target_concept": "정보"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "ac60a44d-c8d8-4125-b168-847a41a7ebe8",
+          "concept_name": "비교",
+          "ranks": {
+            "actual": 228,
+            "content_free": 297,
+            "content_free_delta": 309,
+            "shuffle_delta": 18,
+            "shuffled": 491
+          },
+          "scores": {
+            "actual": -4.440202713012695,
+            "actual_minus_content_free": 0.39526844024658203,
+            "actual_minus_shuffled": 1.4514446258544922,
+            "content_free": -4.835471153259277,
+            "shuffled": -5.8916473388671875
+          },
+          "target_concept": "비교"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "추론"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "4173344b-0fe6-4613-a6fb-f47196389963",
+          "concept_name": "의미",
+          "ranks": {
+            "actual": 92,
+            "content_free": 226,
+            "content_free_delta": 84,
+            "shuffle_delta": 179,
+            "shuffled": 163
+          },
+          "scores": {
+            "actual": -3.464250087738037,
+            "actual_minus_content_free": 0.9998188018798828,
+            "actual_minus_shuffled": 0.6952056884765625,
+            "content_free": -4.46406888961792,
+            "shuffled": -4.1594557762146
+          },
+          "target_concept": "의미"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+          "concept_name": "관계",
+          "ranks": {
+            "actual": 853,
+            "content_free": 855,
+            "content_free_delta": 397,
+            "shuffle_delta": 819,
+            "shuffled": 818
+          },
+          "scores": {
+            "actual": -8.435113906860352,
+            "actual_minus_content_free": 0.24567604064941406,
+            "actual_minus_shuffled": -0.19653034210205078,
+            "content_free": -8.680789947509766,
+            "shuffled": -8.2385835647583
+          },
+          "target_concept": "관계"
+        }
+      ]
+    },
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.956710373956449,
+        "max_absolute_score_delta": 3.033703327178955,
+        "mean_absolute_score_delta": 0.5342338479559557,
+        "top_k_jaccard": 0.6,
+        "top_k_overlap_count": 6
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.9503555635838735,
+        "max_absolute_score_delta": 2.927947521209717,
+        "mean_absolute_score_delta": 0.5368323554306692,
+        "top_k_jaccard": 0.6,
+        "top_k_overlap_count": 6
+      },
+      "candidate_count": 1067,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 4,
+      "question": "정보와 인터넷 검색은 서로 어떻게 연결돼?",
+      "question_id": "j1-exp-b-04",
+      "question_sha256": "2fe637e6be38cd8fc5df53c638653eb62990d9b20ab65cbf6c4d0ac77adae8d9",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1,
+            "raw_score": -1.605139970779419
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2,
+            "raw_score": -1.7002538442611694
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3,
+            "raw_score": -1.8391859531402588
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4,
+            "raw_score": -1.909195065498352
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5,
+            "raw_score": -2.100062131881714
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6,
+            "raw_score": -2.1017963886260986
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 7,
+            "raw_score": -2.194951057434082
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8,
+            "raw_score": -2.31483793258667
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -1.009235143661499
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 3,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 5,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 7,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 8,
+            "raw_score": -2.040219306945801
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "a1cac3d2-e32f-40a6-9e94-cc88a4594a1b",
+            "concept_name": "연결돼",
+            "rank": 1,
+            "raw_score": 3.033703327178955
+          },
+          {
+            "concept_id": "b926735c-12d5-4009-907d-3a3eef6e5416",
+            "concept_name": "2",
+            "rank": 2,
+            "raw_score": 3.000624656677246
+          },
+          {
+            "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+            "concept_name": "1",
+            "rank": 3,
+            "raw_score": 2.936100959777832
+          },
+          {
+            "concept_id": "d0cb8e0d-c029-41f7-81b3-8b77d35ff503",
+            "concept_name": "크롬",
+            "rank": 4,
+            "raw_score": 2.525825023651123
+          },
+          {
+            "concept_id": "6444ddb5-fad0-43a2-873c-b3563eaf4340",
+            "concept_name": "12월",
+            "rank": 5,
+            "raw_score": 2.2284536361694336
+          },
+          {
+            "concept_id": "4c3f521c-1755-4911-9864-aa8bd056fbc1",
+            "concept_name": "연결되",
+            "rank": 6,
+            "raw_score": 2.127392292022705
+          },
+          {
+            "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+            "concept_name": "힘",
+            "rank": 7,
+            "raw_score": 2.049628257751465
+          },
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 8,
+            "raw_score": 1.945937156677246
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "d0cb8e0d-c029-41f7-81b3-8b77d35ff503",
+            "concept_name": "크롬",
+            "rank": 1,
+            "raw_score": 2.927947521209717
+          },
+          {
+            "concept_id": "a1cac3d2-e32f-40a6-9e94-cc88a4594a1b",
+            "concept_name": "연결돼",
+            "rank": 2,
+            "raw_score": 2.799654006958008
+          },
+          {
+            "concept_id": "0f2a027f-75cf-4404-b2a1-45dd65701d3e",
+            "concept_name": "get,",
+            "rank": 3,
+            "raw_score": 2.7178516387939453
+          },
+          {
+            "concept_id": "c598e0b1-fc0d-4fbd-8e01-70cb781061d3",
+            "concept_name": "노트북",
+            "rank": 4,
+            "raw_score": 2.4703598022460938
+          },
+          {
+            "concept_id": "130cbeb9-bb1a-4f5a-b414-62b972585165",
+            "concept_name": "hewlett",
+            "rank": 5,
+            "raw_score": 2.325305938720703
+          },
+          {
+            "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+            "concept_name": "인터넷",
+            "rank": 6,
+            "raw_score": 2.3123855590820312
+          },
+          {
+            "concept_id": "7e67871c-6ebb-4da5-8870-8bbad1233188",
+            "concept_name": "보안",
+            "rank": 7,
+            "raw_score": 2.122786521911621
+          },
+          {
+            "concept_id": "ba8d0dcd-849a-4c97-b61f-80610fe244ca",
+            "concept_name": "1",
+            "rank": 8,
+            "raw_score": 2.1131668090820312
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1,
+            "raw_score": -0.3033019006252289
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 2,
+            "raw_score": -1.7078925371170044
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 3,
+            "raw_score": -1.8879927396774292
+          },
+          {
+            "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+            "concept_name": "긍정적 감정",
+            "rank": 4,
+            "raw_score": -1.9406923055648804
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 5,
+            "raw_score": -2.1480712890625
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 6,
+            "raw_score": -2.174698829650879
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 7,
+            "raw_score": -2.2102832794189453
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8,
+            "raw_score": -2.4648923873901367
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "89ad6359b4a986f02465e936a31852d97ee3780f44a2b816f57015b12ed35e24",
+        "content_free": "b0fddacdb3974019c7223b9139f85a0179a0c7be888ddb267f7dedbe966ae288",
+        "shuffled": "36a35213d8ecf545c867ca2252cb21c7165f74aa501cfb7b8ed336926ad8d60d"
+      },
+      "shuffled_question_id": "j1-exp-b-05",
+      "shuffled_question_order": 5,
+      "shuffled_question_sha256": "6bc99f3efbff65429ab6a788fe32cb5c5bd5d84b9f5611397d6ed32888ff781c",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+          "concept_name": "질문",
+          "ranks": {
+            "actual": 1,
+            "content_free": 2,
+            "content_free_delta": 535,
+            "shuffle_delta": 242,
+            "shuffled": 5
+          },
+          "scores": {
+            "actual": -1.605139970779419,
+            "actual_minus_content_free": -0.13117444515228271,
+            "actual_minus_shuffled": 0.542931318283081,
+            "content_free": -1.4739655256271362,
+            "shuffled": -2.1480712890625
+          },
+          "target_concept": "질문"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "웹"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "자료"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "출처"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "근거"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "신뢰"
+        }
+      ]
+    },
+    {
+      "actual_vs_content_free": {
+        "full_rank_spearman": 0.9523896106938743,
+        "max_absolute_score_delta": 3.2720203399658203,
+        "mean_absolute_score_delta": 0.5939192291048633,
+        "top_k_jaccard": 0.7777777777777778,
+        "top_k_overlap_count": 7
+      },
+      "actual_vs_shuffled": {
+        "full_rank_spearman": 0.958340503200207,
+        "max_absolute_score_delta": 3.113295555114746,
+        "mean_absolute_score_delta": 0.5238547967030451,
+        "top_k_jaccard": 0.7777777777777778,
+        "top_k_overlap_count": 7
+      },
+      "candidate_count": 1066,
+      "content_free_control": "empty_question_text_same_chat_template",
+      "order": 5,
+      "question": "이름과 감정은 서로 어떤 관계가 있어?",
+      "question_id": "j1-exp-b-05",
+      "question_sha256": "6bc99f3efbff65429ab6a788fe32cb5c5bd5d84b9f5611397d6ed32888ff781c",
+      "rankings": {
+        "actual": [
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 1,
+            "raw_score": -1.7078925371170044
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 2,
+            "raw_score": -1.8879927396774292
+          },
+          {
+            "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+            "concept_name": "긍정적 감정",
+            "rank": 3,
+            "raw_score": -1.934036135673523
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 4,
+            "raw_score": -2.1480712890625
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 5,
+            "raw_score": -2.174698829650879
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 6,
+            "raw_score": -2.2102832794189453
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 7,
+            "raw_score": -2.4648923873901367
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 8,
+            "raw_score": -2.564211130142212
+          }
+        ],
+        "content_free": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1,
+            "raw_score": -1.4739655256271362
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 2,
+            "raw_score": -1.6230319738388062
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3,
+            "raw_score": -1.68800687789917
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 4,
+            "raw_score": -1.8970354795455933
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 5,
+            "raw_score": -1.963709831237793
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 6,
+            "raw_score": -1.9990966320037842
+          },
+          {
+            "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+            "concept_name": "감정 표현",
+            "rank": 7,
+            "raw_score": -2.040219306945801
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 8,
+            "raw_score": -2.062614679336548
+          }
+        ],
+        "content_free_delta": [
+          {
+            "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+            "concept_name": "힘",
+            "rank": 1,
+            "raw_score": 2.8822765350341797
+          },
+          {
+            "concept_id": "8ee2b6d8-74ef-4db6-a38b-1edc20951af5",
+            "concept_name": "두근두근",
+            "rank": 2,
+            "raw_score": 2.439486503601074
+          },
+          {
+            "concept_id": "c67cbfac-d6bb-4a79-9f03-cb46a0c30da4",
+            "concept_name": "너",
+            "rank": 3,
+            "raw_score": 2.192823886871338
+          },
+          {
+            "concept_id": "aab4eba8-1ab4-4cb3-80c5-cf2e3b73de81",
+            "concept_name": "탑승",
+            "rank": 4,
+            "raw_score": 2.1897945404052734
+          },
+          {
+            "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+            "concept_name": "관계",
+            "rank": 5,
+            "raw_score": 2.052198886871338
+          },
+          {
+            "concept_id": "f7b253c7-6088-4aea-a5fa-fa1c54a83ef1",
+            "concept_name": "남자",
+            "rank": 6,
+            "raw_score": 1.9025678634643555
+          },
+          {
+            "concept_id": "987ac917-3ae8-46f2-a126-e3f33f93f735",
+            "concept_name": "person",
+            "rank": 7,
+            "raw_score": 1.8881359100341797
+          },
+          {
+            "concept_id": "6a843e3b-b404-404e-a641-3cdc1a667eb9",
+            "concept_name": "굴러감",
+            "rank": 8,
+            "raw_score": 1.7996768951416016
+          }
+        ],
+        "shuffle_delta": [
+          {
+            "concept_id": "987ac917-3ae8-46f2-a126-e3f33f93f735",
+            "concept_name": "person",
+            "rank": 1,
+            "raw_score": 2.1205177307128906
+          },
+          {
+            "concept_id": "6b7f052a-4a30-45d0-9dad-1c7cdd878a82",
+            "concept_name": "음식",
+            "rank": 2,
+            "raw_score": 1.970506191253662
+          },
+          {
+            "concept_id": "bbedf5fb-1744-480c-b9d0-2c3b3ccb25b9",
+            "concept_name": "joy",
+            "rank": 3,
+            "raw_score": 1.8810396194458008
+          },
+          {
+            "concept_id": "71337317-ba00-4dec-a8f8-4d38f4ce3656",
+            "concept_name": "딸랑이",
+            "rank": 4,
+            "raw_score": 1.762242317199707
+          },
+          {
+            "concept_id": "fec1bfe1-dba4-43d0-8532-6305457aaab7",
+            "concept_name": "영향",
+            "rank": 5,
+            "raw_score": 1.7276334762573242
+          },
+          {
+            "concept_id": "4616c8e0-e4d0-4285-8d6b-c9ccd61621bf",
+            "concept_name": "슬픔",
+            "rank": 6,
+            "raw_score": 1.7260932922363281
+          },
+          {
+            "concept_id": "b7516908-a08c-4ca2-b606-d035cbbca300",
+            "concept_name": "사랑",
+            "rank": 7,
+            "raw_score": 1.6951377391815186
+          },
+          {
+            "concept_id": "af68551f-38a9-424f-ab7a-ab81ab19fa48",
+            "concept_name": "귀",
+            "rank": 8,
+            "raw_score": 1.6160931587219238
+          }
+        ],
+        "shuffled": [
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 1,
+            "raw_score": -1.5045323371887207
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2,
+            "raw_score": -1.7312450408935547
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 3,
+            "raw_score": -1.8110418319702148
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4,
+            "raw_score": -1.9302061796188354
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5,
+            "raw_score": -1.9699783325195312
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6,
+            "raw_score": -2.2518389225006104
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 7,
+            "raw_score": -2.2948687076568604
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8,
+            "raw_score": -2.348914623260498
+          }
+        ]
+      },
+      "score_digests": {
+        "actual": "78cae5d5f7a1b8e47e7aecd7d0ca4f7faa8a415ffcc58f269bfefc01a1e63d57",
+        "content_free": "0a8548ade0a83f2d1c279f2e37f13d08de89e7c869557682b80c9eff7c54432a",
+        "shuffled": "414c610f0b69c0fbb29d1f61d03a3b9d3faa5f509d94fb7d5354c7c9652656a4"
+      },
+      "shuffled_question_id": "j1-exp-b-00",
+      "shuffled_question_order": 0,
+      "shuffled_question_sha256": "c6eaad21f9418fcfe0405f7d61766831fd388ea40741b8203078dfd4c2b03c4d",
+      "target_diagnostics": [
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+          "concept_name": "사람",
+          "ranks": {
+            "actual": 31,
+            "content_free": 184,
+            "content_free_delta": 44,
+            "shuffle_delta": 16,
+            "shuffled": 193
+          },
+          "scores": {
+            "actual": -3.024839162826538,
+            "actual_minus_content_free": 1.1564514636993408,
+            "actual_minus_shuffled": 1.2107627391815186,
+            "content_free": -4.181290626525879,
+            "shuffled": -4.235601902008057
+          },
+          "target_concept": "사람"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "대상"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+          "concept_name": "경험",
+          "ranks": {
+            "actual": 412,
+            "content_free": 405,
+            "content_free_delta": 564,
+            "shuffle_delta": 289,
+            "shuffled": 486
+          },
+          "scores": {
+            "actual": -5.643885135650635,
+            "actual_minus_content_free": -0.20515155792236328,
+            "actual_minus_shuffled": 0.0663151741027832,
+            "content_free": -5.4387335777282715,
+            "shuffled": -5.710200309753418
+          },
+          "target_concept": "경험"
+        },
+        {
+          "available_in_candidate_scope": true,
+          "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+          "concept_name": "기억",
+          "ranks": {
+            "actual": 72,
+            "content_free": 138,
+            "content_free_delta": 237,
+            "shuffle_delta": 126,
+            "shuffled": 158
+          },
+          "scores": {
+            "actual": -3.592444896697998,
+            "actual_minus_content_free": 0.32961511611938477,
+            "actual_minus_shuffled": 0.43962955474853516,
+            "content_free": -3.922060012817383,
+            "shuffled": -4.032074451446533
+          },
+          "target_concept": "기억"
+        },
+        {
+          "available_in_candidate_scope": false,
+          "concept_id": null,
+          "concept_name": null,
+          "ranks": null,
+          "scores": null,
+          "target_concept": "단서"
+        }
+      ]
+    }
+  ],
+  "ranking_summaries": {
+    "actual": {
+      "exact_target_hit_count": 1,
+      "mean_pairwise_top_k_jaccard": 0.6517171717171717,
+      "questions_with_exact_target_hit": 1,
+      "top_k_slots": 48,
+      "unique_top_k_concept_count": 13
+    },
+    "content_free": {
+      "exact_target_hit_count": 2,
+      "mean_pairwise_top_k_jaccard": 0.9259259259259259,
+      "questions_with_exact_target_hit": 2,
+      "top_k_slots": 48,
+      "unique_top_k_concept_count": 9
+    },
+    "content_free_delta": {
+      "exact_target_hit_count": 0,
+      "mean_pairwise_top_k_jaccard": 0.2072016872016872,
+      "questions_with_exact_target_hit": 0,
+      "top_k_slots": 48,
+      "unique_top_k_concept_count": 28
+    },
+    "shuffle_delta": {
+      "exact_target_hit_count": 0,
+      "mean_pairwise_top_k_jaccard": 0.02349206349206349,
+      "questions_with_exact_target_hit": 0,
+      "top_k_slots": 48,
+      "unique_top_k_concept_count": 43
+    },
+    "shuffled": {
+      "exact_target_hit_count": 2,
+      "mean_pairwise_top_k_jaccard": 0.6398653198653199,
+      "questions_with_exact_target_hit": 2,
+      "top_k_slots": 48,
+      "unique_top_k_concept_count": 13
+    }
+  },
+  "status": "local_core_conditioning_ablation_completed_not_for_claim"
+}

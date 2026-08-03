@@ -1,0 +1,565 @@
+{
+  "created_at": "2026-07-23T08:08:42.438791+00:00",
+  "database_writes": false,
+  "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+  "development_label_pack_version": 1,
+  "entries": [
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "32097d72-3b93-4959-b164-7fa253ecec4e",
+          "concept_name": "한국",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-00",
+      "question_sha256": "9cea73dcf7753af5e97384026b49ce793b3db393160920449a903748a2bf2da5"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "approved",
+          "label": 1,
+          "partition": "development_challenge_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-01",
+      "question_sha256": "7638c62c2647c814349bbff0030126976e5672ed8ff909cf71e1adf843211a08"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "35d1fd6c-802c-4bbc-8743-e232381e9569",
+          "concept_name": "물",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "decision": "approved",
+          "label": 1,
+          "partition": "development_challenge_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-02",
+      "question_sha256": "356e2cf9c5cd0268173babd32f541b396b91596e82f2cdeac6d14e1f393cdfa8"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+          "concept_name": "최단경로",
+          "decision": "approved",
+          "label": 1,
+          "partition": "development_challenge_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-03",
+      "question_sha256": "07f4d9d7fb415116d9d4996b4041da9b950b9473903410d23265dcb21b72a8e7"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "decision": "approved",
+          "label": 1,
+          "partition": "development_challenge_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-04",
+      "question_sha256": "12ef97573782a8616263f271f3641db65a11a08c142ab24f4e331c44976adc5d"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+          "concept_name": "힘",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-05",
+      "question_sha256": "ba708c3d6e49f73d6607df511406c2ea181f53d47379ecd05d378d29add20a60"
+    },
+    {
+      "context_concepts_unscored": [],
+      "labels": [
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-06",
+      "question_sha256": "9bdcbda039d42ae9531a6fcc5cc85799d2f73764771e7071aa89354f5093f53f"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-07",
+      "question_sha256": "3f3e6574eec066bf728600f5baa76b719bb50701997e2e2b4f38b7e7a1e5278b"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "7a40331b-84e2-42bc-819b-0cae429526ec",
+          "concept_name": "계산",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-08",
+      "question_sha256": "b8dc181d3fcea671bbce93a36019d4482d1bc8206f71a557bcdf88fcdc6e2748"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-09",
+      "question_sha256": "8cd1dca97ad8bc28e4af07fa777c12c0266abf48d4f2e45b57ba514a822c4699"
+    },
+    {
+      "context_concepts_unscored": [],
+      "labels": [
+        {
+          "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "concept_name": "로봇",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "development_challenge_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-10",
+      "question_sha256": "ea954d43e470ed3041fb26018ecd1d1571cc9f6c79dfb8a5f463e9234196f04b"
+    },
+    {
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "partition": "fit_pool"
+        }
+      ],
+      "labels": [
+        {
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "concept_name": "프로그램",
+          "decision": "approved",
+          "label": 1,
+          "partition": "fit_pool",
+          "provenance": "deterministic_closed_world_fact"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "decision": "rejected",
+          "label": 0,
+          "partition": "fit_pool",
+          "provenance": "explicit_closed_world_decoy"
+        }
+      ],
+      "question_id": "j1-r2-dev-0001-11",
+      "question_sha256": "ea69e9f1bc26c381ac483a1757d29923a9f0fac2d2715aae9424a3041cbb7529"
+    }
+  ],
+  "explicit_negative_label_count": 36,
+  "generator_spec_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "positive_label_count": 12,
+  "production_promotion_gate": false,
+  "question_count": 12,
+  "review_decisions_sha256": "dc9a25573965979796febbd4d2d974b78065e79360f81e3729266125a66c5652",
+  "review_packet_sha256": "e5aded97a12ef997ab72d7687cd39e63edfd1e9fa8126f71b8eabaeb8b5f7624",
+  "role": "rolling_development",
+  "status": "user_reviewed_development_labels",
+  "unlabeled_graph_concept_policy": "ignore_never_assume_negative"
+}

@@ -1,0 +1,39 @@
+{
+  "candidate_scope": "full_frozen_graph_vocabulary",
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "created_at": "2026-07-23T06:50:39.204939+00:00",
+  "evaluation_metrics": [
+    "macro_recall_at_8",
+    "macro_ndcg_at_8",
+    "macro_mrr"
+  ],
+  "explicit_negative_count_per_question": 3,
+  "explicit_negative_label_count": 36,
+  "phase": "J1-R2",
+  "positive_label_count": 12,
+  "question_count": 12,
+  "role": "rolling_development",
+  "sample_size_plan_sha256": "17b705ddbd7533bacf1bcaffc3cba637a2cba6db8a37567a644567b75fc628f7",
+  "sample_size_plan_version": 1,
+  "status": "sample_size_plan_awaiting_user_review",
+  "stop_rules": [
+    "reject_if_question_or_label_review_is_incomplete",
+    "reject_if_target_partition_counts_change",
+    "reject_if_any_question_overlaps_anchor_by_hash",
+    "reject_if_any_unlabeled_concept_is_coerced_to_negative",
+    "reject_if_generator_uses_subject_model_or_live_graph_relations_as_truth"
+  ],
+  "target_partition_counts": {
+    "development_challenge_pool": 4,
+    "fit_pool": 8,
+    "lockbox_challenge_pool": 0
+  },
+  "unlabeled_graph_concept_policy": "ignore_never_assume_negative",
+  "usage": {
+    "descriptive_development_only": true,
+    "heldout_claim_allowed": false,
+    "inferential_claim_allowed": false,
+    "model_selection_allowed": true,
+    "performance_claim_allowed": false
+  }
+}

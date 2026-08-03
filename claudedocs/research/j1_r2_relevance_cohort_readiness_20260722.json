@@ -1,0 +1,27 @@
+{
+  "anchor_manifest_gate": true,
+  "block_reasons": [
+    "rolling_development_cohort_not_reviewed_and_materialized",
+    "one_time_lockbox_generator_not_reviewed_and_frozen"
+  ],
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_readiness_sha256": "6beb8b98795cff0387a0980fdf3a4422d138c38d49c0b09da4b427f28a73e1f6",
+  "cohort_readiness_version": 1,
+  "database_writes": false,
+  "development_manifest_gate": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lexical_baseline_execution_gate": false,
+  "live_learning_blocked": false,
+  "lockbox_generator_manifest_gate": false,
+  "manifest_hashes": {
+    "anchor_regression": "76355a8953d8dc88b4d427b3e9fb8cf494411cb398ce7bdf80394e463e35fc88",
+    "one_time_lockbox": "6eef5c5e216851fc0e5e33b3d007d5edcbdaa1dbaf54b5f5425184bed921801b",
+    "rolling_development": "89595ade911eb996192031b91ec47e1827fc6b1d2142c0f296a3614f8887c4e4"
+  },
+  "next_step": "review_and_materialize_development_then_freeze_lockbox_generator",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "status": "cohort_manifest_drafts_incomplete_baseline_blocked"
+}

@@ -1,0 +1,2314 @@
+{
+  "bindings": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+    "embedding_baseline_artifact_sha256": "8a7b8fbfb24014ca356160c530789b7eb468d475c579f8c77bbb946e9c55d8e4",
+    "generator_spec_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+    "implementation_bundle_sha256": "f7a34ffbeac2c8cc4ba13a789f06b14e836099f0ba386cd74e0f5e8539526b4b",
+    "input_file_sha256s": {
+      "candidate_vocabulary": "ae4c13dbc2958b593f6f76dd8a8073b49d2027300ea8f5d36c8dee329f324f2f",
+      "development_generator_spec": "068897f6096e50974501a345b241aaa4474a1e308a3a4f7620906bb08844235f",
+      "development_labels": "20046ce37689ce32901970e2e5bcc98698544c934a75956794a474177134835c",
+      "embedding_baseline_artifact": "cc0d432da410e1cbf6ac5a34e71f36069dc406e563c7d9f5e808e49e6e4f4aad",
+      "embedding_model_decision": "7728eab6d54cba8b7f5eac6995767200c8dfb87ac1161b16a52adc753b634487",
+      "embedding_snapshot_manifest": "d6cce63a5d62127af7b192346822d542cee4fa0b607719ba0ce085130b1ad9be",
+      "hard_negative_audit_cli": "28ab664c2b6c73bfea83f95f69f70411ac0c4388b58c72d57d130e4e6675e753",
+      "hard_negative_audit_module": "b877f2f550f76646deca8bd212809bff3531c12cff4493ca37390835e832797d",
+      "lexical_baseline_artifact": "3c7f3490c2190f33847bf2298fa4d904d96c96503206c2631c11741fad2a4f5e"
+    }
+  },
+  "created_at": "2026-07-28T06:37:31.112350+00:00",
+  "database_write_gate": false,
+  "decision_contract": {
+    "context_definition": "related context that must not be auto-converted to a binary negative",
+    "hard_negative_definition": "plausibly relevant confound but not an acceptable answer",
+    "machine_surface_flags_are_labels": false,
+    "relevance_and_vocabulary_are_separate_axes": true,
+    "relevance_review_decisions": [
+      "positive",
+      "context",
+      "hard_negative",
+      "unrelated_negative",
+      "uncertain"
+    ],
+    "vocabulary_review_decisions": [
+      "canonical",
+      "alias",
+      "fragment",
+      "malformed",
+      "uncertain"
+    ]
+  },
+  "hard_negative_review_packet_sha256": "aec20a9d0c714e768c560d8eb4d517edf604ca6c03cd7fc01ed8830fbf2339e4",
+  "hard_negative_review_packet_version": 1,
+  "heldout_gate": false,
+  "learned_head_fit_gate": false,
+  "next_step": "user_reviews_packet_into_separate_decision_artifact",
+  "performance_claim_gate": false,
+  "phase": "J1-R2-E3",
+  "production_promotion_gate": false,
+  "question_count": 12,
+  "questions": [
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "32097d72-3b93-4959-b164-7fa253ecec4e",
+          "concept_name": "한국"
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 411,
+          "embedding_score": 0.746882517255
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 254,
+          "embedding_score": 0.751280151236
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "embedding_rank": 901,
+          "embedding_score": 0.72447233674
+        }
+      ],
+      "order": 0,
+      "positive_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 4,
+          "embedding_score": 0.811741427691
+        }
+      ],
+      "question": "대한민국의 행정 중심이 되는 수도 도시는 어디야?",
+      "question_id": "j1-r2-dev-0001-00",
+      "question_sha256": "9cea73dcf7753af5e97384026b49ce793b3db393160920449a903748a2bf2da5",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "수도",
+          "candidate_review_id": "ce487f242e12eff014f33450868c9f0ccdad92482b3d85bf0ab19981efea3118",
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.845569805434,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "수도",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.033828377743,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "한국의 수도",
+          "candidate_review_id": "88ad1b45a301b0502fadc55817bc5481b958ab3cd708ffd2d21dd9cf78f4512c",
+          "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+          "concept_name": "한국의 수도",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.835987765855,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "한국의 수도",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.024246338164,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "도시",
+          "candidate_review_id": "d41dad865ce197c7660679495002de160402c3cea9cf44babb4182257b97ad96",
+          "concept_id": "43019bfd-ebeb-455d-aa29-1d2052546181",
+          "concept_name": "도시",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.818289071298,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "도시",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.006547643607,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "가장 중요한 곳",
+          "candidate_review_id": "f65defc82a3a8554489e0f2c2fed411525aff352048e7cafa25abad80752d718",
+          "concept_id": "433bf360-8538-46ae-bcf9-b4bcadbad275",
+          "concept_name": "가장 중요한 곳",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.81048908918,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "가장 중요한 곳",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.001252338511,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "서울특별시",
+          "candidate_review_id": "f86684f13453df92139f27d2bb12e55635ac4d5688e4e55a04b7ffe19579e286",
+          "concept_id": "ec35f6b9-3446-4125-b5c2-ff9fef73c6f4",
+          "concept_name": "서울특별시",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.809289927957,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "서울특별시",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.002451499734,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 753,
+          "embedding_score": 0.752776678954
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "embedding_rank": 984,
+          "embedding_score": 0.73575007074
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 757,
+          "embedding_score": 0.752549248171
+        }
+      ],
+      "order": 1,
+      "positive_references": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 67,
+          "embedding_score": 0.780481497105
+        }
+      ],
+      "question": "지구 주위를 공전하는 자연 위성은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-01",
+      "question_sha256": "7638c62c2647c814349bbff0030126976e5672ed8ff909cf71e1adf843211a08",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "지구",
+          "candidate_review_id": "6828978ea7174b4347ae267c0b5e7f0fd6966fa5161a281f9c4d1060359130ab",
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.831130498116,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "지구",
+          "rank_gap_to_nearest_positive": 66,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.050649001011,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "공전",
+          "candidate_review_id": "1e8bd2d604ccb27e61524d825c08ca03dae5732928e30268f5f9f4286c3f3508",
+          "concept_id": "8b9e44c3-30ce-437e-a325-1f04e7d64625",
+          "concept_name": "공전",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.818944741824,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "공전",
+          "rank_gap_to_nearest_positive": 65,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.038463244719,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "자연이",
+          "candidate_review_id": "c4c3add3d08ec4cc21ccfa6857205f902afa4e89278e647a6bea7e759af5df85",
+          "concept_id": "5944a33e-ec5f-4aac-b2c5-1499e87fdceb",
+          "concept_name": "자연이",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.817115758757,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "자연이",
+          "rank_gap_to_nearest_positive": 64,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.036634261652,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "우주",
+          "candidate_review_id": "96a9d8f9eb3a10477233362fb787b4296dc7a45e4085084c490a67379df2164a",
+          "concept_id": "12f5f29f-f737-4bc6-abf2-1c7b42348b26",
+          "concept_name": "우주",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.810925961172,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "우주",
+          "rank_gap_to_nearest_positive": 63,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.030444464067,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "별",
+          "candidate_review_id": "6bfcc2b2b22354513b57292488c1b9f6a97dd65d471af86ffa85896a90b4c555",
+          "concept_id": "a0251557-cb16-40b1-a1fb-0f02b1590a1e",
+          "concept_name": "별",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.802181094861,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "별",
+          "rank_gap_to_nearest_positive": 62,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.021699597756,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "네",
+          "candidate_review_id": "3d503aa76498db3adf1af886969555f9d07770e70a7ed946dff608a5b7acc217",
+          "concept_id": "cfb34937-6ed6-4b9c-ab2d-b9a8332595ae",
+          "concept_name": "네",
+          "current_label_status": "unjudged",
+          "embedding_rank": 65,
+          "embedding_score": 0.780571185258,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "네",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 8.9688153e-05,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "신기한 것",
+          "candidate_review_id": "2ee9822af6c5860c9ca4f54fd7954705a82b5bc9b457c17f6be591acccafd34f",
+          "concept_id": "0836cbe9-f7d8-4043-ac3e-98d9e00c795c",
+          "concept_name": "신기한 것",
+          "current_label_status": "unjudged",
+          "embedding_rank": 66,
+          "embedding_score": 0.780511195728,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "신기한 것",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 2.9698623e-05,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "비 생성 과정",
+          "candidate_review_id": "a1bb6eeeb9e22028e2e51977b50a101a936f9be4521512ac5ea390acdaad9d58",
+          "concept_id": "f4a3f795-5a71-4725-9355-7331b8a784ba",
+          "concept_name": "비 생성 과정",
+          "current_label_status": "unjudged",
+          "embedding_rank": 68,
+          "embedding_score": 0.780357567621,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "비 생성 과정",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000123929484,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "이동시키는",
+          "candidate_review_id": "b10daf6aee6f15f76120c58ea4affbf28dd09ba4e641d285c66eb4e02c26ae1f",
+          "concept_id": "3b121d65-1b60-4469-89a7-df3a7c2aa3b0",
+          "concept_name": "이동시키는",
+          "current_label_status": "unjudged",
+          "embedding_rank": 69,
+          "embedding_score": 0.780329688217,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "이동시키는",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000151808888,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "35d1fd6c-802c-4bbc-8743-e232381e9569",
+          "concept_name": "물"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "embedding_rank": 877,
+          "embedding_score": 0.753647492497
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 724,
+          "embedding_score": 0.760835405955
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "embedding_rank": 699,
+          "embedding_score": 0.76162634375
+        }
+      ],
+      "order": 2,
+      "positive_references": [
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "embedding_rank": 4,
+          "embedding_score": 0.813767713081
+        }
+      ],
+      "question": "하늘에서 작은 물방울이 모여 보이는 것은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-02",
+      "question_sha256": "356e2cf9c5cd0268173babd32f541b396b91596e82f2cdeac6d14e1f393cdfa8",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "물방울",
+          "candidate_review_id": "b87f32a230ef131e4d2421b8115058b9a0585dd5149c10494d1770b35e6e2c8b",
+          "concept_id": "9bc9fefd-a380-470c-8bdb-ef5ee33afc8b",
+          "concept_name": "물방울",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.863181045498,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "물방울",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.049413332417,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "하늘",
+          "candidate_review_id": "d11be81afbfd2f4655b10a00bd557efe8e773c92c1f41ed3e070cdd904509412",
+          "concept_id": "55e38fb6-8681-472a-bc1e-970e6ba3352f",
+          "concept_name": "하늘",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.829943336297,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "하늘",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.016175623216,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "반짝반짝 작은 별",
+          "candidate_review_id": "92f3934385e10b5d2642aef2c23e895f7f99cb6e11c0c9cf9d09eb343452e75e",
+          "concept_id": "1b21a008-7eae-4d90-8727-0c2654590a20",
+          "concept_name": "반짝반짝 작은 별",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.824728079161,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "반짝반짝 작은 별",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.01096036608,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "하늘을 나는 것",
+          "candidate_review_id": "022f414eba79b2d3706003244e98a17783c104e90fbe356acb69d73814fa6074",
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.811151410304,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "하늘을 나는 것",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.002616302777,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "우주",
+          "candidate_review_id": "25990e78756a64b105a3e261148e11c0551333410e9a97b1a449c35ca8ae1b26",
+          "concept_id": "12f5f29f-f737-4bc6-abf2-1c7b42348b26",
+          "concept_name": "우주",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.808772148804,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "우주",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.004995564277,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘"
+        },
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 513,
+          "embedding_score": 0.761302310535
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "embedding_rank": 443,
+          "embedding_score": 0.76302957103
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 596,
+          "embedding_score": 0.758344779991
+        }
+      ],
+      "order": 3,
+      "positive_references": [
+        {
+          "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+          "concept_name": "최단경로",
+          "embedding_rank": 227,
+          "embedding_score": 0.771007710824
+        }
+      ],
+      "question": "그래프에서 두 지점 사이의 비용 합이 가장 작은 경로를 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-03",
+      "question_sha256": "07f4d9d7fb415116d9d4996b4041da9b950b9473903410d23265dcb21b72a8e7",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "그래프에서",
+          "candidate_review_id": "f118f2a728262cdf45cf396d491732f9bc2f1cd5637193cb37b5542de4919675",
+          "concept_id": "244ce51f-1bb3-4416-b2f2-6c5b0659286e",
+          "concept_name": "그래프에서.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.828621481578,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "그래프에서.",
+          "rank_gap_to_nearest_positive": 226,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.057613770754,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "그래프에서",
+          "candidate_review_id": "4ae9b814b2746149b9c0d4368eed96337bb5ba17c0499aab71a7d70251187603",
+          "concept_id": "ee0c8709-ab69-42ba-8daa-ad5cd6df91e9",
+          "concept_name": "그래프에서",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.826540118813,
+          "machine_surface_flags": [
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "그래프에서",
+          "rank_gap_to_nearest_positive": 225,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.055532407989,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "경로",
+          "candidate_review_id": "4cf5d47919160494e1596639444146c106a85fb2b51687fdb5a05fca55c57b15",
+          "concept_id": "d337522e-ced6-40ef-8fc5-1a8abafab8d6",
+          "concept_name": "경로.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.824047360865,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "경로.",
+          "rank_gap_to_nearest_positive": 224,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.053039650041,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "알고리즘으로",
+          "candidate_review_id": "fba6e4cd4c4cccc0902fdd4b3258beadd366e5ba3e4cf083b5be665d47a414df",
+          "concept_id": "a19cf002-590d-454c-88af-1cb74a77b0af",
+          "concept_name": "알고리즘으로.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.817401582073,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "알고리즘으로.",
+          "rank_gap_to_nearest_positive": 223,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.046393871249,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "알고리즘으로",
+          "candidate_review_id": "779414a8b92c943d30e6da74a6e3f68b4c235e92adb7f7702952ea32fc633695",
+          "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+          "concept_name": "알고리즘으로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.811416604401,
+          "machine_surface_flags": [
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "알고리즘으로",
+          "rank_gap_to_nearest_positive": 222,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.040408893577,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "데코레이터로",
+          "candidate_review_id": "045e36ca88025aba79c4b753b32f7b4aac1ddd06ef42047c55772988b4d75a53",
+          "concept_id": "cbdf3642-324b-401d-b2df-9c44e15be273",
+          "concept_name": "데코레이터로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 225,
+          "embedding_score": 0.77129750901,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "데코레이터로",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000289798186,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "구현해줘",
+          "candidate_review_id": "96af87daeceecd2775f01be3d3f88d50127aaa8cf9cd9abb447cd35e40d4ce8a",
+          "concept_id": "8cb633d9-6289-4072-a342-6481edcaf0ad",
+          "concept_name": "구현해줘",
+          "current_label_status": "unjudged",
+          "embedding_rank": 226,
+          "embedding_score": 0.771176113421,
+          "machine_surface_flags": [
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "구현해줘",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000168402597,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "비",
+          "candidate_review_id": "2a08f1027c0f42110284fcad92531a287c08bfb81f7c7eeae98b9d50e1566967",
+          "concept_id": "f756cd0c-bce6-4b51-9036-1010ad9c3e34",
+          "concept_name": "비",
+          "current_label_status": "unjudged",
+          "embedding_rank": 228,
+          "embedding_score": 0.770938999155,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "비",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -6.8711669e-05,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "실패",
+          "candidate_review_id": "85ab52a2f4d9b544f2370072dae56e65d475c30ddf7eda0b8acabb193dec5fba",
+          "concept_id": "efd35129-4ead-4339-adfc-25854efc0e7a",
+          "concept_name": "실패",
+          "current_label_status": "unjudged",
+          "embedding_rank": 229,
+          "embedding_score": 0.77090564846,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "실패",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000102062364,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 769,
+          "embedding_score": 0.769073686502
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "embedding_rank": 969,
+          "embedding_score": 0.750562307599
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "embedding_rank": 770,
+          "embedding_score": 0.769063493882
+        }
+      ],
+      "order": 4,
+      "positive_references": [
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "embedding_rank": 3,
+          "embedding_score": 0.837309308149
+        }
+      ],
+      "question": "귀로 소리를 받아들이는 감각을 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-04",
+      "question_sha256": "12ef97573782a8616263f271f3641db65a11a08c142ab24f4e331c44976adc5d",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "귀",
+          "candidate_review_id": "99b687f290ebf9c5008feb9079fafe133e7836c9d2be7c7cc2f5b91e94a7f55a",
+          "concept_id": "af68551f-38a9-424f-ab7a-ab81ab19fa48",
+          "concept_name": "귀",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.846293354081,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "귀",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.008984045932,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "소리 종류",
+          "candidate_review_id": "db500d88c7ae79649319214bd1cfbf1f0d801053d79765914649461cd7d16238",
+          "concept_id": "5b0676c0-1845-444c-8d0a-e468a0cb1287",
+          "concept_name": "소리 종류",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.837609856217,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "소리 종류",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000300548068,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "착각",
+          "candidate_review_id": "c59be8ff52aade94f5af348715daecc4d2035276b50eec7dda31ffb229467b33",
+          "concept_id": "74ad1244-01b4-4b0b-aafc-a81b5a2342bf",
+          "concept_name": "착각",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.835937093004,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "착각",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.001372215145,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "소리",
+          "candidate_review_id": "3874cf9e1875706a8585096c44580ffc2fd7ebc4253fb5f4cf2b0139c23c38b9",
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.83466078767,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "소리",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.002648520479,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "큰 소리",
+          "candidate_review_id": "76febc6e3c59c202fe4edaf31acc7ed502fe91e6b79b8f266a28a2def9bab6f5",
+          "concept_id": "c731ca22-cef8-4aa8-8075-9bcdce9d170f",
+          "concept_name": "큰 소리",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.831344449842,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "큰 소리",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.005964858307,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구"
+        },
+        {
+          "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+          "concept_name": "힘"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 638,
+          "embedding_score": 0.750920196067
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "embedding_rank": 291,
+          "embedding_score": 0.762203764102
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 675,
+          "embedding_score": 0.74965744085
+        }
+      ],
+      "order": 5,
+      "positive_references": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 76,
+          "embedding_score": 0.777958734188
+        }
+      ],
+      "question": "물체를 지구 쪽으로 끌어당기는 힘은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-05",
+      "question_sha256": "ba708c3d6e49f73d6607df511406c2ea181f53d47379ecd05d378d29add20a60",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "지구",
+          "candidate_review_id": "ca3cef8fcd2bae8daebb3a03d0532184641bb2866eccbe77815faabcc9578dd4",
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.827424499845,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "지구",
+          "rank_gap_to_nearest_positive": 75,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.049465765657,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "힘",
+          "candidate_review_id": "b0a8df69ca2ed1e550145ca5bee49dbe66042d8fd659292e3a2c0a35c4829fb3",
+          "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+          "concept_name": "힘",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.825802681157,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "힘",
+          "rank_gap_to_nearest_positive": 74,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.047843946969,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "등에 업히기",
+          "candidate_review_id": "3af6d17eb5b88b5c652124a84c618888f2d8ba4f6b70d35c16c51633f5631fef",
+          "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+          "concept_name": "등에 업히기",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.813721598394,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "등에 업히기",
+          "rank_gap_to_nearest_positive": 73,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.035762864206,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "우주",
+          "candidate_review_id": "7169da3520b3b676e37640433a68a221f0adb5accbf98944d51194ea463733c2",
+          "concept_id": "12f5f29f-f737-4bc6-abf2-1c7b42348b26",
+          "concept_name": "우주",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.812467862636,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "우주",
+          "rank_gap_to_nearest_positive": 72,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.034509128448,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "에너지",
+          "candidate_review_id": "6eb3373edb06372c9d9af1463a7c122853348b44765a6ef4606a1a4bfa5d7339",
+          "concept_id": "654b2d0f-13d9-49d5-b49b-d50a16731a60",
+          "concept_name": "에너지",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.803248034913,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "에너지",
+          "rank_gap_to_nearest_positive": 71,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.025289300725,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "계획",
+          "candidate_review_id": "eeb90cb5ea852e1f0bceaf12484cd40572a98810697fb47fa855b1c3509752ba",
+          "concept_id": "d30d5335-3405-42b2-8e88-d299091199d8",
+          "concept_name": "계획",
+          "current_label_status": "unjudged",
+          "embedding_rank": 74,
+          "embedding_score": 0.778123586076,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "계획",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000164851888,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "이유",
+          "candidate_review_id": "076008a51dd35cb3f82b730785c7b5165119f954a23d6b3e169e9df07b4d766b",
+          "concept_id": "68a5f7a5-48e4-436b-8626-6e50450e7c60",
+          "concept_name": "이유",
+          "current_label_status": "unjudged",
+          "embedding_rank": 75,
+          "embedding_score": 0.778111205335,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "이유",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000152471147,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "나무",
+          "candidate_review_id": "218f69ec217587b0972ff3a581d202d71d37c721dd7538e18a2e3301dabe72cb",
+          "concept_id": "ca812126-e03c-41e3-9b80-c034c9b7fb18",
+          "concept_name": "나무",
+          "current_label_status": "unjudged",
+          "embedding_rank": 77,
+          "embedding_score": 0.777652016175,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "나무",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000306718013,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "신기한 것",
+          "candidate_review_id": "c47eaad43257ba8b6f26d424404dd4bf9e5e0e8a0f2c40810d5ed4feaba96989",
+          "concept_id": "0836cbe9-f7d8-4043-ac3e-98d9e00c795c",
+          "concept_name": "신기한 것",
+          "current_label_status": "unjudged",
+          "embedding_rank": 78,
+          "embedding_score": 0.777650065821,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "신기한 것",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000308668367,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 621,
+          "embedding_score": 0.748968281807
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 740,
+          "embedding_score": 0.744496533812
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "embedding_rank": 28,
+          "embedding_score": 0.785453678863
+        }
+      ],
+      "order": 6,
+      "positive_references": [
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "embedding_rank": 1,
+          "embedding_score": 0.836782193449
+        }
+      ],
+      "question": "빛을 받아 장면을 사진으로 기록하는 장치는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-06",
+      "question_sha256": "9bdcbda039d42ae9531a6fcc5cc85799d2f73764771e7071aa89354f5093f53f",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "카메라 따 놓기",
+          "candidate_review_id": "22a1c7f97f94b3d17b6649ad0c7b810aca3eb92ed666a369d566a2d3fe3428bc",
+          "concept_id": "4b5bcc21-3d91-43ce-8700-a628f222e6fb",
+          "concept_name": "카메라 따 놓기",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.831481871677,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "카메라 따 놓기",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.005300321772,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "출력",
+          "candidate_review_id": "7c725cc9ab144c5f7bfbf71639c87c70a7fa684e76e08b624717e080c1890d05",
+          "concept_id": "b95bbe59-f740-4126-a78d-8486eed67c33",
+          "concept_name": "출력.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.815087658469,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "출력.",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.02169453498,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "사용",
+          "candidate_review_id": "8ff4b15b7fac5b3eb4be10754ad2283baab97c5625e74e8c23ce1afa80351357",
+          "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+          "concept_name": "사용.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.813896978182,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "사용.",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.022885215267,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "장치",
+          "candidate_review_id": "c5957ef7ebe4081c6dda98ba60c1731216eaeb7111a705be367226076647bb70",
+          "concept_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+          "concept_name": "장치",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.81254025318,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "장치",
+          "rank_gap_to_nearest_positive": 4,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.024241940269,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "영화",
+          "candidate_review_id": "7ad5e867d83662d37f04fdffa5cc60eb2bdb45576e555db4abb9f43f26e4412c",
+          "concept_id": "e2809629-7cac-45d2-9dc8-cba40cb291bc",
+          "concept_name": "영화",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.806375159056,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "영화",
+          "rank_gap_to_nearest_positive": 5,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.030407034393,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 494,
+          "embedding_score": 0.761692778599
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "embedding_rank": 760,
+          "embedding_score": 0.751192348646
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 836,
+          "embedding_score": 0.747543478168
+        }
+      ],
+      "order": 7,
+      "positive_references": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "embedding_rank": 230,
+          "embedding_score": 0.774155766644
+        }
+      ],
+      "question": "문제를 해결하기 위해 순서대로 정의한 절차를 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-07",
+      "question_sha256": "3f3e6574eec066bf728600f5baa76b719bb50701997e2e2b4f38b7e7a1e5278b",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "해결",
+          "candidate_review_id": "f96a064bb913519e15e2f2783954897ba849747d493b5ae6bcdc628b22ded9e8",
+          "concept_id": "027d69d4-4951-4e1a-bd21-bbc985ef6db1",
+          "concept_name": "해결",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.83982015205,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "해결",
+          "rank_gap_to_nearest_positive": 229,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.065664385406,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "방법으로",
+          "candidate_review_id": "552474c9c5305e1169e65342702b750c1e4166b5fffe7f95452a57b9d0c251d0",
+          "concept_id": "9a43548e-ca27-4da2-a065-f3220afaf138",
+          "concept_name": "방법으로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.828637353781,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "방법으로",
+          "rank_gap_to_nearest_positive": 228,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.054481587137,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "문제",
+          "candidate_review_id": "d88f0d170e12504ee5c9e267ee3bf4e213776539c85cf3c446c180acbf0791d0",
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.824911490178,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "문제",
+          "rank_gap_to_nearest_positive": 227,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.050755723534,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "문제였을",
+          "candidate_review_id": "fd12bf217077d9648f46a090c9295b92997aa735fe571daf47244b42208beca7",
+          "concept_id": "d2d348a5-51bb-4681-a824-3ebfe8f301db",
+          "concept_name": "문제였을",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.819494143498,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "문제였을",
+          "rank_gap_to_nearest_positive": 226,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.045338376854,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "사용",
+          "candidate_review_id": "a2bdae61320ec34de1925a6f1553fac299362420a9ee46da5014ef604fa9e391",
+          "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+          "concept_name": "사용.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.812574112243,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "사용.",
+          "rank_gap_to_nearest_positive": 225,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.038418345599,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "모여",
+          "candidate_review_id": "98975e044d712a197fffaaf280316ba44fd836638cbdda831f1fbaf52136e293",
+          "concept_id": "44480ee8-96b0-4886-b1c7-52507b429293",
+          "concept_name": "모여",
+          "current_label_status": "unjudged",
+          "embedding_rank": 228,
+          "embedding_score": 0.774182652374,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "모여",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 2.688573e-05,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "최소공배수",
+          "candidate_review_id": "78a615b91be68b0599e018e38312d0eeac16f55bc9482a71d978dba2beb4f843",
+          "concept_id": "a4f1028b-c94d-4b9c-a0ea-1415ff3a5fd0",
+          "concept_name": "최소공배수",
+          "current_label_status": "unjudged",
+          "embedding_rank": 229,
+          "embedding_score": 0.774164879426,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "최소공배수",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 9.112782e-06,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "외출",
+          "candidate_review_id": "5c040a3e5c74c7086d60a611a8702f5b73360bcf91a23a6db23208d8a51f01bd",
+          "concept_id": "2b2d0e9b-6ba8-4d6d-8971-7eef8f5abba0",
+          "concept_name": "외출",
+          "current_label_status": "unjudged",
+          "embedding_rank": 231,
+          "embedding_score": 0.774023607138,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "외출",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000132159506,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "삽입하는",
+          "candidate_review_id": "575cecb425f29f212943e2f7d1c23adb91c96722671117a4db52eac26be21c28",
+          "concept_id": "f38e3529-ef22-429c-8ee6-0adaa9d3845e",
+          "concept_name": "삽입하는",
+          "current_label_status": "unjudged",
+          "embedding_rank": 232,
+          "embedding_score": 0.773823084226,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "삽입하는",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000332682418,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "7a40331b-84e2-42bc-819b-0cae429526ec",
+          "concept_name": "계산"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 259,
+          "embedding_score": 0.768342103994
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "embedding_rank": 478,
+          "embedding_score": 0.757560557007
+        },
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "embedding_rank": 544,
+          "embedding_score": 0.755556272555
+        }
+      ],
+      "order": 8,
+      "positive_references": [
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "embedding_rank": 3,
+          "embedding_score": 0.823778976214
+        }
+      ],
+      "question": "숫자 연산을 수행하도록 만든 도구는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-08",
+      "question_sha256": "b8dc181d3fcea671bbce93a36019d4482d1bc8206f71a557bcdf88fcdc6e2748",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "숫자의",
+          "candidate_review_id": "5eebff5153b119b11444e31adb82a0f89472bd6eb83c96f55ad2bd21e7ca5797",
+          "concept_id": "bf7b21e1-05d7-4d9e-88c5-2020cdb8e451",
+          "concept_name": "숫자의",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.827487251552,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "숫자의",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.003708275338,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "숫자로",
+          "candidate_review_id": "44172ae011997f510a4fd5b7b355adfe497f967beee2088629e76f72108b3271",
+          "concept_id": "4648a374-488d-497f-8179-7310aeb85c30",
+          "concept_name": "숫자로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.825832827274,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "숫자로",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.00205385106,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "알고리즘으로",
+          "candidate_review_id": "88900ad882700b092ed363bf1975e5c59ad4fa62296db0f8588fd21336880c90",
+          "concept_id": "a19cf002-590d-454c-88af-1cb74a77b0af",
+          "concept_name": "알고리즘으로.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.82174398741,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "알고리즘으로.",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.002034988804,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "알고리즘으로",
+          "candidate_review_id": "232e7a2ef4ed7e3027fe5c6432a730f21845debfe3bdbf14262bbd2ea47413dc",
+          "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+          "concept_name": "알고리즘으로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.815792051124,
+          "machine_surface_flags": [
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "알고리즘으로",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.00798692509,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "숫자",
+          "candidate_review_id": "1d4fb83f9ff0de918341074c619f8897979ec11bfa7b097186f2ffeddaba8aec",
+          "concept_id": "4ef22143-6db1-4f1e-a3c7-d323e2499aab",
+          "concept_name": "숫자",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.815731222531,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "숫자",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.008047753683,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 1013,
+          "embedding_score": 0.731392317718
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "embedding_rank": 807,
+          "embedding_score": 0.75149670557
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 800,
+          "embedding_score": 0.752159268344
+        }
+      ],
+      "order": 9,
+      "positive_references": [
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 2,
+          "embedding_score": 0.828394525491
+        }
+      ],
+      "question": "리듬과 음을 조합해 듣는 예술을 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-09",
+      "question_sha256": "8cd1dca97ad8bc28e4af07fa777c12c0266abf48d4f2e45b57ba514a822c4699",
+      "retrieval_status": "positive_in_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "연주",
+          "candidate_review_id": "21c97092a8cf80b8c68e77c28311e58593f5884f831c57e1dbeb4995d67323e6",
+          "concept_id": "e8cb3926-6cfd-4df8-b1b4-ac45c774ab85",
+          "concept_name": "연주",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.830067494128,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "연주",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.001672968637,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "이야기 듣기",
+          "candidate_review_id": "e62fc6947ad8dd892385d19a9d6755fb45cb4f5b77df3a1aa86f00e6266e9a03",
+          "concept_id": "7e42c8c5-9ce1-4d03-a88d-cb26196a19eb",
+          "concept_name": "이야기 듣기",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.82315862576,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "이야기 듣기",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.005235899731,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "노래 부르기",
+          "candidate_review_id": "3a5e8084831a027962a0d4575b2dc1b85053a8ac618272a82b5438b824f6807e",
+          "concept_id": "dae75054-8128-41e4-9426-4907c1d61c82",
+          "concept_name": "노래 부르기",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.816630372056,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "노래 부르기",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.011764153435,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "소리",
+          "candidate_review_id": "ce13df19100ae47743e19c8d4ed60dfac4c1f45febe015e9a0c6f1fc1aca045d",
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.816389128835,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "소리",
+          "rank_gap_to_nearest_positive": 3,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.012005396656,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "소리 종류",
+          "candidate_review_id": "00f0f2bbbedd38d66d2a89c4218a0b7b1d7de5f0e7fb31dc9ae9e752e15b91cc",
+          "concept_id": "5b0676c0-1845-444c-8d0a-e468a0cb1287",
+          "concept_name": "소리 종류",
+          "current_label_status": "unjudged",
+          "embedding_rank": 6,
+          "embedding_score": 0.814682819733,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "소리 종류",
+          "rank_gap_to_nearest_positive": 4,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.013711705758,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "embedding_rank": 933,
+          "embedding_score": 0.730068712723
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "embedding_rank": 404,
+          "embedding_score": 0.752080224048
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "embedding_rank": 359,
+          "embedding_score": 0.754487656624
+        }
+      ],
+      "order": 10,
+      "positive_references": [
+        {
+          "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "concept_name": "로봇",
+          "embedding_rank": 14,
+          "embedding_score": 0.786931719372
+        }
+      ],
+      "question": "센서로 환경을 관찰하고 정해진 동작을 수행하는 기계는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-10",
+      "question_sha256": "ea954d43e470ed3041fb26018ecd1d1571cc9f6c79dfb8a5f463e9234196f04b",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "구현",
+          "candidate_review_id": "9f7fecf6f8078c959b12d78996efe9a1f76f52517b566d4f62c95d3bb780a425",
+          "concept_id": "54880cf2-b4b6-48e4-9d88-27f2d1d93fc8",
+          "concept_name": "구현.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.799862242128,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "구현.",
+          "rank_gap_to_nearest_positive": 13,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.012930522756,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "테스트하는",
+          "candidate_review_id": "3252f14f602d48ffe79ebf200c1a289a702c3ad18494d2c94516bbc2d51426e3",
+          "concept_id": "291d5d70-2c33-4a0c-a286-7596710325f5",
+          "concept_name": "테스트하는",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.799063254344,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "테스트하는",
+          "rank_gap_to_nearest_positive": 12,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.012131534972,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "검출하는",
+          "candidate_review_id": "5514e417ea769e2bff3919709733e9580fffd3a443867a93659ed0c3a3364d63",
+          "concept_id": "272ec982-cbe7-4bc6-87b0-57ea0d0ade95",
+          "concept_name": "검출하는",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.798954715827,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "검출하는",
+          "rank_gap_to_nearest_positive": 11,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.012022996455,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "출력",
+          "candidate_review_id": "ed33b5f671c6901534eda4d8fd0014e88f562c0f6d7d554102caa1ffcde42c4f",
+          "concept_id": "b95bbe59-f740-4126-a78d-8486eed67c33",
+          "concept_name": "출력.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.798555338256,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "출력.",
+          "rank_gap_to_nearest_positive": 10,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.011623618884,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "장치",
+          "candidate_review_id": "2377c2300fbbfacbf80ed2614da39496c49451cc41332c2d503ec6b420811ac3",
+          "concept_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+          "concept_name": "장치",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.796915548831,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "장치",
+          "rank_gap_to_nearest_positive": 9,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.009983829459,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "프로그램",
+          "candidate_review_id": "bd9bfe76d5568ee22c4f3dcf068e6574b5cc58c8a7c2e69439083bcc9d00f3e4",
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "concept_name": "프로그램",
+          "current_label_status": "unjudged",
+          "embedding_rank": 12,
+          "embedding_score": 0.789701287826,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "프로그램",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.002769568454,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "데코레이터로",
+          "candidate_review_id": "b464623853801314206e5e54b82f7e828a60b41ca1f50f6ca42b7234355202b1",
+          "concept_id": "cbdf3642-324b-401d-b2df-9c44e15be273",
+          "concept_name": "데코레이터로",
+          "current_label_status": "unjudged",
+          "embedding_rank": 13,
+          "embedding_score": 0.788302753744,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "데코레이터로",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.001371034372,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "이동시키는",
+          "candidate_review_id": "5fe9a6b8138318b2a7e41e40647f31d740f4b6249496957e12cabdf2f2b2987c",
+          "concept_id": "3b121d65-1b60-4469-89a7-df3a7c2aa3b0",
+          "concept_name": "이동시키는",
+          "current_label_status": "unjudged",
+          "embedding_rank": 15,
+          "embedding_score": 0.786929458411,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "이동시키는",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -2.260961e-06,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "monitor",
+          "candidate_review_id": "c88f1fdf9030f7a2bd18c02a94c3cb6d375482cd836206e7268e37dfcdc3fe3b",
+          "concept_id": "29234d81-2454-41f2-a357-5d5f8ff24478",
+          "concept_name": "monitor",
+          "current_label_status": "unjudged",
+          "embedding_rank": 16,
+          "embedding_score": 0.786488857342,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "monitor",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.00044286203,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    },
+    {
+      "existing_context_references": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터"
+        }
+      ],
+      "existing_explicit_negative_references": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "embedding_rank": 904,
+          "embedding_score": 0.737794259678
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "embedding_rank": 1021,
+          "embedding_score": 0.727485370462
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "embedding_rank": 310,
+          "embedding_score": 0.762032928692
+        }
+      ],
+      "order": 11,
+      "positive_references": [
+        {
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "concept_name": "프로그램",
+          "embedding_rank": 12,
+          "embedding_score": 0.804459008794
+        }
+      ],
+      "question": "컴퓨터가 실행할 수 있도록 작성된 명령의 묶음은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-11",
+      "question_sha256": "ea69e9f1bc26c381ac483a1757d29923a9f0fac2d2715aae9424a3041cbb7529",
+      "retrieval_status": "positive_outside_top_8",
+      "review_candidates": [
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "명령",
+          "candidate_review_id": "b350271ed3733753c63b279471ff8f35c72c404b9aefd40feb6bf882692c1be8",
+          "concept_id": "22d9593c-d145-4920-9958-de8c7f0b489c",
+          "concept_name": "명령",
+          "current_label_status": "unjudged",
+          "embedding_rank": 1,
+          "embedding_score": 0.825940669406,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "명령",
+          "rank_gap_to_nearest_positive": 11,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.021481660612,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "컴퓨터에",
+          "candidate_review_id": "69312b9b1040a6d4fa36213d92be34169fe0e094a6384ddf3a4ce73c2cce027b",
+          "concept_id": "c57abd6c-c4cd-457e-b0da-17d63d50e0bf",
+          "concept_name": "컴퓨터에",
+          "current_label_status": "unjudged",
+          "embedding_rank": 2,
+          "embedding_score": 0.824269628949,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "컴퓨터에",
+          "rank_gap_to_nearest_positive": 10,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.019810620155,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "출력",
+          "candidate_review_id": "46496765edeba07045050b280970ff17f519790db2262bfef11ae7d91fbdcccc",
+          "concept_id": "b95bbe59-f740-4126-a78d-8486eed67c33",
+          "concept_name": "출력.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 3,
+          "embedding_score": 0.81960773936,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "출력.",
+          "rank_gap_to_nearest_positive": 9,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.015148730566,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "코딩",
+          "candidate_review_id": "6063ff1c3550171a935f48d02422e195f2ae7d501696d22bf000dad25e00f472",
+          "concept_id": "c8cc6fbf-aa65-4365-839f-9d35805f3ed5",
+          "concept_name": "코딩",
+          "current_label_status": "unjudged",
+          "embedding_rank": 4,
+          "embedding_score": 0.811486764563,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "코딩",
+          "rank_gap_to_nearest_positive": 8,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.007027755769,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "자료구조를",
+          "candidate_review_id": "6bc197d4218ceb00d39e1ca2982695b4bd7f2ffac1707a1a0f6520b1f2d9a12c",
+          "concept_id": "23590ebf-fa8a-4ccf-86bb-fa45eee9cf70",
+          "concept_name": "자료구조를",
+          "current_label_status": "unjudged",
+          "embedding_rank": 5,
+          "embedding_score": 0.809248162213,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "자료구조를",
+          "rank_gap_to_nearest_positive": 7,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.004789153419,
+          "selection_reasons": [
+            "top_unjudged"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "구현",
+          "candidate_review_id": "d4a8fc534ab25cbbdf3b076a1ce0911eec5c54ebf722c19ef145850c7dd51b5c",
+          "concept_id": "54880cf2-b4b6-48e4-9d88-27f2d1d93fc8",
+          "concept_name": "구현.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 10,
+          "embedding_score": 0.805434960818,
+          "machine_surface_flags": [
+            "boundary_punctuation"
+          ],
+          "normalized_surface_key": "구현.",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000975952024,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "컴퓨터",
+          "candidate_review_id": "5089ed5b51306ec5759cde622ca64d9b60e6aaf0a903b75b0d1dcfaf814d87e8",
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "current_label_status": "unjudged",
+          "embedding_rank": 11,
+          "embedding_score": 0.804883331765,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "컴퓨터",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": 0.000424322971,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "사용",
+          "candidate_review_id": "1dbc6fb83b6526070aad5044c7ec5863e688ee1c082d30ca96e7ee7c2de92d3a",
+          "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+          "concept_name": "사용.",
+          "current_label_status": "unjudged",
+          "embedding_rank": 13,
+          "embedding_score": 0.803962316918,
+          "machine_surface_flags": [
+            "boundary_punctuation",
+            "boundary_punctuation_variant"
+          ],
+          "normalized_surface_key": "사용.",
+          "rank_gap_to_nearest_positive": 1,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.000496691876,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        },
+        {
+          "alias_target_concept_id": null,
+          "boundary_punctuation_key": "등에 업히기",
+          "candidate_review_id": "fe13d9bc53a35ac5934587202587c6231255f606fc44ed4d0150fe3afb61d434",
+          "concept_id": "f6bf8cf5-f214-4eaf-93e0-3019f214f5dc",
+          "concept_name": "등에 업히기",
+          "current_label_status": "unjudged",
+          "embedding_rank": 14,
+          "embedding_score": 0.803099429557,
+          "machine_surface_flags": [],
+          "normalized_surface_key": "등에 업히기",
+          "rank_gap_to_nearest_positive": 2,
+          "relevance_review_decision": null,
+          "reviewer_note": null,
+          "score_margin_vs_best_positive": -0.001359579237,
+          "selection_reasons": [
+            "positive_rank_neighbor_for_top8_miss"
+          ],
+          "vocabulary_review_decision": null
+        }
+      ],
+      "target_partition": "fit_pool"
+    }
+  ],
+  "review_complete_gate": false,
+  "review_row_count": 84,
+  "reviewed_row_count": 0,
+  "selection_contract": {
+    "currently_reviewed_concepts_excluded_from_new_candidates": true,
+    "positive_neighbor_only_for_positive_outside_top_k": true,
+    "positive_neighbor_radius": 2,
+    "top_k": 8,
+    "top_unjudged_per_question": 5,
+    "unjudged_is_not_negative": true
+  },
+  "status": "pending_user_review_not_training_data",
+  "training_data_materialization_gate": false
+}

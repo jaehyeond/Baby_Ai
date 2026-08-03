@@ -1,0 +1,88 @@
+{
+  "answer_source": "external_teacher",
+  "exploratory_answer_spec_version": 1,
+  "exploratory_only_not_ground_truth": true,
+  "generated_before_prediction_reveal": true,
+  "phase": "J1-EXP-1",
+  "prepared_at": "2026-07-21T10:11:33.3389969+00:00",
+  "questions": [
+    {
+      "answer": "카메라는 장면을 촬영해 영상으로 기록하고, 영화는 그 촬영된 영상과 소리를 편집하고 구성해 이야기와 감정을 전달하는 작품이다.",
+      "order": 0,
+      "question_id": "j1-exp-b-00",
+      "target_concepts": [
+        "촬영",
+        "영상",
+        "소리",
+        "이야기",
+        "감정"
+      ]
+    },
+    {
+      "answer": "도시의 건물, 도로, 인구와 에너지 사용은 열섬, 바람과 대기 상태에 영향을 주고, 날씨는 교통, 활동, 에너지 수요와 도시 운영을 바꾼다.",
+      "order": 1,
+      "question_id": "j1-exp-b-01",
+      "target_concepts": [
+        "건물",
+        "도로",
+        "인구",
+        "바람",
+        "교통",
+        "에너지"
+      ]
+    },
+    {
+      "answer": "개발은 요구를 분석하고 코드를 작성, 시험, 수정해 프로그램을 만드는 과정이며, 프로그램은 개발의 결과이자 다음 개선의 대상이다.",
+      "order": 2,
+      "question_id": "j1-exp-b-02",
+      "target_concepts": [
+        "분석",
+        "코드",
+        "시험",
+        "수정",
+        "개선"
+      ]
+    },
+    {
+      "answer": "생각은 정보를 떠올리고 비교하며 추론하는 과정이고, 이해는 그 생각을 통해 의미와 관계를 일관되게 파악한 상태다.",
+      "order": 3,
+      "question_id": "j1-exp-b-03",
+      "target_concepts": [
+        "정보",
+        "비교",
+        "추론",
+        "의미",
+        "관계"
+      ]
+    },
+    {
+      "answer": "인터넷 검색은 질문에 맞는 웹 자료를 찾아 정보 후보를 제공하며, 사용자는 출처, 근거와 최신성을 확인해 신뢰할 정보를 선택한다.",
+      "order": 4,
+      "question_id": "j1-exp-b-04",
+      "target_concepts": [
+        "질문",
+        "웹",
+        "자료",
+        "출처",
+        "근거",
+        "신뢰"
+      ]
+    },
+    {
+      "answer": "이름은 사람, 대상과 경험을 식별하고 기억을 불러오는 단서이며, 연결된 경험 때문에 이름을 듣거나 말할 때 감정이 활성화될 수 있다.",
+      "order": 5,
+      "question_id": "j1-exp-b-05",
+      "target_concepts": [
+        "사람",
+        "대상",
+        "경험",
+        "기억",
+        "단서"
+      ]
+    }
+  ],
+  "question_type": "public_knowledge",
+  "status": "external_teacher_answers_fixed_before_prediction_review",
+  "teacher_identity_scope": "conversation_assistant_not_model_snapshot",
+  "user_review_required": false
+}

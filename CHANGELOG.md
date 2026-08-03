@@ -5,6 +5,190 @@
 
 ---
 
+## 2026-07-28 (J1-R2-L2 lexical baseline result + Stage 2 survey)
+
+### 실행과 검증
+- reviewed rolling-development 12문항에서 전체 1,069 concept을 Unicode NFKC/casefold + char `2..5`-gram TF-IDF cosine으로 rank하는 deterministic baseline을 구현했다. IDF는 concept name에만 fit하며 label은 feature로 사용하지 않는다.
+- artifact `claudedocs/research/j1_r2_lexical_baseline_development_20260728.json`, self SHA-256 `3fe59de88762142c37650b4e6c10ab2a420ad9c9725fec5562b8f1c8f9e3888f`. 독립 `audit-existing`에서 동일 hash를 재현했다.
+- focused `46 passed`, canonical `363 passed`, `py_compile`과 `git diff --check` 통과. 보호 handler hash `054d974…`는 동일하다.
+- 첫 CLI 시도는 sandbox가 로컬 Python 표준 라이브러리 읽기를 막아 실패했고, 로컬-read 승인 뒤 동일 명령이 성공했다. 이는 모델/metric 실패가 아니라 실행환경 permission incident다.
+
+### 정직한 실패 판정
+- macro Recall@8/nDCG@8=`0/0`, MRR=`0.012469448422`, positive top-8=`0/12`, positive nonzero lexical score=`1/12`다. 유일한 비영점 positive도 rank `10`이었다.
+- reviewed-pool AP `0.576389`는 질문당 1 positive/3 explicit negative 안의 제한 metric이므로 전체 1,069 후보 retrieval 성공으로 해석하지 않는다.
+- 결론은 `계측 파이프라인 성공 / lexical semantic relevance 실패`다. 결과를 본 뒤 질문·라벨·partition을 수정하지 않으며 held-out/performance/production gate는 false다.
+
+### Stage 2 조사와 승인 경계
+- arXiv, Semantic Scholar, Hugging Face를 교차확인했다. `multilingual-e5-small`은 117.7M·한국어 포함·고정 query/passage 계약, BGE-M3는 ACL 2024 peer-reviewed이나 현재 baseline보다 범위와 크기가 크고, Qwen3-Embedding-0.6B는 595.8M preprint 계열이다.
+- 세 모델 모두 로컬 Hugging Face cache에 없다. 첫 frozen semantic lower bound로 `intfloat/multilingual-e5-small`을 제안하지만, 다운로드·pin·1회 development inference는 사용자 승인 전 실행하지 않는다.
+- 실행/실패/가설/문헌/승인 경계를 append-only로 남기는 `claudedocs/research/GDSI_EXECUTION_LOG_2026-07-28.md`를 시작했다. DB/API/GPU/learning/calibration/lockbox materialization/production 변경은 없다.
+
+### Stage 2 실행 경로 구현·승인 전 차단 검증
+- `neural/baby/relevance_embedding_baseline.py`, `scripts/research/j1_r2_embedding_baseline.py`, `tests/test_relevance_embedding_baseline.py`를 추가했다. 모델 계약, 사용자 결정, pinned snapshot, full-vocabulary cosine artifact를 각각 self-hash·재검산한다.
+- `intfloat/multilingual-e5-small` revision `614241f…`의 9개 필수 파일 총 `492,795,290` bytes를 고정했다. `model.safetensors` LFS SHA-256은 `1a55775f…`이며 model contract는 `cb71059d…`다.
+- 실제 inference는 `transformers` local-only, no remote code, safetensors, CPU float32, eval/inference mode, trainable parameter 0, attention-mask mean pooling, L2 normalize를 요구한다. label·closed-world fact·review decision은 encoder feature가 될 수 없다.
+- focused `9 passed`, canonical `372 passed`, py_compile 통과. lexical artifact `3fe59de8…` 재감사도 동일하다.
+- 승인 파일 없이 `acquire-model`을 호출하면 download client import와 directory 생성 전에 거부된다. 현재 `E:\A2A\model_cache\...` 모델 디렉터리, user decision, snapshot manifest, embedding metric artifact는 모두 없다. 구현 gate만 준비됐고 execution/held-out/performance/production은 false다.
+
+### Stage 2 사용자 승인 후 실행·재실행 감사
+- 사용자는 pinned snapshot download, 무결성 봉인, frozen development inference 1회, 동일 모델 재실행 감사만 승인했다. decision artifact `48a7710f23834fa0b087eca68c8d7f078026489c72785e6b28b7008a5dbe0de9`; training, DB write, lockbox materialization, held-out, performance claim, production integration은 승인 범위 밖이다.
+- immutable revision의 정확한 9개 파일/492,795,290 bytes를 E-drive cache에 다운로드했다. snapshot manifest `52db8de09fb58cda4d231d306a53d401cceeed0e34e0bde96dc50d7d3263ca59`; weights SHA-256 `1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477`.
+- development artifact `claudedocs/research/j1_r2_embedding_baseline_development_20260728.json`, self SHA-256 `8a7b8fbfb24014ca356160c530789b7eb468d475c579f8c77bbb946e9c55d8e4`. 12문항/1,069 candidates에서 macro Recall@8=`0.5`, nDCG@8=`0.291023572476`, MRR=`0.238188745977`, reviewed-pool AP=`1.0`.
+- 동일 snapshot·모델로 전체 inference를 다시 수행해 artifact self-hash와 모든 metric의 exact match를 확인했다. lexical 대비 positive rank는 `11/12`에서 개선, `1/12`에서 악화됐고 full-vocabulary positive top-1/top-3/top-8/top-20은 각각 `1/12`, `4/12`, `6/12`, `8/12`다.
+- AP=`1.0`은 질문당 세 explicit negative가 쉬운 결과라서 성공 판정으로 쓰지 않는다. `달`, `중력`, `알고리즘`처럼 관계 설명에서 canonical target을 찾는 문항과 `그래프에서.`, `알고리즘으로.`, `사용.` 같은 fragment concept이 상위에 끼는 문제가 남았다. 결론은 `semantic development signal + reproducible inference / hard-negative와 graph vocabulary 품질 미해결`이다.
+- 다음 learned head 학습 전에 reviewed hard-negative와 canonical alias/vocabulary-quality 진단이 필요하다. 질문·라벨·partition과 기존 sealed artifact는 결과에 맞춰 수정하지 않는다.
+
+### Stage 3 hard-negative 및 graph-vocabulary 진단
+- `neural/baby/relevance_hard_negative_vocabulary_audit.py`, `scripts/research/j1_r2_hard_negative_vocabulary_audit.py`, `tests/test_relevance_hard_negative_vocabulary_audit.py`를 추가했다. embedding/문항/label/vocabulary self-hash와 full-ranking hash를 다시 검증하고, 모델·DB 없이 review 후보와 표면형 진단만 생성한다.
+- 선택 계약은 문항당 top unjudged 5개와, positive가 top-8 밖인 문항에 한해 positive rank ±2를 추가한다. 현재 reviewed positive/negative는 새 후보에서 제외하고 unjudged를 자동 negative로 바꾸지 않는다.
+- relevance 판정 `positive/context/hard_negative/unrelated_negative/uncertain`과 vocabulary 판정 `canonical/alias/fragment/malformed/uncertain`을 독립 축으로 정의했다. 모든 후보 decision은 `null`, auto-assigned label count는 0이며 review/training/head-fit gate는 false다.
+- pending review packet `scripts/research/inputs/j1_r2_embedding_hard_negative_review_packet_20260728.json`, self SHA-256 `aec20a9d0c714e768c560d8eb4d517edf604ca6c03cd7fc01ed8830fbf2339e4`.
+- diagnostic artifact `claudedocs/research/j1_r2_embedding_hard_negative_vocabulary_audit_20260728.json`, self SHA-256 `696fe080b26bbb40af6e433394956b8cf6649ca1aff40d843d11288b2f3a04b4`. 생성 직후 `audit-existing` exact match.
+- 결과는 `84 review rows/67 unique concepts`다. 이 중 primary top-unjudged가 60행, top-8 실패 6문항의 positive-neighbor가 24행이다. 24행은 깊은 rank score-band의 무관 표본이 많아 failure diagnostic 전용이며 training negative로 materialize하지 않는다.
+- 전역 1,069 vocabulary에서 deterministic surface flag 41개, boundary punctuation 35개, punctuation variant group 6개/12 concepts, normalized exact collision group 0개를 확인했다. machine flag는 review cue일 뿐 fragment/alias label이 아니다.
+- primary 60행에 대한 agent 제안표 `claudedocs/research/J1_R2_E3_PRIMARY_REVIEW_AGENT_RECOMMENDATIONS_2026-07-28.md`를 작성했다. 제안 분포는 relevance `positive=1/context=52/hard_negative=4/unrelated_negative=3`, vocabulary `canonical=36/alias=1/fragment=16/malformed=7`이며 정규식 독립 계수로 합계 60을 확인했다.
+- 제안표는 `agent_proposal_not_user_reviewed_not_training_data`다. context가 52/60이므로 현재 top-unjudged를 binary negative로 넣는 learned head는 의미 이웃을 억제할 가능성이 높다. 사용자 수정·승인 전 decision artifact나 training pack을 만들지 않는다.
+- focused `9 passed`, canonical `381 passed`, py_compile 통과. DB/model inference/training/graph cleanup/lockbox/held-out/performance/production 변경은 없다.
+
+### Controlled Dream Audit의 계획상 위치
+- YouTube short의 `Inputs/Wiki/Outputs/Dream Sequence` 구조와 Andrej Karpathy의 LLM Wiki 원문을 참고자료로 검토했다. 채택한 핵심은 모델이 자동으로 똑똑해진다는 주장이 아니라 `immutable evidence → reviewed compiled memory → maintenance proposal`의 계층 분리다.
+- 이를 `J1-R2-M0 Controlled Dream Audit`이라는 **비차단 병렬 계획**으로 배치했다. 즉시 다음 action은 그대로 E3 사용자 review와 decision artifact이며, M0는 그 reviewed vocabulary 판정이 생긴 뒤 시작한다.
+- M0 첫 단계는 고정 graph snapshot에 대한 read-only `alias/fragment/malformed/punctuation variant` 탐지와 proposal artifact 생성이다. contradiction/staleness/orphan/provenance-gap은 후속 확장으로 둔다.
+- M0는 E3 이후 post-review 학습 계약과 learned-head development를 막지 않는다. 자동 label, DB write, merge/delete, graph cleanup 적용, model-weight 변경, `LOCAL_CORE_DISTILL`, 주기 실행은 승인되지 않았다.
+- 실제 graph repair는 현재 1,069-concept 평가 universe를 보존한 뒤 별도 사용자 승인, transaction, before/after snapshot, rollback 계약으로 분리한다. M0를 J3 verified sleep self-compile이나 Baby 자기학습 증거로 해석하지 않는다.
+
+## 2026-07-23 (J1-R2-D2 reviewed development + lockbox generator review bundle)
+
+### Development 승인과 materialization
+- 사용자가 rolling-development 12문항과 봉인된 positive/context/negative 매핑을 전부 승인했다. 수정 문항은 없으며 approval artifact에 `content_modifications=[]`, `positive_context_negative_mapping=approved_as_sealed`, ordered 12/12 approval을 기록했다.
+- reviewed label pack은 positive `12`, explicit negative `36`, 나머지 graph concept `unlabeled`, context unscored를 유지한다. approval `dc9a25573965979796febbd4d2d974b78065e79360f81e3729266125a66c5652`, labels `10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d`, development manifest `f93e8c1e975763c8b06d045d905e15a777d95ae1948247e1196ffd8d3a27a982`, readiness `2353d97796211cf77080c683e3a3d540548e98fdb4ce4a27c6c0870ded4aa231`.
+- 재계산 audit를 통과했고 `development_manifest_gate=true`가 됐다. 별도 lockbox generator가 아직 검토·동결되지 않아 `lockbox_generator_manifest_gate=false`, `lexical_baseline_execution_gate=false`다.
+
+### 별도 one-time lockbox 계약
+- exact question이나 private fact bank를 repo에 넣지 않는 lockbox generator 계약을 `neural/baby/relevance_lockbox_generator.py`로 분리했다. 제안 표본은 24문항, target partition `fit/development/lockbox=8/8/8`, positive 24, explicit negative 72다. 이는 균형 잡힌 implementation diagnostic이며 power analysis나 performance claim이 아니다.
+- independently reviewed private source bank는 repo 밖 access-controlled storage에 최소 48개, partition별 최소 16개를 요구한다. subject model 접근·출제·자기채점, 개인 기억, live graph relation truth를 금지한다.
+- generator distribution은 baseline 전에 freeze하되 exact instance와 hidden seed는 model cutoff 뒤에만 만든다. seed commitment는 cutoff hash와 private source-bank hash를 함께 바인딩하며, lockbox는 one-time/non-reusable이고 소비 label은 다음 generation에만 풀린다.
+- freeze library API도 sample plan/spec/review packet/실제 implementation hash를 자체 재검증하도록 강화해 CLI 선행 audit 우회 가능성을 제거했다.
+- draft hash: sample plan `bc4c3c3da5c63b69241e60c070b7e9cf4f199c80a4374ce750f361512add413d`, implementation `fc06efb9ea079c7bcee9a8c5c64f7cb1ac6c6c5d8476e43e63a5f4a39439051b`, spec `faac19ae23d803f5ff02f358e6a4023a68b88826716e7639e67a065fb1c05a90`, review packet `c0749d68ce022e521510683dbc8afda3ad6f9955eddbb67ffc64883838094603`.
+- 네 lockbox 정책은 아직 사용자 검토 전이다. 승인 decision, frozen lockbox manifest, lexical baseline, model cutoff, hidden seed, question materialization을 실행하지 않았다. DB write, model learning, embedding download, protected handler 변경도 없다.
+- development/lockbox focused `21 passed`, canonical `tests/` suite `358 passed`. repository root 전체 pytest는 stale `neural/baby/archive/test_*.py`가 import 시 표준 스트림을 재래핑하므로 canonical 경계가 아니다.
+
+### Lockbox 조건부 승인과 generator freeze
+- 사용자가 네 lockbox 정책을 승인했다. “24개 exact question 승인”이 아니라 `24-question sample distribution` 승인으로 문구를 교정했고, private source-bank manifest에 review method, reviewer/validator identity, rule validator implementation hash, self-hashed provenance, anchor/development question-set binding, 양쪽 zero-overlap audit를 요구했다.
+- 최종 hash: plan `3607e14ee99b314a6fb75a957cc4c6e49c17311b08f9662e3e3042997a67b9fb`, implementation `0feb151c93095d54af83700a57248cf2b592d81fb510c2d0e782867b3db360b9`, spec `dde0ffefedd05b7e20f02ac903f55718315eaa403d68f1f78f4c7ba1a18c0898`, review packet `01bed5589077472f377aa1aa402d83db2e06c785459a3b34137bd0717fb86ffd`, decisions `bdd4b58fe362edb734785b73b0e0a00f27fcfdbf4551f69ff024bd2fa3d19fb3`.
+- generator-frozen manifest `0b5bc0cf40edb8826e1ef4f2cc705c243a02de458f182c93d153ad79a471b46f`, readiness `2954f13283c593857e7de70b7352f247438971a9b3e0f8405b59826e659f04f4`. `lockbox_generator_manifest_gate=true`, `lexical_baseline_execution_gate=true`; lockbox materialization은 false다.
+- 다음은 lexical char-ngram TF-IDF baseline이다. model cutoff 전 hidden seed·exact lockbox question 생성, held-out/performance/production 승격은 계속 금지한다.
+
+## 2026-07-23 (J1-R2-D1 rolling-development generator review bundle)
+
+### 목적과 설계
+- J1-R2 다음 gate로 독립 deterministic development generator를 `neural/baby/relevance_cohort_generator.py`에 구현했다. subject model, Gemini/API, 개인 기억, Neo4j live relation을 질문 생성이나 ground truth로 사용하지 않는다.
+- 고정 synthetic fact environment에서 12문항을 만들었다. target은 `fit_pool=8`, `development_challenge_pool=4`, `lockbox_challenge_pool=0`이고 legacy anchor와 question hash overlap은 0이다.
+- 문항별 label은 answer-bearing positive 1개와 explicit closed-world decoy 3개뿐이다. context concept은 unscored이며 나머지 전체 graph vocabulary는 `unlabeled`로 유지한다. 미라벨 concept 자동 negative화는 validator가 거부한다.
+- 12문항은 task-aligned relevance interface의 development-only smoke cohort다. Quest/tool grounding, held-out performance, continual self-improvement, production 증거로 사용할 수 없다.
+
+### 구현과 봉인
+- sample-size plan, deterministic spec, pending review packet, user decision validator, reviewed label-pack builder, development-manifest materializer를 완성했다. materializer는 `reviewer_role=user`, 12개 순서 일치, 전 문항 explicit approval, self-hash를 요구한다.
+- 사용자 review 뒤 materialize되더라도 lockbox generator가 별도 review/freeze되지 않으면 lexical baseline gate는 계속 false다.
+- artifact hash: sample plan `17b705ddbd7533bacf1bcaffc3cba637a2cba6db8a37567a644567b75fc628f7`, implementation `69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488`, spec `f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5`, review packet `e5aded97a12ef997ab72d7687cd39e63edfd1e9fa8126f71b8eabaeb8b5f7624`.
+- 현재 review/materialization/development/lockbox/lexical/held-out/performance/production gate는 false다. 사용자 승인을 가장한 decision 파일, DB write, model 학습, embedding download, weight 변경은 없었다.
+- 코드: `neural/baby/relevance_cohort_generator.py`, `scripts/research/j1_r2_relevance_cohort_generator.py`, `tests/test_relevance_cohort_generator.py`. 설계·review 표는 `claudedocs/research/J1_R2_DEVELOPMENT_GENERATOR_REVIEW_2026-07-23.md`.
+
+## 2026-07-22 (J1-R2 rotating evaluation cohort lifecycle)
+
+### J1-R1 해석 교정
+- J1-R1의 sealed artifact `918183cb…`는 수정하지 않았다. 대신 graph-vocabulary/question partition이 Baby의 live 경험과 학습을 영구적으로 막는 것으로 해석되지 않도록 append-only successor인 J1-R2를 추가했다.
+- 연구 목표는 고정 benchmark 최적화가 아니라 Quest·tool·environment outcome으로 계속 성장하는 source-aware grounded developmental AI다. relevance scorer는 memory retrieval 도구이고 전체 agent나 최종 목표가 아니다.
+- cohort의 범위는 평가 증거뿐이다. live experience, Neo4j graph update, memory consolidation, curiosity generation은 차단하지 않는다. evaluation epoch만 frozen graph snapshot을 사용하며 이후 생성된 concept은 다음 epoch의 temporal-novelty stratum으로 이동한다.
+
+### lifecycle과 manifest
+- `neural/baby/relevance_cohort_lifecycle.py`, `scripts/research/j1_r2_relevance_cohort_lifecycle.py`, `tests/test_relevance_cohort_lifecycle.py`를 추가했다. runtime/Neo4j/torch/API를 import하지 않는 순수 validator와 append-only sealer다.
+- legacy 6문항은 reusable anchor regression으로 materialize했으며 held-out/performance claim에는 쓸 수 없다. rolling-development와 one-time-lockbox manifest는 문항 0개의 review 대기 draft로 봉인했다. gate를 통과시키려고 가짜 문항이나 label을 만들지 않았다.
+- lockbox는 generator 구현·명세·표본계획을 먼저 hash로 고정하고 model freeze 뒤 hidden seed로 생성한다. subject model의 자기 문항 생성·자기 채점, 개인 사용자 기억 사용, lockbox 평문 repo 저장은 validator가 거부한다.
+- bundle validator는 role 누락/중복, cohort ID 중복, cohort 간 question hash 겹침, live-learning 차단, 잘못된 SHA-256, lockbox 재사용·평문 노출을 fail-closed로 거부한다. 소비된 benchmark label만 다음 model generation 학습에 사용할 수 있다.
+
+### artifact와 현재 gate
+- lifecycle: `claudedocs/research/j1_r2_relevance_cohort_lifecycle_20260722.json`, SHA-256 `2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32`.
+- manifest SHA-256: anchor `76355a89…`, rolling development draft `89595ade…`, one-time lockbox draft `6eef5c5e…`.
+- readiness: `claudedocs/research/j1_r2_relevance_cohort_readiness_20260722.json`, SHA-256 `6beb8b98795cff0387a0980fdf3a4422d138c38d49c0b09da4b427f28a73e1f6`.
+- 현재 `anchor_manifest_gate=true`; `development_manifest_gate`, `lockbox_generator_manifest_gate`, `lexical_baseline_execution_gate`, held-out/performance/production은 false다. DB write, model 학습, weight 변경, embedding 다운로드는 없었다.
+- 다음은 독립 generator specification/implementation/sample-size plan을 review하고 hash로 freeze한 뒤 rolling-development cohort만 먼저 materialize하는 단계다. lockbox 실제 문항은 model freeze 전에는 생성하지 않는다.
+
+## 2026-07-22 (J1-R1 task-aligned relevance scorer contract)
+
+### 목표와 경계
+- Local Core causal replay 점수를 자연어 relevance로 재해석하는 경로를 중단하고, 별도 질문→graph concept scorer의 데이터·평가 계약을 `neural/baby/relevance_scorer_contract.py`에 구현했다. runtime, Neo4j, torch, API, protected handler를 import하지 않는 순수 계층이다.
+- 기존 6문항과 reviewed union label pack은 `legacy_exploratory_train_only`로 격리했다. `approved=1`, `rejected=0`, `uncertain=exclude`이며 미라벨 graph concept과 무작위 concept을 자동 negative로 취급하지 않는다.
+
+### split과 baseline 순서
+- 1,069개 graph vocabulary를 label/model score 전에 고정 salt와 concept ID hash로 `fit_pool=856`, `development_challenge_pool=117`, `lockbox_challenge_pool=96`으로 분리했다. 추론 candidate는 partition으로 줄이지 않고 모든 scorer가 동일한 전체 vocabulary를 rank한다.
+- 기존 95행은 `23 positive/56 negative/16 uncertain`, unique concept 48개, 여러 질문에 반복된 concept 17개다. binary 79행 중 fit partition에 속한 supervised fit 후보는 `58행(15 positive/43 negative)`이며 reserved partition의 binary 21행은 학습에서 제외한다.
+- random row split을 금지하고 future question/time split을 primary, concept partition을 secondary challenge로 분리했다. future development와 one-time lockbox manifest는 어떤 baseline 결과를 보기 전에 고정해야 한다.
+- 실행 순서는 `lexical_char_ngram_tfidf_v1 → frozen_local_embedding_cosine_v1 → task_aligned_relevance_head_v1`이다. embedding baseline은 local-only이며 model revision, weights, tokenizer, pooling, prompt-template hash가 필요하다. paid embedding API는 canonical baseline에서 제외했다.
+
+### 산출물과 현재 gate
+- 코드: `neural/baby/relevance_scorer_contract.py`, `scripts/research/j1_r1_relevance_scorer_contract.py`, `tests/test_relevance_scorer_contract.py`.
+- 설계 문서: `claudedocs/research/J1_R1_TASK_ALIGNED_RELEVANCE_SCORER_DESIGN_2026-07-22.md`.
+- artifact: `claudedocs/research/j1_r1_relevance_scorer_contract_20260722.json`, SHA-256 `918183cbb9450c5f2932ce8d11434937c62210f4ea0b0633a4aa43f529f16a3d`.
+- focused contract/candidate/calibrator tests `19 passed`, 전체 canonical `326 passed`. future manifests, lexical artifact, local embedding snapshot, semantic alias audit가 없으므로 lexical execution, embedding, learned-head fit, held-out, performance, production gate는 false다. DB write, download, learning, weight change는 없었다.
+- 다음은 future development/lockbox manifest validator와 새 질문 cohort를 결과 공개 전에 고정하는 단계다. 그 뒤에만 legacy lexical diagnostic을 실행한다.
+
+## 2026-07-22 (J1-EXP-1 Local-Core adapter-disabled base comparison)
+
+### 목적과 구현
+- 이전 조건화 ablation의 질문 무관성이 LoRA replay adapter 때문인지 base model/scoring interface 자체 때문인지 분리했다. 같은 `PeftModel`, tokenizer, 후보 scope, batch size에서 adapter actual을 먼저 재현한 뒤 공식 `model.disable_adapter()` context 안에서 base actual/content-free/cyclic-shuffle을 inference-only로 계산했다.
+- `neural/baby/local_core_adapter_comparison.py`, `scripts/research/j1_local_core_adapter_comparison.py`, `tests/test_local_core_adapter_comparison.py`를 추가했다. adapter score drift, graph/checkpoint drift, PEFT context 미사용, 자동 winner 선택, self-hash 변조를 fail-closed로 거부한다.
+- DB write, learning, gradient, optimizer, model save, probability, calibrator, held-out, performance claim, production promotion은 모두 false다. 기존 capture와 conditioning artifact는 수정하지 않았다.
+
+### 측정과 교차검증
+- 기존 adapter actual full-score digest가 `6/6` 다시 일치했다. artifact `claudedocs/research/j1_local_core_adapter_comparison_b_20260722.json`, SHA-256 `d376cfb5397624efd67004b90d32c3df8323b02fa953b9bc745b249ff2739c22`.
+- adapter→base actual의 unique top-8 concept는 `13→23`, 질문 간 평균 top-8 Jaccard는 `0.651717→0.319409`로 base가 질문별로 더 다양한 후보를 냈다. adapter와 base actual의 평균 full-rank Spearman/top-8 Jaccard는 `0.901559/0.269841`이다.
+- 그러나 actual exact target hit는 양쪽 모두 `1`이며 둘 다 일반어 `질문`이다. 사용 가능한 target 13개의 개별 rank 승패는 adapter/base=`7/6`, 중앙 rank는 `191/101`이다. base actual-content-free 평균 Spearman/Jaccard도 `0.932758/0.425330`으로 높다.
+- base content-free-delta는 exact target `에너지` 1개를 올렸지만 cyclic-shuffle delta는 exact hit `0`이다. 따라서 base가 안정적인 의미 relevance를 회복했다고 볼 수 없다. artifact audit와 저장 artifact 통합 테스트를 포함한 focused `36 passed`, 전체 canonical `317 passed`.
+
+### 결론과 다음 개발 경로
+- 현재 LoRA replay adapter는 질문별 후보를 더 비슷하게 만드는 일부 원인이다. 하지만 adapter 제거만으로 exact semantic relevance는 개선되지 않았으므로 LoRA 하나를 단일 root cause로 주장하지 않는다.
+- causal-LM replay adapter를 J1 relevance predictor로 고치는 즉시 재학습은 선택하지 않는다. 다음은 별도의 task-aligned relevance scorer/head에 대해 positive/negative 생성, graph vocabulary split, future held-out isolation, base lexical/embedding baseline을 먼저 고정하는 데이터·평가 계약이다.
+- 기존 공개 6문항과 external-teacher pack은 탐색 진단 전용이다. 새 scorer의 성능·held-out 주장에는 재사용하지 않는다. `LOCAL_CORE_DISTILL=1`은 계속 OFF다.
+
+## 2026-07-22 (J1-EXP-1 Local-Core content-free/question-shuffle ablation)
+
+### 경계와 구현
+- 사용자 지시대로 commit/push를 실행하지 않고 `DB_Renewal` local/remote HEAD `167265f` 위의 2026-07-21 uncommitted worktree를 이어받았다. 기존 capture, answer pack, exact audit는 수정하지 않았다.
+- `neural/baby/local_core_conditioning_ablation.py`와 `scripts/research/j1_local_core_conditioning_ablation.py`를 추가했다. 질문별 동일 candidate scope에서 실제 질문, 빈 질문을 쓰는 content-free control, 다음 질문을 쓰는 cyclic-shuffle control을 full-vocabulary 점수화한다.
+- actual 점수는 기존 capture digest와 질문별 완전 일치해야 하며 batch size, graph snapshot, adapter/model snapshot, trainable parameter 0을 강제한다. DB write, learning, gradient, optimizer, model save, probability, calibrator, held-out, performance, production은 모두 false다.
+
+### 실제 frozen GPU 결과
+- RTX 4070 SUPER에서 adapter `dd60ed3c…`, batch 16으로 content-free 1,069개와 질문별 actual/shuffle 1,066~1,067개를 inference-only 실행했다. 기존 actual full-score digest가 `6/6` 일치해 checkpoint와 scorer 재현성을 확인했다.
+- actual-content-free 평균 full-rank Spearman=`0.956467`, top-8 Jaccard=`0.605387`; actual-shuffle은 `0.959613/0.694276`이다. 질문을 비우거나 다른 질문으로 바꿔도 전체 후보 순위가 매우 유사하다.
+- actual/content-free/shuffled exact target hit은 각각 `1/2/2`다. content-free baseline과 틀린 질문이 실제 질문보다 target hit이 많으므로 actual의 1 hit은 질문별 의미 신호가 아니다.
+- content-free delta는 top-8 unique를 `13→28`, shuffle delta는 `43`으로 늘렸지만 exact target hit은 둘 다 `0`이다. 상위에 `1`, `2`, `너`, `힘`, `heapq`, `12월` 같은 잡음이 올라와 단순 prior subtraction은 채택하지 않는다.
+- predeclared warning은 Spearman `0.90`과 Jaccard `0.75`를 동시에 요구해 false였다. 이는 통과가 아니라 보수적 conjunction이 Jaccard에서 미달한 것이며, warning threshold는 inferential test가 아니다. artifact `claudedocs/research/j1_local_core_conditioning_ablation_b_20260722.json`, hash `cc5ff82dd0da11fdf8742c086504751c3cdc29b52f13e9c38e4977745988dcff`.
+
+### 근본 원인과 결정
+- 현 sleep distill은 graph adjacency에서 이웃 concept 이름을 뽑아 순서를 섞고 공백으로 이어 붙인 causal-LM replay를 학습한다. J1 scorer는 chat template의 자연어 질문 뒤에 concept 이름을 붙여 relevance likelihood를 측정한다. 따라서 현 adapter는 질문→개념 relevance를 학습한 적이 없으며 학습 목적과 평가 인터페이스가 불일치한다.
+- Local Core를 자연어 relevance predictor로 간주하는 가정을 기각한다. delta 보정, calibrator fit, reviewed label 확대, 재학습, production 연결은 진행하지 않는다. `LOCAL_CORE_DISTILL=1`도 objective 정렬과 versioned checkpoint/rollback 전까지 OFF 유지한다.
+- 다음 최소 실험은 같은 base model에서 adapter를 disable한 read-only control과 current adapter를 비교해 LoRA가 instruction conditioning을 악화시켰는지 분리하는 것이다. base가 낫다면 multi-task/task-aligned distill로, 둘 다 약하면 별도 relevance head/encoder로 경로를 나눈다.
+- 신규 focused `29 passed`, 전체 canonical `310 passed`. 보호 `conversation_handler.py`는 수정하지 않았다.
+
+## 2026-07-21 (J1-EXP-1 external-teacher answer pack + signal audit)
+
+### 사용자 답변 병목 제거와 오염 방지
+- 세션 시작 시 사용자 push `167265f`가 `origin/DB_Renewal`과 일치하고 worktree가 clean임을 확인했다. 기존 capture `b3f0b66f…`는 수정하지 않았다.
+- 6개 일반지식 질문은 기존 answer-source 계약대로 `public_knowledge→external_teacher`로 처리했다. predictor top-k를 열기 전에 답안과 non-cue target 32개를 `scripts/research/manifests/j1_exploratory_external_teacher_answers_b_20260721.json`에 고정했다.
+- 고정 명세를 기존 manifest/capture hash에 결합한 answer pack `6eef400049813c36745bebbbfd4bed1c93d9bccdce993229a2ed2e1af11f3438`를 새 파일로 봉인했다. `prediction_fields_consumed_for_answer_generation=false`, `user_review_required=false`, 사후 answer-pack 변경 금지이며, 기존 capture의 `collect_user_answers…` next step만 successor에서 명시적으로 대체했다.
+
+### read-only exact-name audit 결과
+- 현재 Neo4j Concept snapshot hash가 capture와 같은지 먼저 확인한 뒤, predeclared target과 Graph/Local Core top-8을 exact-name으로만 비교했다. semantic equivalence relabel과 사후 target 추가는 0이다.
+- target 32개 중 captured vocabulary에 exact-name으로 존재한 것은 `13`, 부재는 `19`다. Graph exact hit는 `0`, Local Core는 `1`(`정보/인터넷 검색` 질문의 `질문`)이다. 그러나 `질문`은 Local Core의 모든 6문항 top-8에 반복되므로 질문별 의미 신호로 해석하지 않는다.
+- Graph는 48 top-k slot에서 unique concept `39`, 질문쌍 평균 Jaccard `0.0736508`; Local Core는 unique `13`, Jaccard `0.6517172`다. Local Core는 `사용자/상호작용/아름다움/응답/질문`을 전 문항에서 반복해 질문 조건화보다 일반 생성 prior가 지배한다.
+- Graph exact hit 0은 의미 신호 완전 부재와 같지 않다. 프로그램/개발 질문의 `컴퓨터/개발자/코딩`, 정보/검색 질문의 `인터넷/정보 탐색`처럼 사후 정성상 관련 후보가 있으나, 이를 이번 exact audit의 label이나 hit로 소급 추가하지 않았다. artifact `claudedocs/research/j1_exploratory_signal_audit_b_20260721.json`, hash `02bd3d966174cc938809e15da660fb47be6b681b8b4198404e92b14a3651ed9e`.
+
+### 구현·검증·다음
+- `neural/baby/exploratory_signal_audit.py`에 answer spec/pack/audit의 순수 fail-closed 계약을 추가하고, `scripts/research/j1_exploratory_signal_audit.py`에 `seal-answers`, `audit`, `audit-existing` 실행점을 추가했다. DB write, learning, calibrator, probability, held-out, performance, production gate는 모두 false다.
+- focused `22 passed`, 전체 canonical `303 passed`. 보호 `conversation_handler.py`는 수정하지 않았다.
+- 다음은 training이나 reviewed label pack 재개가 아니라, 동일 frozen checkpoint에서 current conditional score와 content-free/질문-shuffle baseline의 차이를 비교하는 read-only Local Core 조건화 ablation이다. 별도로 missing target `19/32`는 graph vocabulary/data coverage 병목이며 자동 DB 삽입으로 숨기지 않는다.
+
 ## 2026-07-21 (J1-EXP-1 exploratory pre-answer capture)
 
 ### 확증 봉인에서 탐색 probe로 전환

@@ -1,0 +1,122 @@
+{
+  "claim_boundary": {
+    "descriptive_heldout_diagnostic_only": true,
+    "inferential_claim_allowed": false,
+    "performance_claim_allowed": false,
+    "production_promotion_allowed": false
+  },
+  "created_at": "2026-07-23T11:18:22.232034+00:00",
+  "database_writes": false,
+  "generation_contract": {
+    "all_other_graph_concepts": "unlabeled",
+    "anchor_or_development_question_overlap_allowed": false,
+    "duplicate_question_hashes_allowed": false,
+    "exact_instances_generated_after_model_cutoff": true,
+    "hidden_seed_commitment_required_before_open": true,
+    "hidden_seed_sampled_after_model_cutoff": true,
+    "hidden_until_consumption": [
+      "seed",
+      "question_text",
+      "reference_answer",
+      "label_rows"
+    ],
+    "repository_receipt_before_open": [
+      "model_cutoff_sha256",
+      "private_source_bank_sha256",
+      "hidden_seed_commitment_sha256",
+      "question_set_sha256"
+    ],
+    "sampling_without_replacement": true,
+    "seed_commitment_domain": "j1-r2-lockbox-v1",
+    "seed_commitment_formula": "sha256(utf8(domain + newline + seed + newline + model_cutoff_sha256 + newline + private_source_bank_sha256))",
+    "target_partition_counts": {
+      "development_challenge_pool": 8,
+      "fit_pool": 8,
+      "lockbox_challenge_pool": 8
+    }
+  },
+  "generator_id": "j1-r2-private-source-hidden-seed-v1",
+  "heldout_gate": false,
+  "input_bindings": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+    "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+    "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+    "implementation_sha256": "0feb151c93095d54af83700a57248cf2b592d81fb510c2d0e782867b3db360b9",
+    "lockbox_sample_size_plan_sha256": "3607e14ee99b314a6fb75a957cc4c6e49c17311b08f9662e3e3042997a67b9fb"
+  },
+  "learning_enabled": false,
+  "lockbox_generator_spec_sha256": "dde0ffefedd05b7e20f02ac903f55718315eaa403d68f1f78f4c7ba1a18c0898",
+  "lockbox_generator_spec_version": 1,
+  "opening_contract": {
+    "current_generation_training_allowed": false,
+    "model_selection_allowed": false,
+    "one_time_open": true,
+    "release_labels_after_consumption": true,
+    "released_labels_train_generation": "next_generation_only",
+    "reopen_allowed": false
+  },
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "private_source_bank_in_repository": false,
+  "production_promotion_gate": false,
+  "question_instances_in_spec": false,
+  "role": "one_time_lockbox",
+  "source_bank_contract": {
+    "allowed_fact_sources": [
+      "public_knowledge_with_fixed_reference",
+      "deterministic_synthetic_environment"
+    ],
+    "content_sha256_required_before_seed_sampling": true,
+    "explicit_negative_count_per_entry": 3,
+    "external_api_required": false,
+    "independent_human_or_rule_review_required": true,
+    "live_graph_relations_used_as_ground_truth": false,
+    "minimum_entries_per_target_partition": 16,
+    "minimum_entry_count": 48,
+    "personal_user_memory_allowed": false,
+    "plaintext_in_repository_allowed": false,
+    "positive_count_per_entry": 1,
+    "required_entry_fields": [
+      "source_item_id",
+      "source_type",
+      "source_reference",
+      "question_text",
+      "positive_concept_id",
+      "positive_concept_name",
+      "target_partition",
+      "context_concepts_unscored",
+      "explicit_negative_concepts",
+      "independent_truth_rationale"
+    ],
+    "review_provenance_contract": {
+      "allowed_review_methods": [
+        "independent_human_review",
+        "deterministic_rule_validation"
+      ],
+      "anchor_overlap_count_required": 0,
+      "development_overlap_count_required": 0,
+      "required_bank_manifest_fields": [
+        "private_source_bank_sha256",
+        "reviewed_at",
+        "review_method",
+        "reviewer_role",
+        "reviewer_or_validator_id",
+        "validator_implementation_sha256",
+        "review_provenance_sha256",
+        "anchor_question_set_sha256",
+        "development_question_set_sha256",
+        "anchor_overlap_count",
+        "development_overlap_count",
+        "overlap_audit_sha256"
+      ],
+      "subject_model_as_reviewer_allowed": false,
+      "validator_implementation_sha256_required_for_rule_validation": true
+    },
+    "storage": "access_controlled_outside_repository",
+    "subject_model_access_allowed": false,
+    "subject_model_generated_questions": false,
+    "subject_model_grades_itself": false
+  },
+  "status": "generator_distribution_defined_awaiting_user_review"
+}

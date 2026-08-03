@@ -1,0 +1,24 @@
+{
+  "anchor_manifest_gate": true,
+  "block_reasons": [],
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_readiness_sha256": "2954f13283c593857e7de70b7352f247438971a9b3e0f8405b59826e659f04f4",
+  "cohort_readiness_version": 1,
+  "database_writes": false,
+  "development_manifest_gate": true,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lexical_baseline_execution_gate": true,
+  "live_learning_blocked": false,
+  "lockbox_generator_manifest_gate": true,
+  "manifest_hashes": {
+    "anchor_regression": "76355a8953d8dc88b4d427b3e9fb8cf494411cb398ce7bdf80394e463e35fc88",
+    "one_time_lockbox": "0b5bc0cf40edb8826e1ef4f2cc705c243a02de458f182c93d153ad79a471b46f",
+    "rolling_development": "f93e8c1e975763c8b06d045d905e15a777d95ae1948247e1196ffd8d3a27a982"
+  },
+  "next_step": "run_lexical_baseline",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "status": "cohort_manifests_ready_for_lexical_baseline"
+}

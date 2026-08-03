@@ -1,0 +1,161 @@
+{
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_lifecycle_contract_version": 1,
+  "cohort_roles": {
+    "anchor_regression": {
+      "heldout_claim_allowed": false,
+      "known_to_developers": true,
+      "model_selection_allowed": false,
+      "purpose": "retention_and_regression_detection",
+      "question_hashes": [
+        "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9",
+        "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31",
+        "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b",
+        "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795",
+        "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286",
+        "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+      ],
+      "question_set_sha256": "8f49058cad4096c88afa38594df8914fff379fc3bd1ca49d5c08acf83f870d6e",
+      "reusable": true
+    },
+    "live_growth_stream": {
+      "eligible_for_learning": true,
+      "frozen": false,
+      "is_evaluation_cohort": false,
+      "performance_claim_source": false
+    },
+    "one_time_lockbox": {
+      "generator_contract_fixed_before_baseline_output": true,
+      "hidden_seed_required": true,
+      "instances_generated_after_model_freeze": true,
+      "model_selection_allowed": false,
+      "one_time_open": true,
+      "plaintext_questions_in_repository_allowed": false,
+      "reusable": false
+    },
+    "rolling_development": {
+      "exact_questions_fixed_before_baseline_output": true,
+      "heldout_claim_allowed": false,
+      "model_selection_allowed": true,
+      "replace_on_new_generation": true,
+      "reusable_within_generation": true
+    }
+  },
+  "continual_evaluation_metrics": {
+    "development": [
+      "pre_update_to_post_update_learning_progress",
+      "forward_transfer_to_temporally_new_concepts",
+      "backward_retention_on_anchor",
+      "forgetting_delta_on_prior_anchor_generations"
+    ],
+    "promotion_unit": "versioned_model_and_memory_snapshot",
+    "retrieval": [
+      "macro_recall_at_8",
+      "macro_ndcg_at_8",
+      "macro_mrr"
+    ],
+    "rollback_required": true
+  },
+  "created_at": "2026-07-22T04:39:18.861416+00:00",
+  "database_writes": false,
+  "evaluation_epoch": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+    "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+    "model_cutoff_gate": false,
+    "model_cutoff_sha256": null,
+    "new_concepts_after_snapshot_policy": "temporal_novelty_stratum_next_epoch",
+    "partition_contract_sha256": "c7fcdcdb60736b47046f7d0819311f426fe28f0976a0f03755bf02f82d617d39",
+    "partition_scope": "this_evaluation_epoch_only",
+    "renewal_trigger": "lockbox_consumed_or_graph_snapshot_invalidated_or_epoch_expired"
+  },
+  "generator_governance": {
+    "allowed_sources": [
+      "public_knowledge_with_fixed_reference",
+      "deterministic_synthetic_environment",
+      "instrumented_quest_or_tool_outcome"
+    ],
+    "freeze_generator_distribution_not_permanent_question_instances": true,
+    "generator_implementation_sha256_required": true,
+    "generator_specification_sha256_required": true,
+    "independent_ground_truth_required": true,
+    "lockbox_hidden_seed_commitment_required_at_materialization": true,
+    "personal_user_memory_allowed": false,
+    "sample_size_plan_sha256_required": true,
+    "subject_model_may_generate_evaluation_questions": false,
+    "subject_model_may_grade_itself": false
+  },
+  "learning_enabled": false,
+  "learning_evaluation_boundary": {
+    "cohort_scope": "evaluation_evidence_only",
+    "evaluation_uses_frozen_graph_snapshot": true,
+    "live_curiosity_generation_blocked_by_contract": false,
+    "live_graph_updates_blocked_by_contract": false,
+    "live_growth_stream_blocked_by_contract": false,
+    "live_memory_consolidation_blocked_by_contract": false,
+    "released_labels_may_train_only_next_generation": true,
+    "reserved_item": "supervised_benchmark_label_not_live_concept",
+    "reserved_labels_release_after_consumption": true
+  },
+  "lifecycle_state_machine": {
+    "anchor": [
+      "materialized",
+      "active",
+      "superseded"
+    ],
+    "development": [
+      "planned",
+      "materialized",
+      "active",
+      "consumed",
+      "released",
+      "superseded"
+    ],
+    "lockbox": [
+      "planned",
+      "generator_frozen",
+      "model_frozen",
+      "materialized",
+      "opened",
+      "consumed",
+      "released",
+      "expired"
+    ],
+    "lockbox_reopen_allowed": false,
+    "release_semantics": "benchmark_labels_become_next_generation_train_eligible_while_live_learning_was_never_blocked"
+  },
+  "model_weights_changed": false,
+  "next_step": "seal_anchor_and_reviewable_development_lockbox_generator_manifests",
+  "phase": "J1-R2",
+  "readiness": {
+    "anchor_manifest_gate": false,
+    "block_reasons": [
+      "anchor_manifest_missing",
+      "rolling_development_generator_manifest_missing",
+      "one_time_lockbox_generator_manifest_missing",
+      "model_cutoff_snapshot_missing"
+    ],
+    "development_generator_manifest_gate": false,
+    "heldout_gate": false,
+    "lexical_baseline_execution_gate": false,
+    "lifecycle_contract_gate": true,
+    "live_learning_isolation_gate": true,
+    "lockbox_generator_manifest_gate": false,
+    "model_cutoff_gate": false,
+    "performance_claim_gate": false,
+    "production_promotion_gate": false
+  },
+  "research_goal": {
+    "purpose": "learn_from_quest_tool_and_environment_outcomes_while_preserving_auditable_promotion_and_rollback",
+    "relevance_scorer_role": "memory_retrieval_instrument_not_the_whole_agent",
+    "static_benchmark_optimization_is_the_goal": false,
+    "system": "source_aware_grounded_developmental_self_improvement"
+  },
+  "status": "rotating_cohort_lifecycle_defined_manifests_pending",
+  "supersedes": {
+    "phase": "J1-R1",
+    "r1_artifact_mutated": false,
+    "reason": "replace_permanent_holdout_interpretation_with_rotating_evaluation_epochs",
+    "relevance_scorer_contract_sha256": "918183cbb9450c5f2932ce8d11434937c62210f4ea0b0633a4aa43f529f16a3d"
+  }
+}

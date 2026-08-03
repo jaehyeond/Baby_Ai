@@ -1,14 +1,15 @@
 # Task.md - 작업 추적
 
-**최종 업데이트**: 2026-02-23 (본문) · **2026-07-21 배너 갱신**
+**최종 업데이트**: 2026-02-23 (본문) · **2026-07-28 배너 갱신**
 
 ---
 
-## ⚡ 2026-07-21 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
+## ⚡ 2026-07-28 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
-> **현재 진입점: [J1-EXP-1] 탐색 pre-answer capture 완료, 사용자 6답변 대기** — 6문항은 이미 Git에 공개됐으므로 confirmatory fresh/held-out으로 봉인하지 않고 `exploratory_not_for_claim=true`, `confirmatory_reuse_allowed=false`로 격리했다. Neo4j Concept 1,111개 중 1,069개를 유지하고 질문별 1,066~1,067개를 Graph와 frozen Local Core가 답변 전에 read-only 점수화했다. artifact `b3f0b66f…`, adapter `dd60ed3c…`, trainable parameter 0이며 DB/write/learning/probability/calibrator/performance/production은 false다. 다음은 사용자 답변 후 lightweight signal audit이다.
+> **현재 진입점: [J1-R2-E3] primary 60행 agent 제안표 완료·사용자 review 대기** — 봉인 E2 결과에서 primary top-unjudged `60행`과 diagnostic-only positive-rank 이웃 `24행`을 분리해 packet `aec20a9d…`, audit `696fe080…`로 생성·재감사했다. 총 `84행/67 unique concepts`; 자동 label 지정은 0이다. agent 제안은 relevance `positive=1/context=52/hard_negative=4/unrelated=3`, vocabulary `canonical=36/alias=1/fragment=16/malformed=7`이며 아직 사용자 reviewed label/training data가 아니다. 24 deep-rank 이웃은 score-band 진단 전용으로 학습 negative에 넣지 않는다. 다음은 `claudedocs/research/J1_R2_E3_PRIMARY_REVIEW_AGENT_RECOMMENDATIONS_2026-07-28.md`의 승인·수정→별도 decision artifact→context를 binary negative에서 제외하는 학습 계약 순서다. learned head, graph cleanup, exact lockbox question, DB write, held-out/performance/production은 계속 false이며 `LOCAL_CORE_DISTILL`도 OFF다.
+> **추가된 비차단 병렬 계획: [J1-R2-M0] Controlled Dream Audit** — E3 사용자 review와 별도 decision artifact가 만들어진 뒤, 그 reviewed vocabulary 판정과 고정 graph snapshot만 읽어 `alias/fragment/malformed/punctuation variant` 수정 후보를 제안한다. 이후 확장 후보는 contradiction/staleness/orphan/provenance-gap 탐지다. M0는 `detect→propose→human review`까지만 허용하며 E3→post-review 학습 계약→learned-head development 경로를 막지 않는다. 첫 반복의 DB write, 자동 label, merge/delete, graph cleanup 적용, model-weight 변경, `LOCAL_CORE_DISTILL`, 주기 실행은 금지한다. 실제 적용은 현재 평가 universe를 보존한 뒤 별도 승인·transaction·before/after snapshot·rollback 계약으로 분리한다. M0는 J3 verified sleep self-compile이 아니라 그 전 단계의 memory-integrity sidecar다.
 > **이번 세션 추가 감사**: Phase 2 실그래프 row split에서 현재 그래프 기준 test pair `18/250(7.2%)`가 train에도 존재했고, 기존 야간 job은 test pair를 replay에 직접 포함했다. 기존 MRR은 fit/영속 탐색 증거로 강등했다. pair-disjoint split과 비퇴행 adapter save gate를 구현·단위검증했지만 GPU 재학습은 하지 않았다. 보호 handler는 무변경이다. 상세 `CHANGELOG.md` 최상단.
 > **J-0 상세**: `claudedocs/research/JARVIS_GROUNDED_DEVELOPMENTAL_SELF_IMPROVEMENT_2026-07-16.md`. GDSI/DCSC는 구현 방향을 반증 가능한 단계로 줄인 가설이며 새 분야·AGI 달성 주장이 아니다.
 > **UI/Ops 격리 결정**: Zoey OS Reel은 상위 program roadmap의 병렬 `관측/UI` 참고자료다. J1–J3 연구 critical path나 능력 주장에 포함하지 않으며, 실제 predictor provenance가 생기기 전 UI 구현·가짜 agent 상태 표시는 금지한다.

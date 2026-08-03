@@ -1,0 +1,497 @@
+{
+  "created_at": "2026-07-23T06:50:39.204939+00:00",
+  "database_writes": false,
+  "explicit_negative_label_count": 36,
+  "generator_spec_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+  "heldout_gate": false,
+  "implementation_sha256": "69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488",
+  "learning_enabled": false,
+  "materialization_gate": false,
+  "next_step": "obtain_explicit_user_review_decisions_for_all_questions",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "positive_label_count": 12,
+  "production_promotion_gate": false,
+  "question_count": 12,
+  "questions": [
+    {
+      "closed_world_fact": "이 환경에서 한국의 수도 도시는 서울이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "32097d72-3b93-4959-b164-7fa253ecec4e",
+          "concept_name": "한국",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 0,
+      "positive_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "대한민국의 행정 중심이 되는 수도 도시는 어디야?",
+      "question_id": "j1-r2-dev-0001-00",
+      "question_sha256": "9cea73dcf7753af5e97384026b49ce793b3db393160920449a903748a2bf2da5",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 지구의 자연 위성은 달이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 1,
+      "positive_concepts": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "question": "지구 주위를 공전하는 자연 위성은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-01",
+      "question_sha256": "7638c62c2647c814349bbff0030126976e5672ed8ff909cf71e1adf843211a08",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 하늘의 작은 물방울 집합은 구름이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "35d1fd6c-802c-4bbc-8743-e232381e9569",
+          "concept_name": "물",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 2,
+      "positive_concepts": [
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "question": "하늘에서 작은 물방울이 모여 보이는 것은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-02",
+      "question_sha256": "356e2cf9c5cd0268173babd32f541b396b91596e82f2cdeac6d14e1f393cdfa8",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 비용 합이 최소인 경로는 최단경로다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 3,
+      "positive_concepts": [
+        {
+          "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+          "concept_name": "최단경로",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "question": "그래프에서 두 지점 사이의 비용 합이 가장 작은 경로를 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-03",
+      "question_sha256": "07f4d9d7fb415116d9d4996b4041da9b950b9473903410d23265dcb21b72a8e7",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 소리를 받아들이는 감각은 청각이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 4,
+      "positive_concepts": [
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "question": "귀로 소리를 받아들이는 감각을 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-04",
+      "question_sha256": "12ef97573782a8616263f271f3641db65a11a08c142ab24f4e331c44976adc5d",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 물체를 지구 쪽으로 끄는 힘은 중력이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "3a72f280-bb86-4be0-a2b8-c2b83cde2e5d",
+          "concept_name": "힘",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 5,
+      "positive_concepts": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "물체를 지구 쪽으로 끌어당기는 힘은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-05",
+      "question_sha256": "ba708c3d6e49f73d6607df511406c2ea181f53d47379ecd05d378d29add20a60",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 빛을 받아 장면을 기록하는 장치는 카메라다.",
+      "context_concepts_unscored": [],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 6,
+      "positive_concepts": [
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "빛을 받아 장면을 사진으로 기록하는 장치는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-06",
+      "question_sha256": "9bdcbda039d42ae9531a6fcc5cc85799d2f73764771e7071aa89354f5093f53f",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 순서대로 정의한 해결 절차는 알고리즘이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 7,
+      "positive_concepts": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "문제를 해결하기 위해 순서대로 정의한 절차를 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-07",
+      "question_sha256": "3f3e6574eec066bf728600f5baa76b719bb50701997e2e2b4f38b7e7a1e5278b",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 숫자 연산 도구는 계산기다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "7a40331b-84e2-42bc-819b-0cae429526ec",
+          "concept_name": "계산",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "concept_name": "카메라",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "concept_name": "청각",
+          "partition": "development_challenge_pool"
+        }
+      ],
+      "order": 8,
+      "positive_concepts": [
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "concept_name": "계산기",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "숫자 연산을 수행하도록 만든 도구는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-08",
+      "question_sha256": "b8dc181d3fcea671bbce93a36019d4482d1bc8206f71a557bcdf88fcdc6e2748",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 리듬과 음을 조합한 예술은 음악이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "concept_name": "알고리즘",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 9,
+      "positive_concepts": [
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "리듬과 음을 조합해 듣는 예술을 무엇이라고 해?",
+      "question_id": "j1-r2-dev-0001-09",
+      "question_sha256": "8cd1dca97ad8bc28e4af07fa777c12c0266abf48d4f2e45b57ba514a822c4699",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 센서로 관찰하고 동작하는 기계는 로봇이다.",
+      "context_concepts_unscored": [],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "concept_name": "달",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "concept_name": "구름",
+          "partition": "development_challenge_pool"
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 10,
+      "positive_concepts": [
+        {
+          "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "concept_name": "로봇",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "센서로 환경을 관찰하고 정해진 동작을 수행하는 기계는 무엇이야?",
+      "question_id": "j1-r2-dev-0001-10",
+      "question_sha256": "ea954d43e470ed3041fb26018ecd1d1571cc9f6c79dfb8a5f463e9234196f04b",
+      "review_decision": "pending"
+    },
+    {
+      "closed_world_fact": "이 환경에서 컴퓨터용 명령 묶음은 프로그램이다.",
+      "context_concepts_unscored": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "partition": "fit_pool"
+        }
+      ],
+      "explicit_negative_concepts": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "concept_name": "서울",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "concept_name": "중력",
+          "partition": "fit_pool"
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "concept_name": "음악",
+          "partition": "fit_pool"
+        }
+      ],
+      "order": 11,
+      "positive_concepts": [
+        {
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "concept_name": "프로그램",
+          "partition": "fit_pool"
+        }
+      ],
+      "question": "컴퓨터가 실행할 수 있도록 작성된 명령의 묶음은 무엇이야?",
+      "question_id": "j1-r2-dev-0001-11",
+      "question_sha256": "ea69e9f1bc26c381ac483a1757d29923a9f0fac2d2715aae9424a3041cbb7529",
+      "review_decision": "pending"
+    }
+  ],
+  "review_gate": false,
+  "review_packet_sha256": "e5aded97a12ef997ab72d7687cd39e63edfd1e9fa8126f71b8eabaeb8b5f7624",
+  "review_packet_version": 1,
+  "reviewer_role_required": "user",
+  "role": "rolling_development",
+  "sample_size_plan_sha256": "17b705ddbd7533bacf1bcaffc3cba637a2cba6db8a37567a644567b75fc628f7",
+  "status": "development_question_review_pending",
+  "unlabeled_graph_concepts_are_negative": false
+}

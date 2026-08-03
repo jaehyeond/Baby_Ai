@@ -1,0 +1,1093 @@
+{
+  "audited_at": "2026-07-21T10:19:01.381329+00:00",
+  "available_target_count": 13,
+  "block_reasons": [
+    "exploratory_questions_were_public_before_capture",
+    "exact_name_matches_are_descriptive_not_semantic_ground_truth",
+    "no_predeclared_inferential_threshold"
+  ],
+  "calibrator_fit_allowed": false,
+  "confirmatory_reuse_allowed": false,
+  "database_writes": false,
+  "declared_target_count": 32,
+  "evidence_scope": "diagnostic_only_not_confirmatory_evidence",
+  "exact_name_matching_only": true,
+  "exploratory_answer_pack_sha256": "6eef400049813c36745bebbbfd4bed1c93d9bccdce993229a2ed2e1af11f3438",
+  "exploratory_only_not_for_claim": true,
+  "exploratory_pre_answer_capture_sha256": "b3f0b66fdd7b03431f0ecefc1400786aa7ec8647718566f161e6435e8521f4d5",
+  "exploratory_signal_audit_gate": true,
+  "exploratory_signal_audit_sha256": "02bd3d966174cc938809e15da660fb47be6b681b8b4198404e92b14a3651ed9e",
+  "exploratory_signal_audit_version": 1,
+  "generated_answers_before_prediction_review": true,
+  "graph_snapshot_match_gate": true,
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "graph_summary": {
+    "exact_target_hit_count": 0,
+    "mean_pairwise_top_k_jaccard": 0.07365079365079366,
+    "questions_with_exact_target_hit": 0,
+    "repeated_concepts": [
+      {
+        "concept_name": "비비",
+        "question_count": 5,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "AI",
+        "question_count": 3,
+        "question_ids": [
+          "j1-exp-b-01",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "개발자",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-02",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "공부",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01"
+        ]
+      },
+      {
+        "concept_name": "로보틱스",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-02",
+          "j1-exp-b-04"
+        ]
+      }
+    ],
+    "top_k_slots": 48,
+    "unique_top_k_concept_count": 39
+  },
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "local_core_summary": {
+    "exact_target_hit_count": 1,
+    "mean_pairwise_top_k_jaccard": 0.6517171717171717,
+    "questions_with_exact_target_hit": 1,
+    "repeated_concepts": [
+      {
+        "concept_name": "사용자",
+        "question_count": 6,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "상호작용",
+        "question_count": 6,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "아름다움",
+        "question_count": 6,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "응답",
+        "question_count": 6,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "질문",
+        "question_count": 6,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "알고리즘",
+        "question_count": 5,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "감정",
+        "question_count": 4,
+        "question_ids": [
+          "j1-exp-b-01",
+          "j1-exp-b-02",
+          "j1-exp-b-03",
+          "j1-exp-b-04"
+        ]
+      },
+      {
+        "concept_name": "감사",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-05"
+        ]
+      },
+      {
+        "concept_name": "베이비 브레인",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-00",
+          "j1-exp-b-04"
+        ]
+      },
+      {
+        "concept_name": "프로젝트",
+        "question_count": 2,
+        "question_ids": [
+          "j1-exp-b-01",
+          "j1-exp-b-02"
+        ]
+      }
+    ],
+    "top_k_slots": 48,
+    "unique_top_k_concept_count": 13
+  },
+  "manifest_snapshot_sha256": "0e2364db802bd543127455524b0f9e5b3d0ffd4612e6d1165b657caa23998444",
+  "missing_target_count": 19,
+  "next_step": "review_missing_or_semantically_ambiguous_targets_without_mutating_this_audit_then_prioritize_data_and_wake_behavior_work",
+  "performance_claim_gate": false,
+  "phase": "J1-EXP-1",
+  "post_hoc_target_additions": 0,
+  "probabilities_computed": false,
+  "production_promotion_gate": false,
+  "question_count": 6,
+  "questions": [
+    {
+      "cross_predictor_top_k_overlap_count": 0,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+            "concept_name": "비비",
+            "rank": 1
+          },
+          {
+            "concept_id": "abf16d7c-3363-4747-98a6-fc81ba1fd844",
+            "concept_name": "형",
+            "rank": 2
+          },
+          {
+            "concept_id": "ecc5e6d6-cf0e-414c-a477-00ee85547c14",
+            "concept_name": "화면",
+            "rank": 3
+          },
+          {
+            "concept_id": "fa0fa227-ed0f-4dae-b1c6-fe17611afafa",
+            "concept_name": "공부",
+            "rank": 4
+          },
+          {
+            "concept_id": "4b5bcc21-3d91-43ce-8700-a628f222e6fb",
+            "concept_name": "카메라 따 놓기",
+            "rank": 5
+          },
+          {
+            "concept_id": "15c95563-cbea-4f46-8db6-dc21b7382b42",
+            "concept_name": "세상에",
+            "rank": 6
+          },
+          {
+            "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+            "concept_name": "로봇",
+            "rank": 7
+          },
+          {
+            "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+            "concept_name": "정보",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 1
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 3
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 4
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 7
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 0,
+      "question": "카메라와 영화는 서로 어떻게 이어져 있어?",
+      "question_id": "j1-exp-b-00",
+      "question_sha256": "c6eaad21f9418fcfe0405f7d61766831fd388ea40741b8203078dfd4c2b03c4d",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "촬영"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "영상"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+              "concept_name": "소리"
+            }
+          ],
+          "target_concept": "소리"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+              "concept_name": "이야기"
+            }
+          ],
+          "target_concept": "이야기"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+              "concept_name": "감정"
+            }
+          ],
+          "target_concept": "감정"
+        }
+      ],
+      "target_concepts": [
+        "촬영",
+        "영상",
+        "소리",
+        "이야기",
+        "감정"
+      ]
+    },
+    {
+      "cross_predictor_top_k_overlap_count": 0,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "97d673c1-ffd9-42b6-a450-2d06cdbd7905",
+            "concept_name": "AI (비비)",
+            "rank": 1
+          },
+          {
+            "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+            "concept_name": "AI",
+            "rank": 2
+          },
+          {
+            "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+            "concept_name": "서울",
+            "rank": 3
+          },
+          {
+            "concept_id": "0f04d65b-9bbd-4130-b696-1142306f9f93",
+            "concept_name": "교토",
+            "rank": 4
+          },
+          {
+            "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+            "concept_name": "비비",
+            "rank": 5
+          },
+          {
+            "concept_id": "5192014a-a518-459d-9d5e-2a60b2d81ff9",
+            "concept_name": "날씨 공부",
+            "rank": 6
+          },
+          {
+            "concept_id": "fa0fa227-ed0f-4dae-b1c6-fe17611afafa",
+            "concept_name": "공부",
+            "rank": 7
+          },
+          {
+            "concept_id": "13b90ff0-8a2d-4902-8341-0db8859c532f",
+            "concept_name": "검색",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 2
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 3
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 4
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 5
+          },
+          {
+            "concept_id": "87b334e6-ec92-4fa7-b52c-70931cd32ad1",
+            "concept_name": "다른 도시",
+            "rank": 6
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 7
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 1,
+      "question": "도시와 날씨는 서로에게 어떤 영향을 줘?",
+      "question_id": "j1-exp-b-01",
+      "question_sha256": "294c845c3915ca02475d6b4f7d21541f40ec1f6acad8d99e14aaee51d90052e8",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "건물"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "도로"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "인구"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "28869c2f-e931-45ae-9b10-d56b8c32ff08",
+              "concept_name": "바람"
+            }
+          ],
+          "target_concept": "바람"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "교통"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "654b2d0f-13d9-49d5-b49b-d50a16731a60",
+              "concept_name": "에너지"
+            }
+          ],
+          "target_concept": "에너지"
+        }
+      ],
+      "target_concepts": [
+        "건물",
+        "도로",
+        "인구",
+        "바람",
+        "교통",
+        "에너지"
+      ]
+    },
+    {
+      "cross_predictor_top_k_overlap_count": 0,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+            "concept_name": "컴퓨터",
+            "rank": 1
+          },
+          {
+            "concept_id": "e23cbc14-0835-453f-b3df-55dc590156d8",
+            "concept_name": "로보틱스",
+            "rank": 2
+          },
+          {
+            "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+            "concept_name": "개발자",
+            "rank": 3
+          },
+          {
+            "concept_id": "c0403417-77e1-4cf0-8ee8-2ff2aa49b9fc",
+            "concept_name": "레고 블록",
+            "rank": 4
+          },
+          {
+            "concept_id": "c8cc6fbf-aa65-4365-839f-9d35805f3ed5",
+            "concept_name": "코딩",
+            "rank": 5
+          },
+          {
+            "concept_id": "a04696d0-2e03-442d-9c6c-7b5029de6b1b",
+            "concept_name": "신기한",
+            "rank": 6
+          },
+          {
+            "concept_id": "8ff51a5f-c4df-4065-b7de-eef26efbc05e",
+            "concept_name": "마치",
+            "rank": 7
+          },
+          {
+            "concept_id": "9d212e83-941f-4b11-859e-07130bde776e",
+            "concept_name": "개발자님",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5
+          },
+          {
+            "concept_id": "7cd5b1b1-5ce9-49e9-abcd-58c68a084892",
+            "concept_name": "프로젝트",
+            "rank": 6
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 7
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 2,
+      "question": "프로그램과 개발은 어떻게 서로를 필요로 해?",
+      "question_id": "j1-exp-b-02",
+      "question_sha256": "6699b0673b3eff53d40a83155a4480068b8c27373875ebb2e7de7288c1853210",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "분석"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "코드"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "시험"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "수정"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "개선"
+        }
+      ],
+      "target_concepts": [
+        "분석",
+        "코드",
+        "시험",
+        "수정",
+        "개선"
+      ]
+    },
+    {
+      "cross_predictor_top_k_overlap_count": 0,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+            "concept_name": "비비",
+            "rank": 1
+          },
+          {
+            "concept_id": "358bf4fa-b28a-4414-bd65-b5adc828bfd7",
+            "concept_name": "한번",
+            "rank": 2
+          },
+          {
+            "concept_id": "44480ee8-96b0-4886-b1c7-52507b429293",
+            "concept_name": "모여",
+            "rank": 3
+          },
+          {
+            "concept_id": "aec676cb-26ae-4e2d-886a-3a2909e9d26e",
+            "concept_name": "다시",
+            "rank": 4
+          },
+          {
+            "concept_id": "f84af967-4280-4c9f-8c73-ab821c7c4e4f",
+            "concept_name": "잠깐",
+            "rank": 5
+          },
+          {
+            "concept_id": "1b1f0f13-f6db-4318-a9a4-24ff1a3b1d98",
+            "concept_name": "기억해",
+            "rank": 6
+          },
+          {
+            "concept_id": "7e9023ab-311d-469a-9eb9-31143a630ffe",
+            "concept_name": "말해줄",
+            "rank": 7
+          },
+          {
+            "concept_id": "2766feaa-f23d-4778-8c86-c7b04d6d79ea",
+            "concept_name": "날짜",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 1
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 2
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 3
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 4
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 5
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 6
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 7
+          },
+          {
+            "concept_id": "fdd13f68-b261-4613-8bc7-218509e90b10",
+            "concept_name": "불확실성",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 3,
+      "question": "생각과 이해는 어떤 점에서 다르고 또 이어져?",
+      "question_id": "j1-exp-b-03",
+      "question_sha256": "e4511eeaa541de2abd2bedd6b5e0bab622e04404d7ff7595024b9700fcffd98c",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "4b3e2fa7-f415-43de-82c0-ecda183f6484",
+              "concept_name": "정보"
+            }
+          ],
+          "target_concept": "정보"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "ac60a44d-c8d8-4125-b168-847a41a7ebe8",
+              "concept_name": "비교"
+            }
+          ],
+          "target_concept": "비교"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "추론"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "4173344b-0fe6-4613-a6fb-f47196389963",
+              "concept_name": "의미"
+            }
+          ],
+          "target_concept": "의미"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "db04512d-1ef6-44ba-b10f-5e390965be6e",
+              "concept_name": "관계"
+            }
+          ],
+          "target_concept": "관계"
+        }
+      ],
+      "target_concepts": [
+        "정보",
+        "비교",
+        "추론",
+        "의미",
+        "관계"
+      ]
+    },
+    {
+      "cross_predictor_top_k_overlap_count": 0,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+            "concept_name": "비비",
+            "rank": 1
+          },
+          {
+            "concept_id": "72867076-ae2e-48e9-8dcc-e57766523d72",
+            "concept_name": "인터넷",
+            "rank": 2
+          },
+          {
+            "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+            "concept_name": "AI",
+            "rank": 3
+          },
+          {
+            "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+            "concept_name": "기억",
+            "rank": 4
+          },
+          {
+            "concept_id": "d0859c23-3cd6-4bbc-be38-ac53a32726e9",
+            "concept_name": "정보 탐색",
+            "rank": 5
+          },
+          {
+            "concept_id": "e23cbc14-0835-453f-b3df-55dc590156d8",
+            "concept_name": "로보틱스",
+            "rank": 6
+          },
+          {
+            "concept_id": "352dacfe-6cbc-46e5-a63b-4f9206d20bed",
+            "concept_name": "일본",
+            "rank": 7
+          },
+          {
+            "concept_id": "9b3b0f83-efea-44d5-a138-089421a58ec6",
+            "concept_name": "기억력",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 1,
+        "exact_target_hits": [
+          {
+            "target_concept": "질문",
+            "top_k_matches": [
+              {
+                "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+                "concept_name": "질문",
+                "rank": 1
+              }
+            ]
+          }
+        ],
+        "top_k": [
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 1
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 2
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 3
+          },
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 4
+          },
+          {
+            "concept_id": "33c2878d-fa25-411f-a4a6-27b7ee824581",
+            "concept_name": "감정",
+            "rank": 5
+          },
+          {
+            "concept_id": "bbf459bb-2cd8-4366-b33f-a35637030680",
+            "concept_name": "베이비 브레인",
+            "rank": 6
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 7
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 4,
+      "question": "정보와 인터넷 검색은 서로 어떻게 연결돼?",
+      "question_id": "j1-exp-b-04",
+      "question_sha256": "2fe637e6be38cd8fc5df53c638653eb62990d9b20ab65cbf6c4d0ac77adae8d9",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+              "concept_name": "질문"
+            }
+          ],
+          "target_concept": "질문"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "웹"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "자료"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "출처"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "근거"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "신뢰"
+        }
+      ],
+      "target_concepts": [
+        "질문",
+        "웹",
+        "자료",
+        "출처",
+        "근거",
+        "신뢰"
+      ]
+    },
+    {
+      "cross_predictor_top_k_overlap_count": 1,
+      "graph": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 1
+          },
+          {
+            "concept_id": "0646c541-9809-4b8f-908d-ebbf535c00b9",
+            "concept_name": "들어",
+            "rank": 2
+          },
+          {
+            "concept_id": "11601cc7-13b5-48e5-a073-e3eca16e1163",
+            "concept_name": "비비",
+            "rank": 3
+          },
+          {
+            "concept_id": "88f28732-645f-43ef-8f28-861f3b126afd",
+            "concept_name": "개발자",
+            "rank": 4
+          },
+          {
+            "concept_id": "26f34410-b7d1-43d6-b7a2-015f4aa720ea",
+            "concept_name": "AI",
+            "rank": 5
+          },
+          {
+            "concept_id": "354f0417-39f4-400a-aea5-38bb17083346",
+            "concept_name": "박재현",
+            "rank": 6
+          },
+          {
+            "concept_id": "af2d904e-155e-4e6a-b93b-a25bd86cb23d",
+            "concept_name": "Baby AI",
+            "rank": 7
+          },
+          {
+            "concept_id": "078f0e42-5eac-49f3-b47d-f856d9455f2b",
+            "concept_name": "놀이",
+            "rank": 8
+          }
+        ]
+      },
+      "local_core": {
+        "exact_target_hit_count": 0,
+        "exact_target_hits": [],
+        "top_k": [
+          {
+            "concept_id": "41e53607-30ad-446f-bffa-1b8705e0276f",
+            "concept_name": "상호작용",
+            "rank": 1
+          },
+          {
+            "concept_id": "344a312c-9522-4397-a181-f9071de828d6",
+            "concept_name": "아름다움",
+            "rank": 2
+          },
+          {
+            "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+            "concept_name": "긍정적 감정",
+            "rank": 3
+          },
+          {
+            "concept_id": "610675a0-c7b1-492e-a988-e3e025c93cb5",
+            "concept_name": "질문",
+            "rank": 4
+          },
+          {
+            "concept_id": "2c9a657e-c824-42e0-a9ff-a163712ed0a6",
+            "concept_name": "사용자",
+            "rank": 5
+          },
+          {
+            "concept_id": "8c710e07-32f5-45c3-a829-d5625c64649a",
+            "concept_name": "감사",
+            "rank": 6
+          },
+          {
+            "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+            "concept_name": "알고리즘",
+            "rank": 7
+          },
+          {
+            "concept_id": "b4a55c3e-e948-4735-96b3-56b92dbd6c25",
+            "concept_name": "응답",
+            "rank": 8
+          }
+        ]
+      },
+      "order": 5,
+      "question": "이름과 감정은 서로 어떤 관계가 있어?",
+      "question_id": "j1-exp-b-05",
+      "question_sha256": "6bc99f3efbff65429ab6a788fe32cb5c5bd5d84b9f5611397d6ed32888ff781c",
+      "target_availability": [
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "7b4d4fdc-cde4-418b-8cd8-48cfeb4d1e60",
+              "concept_name": "사람"
+            }
+          ],
+          "target_concept": "사람"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "대상"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "0fb1a67a-dd02-4c57-af4d-f347706a9db4",
+              "concept_name": "경험"
+            }
+          ],
+          "target_concept": "경험"
+        },
+        {
+          "available_in_captured_vocabulary": true,
+          "eligible_candidate_matches": [
+            {
+              "concept_id": "d11356da-d629-4a87-800d-d574ff842ba4",
+              "concept_name": "기억"
+            }
+          ],
+          "target_concept": "기억"
+        },
+        {
+          "available_in_captured_vocabulary": false,
+          "eligible_candidate_matches": [],
+          "target_concept": "단서"
+        }
+      ],
+      "target_concepts": [
+        "사람",
+        "대상",
+        "경험",
+        "기억",
+        "단서"
+      ]
+    }
+  ],
+  "semantic_equivalence_review_performed": false,
+  "signal_status": "local_core_only_predeclared_exact_target_hits",
+  "status": "exploratory_exact_target_signal_audit_completed_not_for_claim"
+}

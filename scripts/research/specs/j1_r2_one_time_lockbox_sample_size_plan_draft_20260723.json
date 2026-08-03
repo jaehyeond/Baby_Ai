@@ -1,0 +1,37 @@
+{
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "created_at": "2026-07-23T11:18:22.232034+00:00",
+  "database_writes": false,
+  "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+  "explicit_negative_label_count": 72,
+  "explicit_negatives_per_question": 3,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lockbox_sample_size_plan_sha256": "3607e14ee99b314a6fb75a957cc4c6e49c17311b08f9662e3e3042997a67b9fb",
+  "lockbox_sample_size_plan_version": 1,
+  "minimum_private_source_bank_size": 48,
+  "minimum_private_source_items_per_partition": 16,
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "positive_label_count": 24,
+  "production_promotion_gate": false,
+  "question_count": 24,
+  "role": "one_time_lockbox",
+  "sampling_without_replacement": true,
+  "status": "proposed_descriptive_lockbox_plan_awaiting_user_review",
+  "target_partition_counts": {
+    "development_challenge_pool": 8,
+    "fit_pool": 8,
+    "lockbox_challenge_pool": 8
+  },
+  "unlabeled_graph_concept_policy": "ignore_never_assume_negative",
+  "usage": {
+    "heldout_diagnostic_allowed": true,
+    "inferential_claim_allowed": false,
+    "model_selection_allowed": false,
+    "one_time_open": true,
+    "performance_claim_allowed": false,
+    "reusable": false,
+    "sample_size_interpretation": "balanced_implementation_diagnostic_not_statistical_power"
+  }
+}

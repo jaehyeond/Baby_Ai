@@ -1,0 +1,78 @@
+{
+  "block_reasons": [],
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "cohort_generation_id": "development-generation-0001",
+  "cohort_id": "j1-r2-rolling-development-0001",
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_manifest_sha256": "f93e8c1e975763c8b06d045d905e15a777d95ae1948247e1196ffd8d3a27a982",
+  "cohort_manifest_version": 1,
+  "created_at": "2026-07-23T08:08:42.438791+00:00",
+  "database_writes": false,
+  "development_dataset": {
+    "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+    "review_decisions_sha256": "dc9a25573965979796febbd4d2d974b78065e79360f81e3729266125a66c5652",
+    "review_packet_sha256": "e5aded97a12ef997ab72d7687cd39e63edfd1e9fa8126f71b8eabaeb8b5f7624",
+    "unlabeled_graph_concept_policy": "ignore_never_assume_negative"
+  },
+  "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+  "evaluation_only_not_live_learning_block": true,
+  "execution_gate": true,
+  "generator": {
+    "allowed_sources": [
+      "public_knowledge_with_fixed_reference",
+      "deterministic_synthetic_environment",
+      "instrumented_quest_or_tool_outcome"
+    ],
+    "hidden_seed_commitment_sha256": null,
+    "implementation_sha256": "69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488",
+    "independent_ground_truth_required": true,
+    "mode": "independent_deterministic_generator",
+    "personal_user_memory_allowed": false,
+    "sample_size_plan_sha256": "17b705ddbd7533bacf1bcaffc3cba637a2cba6db8a37567a644567b75fc628f7",
+    "seed_policy": "development_seed_recorded_at_materialization",
+    "specification_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+    "subject_model_generated_questions": false,
+    "subject_model_grades_itself": false
+  },
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lifecycle_state": "active",
+  "live_learning_blocked": false,
+  "materialization": {
+    "materialized": true,
+    "plaintext_questions_in_repository": true,
+    "question_count": 12,
+    "question_hashes": [
+      "07f4d9d7fb415116d9d4996b4041da9b950b9473903410d23265dcb21b72a8e7",
+      "12ef97573782a8616263f271f3641db65a11a08c142ab24f4e331c44976adc5d",
+      "356e2cf9c5cd0268173babd32f541b396b91596e82f2cdeac6d14e1f393cdfa8",
+      "3f3e6574eec066bf728600f5baa76b719bb50701997e2e2b4f38b7e7a1e5278b",
+      "7638c62c2647c814349bbff0030126976e5672ed8ff909cf71e1adf843211a08",
+      "8cd1dca97ad8bc28e4af07fa777c12c0266abf48d4f2e45b57ba514a822c4699",
+      "9bdcbda039d42ae9531a6fcc5cc85799d2f73764771e7071aa89354f5093f53f",
+      "9cea73dcf7753af5e97384026b49ce793b3db393160920449a903748a2bf2da5",
+      "b8dc181d3fcea671bbce93a36019d4482d1bc8206f71a557bcdf88fcdc6e2748",
+      "ba708c3d6e49f73d6607df511406c2ea181f53d47379ecd05d378d29add20a60",
+      "ea69e9f1bc26c381ac483a1757d29923a9f0fac2d2715aae9424a3041cbb7529",
+      "ea954d43e470ed3041fb26018ecd1d1571cc9f6c79dfb8a5f463e9234196f04b"
+    ],
+    "question_set_sha256": "e020447aa099ed63371fb0790d75f1789302a5ba8ec7926ce3d50172d00aeb06"
+  },
+  "next_step": "freeze_one_time_lockbox_generator_before_lexical_baseline",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "review_status": "user_reviewed",
+  "role": "rolling_development",
+  "status": "materialized_user_reviewed_development_not_heldout",
+  "usage": {
+    "heldout_claim_allowed": false,
+    "model_selection_allowed": true,
+    "one_time_open": false,
+    "performance_claim_allowed": false,
+    "release_after_consumption": true,
+    "released_labels_train_generation": "next_generation_only",
+    "reusable": true
+  }
+}

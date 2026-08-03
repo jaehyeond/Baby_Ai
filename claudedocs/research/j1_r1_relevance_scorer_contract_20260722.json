@@ -1,0 +1,204 @@
+{
+  "baseline_ladder": {
+    "execution_order": [
+      "lexical_char_ngram_tfidf_v1",
+      "frozen_local_embedding_cosine_v1",
+      "task_aligned_relevance_head_v1"
+    ],
+    "frozen_local_embedding_cosine_v1": {
+      "model_id_required": true,
+      "model_revision_required": true,
+      "prompt_template_hash_required": true,
+      "provider": "local_only_no_paid_api",
+      "requires_lexical_artifact": true,
+      "supervised_label_fit": false,
+      "weight_snapshot_sha256_required": true
+    },
+    "lexical_char_ngram_tfidf_v1": {
+      "concept_text": "canonical_concept_name_v1",
+      "external_api_allowed": false,
+      "features": "unicode_normalized_character_ngrams_2_to_5",
+      "idf_corpus": "sealed_candidate_text_only",
+      "legacy_exploratory_execution_allowed": true,
+      "supervised_label_fit": false
+    },
+    "task_aligned_relevance_head_v1": {
+      "checkpoint_versioning_and_rollback_required": true,
+      "full_causal_lm_replay_allowed": false,
+      "negative_source": "reviewed_rejected_only",
+      "preferred_first_architecture": "frozen_encoder_plus_small_projection_head",
+      "requires_lexical_and_embedding_artifacts": true,
+      "training_rows": "reviewed_binary_rows_in_fit_pool_only"
+    }
+  },
+  "created_at": "2026-07-22T02:20:52.820729+00:00",
+  "database_writes": false,
+  "evaluation_contract": {
+    "calibration_gate_reason": "exhaustive_reviewed_pair_labels_missing",
+    "calibration_metrics": [
+      "brier",
+      "log_loss",
+      "ece"
+    ],
+    "calibration_metrics_gate": false,
+    "micro_row_only_claim_allowed": false,
+    "paired_system_comparison_required": true,
+    "primary_metrics": [
+      "macro_question_recall_at_8",
+      "macro_question_ndcg_at_8"
+    ],
+    "report_seen_and_concept_challenge_strata_separately": true,
+    "resampling_unit": "question",
+    "secondary_metrics": [
+      "macro_question_mrr",
+      "reviewed_pool_average_precision"
+    ]
+  },
+  "graph_vocabulary_split": {
+    "assignment_precedes_labels_and_model_scores": true,
+    "candidate_universe_constant_across_systems": true,
+    "candidate_universe_filtered_by_partition_at_inference": false,
+    "exact_concept_id_overlap_allowed_in_concept_disjoint_metric": false,
+    "exact_normalized_name_collision_count": 0,
+    "partition_count": 3,
+    "partition_key": "sha256(partition_salt_null_concept_id)_mod_100",
+    "partition_salt": "j1-r1-graph-vocabulary-v1",
+    "partitions": [
+      {
+        "bucket_range_inclusive": [
+          0,
+          79
+        ],
+        "concept_count": 856,
+        "concept_snapshot_sha256": "2a972123a4efffc6e9db7eb981fceaa25501209eda0564a04add1ecdd1a0d78a",
+        "partition": "fit_pool"
+      },
+      {
+        "bucket_range_inclusive": [
+          80,
+          89
+        ],
+        "concept_count": 117,
+        "concept_snapshot_sha256": "de71bb0f894920b6f3cf903d0f482ca2dd6d37e3e20c79c95a840e34cac89e51",
+        "partition": "development_challenge_pool"
+      },
+      {
+        "bucket_range_inclusive": [
+          90,
+          99
+        ],
+        "concept_count": 96,
+        "concept_snapshot_sha256": "71353882e00caac8658759ac96fcb05a2baf85e720f96b7223c6fad29da6a151",
+        "partition": "lockbox_challenge_pool"
+      }
+    ],
+    "question_split_and_concept_split_are_separate_axes": true,
+    "semantic_alias_audit_completed": false,
+    "semantic_disjoint_claim_gate": false
+  },
+  "input_bindings": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "independent_score_capture_sha256": "afebaaf55942a27dcdbba91559e5a456cc9fd93855317845e37ce0211be46d15",
+    "reviewed_reference_answer_pack_sha256": "b2c0465f072994fdb39fffc54f7d85263544fb91f2c3fa40e25227a82434b456",
+    "union_label_pack_sha256": "518e5e6adb50d6abcfecf3b6bdbb3241c4129f7c106eb4be7aa2113f2110e21d"
+  },
+  "learning_enabled": false,
+  "legacy_data": {
+    "binary_row_count": 79,
+    "concepts_repeated_across_questions": 17,
+    "excluded_uncertain_count": 16,
+    "heldout_use_allowed": false,
+    "label_row_count": 95,
+    "labeled_rows_by_vocabulary_partition": {
+      "development_challenge_pool": 6,
+      "fit_pool": 71,
+      "lockbox_challenge_pool": 18
+    },
+    "negative_count": 56,
+    "performance_claim_allowed": false,
+    "positive_count": 23,
+    "question_count": 6,
+    "question_set_sha256": "8f49058cad4096c88afa38594df8914fff379fc3bd1ca49d5c08acf83f870d6e",
+    "reserved_partition_binary_rows_excluded_from_fit": 21,
+    "scope": "legacy_exploratory_train_only",
+    "supervised_fit_pool": {
+      "negative_count": 43,
+      "positive_count": 15,
+      "row_count": 58
+    },
+    "unique_labeled_concept_count": 48
+  },
+  "model_downloads": false,
+  "model_weights_changed": false,
+  "next_step": "prepare_future_development_and_lockbox_manifests_then_run_legacy_train_only_lexical_baseline",
+  "objective_contract": {
+    "automatic_random_negative_labeling_allowed": false,
+    "evaluation_candidate_scope": "full_eligible_graph_vocabulary",
+    "label_mapping": {
+      "approved": 1,
+      "rejected": 0,
+      "uncertain": null
+    },
+    "negative_definition": "user_reviewed_rejected_candidate_only",
+    "objective": "binary_direct_answer_relevance_ranking",
+    "positive_definition": "user_reviewed_approved_direct_or_answer_bearing_concept",
+    "probability_claim_scope": "forbidden_without_exhaustive_reviewed_pairs",
+    "uncertain_policy": "exclude_from_fit_and_metrics",
+    "unit": "question_concept_pair",
+    "unlabeled_graph_concept_policy": "never_assume_negative"
+  },
+  "phase": "J1-R1",
+  "readiness": {
+    "block_reasons": [
+      "future_development_manifest_missing",
+      "future_lockbox_manifest_missing",
+      "lexical_baseline_artifact_missing",
+      "local_embedding_model_snapshot_missing",
+      "semantic_alias_audit_missing_for_semantic_disjoint_claim"
+    ],
+    "embedding_baseline_execution_gate": false,
+    "future_development_manifest_gate": false,
+    "future_lockbox_manifest_gate": false,
+    "graph_vocabulary_split_gate": true,
+    "heldout_gate": false,
+    "learned_head_fit_gate": false,
+    "legacy_train_only_gate": true,
+    "lexical_baseline_execution_gate": false,
+    "lexical_baseline_implementation_gate": true,
+    "performance_claim_gate": false,
+    "production_promotion_gate": false,
+    "reviewed_binary_label_gate": true
+  },
+  "relevance_scorer_contract_sha256": "918183cbb9450c5f2932ce8d11434937c62210f4ea0b0633a4aa43f529f16a3d",
+  "relevance_scorer_contract_version": 1,
+  "split_contract": {
+    "future_development": {
+      "answers_and_labels_fixed_before_predictor_output_reveal": true,
+      "capture_after_contract_required": true,
+      "manifest_required": true,
+      "manifest_required_before_any_baseline_execution": true,
+      "model_selection_allowed": true,
+      "performance_claim_allowed": false,
+      "question_hash_overlap_with_legacy_allowed": false,
+      "sample_size_plan_required": true
+    },
+    "future_lockbox": {
+      "answers_and_labels_hidden_until_model_and_baselines_frozen": true,
+      "manifest_required_before_any_baseline_execution": true,
+      "manifest_required_before_first_supervised_relevance_fit": true,
+      "model_selection_allowed": false,
+      "one_time_open_required": true,
+      "question_hash_overlap_with_train_or_development_allowed": false,
+      "sample_size_plan_required": true
+    },
+    "legacy_train": {
+      "heldout_or_performance_use_allowed": false,
+      "model_selection_allowed": true,
+      "question_scope": "existing_six_public_questions"
+    },
+    "primary_generalization_axis": "future_question_and_capture_time",
+    "row_random_split_allowed": false,
+    "secondary_generalization_axis": "concept_partition_stratified_metrics"
+  },
+  "status": "task_aligned_relevance_scorer_contract_defined_future_data_blocked"
+}

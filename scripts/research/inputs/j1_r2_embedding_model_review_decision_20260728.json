@@ -1,0 +1,28 @@
+{
+  "authorized_actions": [
+    "download_pinned_model_snapshot",
+    "seal_local_model_snapshot",
+    "run_frozen_development_embedding_inference",
+    "audit_frozen_development_embedding_artifact"
+  ],
+  "database_write_authorized": false,
+  "decision": "approved",
+  "embedding_model_contract_sha256": "cb71059d69d2a93a7b2cf33468bee46d2b2a43014f2c6e33e700ce8215c664ba",
+  "embedding_model_decision_sha256": "48a7710f23834fa0b087eca68c8d7f078026489c72785e6b28b7008a5dbe0de9",
+  "embedding_model_decision_version": 1,
+  "forbidden_actions": [
+    "database_write",
+    "heldout_evaluation",
+    "lockbox_materialization",
+    "model_training",
+    "performance_claim",
+    "production_integration"
+  ],
+  "immutable_revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "lockbox_materialization_authorized": false,
+  "model_id": "intfloat/multilingual-e5-small",
+  "phase": "J1-R2-E2",
+  "reviewed_at": "2026-07-28T13:42:14.1599961+09:00",
+  "reviewer_role": "user",
+  "training_authorized": false
+}

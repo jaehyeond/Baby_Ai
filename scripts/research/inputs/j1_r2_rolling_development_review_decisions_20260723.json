@@ -1,0 +1,65 @@
+{
+  "approval_basis": {
+    "approved_as_sealed": true,
+    "content_modifications": [],
+    "positive_context_negative_mapping": "approved_as_sealed",
+    "source": "explicit_user_message"
+  },
+  "decisions": [
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-00"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-01"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-02"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-03"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-04"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-05"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-06"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-07"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-08"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-09"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-10"
+    },
+    {
+      "decision": "approved",
+      "question_id": "j1-r2-dev-0001-11"
+    }
+  ],
+  "overall_decision": "approved",
+  "phase": "J1-R2",
+  "review_decisions_sha256": "dc9a25573965979796febbd4d2d974b78065e79360f81e3729266125a66c5652",
+  "review_decisions_version": 1,
+  "review_packet_sha256": "e5aded97a12ef997ab72d7687cd39e63edfd1e9fa8126f71b8eabaeb8b5f7624",
+  "reviewed_at": "2026-07-23T08:08:35.634562+00:00",
+  "reviewer_role": "user"
+}

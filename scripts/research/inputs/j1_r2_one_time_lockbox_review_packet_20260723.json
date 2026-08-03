@@ -1,0 +1,65 @@
+{
+  "block_reasons": [
+    "explicit_user_review_missing",
+    "generator_not_frozen",
+    "model_cutoff_snapshot_missing",
+    "private_source_bank_missing",
+    "hidden_seed_not_sampled"
+  ],
+  "created_at": "2026-07-23T11:18:22.232034+00:00",
+  "database_writes": false,
+  "generator_freeze_gate": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lexical_baseline_execution_gate": false,
+  "lockbox_generator_spec_sha256": "dde0ffefedd05b7e20f02ac903f55718315eaa403d68f1f78f4c7ba1a18c0898",
+  "lockbox_review_packet_sha256": "01bed5589077472f377aa1aa402d83db2e06c785459a3b34137bd0717fb86ffd",
+  "lockbox_review_packet_version": 1,
+  "lockbox_sample_size_plan_sha256": "3607e14ee99b314a6fb75a957cc4c6e49c17311b08f9662e3e3042997a67b9fb",
+  "next_step": "review_lockbox_distribution_then_freeze_generator",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "proposal": {
+    "exact_instances_generated_after_model_cutoff": true,
+    "explicit_negatives_per_question": 3,
+    "hidden_seed_sampled_after_model_cutoff": true,
+    "minimum_private_source_bank_size": 48,
+    "minimum_private_source_items_per_partition": 16,
+    "one_time_open": true,
+    "performance_claim_allowed": false,
+    "plaintext_questions_in_repository": false,
+    "positive_labels_per_question": 1,
+    "question_count": 24,
+    "source_bank_review_provenance_required": true,
+    "target_partition_counts": {
+      "development_challenge_pool": 8,
+      "fit_pool": 8,
+      "lockbox_challenge_pool": 8
+    },
+    "zero_anchor_and_development_overlap_required": true
+  },
+  "question_materialization_gate": false,
+  "review_gate": false,
+  "review_items": [
+    {
+      "decision": "pending",
+      "review_item_id": "sample_size_and_partition_balance"
+    },
+    {
+      "decision": "pending",
+      "review_item_id": "private_source_bank_and_independent_truth"
+    },
+    {
+      "decision": "pending",
+      "review_item_id": "post_cutoff_hidden_seed_and_commitment"
+    },
+    {
+      "decision": "pending",
+      "review_item_id": "one_time_non_reusable_usage"
+    }
+  ],
+  "reviewer_role_required": "user",
+  "role": "one_time_lockbox",
+  "status": "awaiting_explicit_user_review"
+}

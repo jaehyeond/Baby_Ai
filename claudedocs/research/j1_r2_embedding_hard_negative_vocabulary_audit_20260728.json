@@ -1,0 +1,638 @@
+{
+  "bindings": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+    "embedding_baseline_artifact_sha256": "8a7b8fbfb24014ca356160c530789b7eb468d475c579f8c77bbb946e9c55d8e4",
+    "generator_spec_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+    "hard_negative_review_packet_sha256": "aec20a9d0c714e768c560d8eb4d517edf604ca6c03cd7fc01ed8830fbf2339e4",
+    "implementation_bundle_sha256": "f7a34ffbeac2c8cc4ba13a789f06b14e836099f0ba386cd74e0f5e8539526b4b",
+    "input_file_sha256s": {
+      "candidate_vocabulary": "ae4c13dbc2958b593f6f76dd8a8073b49d2027300ea8f5d36c8dee329f324f2f",
+      "development_generator_spec": "068897f6096e50974501a345b241aaa4474a1e308a3a4f7620906bb08844235f",
+      "development_labels": "20046ce37689ce32901970e2e5bcc98698544c934a75956794a474177134835c",
+      "embedding_baseline_artifact": "cc0d432da410e1cbf6ac5a34e71f36069dc406e563c7d9f5e808e49e6e4f4aad",
+      "embedding_model_decision": "7728eab6d54cba8b7f5eac6995767200c8dfb87ac1161b16a52adc753b634487",
+      "embedding_snapshot_manifest": "d6cce63a5d62127af7b192346822d542cee4fa0b607719ba0ce085130b1ad9be",
+      "hard_negative_audit_cli": "28ab664c2b6c73bfea83f95f69f70411ac0c4388b58c72d57d130e4e6675e753",
+      "hard_negative_audit_module": "b877f2f550f76646deca8bd212809bff3531c12cff4493ca37390835e832797d",
+      "lexical_baseline_artifact": "3c7f3490c2190f33847bf2298fa4d904d96c96503206c2631c11741fad2a4f5e"
+    }
+  },
+  "created_at": "2026-07-28T06:37:31.112350+00:00",
+  "database_write_gate": false,
+  "hard_negative_vocabulary_audit_sha256": "696fe080b26bbb40af6e433394956b8cf6649ca1aff40d843d11288b2f3a04b4",
+  "hard_negative_vocabulary_audit_version": 1,
+  "heldout_gate": false,
+  "learned_head_fit_gate": false,
+  "learning_enabled": false,
+  "lockbox_materialized": false,
+  "next_step": "review_pending_rows_before_any_label_or_training_change",
+  "performance_claim_gate": false,
+  "phase": "J1-R2-E3",
+  "production_promotion_gate": false,
+  "question_summaries": [
+    {
+      "best_positive_rank": 4,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-00",
+      "review_candidate_count": 5,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 67,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-01",
+      "review_candidate_count": 9,
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "best_positive_rank": 4,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-02",
+      "review_candidate_count": 5,
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "best_positive_rank": 227,
+      "machine_flagged_review_candidate_count": 6,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-03",
+      "review_candidate_count": 9,
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "best_positive_rank": 3,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-04",
+      "review_candidate_count": 5,
+      "target_partition": "development_challenge_pool"
+    },
+    {
+      "best_positive_rank": 76,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-05",
+      "review_candidate_count": 9,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 1,
+      "machine_flagged_review_candidate_count": 2,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-06",
+      "review_candidate_count": 5,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 230,
+      "machine_flagged_review_candidate_count": 1,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-07",
+      "review_candidate_count": 9,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 3,
+      "machine_flagged_review_candidate_count": 2,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-08",
+      "review_candidate_count": 5,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 2,
+      "machine_flagged_review_candidate_count": 0,
+      "positive_in_top_8": true,
+      "question_id": "j1-r2-dev-0001-09",
+      "review_candidate_count": 5,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 14,
+      "machine_flagged_review_candidate_count": 2,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-10",
+      "review_candidate_count": 9,
+      "target_partition": "fit_pool"
+    },
+    {
+      "best_positive_rank": 12,
+      "machine_flagged_review_candidate_count": 3,
+      "positive_in_top_8": false,
+      "question_id": "j1-r2-dev-0001-11",
+      "review_candidate_count": 9,
+      "target_partition": "fit_pool"
+    }
+  ],
+  "review_complete_gate": false,
+  "selection_summary": {
+    "auto_assigned_context_count": 0,
+    "auto_assigned_hard_negative_count": 0,
+    "auto_assigned_positive_count": 0,
+    "auto_assigned_unrelated_negative_count": 0,
+    "question_count": 12,
+    "review_row_count": 84,
+    "selected_machine_surface_flag_counts": {
+      "boundary_punctuation": 12,
+      "boundary_punctuation_variant": 10
+    },
+    "selection_reason_counts": {
+      "positive_rank_neighbor_for_top8_miss": 24,
+      "top_unjudged": 60
+    },
+    "unique_selected_concept_count": 67
+  },
+  "status": "development_diagnostic_generated_review_pending_not_training_data",
+  "training_data_materialization_gate": false,
+  "vocabulary_quality": {
+    "boundary_punctuation_variant_group_count": 6,
+    "boundary_punctuation_variant_groups": [
+      {
+        "boundary_punctuation_key": "구현해줘",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "8cb633d9-6289-4072-a342-6481edcaf0ad",
+            "concept_name": "구현해줘",
+            "normalized_surface_key": "구현해줘"
+          },
+          {
+            "concept_id": "a9108715-2a21-40fd-880b-815ddcb03838",
+            "concept_name": "구현해줘.",
+            "normalized_surface_key": "구현해줘."
+          }
+        ]
+      },
+      {
+        "boundary_punctuation_key": "그래프에서",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "244ce51f-1bb3-4416-b2f2-6c5b0659286e",
+            "concept_name": "그래프에서.",
+            "normalized_surface_key": "그래프에서."
+          },
+          {
+            "concept_id": "ee0c8709-ab69-42ba-8daa-ad5cd6df91e9",
+            "concept_name": "그래프에서",
+            "normalized_surface_key": "그래프에서"
+          }
+        ]
+      },
+      {
+        "boundary_punctuation_key": "만들어줘",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "515000fd-3839-4b49-b355-9756d2a0198e",
+            "concept_name": "만들어줘.",
+            "normalized_surface_key": "만들어줘."
+          },
+          {
+            "concept_id": "70879c83-6310-430f-9c85-04aac749e0aa",
+            "concept_name": "만들어줘",
+            "normalized_surface_key": "만들어줘"
+          }
+        ]
+      },
+      {
+        "boundary_punctuation_key": "사용",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "86f2d31c-2297-489d-b408-a80cdbc64a86",
+            "concept_name": "사용",
+            "normalized_surface_key": "사용"
+          },
+          {
+            "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+            "concept_name": "사용.",
+            "normalized_surface_key": "사용."
+          }
+        ]
+      },
+      {
+        "boundary_punctuation_key": "사용해서",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "3a57972e-9e9f-4380-affc-1945a8fa9d49",
+            "concept_name": "사용해서",
+            "normalized_surface_key": "사용해서"
+          },
+          {
+            "concept_id": "8e2b61c4-3160-464c-959d-77a4c3893dc9",
+            "concept_name": "사용해서.",
+            "normalized_surface_key": "사용해서."
+          }
+        ]
+      },
+      {
+        "boundary_punctuation_key": "알고리즘으로",
+        "member_count": 2,
+        "members": [
+          {
+            "concept_id": "a19cf002-590d-454c-88af-1cb74a77b0af",
+            "concept_name": "알고리즘으로.",
+            "normalized_surface_key": "알고리즘으로."
+          },
+          {
+            "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+            "concept_name": "알고리즘으로",
+            "normalized_surface_key": "알고리즘으로"
+          }
+        ]
+      }
+    ],
+    "candidate_count": 1069,
+    "flagged_concept_count": 41,
+    "flagged_concepts": [
+      {
+        "boundary_punctuation_key": "햇님 (태양",
+        "concept_id": "0386a245-0aba-40dc-9ff7-1527cb569f82",
+        "concept_name": "햇님 (태양)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "햇님 (태양)"
+      },
+      {
+        "boundary_punctuation_key": "포함",
+        "concept_id": "0958f336-0a87-4711-a468-60095f849d82",
+        "concept_name": "포함.",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "포함."
+      },
+      {
+        "boundary_punctuation_key": "get",
+        "concept_id": "0f2a027f-75cf-4404-b2a1-45dd65701d3e",
+        "concept_name": "get,",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "get,"
+      },
+      {
+        "boundary_punctuation_key": "그래프에서",
+        "concept_id": "244ce51f-1bb3-4416-b2f2-6c5b0659286e",
+        "concept_name": "그래프에서.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "그래프에서."
+      },
+      {
+        "boundary_punctuation_key": "감정 (무서움",
+        "concept_id": "2ba11ffd-6dcc-4ae9-acf0-db416df86c40",
+        "concept_name": "감정 (무서움)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "감정 (무서움)"
+      },
+      {
+        "boundary_punctuation_key": "set",
+        "concept_id": "375c0fa9-bb5b-4427-a505-0380713e282d",
+        "concept_name": "set,",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "set,"
+      },
+      {
+        "boundary_punctuation_key": "search",
+        "concept_id": "376c08d0-0bc6-4674-8434-ec8390bb1010",
+        "concept_name": "search,",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "search,"
+      },
+      {
+        "boundary_punctuation_key": "사용해서",
+        "concept_id": "3a57972e-9e9f-4380-affc-1945a8fa9d49",
+        "concept_name": "사용해서",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "사용해서"
+      },
+      {
+        "boundary_punctuation_key": "박재현 (사용자",
+        "concept_id": "4066ee8a-38ba-4ba9-97d1-29a8effa5b97",
+        "concept_name": "박재현 (사용자)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "박재현 (사용자)"
+      },
+      {
+        "boundary_punctuation_key": "비비 (ai 모델",
+        "concept_id": "4e47caec-f320-498e-8936-8c80b32a86a1",
+        "concept_name": "비비 (AI 모델)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "비비 (ai 모델)"
+      },
+      {
+        "boundary_punctuation_key": "만들어줘",
+        "concept_id": "515000fd-3839-4b49-b355-9756d2a0198e",
+        "concept_name": "만들어줘.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "만들어줘."
+      },
+      {
+        "boundary_punctuation_key": "구현",
+        "concept_id": "54880cf2-b4b6-48e4-9d88-27f2d1d93fc8",
+        "concept_name": "구현.",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "구현."
+      },
+      {
+        "boundary_punctuation_key": "방식으로",
+        "concept_id": "583fd2eb-0a93-4256-a22c-04a69ffb398c",
+        "concept_name": "방식으로.",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "방식으로."
+      },
+      {
+        "boundary_punctuation_key": "좋음 (기분",
+        "concept_id": "58a6dc87-c8bd-4203-a9d9-045097c9b97b",
+        "concept_name": "좋음 (기분)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "좋음 (기분)"
+      },
+      {
+        "boundary_punctuation_key": "비비고 (ai",
+        "concept_id": "5c1fc820-0335-463e-b494-a3971bc03a54",
+        "concept_name": "비비고 (AI)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "비비고 (ai)"
+      },
+      {
+        "boundary_punctuation_key": "수열(lis",
+        "concept_id": "5e7a3a5d-fd2a-4cda-960c-224ecd52b6c8",
+        "concept_name": "수열(lis)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "수열(lis)"
+      },
+      {
+        "boundary_punctuation_key": "모름 (지식 부족",
+        "concept_id": "5ee340f8-b785-499e-81f3-0e20d9b5a678",
+        "concept_name": "모름 (지식 부족)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "모름 (지식 부족)"
+      },
+      {
+        "boundary_punctuation_key": "trie(트라이",
+        "concept_id": "646f3157-1b31-40d5-89b1-b4fef74c5510",
+        "concept_name": "trie(트라이)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "trie(트라이)"
+      },
+      {
+        "boundary_punctuation_key": "만들어줘",
+        "concept_id": "70879c83-6310-430f-9c85-04aac749e0aa",
+        "concept_name": "만들어줘",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "만들어줘"
+      },
+      {
+        "boundary_punctuation_key": "사용자 (개발자",
+        "concept_id": "7ea47f69-78ae-40b4-931b-875564090d34",
+        "concept_name": "사용자 (개발자)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "사용자 (개발자)"
+      },
+      {
+        "boundary_punctuation_key": "insert",
+        "concept_id": "810205eb-ad85-4882-b914-0356230792cd",
+        "concept_name": "insert,",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "insert,"
+      },
+      {
+        "boundary_punctuation_key": "사용",
+        "concept_id": "86f2d31c-2297-489d-b408-a80cdbc64a86",
+        "concept_name": "사용",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "사용"
+      },
+      {
+        "boundary_punctuation_key": "구현해줘",
+        "concept_id": "8cb633d9-6289-4072-a342-6481edcaf0ad",
+        "concept_name": "구현해줘",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "구현해줘"
+      },
+      {
+        "boundary_punctuation_key": "사용해서",
+        "concept_id": "8e2b61c4-3160-464c-959d-77a4c3893dc9",
+        "concept_name": "사용해서.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "사용해서."
+      },
+      {
+        "boundary_punctuation_key": "iv=4",
+        "concept_id": "8e8020eb-83c8-4401-b735-02969314f452",
+        "concept_name": "iv=4,",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "iv=4,"
+      },
+      {
+        "boundary_punctuation_key": "ai (비비",
+        "concept_id": "97d673c1-ffd9-42b6-a450-2d06cdbd7905",
+        "concept_name": "AI (비비)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "ai (비비)"
+      },
+      {
+        "boundary_punctuation_key": "알고리즘으로",
+        "concept_id": "a19cf002-590d-454c-88af-1cb74a77b0af",
+        "concept_name": "알고리즘으로.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "알고리즘으로."
+      },
+      {
+        "boundary_punctuation_key": "구현해줘",
+        "concept_id": "a9108715-2a21-40fd-880b-815ddcb03838",
+        "concept_name": "구현해줘.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "구현해줘."
+      },
+      {
+        "boundary_punctuation_key": "sort",
+        "concept_id": "ab4b0ce5-10d3-4a3f-951c-7af2f7d95025",
+        "concept_name": "sort)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "sort)"
+      },
+      {
+        "boundary_punctuation_key": "알고리즘으로",
+        "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+        "concept_name": "알고리즘으로",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "알고리즘으로"
+      },
+      {
+        "boundary_punctuation_key": "비비 (ai",
+        "concept_id": "b85a86fb-5cfd-4edf-b024-fc384cb09ed0",
+        "concept_name": "비비 (AI)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "비비 (ai)"
+      },
+      {
+        "boundary_punctuation_key": "출력",
+        "concept_id": "b95bbe59-f740-4126-a78d-8486eed67c33",
+        "concept_name": "출력.",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "출력."
+      },
+      {
+        "boundary_punctuation_key": "수열(lcs",
+        "concept_id": "c0d89d1d-bc6c-44ce-8ce6-f1e1cb8c2e08",
+        "concept_name": "수열(lcs)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "수열(lcs)"
+      },
+      {
+        "boundary_punctuation_key": "개발자 (사용자",
+        "concept_id": "c25d5c2d-e88b-4639-9689-a9f338c10c86",
+        "concept_name": "개발자 (사용자)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "개발자 (사용자)"
+      },
+      {
+        "boundary_punctuation_key": "사랑(연애",
+        "concept_id": "cd3d0292-6833-4307-80f4-222f617d3b63",
+        "concept_name": "사랑(연애)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "사랑(연애)"
+      },
+      {
+        "boundary_punctuation_key": "사용자 (개발자님",
+        "concept_id": "cf8d6bc3-8d3c-4ac5-86e1-c6a5ca4143f2",
+        "concept_name": "사용자 (개발자님)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "사용자 (개발자님)"
+      },
+      {
+        "boundary_punctuation_key": "경로",
+        "concept_id": "d337522e-ced6-40ef-8fc5-1a8abafab8d6",
+        "concept_name": "경로.",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "경로."
+      },
+      {
+        "boundary_punctuation_key": "사용",
+        "concept_id": "e1a3c42b-78ca-41be-a54f-9a5e7f63009f",
+        "concept_name": "사용.",
+        "machine_surface_flags": [
+          "boundary_punctuation",
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "사용."
+      },
+      {
+        "boundary_punctuation_key": "그래프에서",
+        "concept_id": "ee0c8709-ab69-42ba-8daa-ad5cd6df91e9",
+        "concept_name": "그래프에서",
+        "machine_surface_flags": [
+          "boundary_punctuation_variant"
+        ],
+        "normalized_surface_key": "그래프에서"
+      },
+      {
+        "boundary_punctuation_key": "해님 (태양",
+        "concept_id": "f47bea50-a0eb-460e-8ba2-de4c23e1c771",
+        "concept_name": "해님 (태양)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "해님 (태양)"
+      },
+      {
+        "boundary_punctuation_key": "ai(비비",
+        "concept_id": "fb23beb4-d23d-45f0-9d58-318a4fc44384",
+        "concept_name": "AI(비비)",
+        "machine_surface_flags": [
+          "boundary_punctuation"
+        ],
+        "normalized_surface_key": "ai(비비)"
+      }
+    ],
+    "interpretation": "machine flags are deterministic review cues, not automatic vocabulary-quality labels",
+    "machine_surface_flag_counts": {
+      "boundary_punctuation": 35,
+      "boundary_punctuation_variant": 12
+    },
+    "normalized_surface_collision_group_count": 0,
+    "normalized_surface_collision_groups": []
+  }
+}

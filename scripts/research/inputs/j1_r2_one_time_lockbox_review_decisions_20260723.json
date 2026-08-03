@@ -1,0 +1,35 @@
+{
+  "approval_basis": {
+    "approved_as_sealed": true,
+    "content_modifications": [
+      "clarified_24_question_distribution_not_exact_question_approval",
+      "required_source_bank_review_provenance_and_zero_overlap_audit"
+    ],
+    "source": "explicit_user_message"
+  },
+  "decisions": [
+    {
+      "decision": "approved",
+      "review_item_id": "sample_size_and_partition_balance"
+    },
+    {
+      "decision": "approved",
+      "review_item_id": "private_source_bank_and_independent_truth"
+    },
+    {
+      "decision": "approved",
+      "review_item_id": "post_cutoff_hidden_seed_and_commitment"
+    },
+    {
+      "decision": "approved",
+      "review_item_id": "one_time_non_reusable_usage"
+    }
+  ],
+  "lockbox_review_decisions_sha256": "bdd4b58fe362edb734785b73b0e0a00f27fcfdbf4551f69ff024bd2fa3d19fb3",
+  "lockbox_review_decisions_version": 1,
+  "lockbox_review_packet_sha256": "01bed5589077472f377aa1aa402d83db2e06c785459a3b34137bd0717fb86ffd",
+  "overall_decision": "approved",
+  "phase": "J1-R2",
+  "reviewed_at": "2026-07-23T11:18:32.417696+00:00",
+  "reviewer_role": "user"
+}

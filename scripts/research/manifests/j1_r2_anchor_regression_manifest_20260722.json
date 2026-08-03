@@ -1,0 +1,57 @@
+{
+  "block_reasons": [],
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "cohort_generation_id": "anchor-generation-0001",
+  "cohort_id": "j1-r2-anchor-regression-legacy-six",
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_manifest_sha256": "76355a8953d8dc88b4d427b3e9fb8cf494411cb398ce7bdf80394e463e35fc88",
+  "cohort_manifest_version": 1,
+  "created_at": "2026-07-22T04:39:45.065408+00:00",
+  "database_writes": false,
+  "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+  "evaluation_only_not_live_learning_block": true,
+  "execution_gate": true,
+  "generator": {
+    "hidden_seed_commitment_sha256": null,
+    "implementation_sha256": null,
+    "independent_ground_truth_required": true,
+    "mode": "historical_fixed_questions",
+    "personal_user_memory_allowed": false,
+    "sample_size_plan_sha256": null,
+    "specification_sha256": "918183cbb9450c5f2932ce8d11434937c62210f4ea0b0633a4aa43f529f16a3d",
+    "subject_model_generated_questions": false
+  },
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lifecycle_state": "active",
+  "live_learning_blocked": false,
+  "materialization": {
+    "materialized": true,
+    "plaintext_questions_in_repository": true,
+    "question_count": 6,
+    "question_hashes": [
+      "1c9fb2f4d78363676dbb29d38c3deb29eb99a61631969f8e27df971e25701dd9",
+      "36d3fb7a9be1b245a133ec255d837296af2a882ead34d722b7624470d92a2f31",
+      "9c53339010a12500529fa668fee44fe3a5d3022f7dcf2672607d9b64757fbf8b",
+      "ba3413c96d1c46b0bc4eaabe2b6ba9c6cee498a5d1ae920334aacd28e6b1b795",
+      "da2cab3fe04e3470863bd2c8a64af7ea3dc27d633147b4510120d28efb543286",
+      "f53db861fa7a1f6791366bb30f260ac56b0f52c35f399c3fd59b08445899b17a"
+    ],
+    "question_set_sha256": "58a6c684e5d41e8ad3458dcb5458dda46a4432bcf7434121bddb48d353452a4d"
+  },
+  "next_step": "use_only_for_regression_and_retention_tracking",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "review_status": "historical_user_reviewed",
+  "role": "anchor_regression",
+  "status": "materialized_known_regression_not_heldout",
+  "usage": {
+    "heldout_claim_allowed": false,
+    "model_selection_allowed": false,
+    "performance_claim_allowed": false,
+    "release_after_consumption": false,
+    "reusable": true
+  }
+}

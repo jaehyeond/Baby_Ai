@@ -1,0 +1,1902 @@
+{
+  "aggregate_metrics": {
+    "macro_mrr": 0.012469448422,
+    "macro_ndcg_at_8": 0.0,
+    "macro_recall_at_8": 0.0,
+    "macro_reviewed_pool_average_precision": 0.576388888889
+  },
+  "baseline_id": "lexical_char_ngram_tfidf_v1",
+  "bindings": {
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+    "cohort_readiness_sha256": "2954f13283c593857e7de70b7352f247438971a9b3e0f8405b59826e659f04f4",
+    "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+    "development_manifest_sha256": "f93e8c1e975763c8b06d045d905e15a777d95ae1948247e1196ffd8d3a27a982",
+    "implementation_bundle_sha256": "564572d22a43e1941779e808f07419f21d3480c110359631fa9b20c2dcd70cf8",
+    "input_file_sha256s": {
+      "anchor_manifest": "77e30fbaa4bc43833a72cce823161dca9f1bce97c74abcbc284351364a9991c1",
+      "baseline_cli": "7706d1d807e95ed25ac045cff27a448cefb44790854c4d3614044f3853fd69ae",
+      "baseline_module": "409656d0ad415771f72c73572dbf75c84ee18eb7241fb74512f286956cf3b6d2",
+      "candidate_vocabulary": "ae4c13dbc2958b593f6f76dd8a8073b49d2027300ea8f5d36c8dee329f324f2f",
+      "cohort_readiness": "dd53577d27ae8d7a0298aca8b85e370813953f11c8d17266964ddb60d8e2009d",
+      "development_draft_manifest": "fb765778cf1a3fa10bbf1116b454afc51743b815d2bb6ccc334b326f26298481",
+      "development_generator_spec": "068897f6096e50974501a345b241aaa4474a1e308a3a4f7620906bb08844235f",
+      "development_labels": "20046ce37689ce32901970e2e5bcc98698544c934a75956794a474177134835c",
+      "development_manifest": "19bb88489f268483f9e124f7ad48145eecabe1332beb96089c9669ce367d61bc",
+      "development_review_decisions": "1834deaed1b76a89316f5fadb8af440861ba9e96083f60aded2d8812e0f75804",
+      "development_review_packet": "32cff521633a580028c99a1c5ed6b168dbc0406007755168d92e54c869c42855",
+      "development_sample_plan": "5b8d738a314ec7a1f0c9d720660cd153830fb63a67a75e38a7c2954b54782d35",
+      "lifecycle_contract": "4191dd09c0b7057215063c63d0fae1b792ccf82b9a494554c8cfa8d3bed27fbf",
+      "lockbox_generator_manifest": "76168b9b300cf6700ae87d62d83de5a7198081cc7da0bc218cd752189c34e4de",
+      "r1_contract": "756477a4415c7bf45ce086e4a048f7e59a08a192f2b7ee7e02712b3bab0f63f3"
+    },
+    "lockbox_generator_manifest_sha256": "0b5bc0cf40edb8826e1ef4f2cc705c243a02de458f182c93d153ad79a471b46f",
+    "r1_contract_sha256": "918183cbb9450c5f2932ce8d11434937c62210f4ea0b0633a4aa43f529f16a3d"
+  },
+  "candidate_count": 1069,
+  "configuration": {
+    "analyzer": "character_ngrams",
+    "candidate_scope": "all_eligible_concepts",
+    "display_k": 20,
+    "evaluation_k": 8,
+    "forbidden_question_features": [
+      "closed_world_fact",
+      "positive_concepts",
+      "explicit_negative_concepts",
+      "review_decisions"
+    ],
+    "idf": "log((1+n_documents)/(1+document_frequency))+1",
+    "idf_corpus": "sealed_candidate_names_only_without_labels",
+    "ngram_range": [
+      2,
+      5
+    ],
+    "normalization": "unicode_nfkc_casefold_whitespace_collapse",
+    "question_features": "question_text_only",
+    "similarity": "cosine",
+    "term_frequency": "raw_count",
+    "tie_breaker": "concept_id_ascending",
+    "vector_normalization": "l2"
+  },
+  "created_at": "2026-07-28T03:52:04.034267+00:00",
+  "database_writes": false,
+  "external_api_used": false,
+  "gpu_inference_executed": false,
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lexical_baseline_artifact_sha256": "3fe59de88762142c37650b4e6c10ab2a420ad9c9725fec5562b8f1c8f9e3888f",
+  "lexical_baseline_artifact_version": 1,
+  "lockbox_materialized": false,
+  "model_downloaded": false,
+  "next_step": "review_result_then_select_and_pin_frozen_local_embedding_model",
+  "partition_metrics": {
+    "development_challenge_pool": {
+      "macro_mrr": 0.030843836794,
+      "macro_ndcg_at_8": 0.0,
+      "macro_recall_at_8": 0.0,
+      "macro_reviewed_pool_average_precision": 0.833333333333,
+      "question_count": 4
+    },
+    "fit_pool": {
+      "macro_mrr": 0.003282254237,
+      "macro_ndcg_at_8": 0.0,
+      "macro_recall_at_8": 0.0,
+      "macro_reviewed_pool_average_precision": 0.447916666667,
+      "question_count": 8
+    }
+  },
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "question_count": 12,
+  "questions": [
+    {
+      "full_ranking_sha256": "fb7b672a8bd4a368bf3ca6a60b16ec89c6a98a4b3522d71a9bf27fdac979f947",
+      "metrics": {
+        "mrr": 0.007874015748,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 1.0
+      },
+      "nonzero_candidate_count": 43,
+      "positive_concept_ids": [
+        "1416920b-6d2a-4cd6-a630-a0a509752fc1"
+      ],
+      "positive_ranks": {
+        "1416920b-6d2a-4cd6-a630-a0a509752fc1": 127
+      },
+      "positive_scores": {
+        "1416920b-6d2a-4cd6-a630-a0a509752fc1": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-00",
+      "question_sha256": "9cea73dcf7753af5e97384026b49ce793b3db393160920449a903748a2bf2da5",
+      "reviewed_pool": [
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 127,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 548,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 167,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "full_vocabulary_rank": 674,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "a8cadd1c-3f9b-42ac-ab33-a3181beaa8f9",
+          "concept_name": "대한민국",
+          "score": 0.539275954835
+        },
+        {
+          "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+          "concept_name": "한국의 수도",
+          "score": 0.332278256888
+        },
+        {
+          "concept_id": "43019bfd-ebeb-455d-aa29-1d2052546181",
+          "concept_name": "도시",
+          "score": 0.207900409914
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "concept_name": "수도",
+          "score": 0.19920316606
+        },
+        {
+          "concept_id": "87b334e6-ec92-4fa7-b52c-70931cd32ad1",
+          "concept_name": "다른 도시",
+          "score": 0.188171712578
+        },
+        {
+          "concept_id": "d5ef5328-2348-47b2-8b12-ad0313805427",
+          "concept_name": "어 어",
+          "score": 0.127108561532
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.089446715137
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.071441269513
+        },
+        {
+          "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+          "concept_name": "맛있는 것",
+          "score": 0.068090785913
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.067458457369
+        },
+        {
+          "concept_id": "861a2af8-3dcb-4bc9-bc80-1d6199dd2af0",
+          "concept_name": "모르는 말",
+          "score": 0.06745745056
+        },
+        {
+          "concept_id": "cb240b23-bbb4-4c89-96c0-a8f75b61d268",
+          "concept_name": "비비는 눈",
+          "score": 0.065450304886
+        },
+        {
+          "concept_id": "6d43394f-2e2f-462d-bbbe-bbe3b358563b",
+          "concept_name": "감정 표현",
+          "score": 0.063681032574
+        },
+        {
+          "concept_id": "0c64990a-e5d7-493f-bfa5-e864173497fb",
+          "concept_name": "나이 질문",
+          "score": 0.059472490388
+        },
+        {
+          "concept_id": "f8d84348-2f8a-40be-affa-5ca595e646a6",
+          "concept_name": "잘못된 행동",
+          "score": 0.059300163226
+        },
+        {
+          "concept_id": "62ed5ecb-82ca-490f-82d9-f955316388be",
+          "concept_name": "재미있는 것",
+          "score": 0.058948279626
+        },
+        {
+          "concept_id": "f00a5be8-060b-45f3-96bc-9913e8c00fec",
+          "concept_name": "반짝이는 것",
+          "score": 0.057707788418
+        },
+        {
+          "concept_id": "f983f313-6297-400b-ad46-d3ddf39025f5",
+          "concept_name": "나리수도교",
+          "score": 0.057521496886
+        },
+        {
+          "concept_id": "79eb6cd0-4fb5-45c4-8aa5-08e926972cda",
+          "concept_name": "모르는 정보",
+          "score": 0.056741130194
+        },
+        {
+          "concept_id": "2a5d2f21-9c16-45d6-9a72-e49a96f85770",
+          "concept_name": "모르는 단어",
+          "score": 0.056278439732
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "25d7711d0bd370377f1995134744df93e0425f3025f60a4b9d10cc8434d8957a",
+      "metrics": {
+        "mrr": 0.001828153565,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.333333333333
+      },
+      "nonzero_candidate_count": 48,
+      "positive_concept_ids": [
+        "7d46d662-71c9-4d21-93c3-762a3f7c1dab"
+      ],
+      "positive_ranks": {
+        "7d46d662-71c9-4d21-93c3-762a3f7c1dab": 547
+      },
+      "positive_scores": {
+        "7d46d662-71c9-4d21-93c3-762a3f7c1dab": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-01",
+      "question_sha256": "7638c62c2647c814349bbff0030126976e5672ed8ff909cf71e1adf843211a08",
+      "reviewed_pool": [
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 547,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 133,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "full_vocabulary_rank": 730,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 329,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "development_challenge_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "054d8a15-465c-411c-ba9a-4c2fd7b06010",
+          "concept_name": "회전하는",
+          "score": 0.326932410925
+        },
+        {
+          "concept_id": "8b9e44c3-30ce-437e-a325-1f04e7d64625",
+          "concept_name": "공전",
+          "score": 0.300368307673
+        },
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "score": 0.300368307673
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.200850800749
+        },
+        {
+          "concept_id": "5944a33e-ec5f-4aac-b2c5-1499e87fdceb",
+          "concept_name": "자연이",
+          "score": 0.173417723291
+        },
+        {
+          "concept_id": "27ddf691-d550-47ea-b631-afed74fd4c68",
+          "concept_name": "좋아하는 기능",
+          "score": 0.145373221141
+        },
+        {
+          "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+          "concept_name": "하늘을 나는 자동차",
+          "score": 0.141754428632
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.135091049983
+        },
+        {
+          "concept_id": "5056b3b2-0755-4db6-8a0e-61c9a3a6bc54",
+          "concept_name": "구하는",
+          "score": 0.106539433112
+        },
+        {
+          "concept_id": "74360132-ca90-482d-9882-b481f40e389d",
+          "concept_name": "빨간 공",
+          "score": 0.104579670336
+        },
+        {
+          "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+          "concept_name": "이야기하",
+          "score": 0.084625192353
+        },
+        {
+          "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+          "concept_name": "신나는 이야기",
+          "score": 0.083906060551
+        },
+        {
+          "concept_id": "2a49b4a5-baf1-420a-b796-3b2b7060d94f",
+          "concept_name": "이야기두",
+          "score": 0.083018497423
+        },
+        {
+          "concept_id": "419ff1dc-9fef-4e28-9f00-aa97e2a61f1c",
+          "concept_name": "날짜 공부",
+          "score": 0.082740954341
+        },
+        {
+          "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+          "concept_name": "재밌는 이야기",
+          "score": 0.081659259574
+        },
+        {
+          "concept_id": "5192014a-a518-459d-9d5e-2a60b2d81ff9",
+          "concept_name": "날씨 공부",
+          "score": 0.080665982737
+        },
+        {
+          "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+          "concept_name": "좋은 아침",
+          "score": 0.076499344409
+        },
+        {
+          "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+          "concept_name": "재미있는 이야기",
+          "score": 0.076067997373
+        },
+        {
+          "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+          "concept_name": "좋은 하루",
+          "score": 0.075661024152
+        },
+        {
+          "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+          "concept_name": "맑은 날씨",
+          "score": 0.075516720839
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "54787434d90e106a1fc07827e8a5312d68476832f2bffa34dac9f48017091c77",
+      "metrics": {
+        "mrr": 0.014084507042,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 1.0
+      },
+      "nonzero_candidate_count": 55,
+      "positive_concept_ids": [
+        "03a8049b-3b54-4a05-9fad-365f3499a3bb"
+      ],
+      "positive_ranks": {
+        "03a8049b-3b54-4a05-9fad-365f3499a3bb": 71
+      },
+      "positive_scores": {
+        "03a8049b-3b54-4a05-9fad-365f3499a3bb": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-02",
+      "question_sha256": "356e2cf9c5cd0268173babd32f541b396b91596e82f2cdeac6d14e1f393cdfa8",
+      "reviewed_pool": [
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "full_vocabulary_rank": 71,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "full_vocabulary_rank": 719,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 175,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "full_vocabulary_rank": 460,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "development_challenge_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "9bc9fefd-a380-470c-8bdb-ef5ee33afc8b",
+          "concept_name": "물방울",
+          "score": 0.354709653934
+        },
+        {
+          "concept_id": "e7ae3e5f-d407-4e41-8855-2f53dd77fd1e",
+          "concept_name": "보이는 부분",
+          "score": 0.291420146983
+        },
+        {
+          "concept_id": "1b21a008-7eae-4d90-8727-0c2654590a20",
+          "concept_name": "반짝반짝 작은 별",
+          "score": 0.269778333032
+        },
+        {
+          "concept_id": "f00a5be8-060b-45f3-96bc-9913e8c00fec",
+          "concept_name": "반짝이는 것",
+          "score": 0.253142393024
+        },
+        {
+          "concept_id": "cc82462c-2eb3-4a16-824b-e315ffded4c8",
+          "concept_name": "반짝이는 것들",
+          "score": 0.218813043296
+        },
+        {
+          "concept_id": "44480ee8-96b0-4886-b1c7-52507b429293",
+          "concept_name": "모여",
+          "score": 0.204791714183
+        },
+        {
+          "concept_id": "55e38fb6-8681-472a-bc1e-970e6ba3352f",
+          "concept_name": "하늘",
+          "score": 0.179023810288
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.149925250869
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.119745596446
+        },
+        {
+          "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+          "concept_name": "맛있는 것",
+          "score": 0.114129715599
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.113069844195
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.112212396305
+        },
+        {
+          "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+          "concept_name": "좋은 아침",
+          "score": 0.104314812683
+        },
+        {
+          "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+          "concept_name": "좋은 하루",
+          "score": 0.10317167582
+        },
+        {
+          "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+          "concept_name": "맑은 날씨",
+          "score": 0.102974903244
+        },
+        {
+          "concept_id": "62ed5ecb-82ca-490f-82d9-f955316388be",
+          "concept_name": "재미있는 것",
+          "score": 0.09880559166
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.092105348634
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.071351526211
+        },
+        {
+          "concept_id": "1dbd75f5-9c31-486a-93a4-992367f83232",
+          "concept_name": "배열에서",
+          "score": 0.06105318095
+        },
+        {
+          "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+          "concept_name": "이야기하",
+          "score": 0.057697625756
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "a7234ae5dc42f3191fd3fdb74e38d1c65e15326f6de8d9b4f817220f1ef06d80",
+      "metrics": {
+        "mrr": 0.1,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 1.0
+      },
+      "nonzero_candidate_count": 33,
+      "positive_concept_ids": [
+        "a9bdd518-7107-47e1-9aee-63cb4ec9052b"
+      ],
+      "positive_ranks": {
+        "a9bdd518-7107-47e1-9aee-63cb4ec9052b": 10
+      },
+      "positive_scores": {
+        "a9bdd518-7107-47e1-9aee-63cb4ec9052b": 0.070083570084
+      },
+      "question_id": "j1-r2-dev-0001-03",
+      "question_sha256": "07f4d9d7fb415116d9d4996b4041da9b950b9473903410d23265dcb21b72a8e7",
+      "reviewed_pool": [
+        {
+          "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+          "full_vocabulary_rank": 10,
+          "label": 1,
+          "score": 0.070083570084
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 120,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "full_vocabulary_rank": 674,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 320,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "development_challenge_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "ee0c8709-ab69-42ba-8daa-ad5cd6df91e9",
+          "concept_name": "그래프에서",
+          "score": 0.56303825566
+        },
+        {
+          "concept_id": "244ce51f-1bb3-4416-b2f2-6c5b0659286e",
+          "concept_name": "그래프에서.",
+          "score": 0.468102646747
+        },
+        {
+          "concept_id": "1b21a008-7eae-4d90-8727-0c2654590a20",
+          "concept_name": "반짝반짝 작은 별",
+          "score": 0.221884160702
+        },
+        {
+          "concept_id": "5bc496a7-8df0-459a-ae47-bc98dae67b6c",
+          "concept_name": "가장",
+          "score": 0.180143339238
+        },
+        {
+          "concept_id": "433bf360-8538-46ae-bcf9-b4bcadbad275",
+          "concept_name": "가장 중요한 곳",
+          "score": 0.11883984886
+        },
+        {
+          "concept_id": "a602d36c-5b43-4f11-a116-c8e224308e2f",
+          "concept_name": "사이클",
+          "score": 0.110138122044
+        },
+        {
+          "concept_id": "d337522e-ced6-40ef-8fc5-1a8abafab8d6",
+          "concept_name": "경로.",
+          "score": 0.103328100172
+        },
+        {
+          "concept_id": "d4ae4c38-691e-40a1-8caa-f85b6324e508",
+          "concept_name": "첫 경험",
+          "score": 0.078591646638
+        },
+        {
+          "concept_id": "b47c5ba4-28b0-452e-b1ca-c085d05c6dd9",
+          "concept_name": "일단 해",
+          "score": 0.077879412964
+        },
+        {
+          "concept_id": "a9bdd518-7107-47e1-9aee-63cb4ec9052b",
+          "concept_name": "최단경로",
+          "score": 0.070083570084
+        },
+        {
+          "concept_id": "92ac9d1c-d368-4149-8252-76538d1f4ccd",
+          "concept_name": "사용 목적",
+          "score": 0.061612067394
+        },
+        {
+          "concept_id": "49b9a786-b3b7-4758-851a-4d9e74a4aa26",
+          "concept_name": "구름 사탕",
+          "score": 0.061528141659
+        },
+        {
+          "concept_id": "1dbd75f5-9c31-486a-93a4-992367f83232",
+          "concept_name": "배열에서",
+          "score": 0.056871437978
+        },
+        {
+          "concept_id": "96245e43-3f95-48ef-9570-b08066c256fa",
+          "concept_name": "AI 비비",
+          "score": 0.053702671475
+        },
+        {
+          "concept_id": "0c64990a-e5d7-493f-bfa5-e864173497fb",
+          "concept_name": "나이 질문",
+          "score": 0.051532236111
+        },
+        {
+          "concept_id": "9092c6dd-9a7b-4718-b508-e8f841b9b1aa",
+          "concept_name": "보고 싶음",
+          "score": 0.048678162503
+        },
+        {
+          "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+          "concept_name": "좋은 아침",
+          "score": 0.048584965659
+        },
+        {
+          "concept_id": "ac89ad5e-b9a4-49d9-9b39-0cb0fa7fbedf",
+          "concept_name": "가고 싶음",
+          "score": 0.04819346589
+        },
+        {
+          "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+          "concept_name": "좋은 하루",
+          "score": 0.048052545921
+        },
+        {
+          "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+          "concept_name": "맑은 날씨",
+          "score": 0.04796089845
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "374035c58dea9ac6ec7504f11059f0baf7cbbf9c2dd6b2a166fc2b6cdbe7a43e",
+      "metrics": {
+        "mrr": 0.007462686567,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 1.0
+      },
+      "nonzero_candidate_count": 40,
+      "positive_concept_ids": [
+        "17141819-bea9-41f1-81d2-530353cca91b"
+      ],
+      "positive_ranks": {
+        "17141819-bea9-41f1-81d2-530353cca91b": 134
+      },
+      "positive_scores": {
+        "17141819-bea9-41f1-81d2-530353cca91b": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-04",
+      "question_sha256": "12ef97573782a8616263f271f3641db65a11a08c142ab24f4e331c44976adc5d",
+      "reviewed_pool": [
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "full_vocabulary_rank": 134,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 548,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "full_vocabulary_rank": 731,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "full_vocabulary_rank": 453,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "development_challenge_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "c731ca22-cef8-4aa8-8075-9bcdce9d170f",
+          "concept_name": "큰 소리",
+          "score": 0.303487054964
+        },
+        {
+          "concept_id": "94342976-be82-45f9-b2a3-1cfaa0342302",
+          "concept_name": "소리",
+          "score": 0.246542283313
+        },
+        {
+          "concept_id": "8b24b5e7-ec71-4777-9558-a2925067fbeb",
+          "concept_name": "비비는 소리",
+          "score": 0.241553832873
+        },
+        {
+          "concept_id": "f00a5be8-060b-45f3-96bc-9913e8c00fec",
+          "concept_name": "반짝이는 것",
+          "score": 0.190483657659
+        },
+        {
+          "concept_id": "e7ae3e5f-d407-4e41-8855-2f53dd77fd1e",
+          "concept_name": "보이는 부분",
+          "score": 0.176987299775
+        },
+        {
+          "concept_id": "6484c870-1417-4b90-b57c-afd493d0730c",
+          "concept_name": "재귀로",
+          "score": 0.17580933394
+        },
+        {
+          "concept_id": "cc82462c-2eb3-4a16-824b-e315ffded4c8",
+          "concept_name": "반짝이는 것들",
+          "score": 0.164651634729
+        },
+        {
+          "concept_id": "68fbe8ef-a878-4e17-a63f-887033970f2e",
+          "concept_name": "딸랑딸랑 소리",
+          "score": 0.162034730601
+        },
+        {
+          "concept_id": "8f4f72b1-72dd-4a64-a8e8-1a395eba77ad",
+          "concept_name": "목소리",
+          "score": 0.127812962025
+        },
+        {
+          "concept_id": "b47c5ba4-28b0-452e-b1ca-c085d05c6dd9",
+          "concept_name": "일단 해",
+          "score": 0.124315972225
+        },
+        {
+          "concept_id": "85fac495-08be-429b-8cb4-4ebbe7bc2002",
+          "concept_name": "놀러 감",
+          "score": 0.111871762003
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.097275206722
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.085868031849
+        },
+        {
+          "concept_id": "12d0a0cb-ef70-4eaf-acc0-63558b692339",
+          "concept_name": "단어들이에요",
+          "score": 0.082533287949
+        },
+        {
+          "concept_id": "9092c6dd-9a7b-4718-b508-e8f841b9b1aa",
+          "concept_name": "보고 싶음",
+          "score": 0.07770311649
+        },
+        {
+          "concept_id": "ac89ad5e-b9a4-49d9-9b39-0cb0fa7fbedf",
+          "concept_name": "가고 싶음",
+          "score": 0.07692941355
+        },
+        {
+          "concept_id": "c0403417-77e1-4cf0-8ee8-2ff2aa49b9fc",
+          "concept_name": "레고 블록",
+          "score": 0.074886311069
+        },
+        {
+          "concept_id": "bd9f7b60-88f7-4e65-b33a-8259b4bcc651",
+          "concept_name": "긍정적 감정",
+          "score": 0.074093575106
+        },
+        {
+          "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+          "concept_name": "하늘을 나는 자동차",
+          "score": 0.07074307935
+        },
+        {
+          "concept_id": "5b0676c0-1845-444c-8d0a-e468a0cb1287",
+          "concept_name": "소리 종류",
+          "score": 0.066927628723
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "d3e48295a9e2aa3222245eb77425e3ed5021e200620fde086b39f2175af81760",
+      "metrics": {
+        "mrr": 0.005952380952,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.5
+      },
+      "nonzero_candidate_count": 43,
+      "positive_concept_ids": [
+        "1f220254-b38c-4909-8c40-f619df70f4d4"
+      ],
+      "positive_ranks": {
+        "1f220254-b38c-4909-8c40-f619df70f4d4": 168
+      },
+      "positive_scores": {
+        "1f220254-b38c-4909-8c40-f619df70f4d4": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-05",
+      "question_sha256": "ba708c3d6e49f73d6607df511406c2ea181f53d47379ecd05d378d29add20a60",
+      "reviewed_pool": [
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 168,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 129,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "full_vocabulary_rank": 674,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 329,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "a3cd2756-127f-4988-b2fa-997ad77fba64",
+          "concept_name": "지구",
+          "score": 0.430666502248
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.289793738049
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.193692838075
+        },
+        {
+          "concept_id": "abc81831-dbeb-499f-9d3e-734deb850fa8",
+          "concept_name": "끝으로",
+          "score": 0.157081333053
+        },
+        {
+          "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+          "concept_name": "이야기하",
+          "score": 0.121335156412
+        },
+        {
+          "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+          "concept_name": "신나는 이야기",
+          "score": 0.120304069011
+        },
+        {
+          "concept_id": "2a49b4a5-baf1-420a-b796-3b2b7060d94f",
+          "concept_name": "이야기두",
+          "score": 0.119031485659
+        },
+        {
+          "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+          "concept_name": "재밌는 이야기",
+          "score": 0.117082617568
+        },
+        {
+          "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+          "concept_name": "좋은 아침",
+          "score": 0.109684358301
+        },
+        {
+          "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+          "concept_name": "재미있는 이야기",
+          "score": 0.109065895185
+        },
+        {
+          "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+          "concept_name": "좋은 하루",
+          "score": 0.108482379118
+        },
+        {
+          "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+          "concept_name": "맑은 날씨",
+          "score": 0.108275477786
+        },
+        {
+          "concept_id": "9a43548e-ca27-4da2-a065-f3220afaf138",
+          "concept_name": "방법으로",
+          "score": 0.106884773858
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.087486302554
+        },
+        {
+          "concept_id": "55c40533-2379-42d2-8a7e-777878f9291e",
+          "concept_name": "나선형으로",
+          "score": 0.083012095531
+        },
+        {
+          "concept_id": "583fd2eb-0a93-4256-a22c-04a69ffb398c",
+          "concept_name": "방식으로.",
+          "score": 0.082854764826
+        },
+        {
+          "concept_id": "8e5e3d59-e066-42e7-be11-836d74632cf0",
+          "concept_name": "비밀 이야기",
+          "score": 0.076897304206
+        },
+        {
+          "concept_id": "7e42c8c5-9ce1-4d03-a88d-cb26196a19eb",
+          "concept_name": "이야기 듣기",
+          "score": 0.074638663547
+        },
+        {
+          "concept_id": "af52ae8e-fb28-4a91-bc09-a6ed00c4ec8b",
+          "concept_name": "알고리즘으로",
+          "score": 0.073900678677
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.069875484079
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "9c268e8bfc4dfad2032020b617fd99f62d7f43b6e5ad8d89c9253c4e8badf55a",
+      "metrics": {
+        "mrr": 0.001477104874,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.25
+      },
+      "nonzero_candidate_count": 58,
+      "positive_concept_ids": [
+        "9bb124cb-8a3c-41b9-ba78-718a79e46f89"
+      ],
+      "positive_ranks": {
+        "9bb124cb-8a3c-41b9-ba78-718a79e46f89": 677
+      },
+      "positive_scores": {
+        "9bb124cb-8a3c-41b9-ba78-718a79e46f89": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-06",
+      "question_sha256": "9bdcbda039d42ae9531a6fcc5cc85799d2f73764771e7071aa89354f5093f53f",
+      "reviewed_pool": [
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "full_vocabulary_rank": 677,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 183,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 553,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "full_vocabulary_rank": 461,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "6e01e40d-84d6-494b-aae1-5b198acb664c",
+          "concept_name": "특별한 장치",
+          "score": 0.251871181631
+        },
+        {
+          "concept_id": "d8ede7b8-dce9-4c33-98e7-35116df52dcb",
+          "concept_name": "장치",
+          "score": 0.222618702733
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.193755187239
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.181422879892
+        },
+        {
+          "concept_id": "27ddf691-d550-47ea-b631-afed74fd4c68",
+          "concept_name": "좋아하는 기능",
+          "score": 0.179722294803
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.132953777693
+        },
+        {
+          "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+          "concept_name": "하늘을 나는 자동차",
+          "score": 0.109535055628
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.106026445686
+        },
+        {
+          "concept_id": "8b9484bd-316d-44b4-8c63-8559e616db2f",
+          "concept_name": "신나는 기분",
+          "score": 0.104790349634
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.095779088149
+        },
+        {
+          "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+          "concept_name": "신나는 이야기",
+          "score": 0.093312565858
+        },
+        {
+          "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+          "concept_name": "재밌는 이야기",
+          "score": 0.090813881463
+        },
+        {
+          "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+          "concept_name": "먹을 수 있음",
+          "score": 0.086819132256
+        },
+        {
+          "concept_id": "83461e82-0214-462b-a021-db308e78c376",
+          "concept_name": "말을 잘 들음",
+          "score": 0.086459780268
+        },
+        {
+          "concept_id": "abc81831-dbeb-499f-9d3e-734deb850fa8",
+          "concept_name": "끝으로",
+          "score": 0.085985499478
+        },
+        {
+          "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+          "concept_name": "재미있는 이야기",
+          "score": 0.084595796393
+        },
+        {
+          "concept_id": "5056b3b2-0755-4db6-8a0e-61c9a3a6bc54",
+          "concept_name": "구하는",
+          "score": 0.083617659495
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.076498948449
+        },
+        {
+          "concept_id": "49b9a786-b3b7-4758-851a-4d9e74a4aa26",
+          "concept_name": "구름 사탕",
+          "score": 0.076035645479
+        },
+        {
+          "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+          "concept_name": "맛있는 것",
+          "score": 0.072911267631
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "1c344d149be56506561e5cc268b160bf61211ba9cf72ce57d1daa0ec940207e0",
+      "metrics": {
+        "mrr": 0.001369863014,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.25
+      },
+      "nonzero_candidate_count": 28,
+      "positive_concept_ids": [
+        "abbc4367-c58c-4455-83a8-d3ef1b2979ff"
+      ],
+      "positive_ranks": {
+        "abbc4367-c58c-4455-83a8-d3ef1b2979ff": 730
+      },
+      "positive_scores": {
+        "abbc4367-c58c-4455-83a8-d3ef1b2979ff": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-07",
+      "question_sha256": "3f3e6574eec066bf728600f5baa76b719bb50701997e2e2b4f38b7e7a1e5278b",
+      "reviewed_pool": [
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "full_vocabulary_rank": 730,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 113,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "full_vocabulary_rank": 45,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 316,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "027d69d4-4951-4e1a-bd21-bbc985ef6db1",
+          "concept_name": "해결",
+          "score": 0.26287053523
+        },
+        {
+          "concept_id": "de7dff2a-a5d1-401d-8527-fad94d317b21",
+          "concept_name": "문제",
+          "score": 0.248234319105
+        },
+        {
+          "concept_id": "b47c5ba4-28b0-452e-b1ca-c085d05c6dd9",
+          "concept_name": "일단 해",
+          "score": 0.214632893242
+        },
+        {
+          "concept_id": "9776b927-0cbc-40d0-822e-2963345f600a",
+          "concept_name": "사전적 정의",
+          "score": 0.201444254998
+        },
+        {
+          "concept_id": "f3e39ee4-4657-414f-8059-5494b25665a2",
+          "concept_name": "말하기 오류",
+          "score": 0.17203658731
+        },
+        {
+          "concept_id": "b72b0608-ef08-4c83-8b38-364e1dd33f7b",
+          "concept_name": "1 더하기 1",
+          "score": 0.149684598418
+        },
+        {
+          "concept_id": "273429b7-a80e-451d-b37d-86644e698e06",
+          "concept_name": "말하기",
+          "score": 0.114685735404
+        },
+        {
+          "concept_id": "e1248ebc-e8e5-41dc-a1c7-cb02c7bd8579",
+          "concept_name": "더하기",
+          "score": 0.114685735404
+        },
+        {
+          "concept_id": "d2d348a5-51bb-4681-a824-3ebfe8f301db",
+          "concept_name": "문제였을",
+          "score": 0.096573913717
+        },
+        {
+          "concept_id": "46dc2ce5-08c7-4e4a-84a5-9a2d0faa75e2",
+          "concept_name": "이해 부족",
+          "score": 0.087737462626
+        },
+        {
+          "concept_id": "9092c6dd-9a7b-4718-b508-e8f841b9b1aa",
+          "concept_name": "보고 싶음",
+          "score": 0.067077642589
+        },
+        {
+          "concept_id": "ac89ad5e-b9a4-49d9-9b39-0cb0fa7fbedf",
+          "concept_name": "가고 싶음",
+          "score": 0.066409739272
+        },
+        {
+          "concept_id": "7e8d848a-775d-4058-954d-b8ff401aa154",
+          "concept_name": "자기 이해",
+          "score": 0.066372370989
+        },
+        {
+          "concept_id": "c0403417-77e1-4cf0-8ee8-2ff2aa49b9fc",
+          "concept_name": "레고 블록",
+          "score": 0.064646019821
+        },
+        {
+          "concept_id": "79eb6cd0-4fb5-45c4-8aa5-08e926972cda",
+          "concept_name": "모르는 정보",
+          "score": 0.063903493971
+        },
+        {
+          "concept_id": "bcee5e61-45cc-412a-8538-d00c0e623528",
+          "concept_name": "새로운 정보",
+          "score": 0.06220831452
+        },
+        {
+          "concept_id": "0836cbe9-f7d8-4043-ac3e-98d9e00c795c",
+          "concept_name": "신기한 것",
+          "score": 0.060259674014
+        },
+        {
+          "concept_id": "011b4f95-eca3-4759-90a3-f47ec42cca8f",
+          "concept_name": "궁금한 것",
+          "score": 0.05995624082
+        },
+        {
+          "concept_id": "f9a6d8a0-0eca-420b-b884-40a14f83d01c",
+          "concept_name": "다시 하기",
+          "score": 0.059131299351
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.058559571523
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "35fc9fdfcc8db92f54f9a3a6977d45009cf0a89c50a9f8e5739d77e8cb0a38a4",
+      "metrics": {
+        "mrr": 0.002169197397,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.5
+      },
+      "nonzero_candidate_count": 51,
+      "positive_concept_ids": [
+        "662aaeec-458f-46a0-899d-6386acadab07"
+      ],
+      "positive_ranks": {
+        "662aaeec-458f-46a0-899d-6386acadab07": 461
+      },
+      "positive_scores": {
+        "662aaeec-458f-46a0-899d-6386acadab07": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-08",
+      "question_sha256": "b8dc181d3fcea671bbce93a36019d4482d1bc8206f71a557bcdf88fcdc6e2748",
+      "reviewed_pool": [
+        {
+          "concept_id": "662aaeec-458f-46a0-899d-6386acadab07",
+          "full_vocabulary_rank": 461,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 554,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "9bb124cb-8a3c-41b9-ba78-718a79e46f89",
+          "full_vocabulary_rank": 677,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "17141819-bea9-41f1-81d2-530353cca91b",
+          "full_vocabulary_rank": 143,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "e44017ad-eada-472d-99bd-390c132c7d55",
+          "concept_name": "수행",
+          "score": 0.29425452484
+        },
+        {
+          "concept_id": "132cbe99-1d50-4a5e-89a6-13ac2a09f30b",
+          "concept_name": "도구",
+          "score": 0.264595141747
+        },
+        {
+          "concept_id": "4ef22143-6db1-4f1e-a3c7-d323e2499aab",
+          "concept_name": "숫자",
+          "score": 0.264595141747
+        },
+        {
+          "concept_id": "ec912d96-f6b7-422d-856b-82255f0263be",
+          "concept_name": "숫자 세기",
+          "score": 0.244504250121
+        },
+        {
+          "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+          "concept_name": "먹을 수 있음",
+          "score": 0.19941874186
+        },
+        {
+          "concept_id": "12ae914a-8387-4a96-8fbc-7b26dc279556",
+          "concept_name": "인터넷 검색 도구",
+          "score": 0.149344609634
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.140144385951
+        },
+        {
+          "concept_id": "4648a374-488d-497f-8179-7310aeb85c30",
+          "concept_name": "숫자로",
+          "score": 0.136205081682
+        },
+        {
+          "concept_id": "7ffb9d1c-d183-456c-b36f-0ca8d8d86217",
+          "concept_name": "도구인",
+          "score": 0.136205081682
+        },
+        {
+          "concept_id": "bf7b21e1-05d7-4d9e-88c5-2020cdb8e451",
+          "concept_name": "숫자의",
+          "score": 0.136205081682
+        },
+        {
+          "concept_id": "5ad0bd63-8305-4d16-903b-41c2088502cb",
+          "concept_name": "search_dictionary 도구",
+          "score": 0.09209029829
+        },
+        {
+          "concept_id": "79efeee7-5797-4e41-a05d-b0db7f8b5947",
+          "concept_name": "Search Dictionary 도구",
+          "score": 0.09209029829
+        },
+        {
+          "concept_id": "0f5b03f3-86e4-43dc-bc74-196b8873ceb9",
+          "concept_name": "잘함/수행",
+          "score": 0.089171006994
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.087868292737
+        },
+        {
+          "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+          "concept_name": "이야기하",
+          "score": 0.087790757566
+        },
+        {
+          "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+          "concept_name": "신나는 이야기",
+          "score": 0.08704472528
+        },
+        {
+          "concept_id": "2a49b4a5-baf1-420a-b796-3b2b7060d94f",
+          "concept_name": "이야기두",
+          "score": 0.086123961176
+        },
+        {
+          "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+          "concept_name": "재밌는 이야기",
+          "score": 0.084713878467
+        },
+        {
+          "concept_id": "de78e60d-9989-43e9-a7f8-322627888522",
+          "concept_name": "옹알이 연습",
+          "score": 0.083824261397
+        },
+        {
+          "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+          "concept_name": "재미있는 이야기",
+          "score": 0.078913464539
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "e90b08c78e2dd699d96831e88208ff2b504a3e645d4e2041c6fb79558f75a8be",
+      "metrics": {
+        "mrr": 0.003105590062,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.333333333333
+      },
+      "nonzero_candidate_count": 34,
+      "positive_concept_ids": [
+        "45bf8177-6eff-48a8-9efa-e71d262c5be9"
+      ],
+      "positive_ranks": {
+        "45bf8177-6eff-48a8-9efa-e71d262c5be9": 322
+      },
+      "positive_scores": {
+        "45bf8177-6eff-48a8-9efa-e71d262c5be9": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-09",
+      "question_sha256": "8cd1dca97ad8bc28e4af07fa777c12c0266abf48d4f2e45b57ba514a822c4699",
+      "reviewed_pool": [
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 322,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 160,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "abbc4367-c58c-4455-83a8-d3ef1b2979ff",
+          "full_vocabulary_rank": 730,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 120,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.161807695777
+        },
+        {
+          "concept_id": "b47c5ba4-28b0-452e-b1ca-c085d05c6dd9",
+          "concept_name": "일단 해",
+          "score": 0.143032667879
+        },
+        {
+          "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+          "concept_name": "하늘을 나는 자동차",
+          "score": 0.133306591701
+        },
+        {
+          "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+          "concept_name": "먹을 수 있음",
+          "score": 0.129028180176
+        },
+        {
+          "concept_id": "83461e82-0214-462b-a021-db308e78c376",
+          "concept_name": "말을 잘 들음",
+          "score": 0.128494121245
+        },
+        {
+          "concept_id": "46dc2ce5-08c7-4e4a-84a5-9a2d0faa75e2",
+          "concept_name": "이해 부족",
+          "score": 0.11693755941
+        },
+        {
+          "concept_id": "9092c6dd-9a7b-4718-b508-e8f841b9b1aa",
+          "concept_name": "보고 싶음",
+          "score": 0.089401899491
+        },
+        {
+          "concept_id": "7e42c8c5-9ce1-4d03-a88d-cb26196a19eb",
+          "concept_name": "이야기 듣기",
+          "score": 0.089229253722
+        },
+        {
+          "concept_id": "ac89ad5e-b9a4-49d9-9b39-0cb0fa7fbedf",
+          "concept_name": "가고 싶음",
+          "score": 0.088511709811
+        },
+        {
+          "concept_id": "c0403417-77e1-4cf0-8ee8-2ff2aa49b9fc",
+          "concept_name": "레고 블록",
+          "score": 0.086161003032
+        },
+        {
+          "concept_id": "c1c05350-84ff-4907-8de8-6a1b21fafd72",
+          "concept_name": "말 잘 듣기",
+          "score": 0.085742078308
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.071172108738
+        },
+        {
+          "concept_id": "d0bbfdd2-4624-4c8e-9de1-7d1ad9a89d2e",
+          "concept_name": "반짝반짝 예쁜 것들",
+          "score": 0.066177081755
+        },
+        {
+          "concept_id": "5c1fc820-0335-463e-b494-a3971bc03a54",
+          "concept_name": "비비고 (AI)",
+          "score": 0.061018546769
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.056845304988
+        },
+        {
+          "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+          "concept_name": "맛있는 것",
+          "score": 0.054179349254
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.053676209974
+        },
+        {
+          "concept_id": "861a2af8-3dcb-4bc9-bc80-1d6199dd2af0",
+          "concept_name": "모르는 말",
+          "score": 0.053675408863
+        },
+        {
+          "concept_id": "cb240b23-bbb4-4c89-96c0-a8f75b61d268",
+          "concept_name": "비비는 눈",
+          "score": 0.052078337467
+        },
+        {
+          "concept_id": "62ed5ecb-82ca-490f-82d9-f955316388be",
+          "concept_name": "재미있는 것",
+          "score": 0.046904722672
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "a409dbfe9976f65053ce51d585d79e1cf2344df340dbbda5e57452ecd21acfaa",
+      "metrics": {
+        "mrr": 0.003289473684,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.5
+      },
+      "nonzero_candidate_count": 56,
+      "positive_concept_ids": [
+        "3d03470b-32cc-435d-88ea-514f630f1a63"
+      ],
+      "positive_ranks": {
+        "3d03470b-32cc-435d-88ea-514f630f1a63": 304
+      },
+      "positive_scores": {
+        "3d03470b-32cc-435d-88ea-514f630f1a63": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-10",
+      "question_sha256": "ea954d43e470ed3041fb26018ecd1d1571cc9f6c79dfb8a5f463e9234196f04b",
+      "reviewed_pool": [
+        {
+          "concept_id": "3d03470b-32cc-435d-88ea-514f630f1a63",
+          "full_vocabulary_rank": 304,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "7d46d662-71c9-4d21-93c3-762a3f7c1dab",
+          "full_vocabulary_rank": 556,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "03a8049b-3b54-4a05-9fad-365f3499a3bb",
+          "full_vocabulary_rank": 74,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "e8025266-3786-4fcc-8d0b-ac0fbb800142",
+          "full_vocabulary_rank": 981,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "27ddf691-d550-47ea-b631-afed74fd4c68",
+          "concept_name": "좋아하는 기능",
+          "score": 0.314742625859
+        },
+        {
+          "concept_id": "e44017ad-eada-472d-99bd-390c132c7d55",
+          "concept_name": "수행",
+          "score": 0.238591108071
+        },
+        {
+          "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+          "concept_name": "먹을 수 있음",
+          "score": 0.208219288401
+        },
+        {
+          "concept_id": "4e6057f9-1cd5-44b4-8165-e62370501a6b",
+          "concept_name": "잘하는 것",
+          "score": 0.207656698429
+        },
+        {
+          "concept_id": "8b9484bd-316d-44b4-8c63-8559e616db2f",
+          "concept_name": "신나는 기분",
+          "score": 0.178047285555
+        },
+        {
+          "concept_id": "a19638d2-cedd-42f6-a591-c05cd64dc50f",
+          "concept_name": "하늘을 나는 것",
+          "score": 0.142492920642
+        },
+        {
+          "concept_id": "79eb6cd0-4fb5-45c4-8aa5-08e926972cda",
+          "concept_name": "모르는 정보",
+          "score": 0.126538397264
+        },
+        {
+          "concept_id": "d14dc5af-74e9-4e87-82ee-233b0c3a7c41",
+          "concept_name": "하늘을 나는 자동차",
+          "score": 0.117393956456
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.11363361142
+        },
+        {
+          "concept_id": "88a9627d-567e-4873-839e-8a2dff8e2d7d",
+          "concept_name": "곁으로 가는 것",
+          "score": 0.10513775725
+        },
+        {
+          "concept_id": "731bf2f2-cda8-4d23-af8f-ac521d9483e0",
+          "concept_name": "먹는 것",
+          "score": 0.102651028378
+        },
+        {
+          "concept_id": "02593d6f-82d5-45ef-897f-3dedbbc65d79",
+          "concept_name": "신나는 이야기",
+          "score": 0.100007538503
+        },
+        {
+          "concept_id": "f9971230-45d6-4d0b-800f-65b849ac006b",
+          "concept_name": "신기하고",
+          "score": 0.097980602584
+        },
+        {
+          "concept_id": "08646965-54c7-4191-8a24-42e4886a13e0",
+          "concept_name": "재밌는 이야기",
+          "score": 0.097329578964
+        },
+        {
+          "concept_id": "13096f36-c23e-4992-892f-3bd3d7823971",
+          "concept_name": "반사하고",
+          "score": 0.095491477189
+        },
+        {
+          "concept_id": "83461e82-0214-462b-a021-db308e78c376",
+          "concept_name": "말을 잘 들음",
+          "score": 0.092663080525
+        },
+        {
+          "concept_id": "a40a4d62-5d00-4519-b53b-992ccb636ec0",
+          "concept_name": "재미있는 이야기",
+          "score": 0.090665359881
+        },
+        {
+          "concept_id": "5056b3b2-0755-4db6-8a0e-61c9a3a6bc54",
+          "concept_name": "구하는",
+          "score": 0.089617043799
+        },
+        {
+          "concept_id": "1a71db02-4ff5-441a-a04b-99acb98bd6c0",
+          "concept_name": "모르는 것",
+          "score": 0.081987580795
+        },
+        {
+          "concept_id": "c00b9ab5-2b33-427e-9138-02e7d578c57d",
+          "concept_name": "맛있는 것",
+          "score": 0.07814249172
+        }
+      ]
+    },
+    {
+      "full_ranking_sha256": "5dbd54d2447b7c7f7b67161c4d08cd0532f5efc71bc3e0a266f9dba6fb2da7ee",
+      "metrics": {
+        "mrr": 0.001020408163,
+        "ndcg_at_8": 0.0,
+        "recall_at_8": 0.0,
+        "reviewed_pool_average_precision": 0.25
+      },
+      "nonzero_candidate_count": 26,
+      "positive_concept_ids": [
+        "e8ddbe83-8661-431e-94bd-73759cf1c367"
+      ],
+      "positive_ranks": {
+        "e8ddbe83-8661-431e-94bd-73759cf1c367": 980
+      },
+      "positive_scores": {
+        "e8ddbe83-8661-431e-94bd-73759cf1c367": 0.0
+      },
+      "question_id": "j1-r2-dev-0001-11",
+      "question_sha256": "ea69e9f1bc26c381ac483a1757d29923a9f0fac2d2715aae9424a3041cbb7529",
+      "reviewed_pool": [
+        {
+          "concept_id": "e8ddbe83-8661-431e-94bd-73759cf1c367",
+          "full_vocabulary_rank": 980,
+          "label": 1,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1416920b-6d2a-4cd6-a630-a0a509752fc1",
+          "full_vocabulary_rank": 112,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "1f220254-b38c-4909-8c40-f619df70f4d4",
+          "full_vocabulary_rank": 152,
+          "label": 0,
+          "score": 0.0
+        },
+        {
+          "concept_id": "45bf8177-6eff-48a8-9efa-e71d262c5be9",
+          "full_vocabulary_rank": 312,
+          "label": 0,
+          "score": 0.0
+        }
+      ],
+      "target_partition": "fit_pool",
+      "top_ranked_concepts": [
+        {
+          "concept_id": "a78c3a98-7f90-472b-ad86-55563d25d6db",
+          "concept_name": "컴퓨터",
+          "score": 0.407473759936
+        },
+        {
+          "concept_id": "fa4ef1be-5c1b-49fe-843c-7c2e81e21fed",
+          "concept_name": "먹을 수 있음",
+          "score": 0.378870435888
+        },
+        {
+          "concept_id": "22d9593c-d145-4920-9958-de8c7f0b489c",
+          "concept_name": "명령",
+          "score": 0.277051425498
+        },
+        {
+          "concept_id": "41d6e59c-e370-4c60-8dd7-a24e6aef98d3",
+          "concept_name": "컴퓨터요",
+          "score": 0.263744392197
+        },
+        {
+          "concept_id": "87860560-b33a-41ee-96f8-aaffff29f90a",
+          "concept_name": "컴퓨터라",
+          "score": 0.263744392197
+        },
+        {
+          "concept_id": "c57abd6c-c4cd-457e-b0da-17d63d50e0bf",
+          "concept_name": "컴퓨터에",
+          "score": 0.263744392197
+        },
+        {
+          "concept_id": "fa88cdb6-436c-4985-aa1e-0fde87eb9804",
+          "concept_name": "컴퓨터 학습",
+          "score": 0.168380259907
+        },
+        {
+          "concept_id": "d3959716-1cb1-474b-b263-3d52d58eb81a",
+          "concept_name": "한국의 수도",
+          "score": 0.129353185402
+        },
+        {
+          "concept_id": "6ec65f82-bc86-4b35-938f-d52f092263ba",
+          "concept_name": "이야기",
+          "score": 0.124604250893
+        },
+        {
+          "concept_id": "1b21a008-7eae-4d90-8727-0c2654590a20",
+          "concept_name": "반짝반짝 작은 별",
+          "score": 0.098626609887
+        },
+        {
+          "concept_id": "d8aea6ff-db85-4910-96dc-d4687ed38baf",
+          "concept_name": "함께 있음",
+          "score": 0.080794861645
+        },
+        {
+          "concept_id": "24f1f5f8-d725-400e-a3f2-bfee7b83ff92",
+          "concept_name": "횟수 제한",
+          "score": 0.078986595092
+        },
+        {
+          "concept_id": "e7214d5b-6af5-4fed-83fd-ed0a8e826ace",
+          "concept_name": "이야기하",
+          "score": 0.078055938578
+        },
+        {
+          "concept_id": "2a49b4a5-baf1-420a-b796-3b2b7060d94f",
+          "concept_name": "이야기두",
+          "score": 0.07657396758
+        },
+        {
+          "concept_id": "f8d84348-2f8a-40be-affa-5ca595e646a6",
+          "concept_name": "잘못된 행동",
+          "score": 0.074624399014
+        },
+        {
+          "concept_id": "cc4004b2-b706-4247-8835-bba7adcb13ea",
+          "concept_name": "좋은 아침",
+          "score": 0.070560881014
+        },
+        {
+          "concept_id": "c0152842-9f1f-4fe0-b725-f08966da610c",
+          "concept_name": "좋은 하루",
+          "score": 0.069787637578
+        },
+        {
+          "concept_id": "dc724328-5af8-454b-86be-a087dcd1197a",
+          "concept_name": "맑은 날씨",
+          "score": 0.069654536191
+        },
+        {
+          "concept_id": "9b99a484-adca-456a-a3cf-ccf883d88261",
+          "concept_name": "AI의 나이",
+          "score": 0.062805603473
+        },
+        {
+          "concept_id": "d36d47d5-8d5f-40b8-9012-3ee0c5434186",
+          "concept_name": "달의 모양 변화",
+          "score": 0.050365783664
+        }
+      ]
+    }
+  ],
+  "status": "development_lexical_baseline_completed_not_for_claim",
+  "surface_overlap_diagnostic": {
+    "all_candidate_scores_zero_question_count": 0,
+    "interpretation": "surface_overlap_only_development_diagnostic_not_semantic_relevance_or_performance_evidence",
+    "positive_nonzero_score_question_count": 1,
+    "positive_recall_at_8_question_count": 0
+  },
+  "unjudged_policy": "unjudged_concepts_compete_in_full_ranking_but_are_never_supervised_as_negatives"
+}

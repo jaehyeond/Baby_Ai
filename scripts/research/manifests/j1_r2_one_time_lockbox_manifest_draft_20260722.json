@@ -1,0 +1,65 @@
+{
+  "block_reasons": [
+    "explicit_user_review_missing",
+    "generator_implementation_snapshot_missing",
+    "generator_specification_missing",
+    "sample_size_plan_missing",
+    "cohort_not_materialized"
+  ],
+  "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+  "cohort_generation_id": "lockbox-generation-0001",
+  "cohort_id": "j1-r2-one-time-lockbox-0001",
+  "cohort_lifecycle_contract_sha256": "2ab4cf1edc5a97063d3cf540ff20620f645a7ff494bffb008cef84240577ce32",
+  "cohort_manifest_sha256": "6eef5c5e216851fc0e5e33b3d007d5edcbdaa1dbaf54b5f5425184bed921801b",
+  "cohort_manifest_version": 1,
+  "created_at": "2026-07-22T04:39:45.065408+00:00",
+  "database_writes": false,
+  "evaluation_epoch_id": "j1-r2-evaluation-epoch-0001",
+  "evaluation_only_not_live_learning_block": true,
+  "execution_gate": false,
+  "generator": {
+    "allowed_sources": [
+      "public_knowledge_with_fixed_reference",
+      "deterministic_synthetic_environment",
+      "instrumented_quest_or_tool_outcome"
+    ],
+    "hidden_seed_commitment_sha256": null,
+    "implementation_sha256": null,
+    "independent_ground_truth_required": true,
+    "mode": "independent_deterministic_generator",
+    "personal_user_memory_allowed": false,
+    "sample_size_plan_sha256": null,
+    "seed_policy": "hidden_seed_sampled_after_model_freeze",
+    "specification_sha256": null,
+    "subject_model_generated_questions": false,
+    "subject_model_grades_itself": false
+  },
+  "graph_snapshot_sha256": "caab2147a8c813f8e8dde2325bc16ce7acfb3306cae2e2082f4c9eb73cde221f",
+  "heldout_gate": false,
+  "learning_enabled": false,
+  "lifecycle_state": "planned",
+  "live_learning_blocked": false,
+  "materialization": {
+    "materialized": false,
+    "plaintext_questions_in_repository": false,
+    "question_count": 0,
+    "question_hashes": [],
+    "question_set_sha256": null
+  },
+  "next_step": "review_and_freeze_lockbox_generator_before_baseline_execution",
+  "performance_claim_gate": false,
+  "phase": "J1-R2",
+  "production_promotion_gate": false,
+  "review_status": "awaiting_user_review",
+  "role": "one_time_lockbox",
+  "status": "planned_generator_contract_awaiting_user_review",
+  "usage": {
+    "heldout_claim_allowed": true,
+    "model_selection_allowed": false,
+    "one_time_open": true,
+    "performance_claim_allowed": false,
+    "release_after_consumption": true,
+    "released_labels_train_generation": "next_generation_only",
+    "reusable": false
+  }
+}
