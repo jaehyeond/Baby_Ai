@@ -1,0 +1,40 @@
+{
+  "run_id": "pipeline_before_graph_20260831-1945",
+  "gate": "A2A-baseline",
+  "kind": "pipeline_baseline",
+  "tag": "before_graph",
+  "created": "2026-08-31T19:45:32",
+  "host": "DESKTOP-DD7BQ5J",
+  "pilot": true,
+  "topology": "linear: coder -> tester -> reviewer (no fan-out, no verdict, no back-edge)",
+  "n_tasks": 1,
+  "reps": 1,
+  "n_runs": 1,
+  "rates": {
+    "steps_ok": 0.0,
+    "code_extracted": 0.0,
+    "syntax_ok": 0.0,
+    "contract_ok": 0.0,
+    "tests_pass": 0.0
+  },
+  "wall_s": {
+    "mean": 1.46992740011774,
+    "min": 1.46992740011774,
+    "max": 1.46992740011774,
+    "total": 1.46992740011774
+  },
+  "step_wall_s_total": {
+    "coder": 0.4381169001571834,
+    "tester": 0.5200223999563605,
+    "reviewer": 0.5117230999749154
+  },
+  "fail_reasons": [
+    "no_code_block"
+  ],
+  "per_task": {
+    "reverse_words": {
+      "tests_pass": 0,
+      "n": 1
+    }
+  }
+}

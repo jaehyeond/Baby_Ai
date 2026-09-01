@@ -1,0 +1,38 @@
+{
+  "run_id": "pipeline_sdk_pilot_20260831-2024",
+  "gate": "A2A-baseline",
+  "kind": "pipeline_baseline",
+  "tag": "sdk_pilot",
+  "created": "2026-08-31T20:25:13",
+  "host": "DESKTOP-DD7BQ5J",
+  "pilot": true,
+  "topology": "linear: coder -> tester -> reviewer (no fan-out, no verdict, no back-edge)",
+  "n_tasks": 1,
+  "reps": 1,
+  "n_runs": 1,
+  "rates": {
+    "steps_ok": 1.0,
+    "code_extracted": 1.0,
+    "syntax_ok": 1.0,
+    "contract_ok": 1.0,
+    "tests_pass": 1.0
+  },
+  "wall_s": {
+    "mean": 46.36239459994249,
+    "min": 46.36239459994249,
+    "max": 46.36239459994249,
+    "total": 46.36239459994249
+  },
+  "step_wall_s_total": {
+    "coder": 7.450458100065589,
+    "tester": 9.63620000006631,
+    "reviewer": 29.275686600012705
+  },
+  "fail_reasons": [],
+  "per_task": {
+    "reverse_words": {
+      "tests_pass": 1,
+      "n": 1
+    }
+  }
+}
