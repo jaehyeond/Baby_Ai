@@ -1,13 +1,12 @@
 """Claude 기반 코드 생성 에이전트 핵심 로직"""
 
 from typing import AsyncIterator, Dict, Any
-import anthropic
 
-from common.config import Config
+from common.claude_runtime import ClaudeRuntimeError, ask
 
 
 class CoderAgent:
-    """Claude API를 사용하여 Python 코드를 생성하는 에이전트"""
+    """Claude Agent SDK(구독 할당량)로 Python 코드를 생성하는 에이전트"""
 
     SYSTEM_PROMPT = """당신은 Python 코드 생성 전문가입니다.
 
@@ -25,8 +24,8 @@ class CoderAgent:
     SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
     def __init__(self):
-        Config.validate()
-        self.client = anthropic.Anthropic(api_key=Config.ANTHROPIC_API_KEY)
+        # API 키가 필요 없다 — Claude Agent SDK가 구독 인증(OAuth)으로 돈다.
+        pass
 
     async def generate(self, query: str) -> str:
         """
@@ -38,14 +37,7 @@ class CoderAgent:
         Returns:
             생성된 Python 코드
         """
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=4096,
-            system=self.SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": query}],
-        )
-
-        return response.content[0].text
+        return await ask(self.SYSTEM_PROMPT, query)
 
     async def stream(self, query: str) -> AsyncIterator[Dict[str, Any]]:
         """
@@ -64,7 +56,7 @@ class CoderAgent:
             "content": "코드 생성 중...",
         }
 
-        # Claude API 호출
+        # Claude 호출
         try:
             generated_code = await self.generate(query)
 
@@ -74,8 +66,7 @@ class CoderAgent:
                 "require_user_input": False,
                 "content": generated_code,
             }
-        except anthropic.APIError as e:
-            # API 오류
+        except ClaudeRuntimeError as e:
             yield {
                 "is_task_complete": False,
                 "require_user_input": True,

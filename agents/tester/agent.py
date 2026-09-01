@@ -5,9 +5,8 @@ import sys
 import tempfile
 import os
 from typing import AsyncIterator, Dict, Any
-import anthropic
 
-from common.config import Config
+from common.claude_runtime import ClaudeRuntimeError, ask
 
 
 class TesterAgent:
@@ -29,8 +28,8 @@ class TesterAgent:
     SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
     def __init__(self):
-        Config.validate()
-        self.client = anthropic.Anthropic(api_key=Config.ANTHROPIC_API_KEY)
+        # API 키가 필요 없다 — Claude Agent SDK가 구독 인증(OAuth)으로 돈다.
+        pass
 
     def _execute_code(self, code: str) -> Dict[str, Any]:
         """
@@ -120,14 +119,7 @@ class TesterAgent:
 간결하게 답변해주세요.
 """
 
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=2048,
-            system=self.SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": analysis_prompt}],
-        )
-
-        return response.content[0].text
+        return await ask(self.SYSTEM_PROMPT, analysis_prompt)
 
     async def stream(self, code: str) -> AsyncIterator[Dict[str, Any]]:
         """
@@ -156,8 +148,7 @@ class TesterAgent:
                 "require_user_input": False,
                 "content": result,
             }
-        except anthropic.APIError as e:
-            # API 오류
+        except ClaudeRuntimeError as e:
             yield {
                 "is_task_complete": False,
                 "require_user_input": True,

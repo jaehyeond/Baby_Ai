@@ -1,9 +1,8 @@
 """코드 리뷰 에이전트 핵심 로직"""
 
 from typing import AsyncIterator, Dict, Any
-import anthropic
 
-from common.config import Config
+from common.claude_runtime import ClaudeRuntimeError, ask
 
 
 class ReviewerAgent:
@@ -34,8 +33,8 @@ class ReviewerAgent:
     SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
 
     def __init__(self):
-        Config.validate()
-        self.client = anthropic.Anthropic(api_key=Config.ANTHROPIC_API_KEY)
+        # API 키가 필요 없다 — Claude Agent SDK가 구독 인증(OAuth)으로 돈다.
+        pass
 
     async def review(self, code: str) -> str:
         """
@@ -56,14 +55,7 @@ class ReviewerAgent:
 위 기준에 따라 상세한 코드 리뷰를 작성해주세요.
 """
 
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=3000,
-            system=self.SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": review_prompt}],
-        )
-
-        return response.content[0].text
+        return await ask(self.SYSTEM_PROMPT, review_prompt)
 
     async def stream(self, code: str) -> AsyncIterator[Dict[str, Any]]:
         """
@@ -92,8 +84,7 @@ class ReviewerAgent:
                 "require_user_input": False,
                 "content": result,
             }
-        except anthropic.APIError as e:
-            # API 오류
+        except ClaudeRuntimeError as e:
             yield {
                 "is_task_complete": False,
                 "require_user_input": True,
