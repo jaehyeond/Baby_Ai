@@ -15,7 +15,8 @@ Google의 A2A(Agent-to-Agent) 프로토콜을 사용하여 **Claude 기반 멀�
 
 | 구분 | 기술 | 버전 |
 |------|------|------|
-| **LLM** | Claude API (Anthropic) | claude-sonnet-4-20250514 |
+| **LLM** | Claude Agent SDK (구독 인증, API 종량과금 아님) | claude-sonnet-5 |
+| **LLM SDK** | claude-agent-sdk | ≥0.2.0 |
 | **프로토콜** | A2A (Agent2Agent) | 0.3.x |
 | **SDK** | a2a-sdk | ≥0.3.0 |
 | **Python** | Python | ≥3.10 (권장 3.12) |
@@ -35,8 +36,8 @@ Google의 A2A(Agent-to-Agent) 프로토콜을 사용하여 **Claude 기반 멀�
 │  │  (Port 9999)    │   HTTP/JSON   │                 │      │
 │  │                 │               │  "코드 작성해줘" │      │
 │  │  ┌───────────┐  │               │        ↓        │      │
-│  │  │ Claude API│  │               │  결과 출력      │      │
-│  │  │(Anthropic)│  │               │                 │      │
+│  │  │ Agent SDK │  │               │  결과 출력      │      │
+│  │  │  (OAuth)  │  │               │                 │      │
 │  │  └───────────┘  │               └─────────────────┘      │
 │  └─────────────────┘                                        │
 │                                                             │
@@ -62,7 +63,7 @@ e:\A2A\our-a2a-project\
 │   └── coder/                  # Coder Agent
 │       ├── __init__.py
 │       ├── __main__.py         # 서버 진입점 (uvicorn)
-│       ├── agent.py            # Claude API 호출 로직
+│       ├── agent.py            # Claude 호출 (common/claude_runtime)
 │       └── agent_executor.py   # A2A AgentExecutor 구현
 │
 ├── hosts/                      # A2A 클라이언트
@@ -94,14 +95,14 @@ e:\A2A\our-a2a-project\
 
 ### 3.1 Coder Agent (Server)
 
-**역할**: Claude API를 사용하여 Python 코드를 생성하는 A2A 서버
+**역할**: Claude Agent SDK(구독)로 Python 코드를 생성하는 A2A 서버
 
 **파일별 역할**:
 
 | 파일 | 역할 |
 |------|------|
 | `__main__.py` | 서버 진입점, AgentCard 정의, uvicorn 실행 |
-| `agent.py` | Claude API 호출, 코드 생성 로직 |
+| `agent.py` | `common/claude_runtime.ask()` 호출, 코드 생성 로직 |
 | `agent_executor.py` | A2A AgentExecutor 구현, Task 상태 관리 |
 
 **Agent Card 정보**:
@@ -122,7 +123,10 @@ e:\A2A\our-a2a-project\
 ### 3.3 Common (공통)
 
 **config.py**: 환경변수 로드 및 검증
-- `ANTHROPIC_API_KEY`: Claude API 키 (필수)
+- `ANTHROPIC_API_KEY`: **A2A 에이전트에는 필요 없다.** 에이전트는 Claude Agent SDK 가
+  Claude Code 의 구독 인증(OAuth)으로 돌린다. 이 키는 프로젝트의 다른 부분(neural/ 등)용이다.
+  `common/claude_runtime.ask()` 는 자식 프로세스를 띄우기 전에 이 키를 환경에서 **지운다** —
+  남아 있으면 Claude Code 가 OAuth 대신 그 키를 써서 조용히 API 종량과금이 된다.
 - `CODER_AGENT_HOST`: 서버 호스트 (기본: localhost)
 - `CODER_AGENT_PORT`: 서버 포트 (기본: 9999)
 
@@ -133,7 +137,7 @@ e:\A2A\our-a2a-project\
 ### 4.1 사전 요구사항
 
 - Python 3.10 이상 (권장: 3.12)
-- Anthropic API 키
+- Claude Code CLI 설치 + 로그인 (`claude`) — 에이전트가 이 구독 인증으로 돈다
 
 ### 4.2 설치
 
@@ -150,12 +154,15 @@ py -3.12 -m venv .venv
 pip install -e .
 ```
 
-### 4.3 환경변수 설정
+### 4.3 인증
 
-`.env` 파일에 Anthropic API 키 입력:
+A2A 에이전트는 **API 키가 필요 없다.** `claude` CLI 로 로그인돼 있으면 그 구독 인증을 쓴다:
+
+```bash
+claude   # 로그인 상태면 ~/.claude/.credentials.json 이 있다
 ```
-ANTHROPIC_API_KEY=sk-ant-your-actual-key-here
-```
+
+`.env` 의 `ANTHROPIC_API_KEY` 는 프로젝트의 다른 부분에서만 쓰인다. 에이전트 쪽은 실행 직전에 그 키를 지운다.
 
 ### 4.4 실행
 
@@ -218,15 +225,17 @@ def fibonacci(n):
 
 ## 6. 트러블슈팅
 
-### 6.1 "ANTHROPIC_API_KEY not set"
+### 6.1 "Failed to authenticate" / 401
+
+에이전트는 구독 인증(OAuth)으로 돈다. API 키 문제가 아니다.
 
 ```bash
-# .env 파일 존재 확인
-dir .env
-
-# .env 파일 내용 확인 (키가 제대로 입력되었는지)
-type .env
+claude          # 로그인 상태 확인
 ```
+
+환경에 `ANTHROPIC_API_KEY` 가 남아 있으면 Claude Code 가 OAuth 대신 그 키를 쓴다(실측: 틀린 키면
+401 로 죽고 OAuth 로 넘어가지 않는다). `common/claude_runtime.use_subscription()` 이 호출마다
+지우지만, 직접 SDK 를 쓸 때는 주의할 것.
 
 ### 6.2 "Connection refused"
 
@@ -317,6 +326,7 @@ python --version  # 3.10 이상인지 확인
 - [A2A 공식 GitHub](https://github.com/google/a2a)
 - [A2A Python SDK](https://github.com/a2aproject/a2a-python)
 - [A2A 프로토콜 스펙](https://a2a-protocol.org)
+- [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)
 - [Anthropic Claude API](https://docs.anthropic.com/)
 - [A2A Samples](https://github.com/google-a2a/a2a-samples)
 
