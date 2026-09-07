@@ -618,6 +618,14 @@ async def conversation(request: ConversationRequest):
             context=ctx,
         )
 
+        # memory_gateway (MEMORY_GATEWAY=1): 답한 뒤 갱신 — 쓰기 우선도·정서 속성·FEELS_ABOUT·태깅 창.
+        # 게이트웨이 오류는 대화 응답을 막지 않는다.
+        try:
+            from .memory_gateway import post_turn as _gateway_post_turn
+            await _gateway_post_turn(result, request.message, ctx)
+        except Exception as gateway_err:
+            logger.warning(f"memory_gateway post_turn error: {gateway_err}")
+
         # Normal mode scores the same-turn outcome for backward compatibility.
         # B5 research mode is a double opt-in (server env + request context): it
         # persists only the snapshot and waits for the next external outcome.

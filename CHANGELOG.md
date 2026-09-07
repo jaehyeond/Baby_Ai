@@ -5,6 +5,28 @@
 
 ---
 
+## 2026-09-07 (memory_gateway 실행 검증 — Neo4j 가동, A0 apply, 시나리오 PASS/부분)
+
+- Neo4j Desktop 인스턴스를 `neo4j.bat console`(번들 JDK 21)로 기동. A0 `person_hub_seed.py --apply`: owner Person 속성 6개 채움 + stranger 4명 생성(기존 owner 별칭 mom·brother 는 그대로).
+- `scripts/research/memory_gateway_scenario.py --same-process` **PASS**: 2턴에서 중간고사 경험이 회상돼 Gemini 가 "알고리즘 중간고사 때문에 그런 거야?" 라고 답함. 첫 실행 FAIL 원인(확산 시드를 직접 일치로 안 씀)을 고침. `--second-only`(새 프로세스)는 게이트웨이 회상 기준 미달(버퍼 비움·엣지 없음·임베딩 꺼짐).
+- 환경: Upstash Redis DNS 실패(인스턴스 소멸), OpenAI 크레딧 0(임베딩 불가). 상세 `claudedocs/research/MEMORY_GATEWAY_A0_A_2026-09-06.md` "실행 결과".
+- J1 보호 핸들러 blob 재기준선을 `GDSI_EXECUTION_LOG_2026-07-28.md` 에 추가.
+
+## 2026-09-06 (memory_gateway A0·A — 답하기 전 회상 + 놀람 게이트, 브랜치 feature/memory-gateway)
+
+### 배경
+- VoiceMem(arXiv 2608.26005) 검토에서 출발한 설계 노트(Bandi 볼트 `A2A/비비 다음 뇌 설계 — VoiceMem 좌·우뇌를 넘어서 (2026-09-06)`)의 A0·A 단계를 구현했다. 코드 확인 결과 비비는 답하기 전에 과거 경험을 검색하지 않았고(search_similar_* 호출 0), LC-NE 조절기는 `archive/` 에만 있었다.
+
+### 구현
+- `neural/baby/memory_gateway.py` 신규: 화자 라우팅 → 어휘·벡터·확산 후보 RRF 융합 → strength×관련성 → 소프트맥스(T_eff)로 K=5 → conf·FOK 블록 주입. σ_c 표·z 놀람 게이트(워밍업 50턴, θ=2), 세션 버퍼(W 슬롯), 답한 뒤 갱신(write_priority, self_/speaker_ 정서, FEELS_ABOUT, access_ts, 버스트 시 추가 Hebbian·태깅 창). `MEMORY_GATEWAY=1` 옵트인.
+- `conversation_handler.py` 두 줄(import + augment 호출). 보호 blob `054d974…` → `c1922cc…` (재기준선 필요).
+- `api_server.py` `/api/conversation` 에 `post_turn` 호출.
+- `scripts/migration/person_hub_seed.py` (A0 :Person 허브, dry-run/apply).
+- `tests/test_memory_gateway.py` 14 passed. 전체 391 passed / 3 failed(J1 원시 바이트 봉인 테스트, 새 worktree 체크아웃의 줄끝 차이로 판단, 이 브랜치가 건드린 파일 아님).
+
+### 실행 못 한 것
+- Neo4j 꺼짐: Cypher·A0 apply 미실행. 경험 임베딩 미저장이라 벡터 후보는 비어 있음. 상세 `claudedocs/research/MEMORY_GATEWAY_A0_A_2026-09-06.md`.
+
 ## 2026-07-28 (J1-R2-L2 lexical baseline result + Stage 2 survey)
 
 ### 실행과 검증

@@ -28,6 +28,7 @@ from typing import Optional
 from .neo4j_db import get_brain_db
 from .redis_client import publish_baby_state, publish_experience, publish_neuron_activation
 from .llm_client import get_llm_client
+from .memory_gateway import augment_system_prompt as _gateway_augment  # MEMORY_GATEWAY=1 일 때만 동작
 
 logger = logging.getLogger(__name__)
 
@@ -414,6 +415,7 @@ async def handle_conversation(
 
     # ── Step 2: LLM 호출 (Gemini) ─────────────────────────────────────────────
     system_prompt = _build_system_prompt(state, user_context=user_context_data)
+    system_prompt = await _gateway_augment(system_prompt, message, context, state)  # 답하기 전 회상 (옵트인)
 
     try:
         llm = get_llm_client()
