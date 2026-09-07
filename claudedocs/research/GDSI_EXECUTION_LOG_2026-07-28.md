@@ -809,3 +809,9 @@ correction, create the self-hashed E3 review-decision artifact. Then:
 1. define the post-review relevance-learning contract on the J1 critical path;
 2. in parallel, specify the M0 proposal schema and read-only detector contract;
 3. do not implement graph mutation or scheduled maintenance.
+
+## 2026-09-07 — 보호 핸들러 blob 재기준선 (feature/memory-gateway → DB_Renewal merge)
+- `neural/baby/conversation_handler.py` 에 두 줄(import `_gateway_augment`, `_build_system_prompt` 직후 호출)을 추가했다. `MEMORY_GATEWAY=1` 이 아니면 반환값이 그대로라 기존 동작은 바뀌지 않는다.
+- blob: HEAD ef48297 `054d974095be7425692860909181fafd54f97a33` → 브랜치 `c1922cc61240c75b7446306ed2b57e70d813f27d`.
+- 이 브랜치를 합치면 위 "무변경 ✅" 판정의 기준값은 뒤의 값이다. J1 봉인 artifact 는 건드리지 않았다. 새 worktree 체크아웃에서 원시 바이트 sha256 봉인 테스트 3건이 실패하는데, 해당 파일은 미수정이고 blob 은 HEAD 와 같다(줄끝 정규화 차이로 판단, E: 체크아웃에서 재확인 필요).
+- 라이브 그래프 쓰기(사용자 지시 "다음 순서 진행"에 따름): :Person 5개(owner 속성 6개 채움 + stranger 4개, created_by=person_hub_seed_2026-09-07), 시나리오 대화 Experience 5개(speaker brother, 2026-09-07 08:26~08:30 UTC), FEELS_ABOUT 12개, access_ts 갱신. 평가 universe 의 Concept 삭제·병합은 없다.

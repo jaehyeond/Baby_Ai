@@ -6,6 +6,13 @@
 ## 🔖 현재 상태 / 재개 (2026-07-28 체크포인트)
 **"이어서 하자"면 여기부터.** 상세 이력·수치는 `CHANGELOG.md` 최상단 + `claudedocs/**/2026-07*.md`.
 
+### 2026-09-06~07 추가 — 브랜치 `feature/memory-gateway` (2026-09-07 DB_Renewal 에 merge)
+- 설계 정본: Bandi 볼트 `A2A/비비 다음 뇌 설계 — VoiceMem 좌·우뇌를 넘어서 (2026-09-06)` (VoiceMem 좌·우뇌 판정 → 다섯 저장소·두 층·세 신호·수면 6단계, 반박 검토 7회, 미검토 항목 3개는 13절).
+- 구현: A0 `scripts/migration/person_hub_seed.py`, A `neural/baby/memory_gateway.py`(답하기 전 회상 + 놀람 게이트, `MEMORY_GATEWAY=1` 옵트인). `conversation_handler.py` 두 줄 추가 → 보호 blob `054d974…`→`c1922cc…` 재기준선 필요. 기록 `claudedocs/research/MEMORY_GATEWAY_A0_A_2026-09-06.md`.
+- 확인된 사실: 비비는 답하기 전 과거 경험을 검색하지 않았음. LC-NE 조절기는 `archive/`에만 있음(위 "Phase 1~2" 서술의 LC-NE 언급은 Edge Function 시절). Neo4j 꺼져 있어 Cypher 미실행, 경험 임베딩 미저장.
+- 2026-09-07 실행: Neo4j 기동(`neo4j.bat console`, JDK 21 번들), A0 apply 완료(owner 속성 채움 + stranger 4명), 시나리오 `--same-process` PASS(중간고사 회상 → 답변 언급), `--second-only` 기준 미달(버퍼 비움·엣지 없음·임베딩 꺼짐). Redis 인스턴스 소멸(DNS 실패), OpenAI 크레딧 0. J1 blob 재기준선은 `GDSI_EXECUTION_LOG` 끝에 기록.
+- 다음: (1) merge 여부 결정(J1 해시 `c1922cc…` 로 재기준선), (2) 임베딩 복구 여부 결정(크레딧) — 세션 밖 회상의 전제, (3) Redis 인스턴스 재생성 또는 로컬 Redis, (4) B단계(유효구간·재통합·:Cold).
+
 ### 어디까지 왔나 (한눈에)
 **자기학습 구성요소는 구현됐지만 JARVIS형 폐루프는 미검증** (세션 시작 push 기준 `DB_Renewal` local/remote HEAD `167265f`; J1-EXP-1 external-teacher/Local-Core 조건화 audit 후속은 현재 미커밋 worktree; 사용자 지시로 commit/push 금지).
 - Phase 0 기반 ✅ · **Phase 1 가소성 ✅**: RW 음성증거(w_ab→P(b|a))=자기학습 신호, **다양성 주도**(prequential서 빈도·암기 초과, time-shuffle서 붕괴=진짜 시간학습). `PHASE1_PLASTICITY_FINDINGS.md`.
