@@ -1,5 +1,9 @@
 # Baby AI Project Roadmap
 
+> **2026-09-12**: W1/W2 구현과 복원 runtime 검증, E3·센서 계약 준비를 완료했다. [실행 결과](claudedocs/deployment/BIBI_FOUNDATION_IMPLEMENTATION_2026-09-12.md). 다음 critical path는 W3 회상 복구와 E3 사용자 검토다. 상시 운영·자기학습·실물 성능 완료는 별도 gate다.
+
+> **2026-09-11 현행 안내**: 아래 Phase COMPLETED 표에는 Supabase/Edge Function 시절 기능 기록이 포함돼 있다. 현재 비비의 연구 성능·자기학습·실물 검증 완료율로 합산하지 않는다. 지금 구현할 순서와 코드/DB/실험 근거는 [연구·개발 상세 우선순위](claudedocs/deployment/BIBI_RD_PRIORITY_PLAN_2026-09-11.md)를 따른다. 과거 기록은 보존한다.
+
 > 아기의 인지 발달을 모방한 AI 시스템 개발 로드맵
 
 ## 프로젝트 개요

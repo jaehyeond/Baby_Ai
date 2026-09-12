@@ -1,5 +1,8 @@
 # 환경변수 (API 키 보호)
 .env
+# Separate agent checkouts and local coordination records (keep large files on E).
+.worktrees/
+.unlazy/
 # 백업/파생 env — secret 유출 방지 (2026-07-12 GitHub push protection 계기)
 .env.bak*
 .env.*.bak
@@ -61,6 +64,8 @@ out/
 node_modules/
 
 # Next.js PWA
+.runtime/
+.test-tmp/
 public/sw.js
 public/workbox-*.js
 public/sw.js.map

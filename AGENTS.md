@@ -3,6 +3,24 @@
 > **크로스툴 단일 진입점.** Codex는 이 파일을 자동 로드한다. Claude Code는 `CLAUDE.md` 최상단의 `@AGENTS.md`로 임포트한다.
 > ⚠️ **Claude auto-memory(`C:\Users\SOGANG\.claude\projects\E--A2A\memory\`)는 Claude 전용 — Codex는 못 읽는다.** Codex는 아래 "상세 문서"의 경로를 직접 열어라. **세션 인계는 반드시 이 파일 + repo 공유 파일을 통해서만** 한다.
 
+## 2026-09-12 구현 체크포인트 — feature/bibi-foundation-20260912
+
+- 결과 정본: `claudedocs/deployment/BIBI_FOUNDATION_IMPLEMENTATION_2026-09-12.md`. DB_Renewal `1a2d0d7` 기반 별도 worktree에 W1/W2와 E3·센서 계약을 통합했다. 원본 checkout 보존, commit/push/branch merge 없음.
+- 온라인 Neo4j backup → 독립 복원 → 노드 9,753 / 관계 10,852와 속성·스키마 일치. system DB에는 원본 server_id가 필요하다. E:의 설치 환경에서 dependency 80개+wheel 설치, 실제 HTTP/Redis 중단·재시작·AOF·SSE 재연결 통과. 통합 tests **473 passed, 1 skipped**.
+- 일반 API 시작은 schema/seed 무변경. 불가능한 상상/호기심의 성공·학습 기록을 차단하고 과거 정답 flags는 미검증으로 표시한다. vector index registry를 실제 DB 이름과 연결했다. `neural` lazy import로 비비 API의 불필요한 Claude SDK 결합을 없앴다.
+- C 여유 최종 약 0.25 GiB. 검증용 API/복원 Neo4j/Redis는 자원 회수를 위해 종료했다. 원본 Neo4j Desktop 7687은 유지했다. 상시 host 배치·PC 종료 후 동작은 아직 미구현이다.
+- E3 primary 60행의 사용자 결정은 모두 pending; 학습·lockbox·cleanup false. 센서 계약은 offline CLI 검증이며 실제 캡처/실물 동작 증거가 아니다. `LOCAL_CORE_DISTILL=0`, protected handler Git blob `c1922cc61240c75b7446306ed2b57e70d813f27d` 유지.
+- 다음: W3 세션 밖 회상 복구 + E3 사용자 검토 + 한 센서 과제의 실제 action/outcome. 뇌 구조 연구는 `research/bibi-brain-architecture-20260912`의 별도 보고서에서 다룬다.
+
+## 2026-09-11 사용자 지시 — 하드웨어 목표·임시 worker 모델 규칙
+
+- **R1 (목표)**: 비비의 최종 목표는 로봇 하드웨어에 탑재하는 Physical AI의 뇌다. 외부 클라우드 임대·유료 AI API는 필수가 아니다. 현재 Gemini 대화/OpenAI 임베딩 의존성과 로컬 학습→행동 개선 미검증을 구분한다.
+- **R2 (용량·이전)**: C 여유가 약 2.46 GiB였으므로 새 worktree·영상·백업·대형 캐시는 E/D에 둔다. Docker 이미지가 프로젝트 경로와 별도로 C에 저장될 수 있으니 위치 확인 전 로컬 pull/build를 실행하지 않는다. 2027년 2월 집 PC로 코드·기억·학습 상태·설정을 이식할 수 있게 준비한다.
+- **R3 (임시 모델 배정)**: 2026-09-16 23:59 KST까지 위임하는 Codex worktree worker(영상 검토 포함)는 `gpt-5.6-sol`, reasoning `high`를 사용한다. Claude가 필요한 worker는 사용자 요청 `opus5`를 사용하며, 사용량 제한에 걸린 기존 Claude 모델로 대체하지 않는다. 요청 모델이 제공되지 않으면 사용한 것처럼 보고하거나 다른 모델로 몰래 바꾸지 말고 가용성을 알린다. 이 지시는 부모 세션의 모델을 변경했다는 뜻이 아니다.
+- **R4 (영상 분리)**: `https://www.youtube.com/shorts/u98cx_ZtPoY`의 `/watch` 검토는 별도 worktree에서 수행한다. 2026-09-11 작업 경로는 `.worktrees/video-brain-20260911`, 브랜치는 `review/brain-video-20260911`이다. 영상 근거는 뇌 구조 검토 입력이며 기존 J1/B5/학습·DB 변경 gate를 덮어쓰지 않는다.
+- **현행 상세 우선순위**: `claudedocs/deployment/BIBI_RD_PRIORITY_PLAN_2026-09-11.md`. W1 백업·복원/설치 재현 → W2 실제 readiness·Redis·성공 판정 → W3 재시작 회상. W5 E3 review와 W6 센서 계약은 독립 준비한다. 이전 상위 구조: `claudedocs/deployment/BIBI_HARDWARE_BRAIN_PLAN_2026-09-11.md`. 인프라·이전 세부: `claudedocs/deployment/ALWAYS_ON_2026-09-11.md`.
+- **2026-09-11 전체 상태 읽기 감사**: `rd_state_audit_2026-09-11.json`에 쿼리/소스/과거 artifact 근거. 대화 Experience 1,508개 embedding 0; 현재 `.env`+감사 프로세스의 gateway 기본 OFF; 코드의 `experience_embeddings` 조회 실패/실제 인덱스 조회 성공; 최근 20건 후보 제한. E5 기존 E-cache 9파일 해시 일치. imagination 일부의 고정 reward/정답과 curiosity의 상태-only learned는 실제 성능 근거가 아니다. runtime·DB·학습은 이번에 변경/실행하지 않았다.
+
 ## 🔖 현재 상태 / 재개 (2026-07-28 체크포인트)
 **"이어서 하자"면 여기부터.** 상세 이력·수치는 `CHANGELOG.md` 최상단 + `claudedocs/**/2026-07*.md`.
 

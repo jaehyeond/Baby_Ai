@@ -1,0 +1,48 @@
+{
+  "bindings": {
+    "agent_proposal_file_sha256": "e358c84aa3271400241fad6a1117c8375502d0a8a1aee2aeab89dc58b1657708",
+    "candidate_vocabulary_sha256": "bc06ed54f24420eecdaa0be156f6041d882e80648bc64030baf5ac00bd2abd82",
+    "development_label_pack_sha256": "10773ee23beefc13620477898021d30c34ae4585fc89b5f99b6cb22759325e9d",
+    "e3_review_decisions_sha256": "1e6819322a38b1ffcfaec2895ae3af3e1ab5998844f17b03fcb850b8888c8f5f",
+    "embedding_baseline_artifact_sha256": "8a7b8fbfb24014ca356160c530789b7eb468d475c579f8c77bbb946e9c55d8e4",
+    "generator_spec_sha256": "f900d8a097eaa61298dd0980b98b5a35c0efcb27fac93c5a4fe7108b85a057f5",
+    "hard_negative_review_packet_sha256": "aec20a9d0c714e768c560d8eb4d517edf604ca6c03cd7fc01ed8830fbf2339e4",
+    "hard_negative_vocabulary_audit_sha256": "696fe080b26bbb40af6e433394956b8cf6649ca1aff40d843d11288b2f3a04b4"
+  },
+  "database_write_gate": false,
+  "e3_review_readiness_sha256": "fb0ef3cfb2d1f36cf6997813c148fa1ce377b4524ccf668fef880b8675776feb",
+  "e3_review_readiness_version": 1,
+  "fit_data_sufficiency_gate": false,
+  "fit_eligibility_summary": {
+    "e3_development_rows_reserved_count": 20,
+    "e3_diagnostic_rows_excluded_count": 24,
+    "e3_fit_context_excluded_count": 0,
+    "e3_fit_eligible_decision_counts": {},
+    "e3_fit_eligible_row_count": 0,
+    "e3_fit_uncertain_excluded_count": 0,
+    "fit_data_sufficiency_assessed": false,
+    "fit_eligibility_assessed": false,
+    "prior_r1_count_is_sufficient_training_evidence": false,
+    "prior_r1_fit_candidate_count": 58
+  },
+  "fit_row_contract_eligible_gate": false,
+  "heldout_gate": false,
+  "learned_head_fit_gate": false,
+  "live_graph_cleanup_gate": false,
+  "lockbox_materialization_gate": false,
+  "next_step": "user_must_review_all_60_primary_rows",
+  "performance_claim_gate": false,
+  "phase": "J1-R2-E3",
+  "production_promotion_gate": false,
+  "review_complete_gate": false,
+  "review_summary": {
+    "diagnostic_only_row_count": 24,
+    "pending_primary_row_count": 60,
+    "relevance_decision_counts": {},
+    "required_primary_row_count": 60,
+    "reviewed_primary_row_count": 0,
+    "vocabulary_decision_counts": {}
+  },
+  "status": "user_review_incomplete_fit_ineligible",
+  "training_data_materialization_gate": false
+}

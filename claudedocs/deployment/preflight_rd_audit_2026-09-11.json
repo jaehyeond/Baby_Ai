@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-09-11T05:14:50.545890+00:00",
+  "workspace": "E:\\A2A\\our-a2a-project",
+  "report_path": "E:\\A2A\\our-a2a-project\\claudedocs\\deployment\\preflight_rd_audit_2026-09-11.json",
+  "disks": [
+    {
+      "path": "C:\\",
+      "free_bytes": 2567106560,
+      "total_bytes": 499070791680,
+      "free_gib": 2.39
+    },
+    {
+      "path": "D:\\",
+      "free_bytes": 1697947533312,
+      "total_bytes": 2000381014016,
+      "free_gib": 1581.34
+    },
+    {
+      "path": "E:\\",
+      "free_bytes": 1113557958656,
+      "total_bytes": 2000333307904,
+      "free_gib": 1037.08
+    }
+  ],
+  "endpoints": {
+    "neo4j": {
+      "configured": true,
+      "scheme": "bolt",
+      "hostname": "localhost",
+      "port": 7687,
+      "dns": "ok",
+      "tcp": "ok"
+    },
+    "redis": {
+      "configured": true,
+      "scheme": "rediss",
+      "hostname": "arriving-impala-41945.upstash.io",
+      "port": 6379,
+      "error_type": "gaierror",
+      "error_code": 11001
+    },
+    "local_api": {
+      "configured": true,
+      "scheme": "http",
+      "hostname": "127.0.0.1",
+      "port": 8000,
+      "dns": "ok",
+      "error_type": "ConnectionRefusedError",
+      "error_code": 10061
+    }
+  },
+  "neo4j": {
+    "read_only": true,
+    "authentication": "ok",
+    "components": [
+      {
+        "name": "Neo4j Kernel",
+        "versions": [
+          "2026.03.1"
+        ],
+        "edition": "enterprise"
+      },
+      {
+        "name": "Cypher",
+        "versions": [
+          "5",
+          "25"
+        ],
+        "edition": ""
+      }
+    ],
+    "label_counts": {
+      "Concept": 1122,
+      "Experience": 3157,
+      "UserModel": 6,
+      "Person": 5,
+      "BabyState": 1,
+      "BrainRegion": 11,
+      "PendingQuestion": 24,
+      "SleepLog": 2719,
+      "CuriosityLog": 812
+    },
+    "total_nodes": 9753,
+    "relationships": 10852,
+    "experience_metadata": {
+      "latest_created_at": "2026-09-07T08:29:04.874806+00:00",
+      "with_embedding": 106
+    },
+    "indexes": [
+      {
+        "name": "autonomous_goal_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "baby_state_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "brain_region_name",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "concept_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "curiosity_log_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "emotion_log_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "experience_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "imagination_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_1b9dcc97",
+        "type": "LOOKUP",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_1f7b4bb0",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_2bacf740",
+        "type": "VECTOR",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_3deb3da8",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_460996c0",
+        "type": "LOOKUP",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_4b11d800",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_6642c76c",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_87d9959b",
+        "type": "VECTOR",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_966d95a6",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_975cce3a",
+        "type": "VECTOR",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_a5453a2",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_c2439b97",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_d54c82b6",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_f6e5335e",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "pending_q_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "person_pid",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "prediction_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "procedure_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "user_model_sid",
+        "type": "RANGE",
+        "state": "ONLINE"
+      },
+      {
+        "name": "visual_exp_id",
+        "type": "RANGE",
+        "state": "ONLINE"
+      }
+    ],
+    "constraints": [
+      {
+        "name": "autonomous_goal_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "baby_state_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "brain_region_name",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "concept_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "curiosity_log_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "emotion_log_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "experience_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "imagination_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "pending_q_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "person_pid",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "prediction_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "procedure_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "user_model_sid",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      },
+      {
+        "name": "visual_exp_id",
+        "type": "NODE_PROPERTY_UNIQUENESS"
+      }
+    ],
+    "inventory_complete": true,
+    "store_format": "not_verified",
+    "restore_compatibility_verified": false,
+    "consistent_backup": false
+  },
+  "installed_packages": {
+    "fastapi": "0.128.0",
+    "uvicorn": "0.38.0",
+    "neo4j": "6.1.0",
+    "redis": "7.3.0",
+    "google-genai": "2.11.0",
+    "openai": "2.14.0",
+    "python-dotenv": "1.2.1",
+    "httpx": "0.28.1",
+    "pydantic": "2.12.5"
+  },
+  "source_sha256": {
+    "neural/baby/conversation_handler.py": "da28ea90325168f2d7776f38b1ecec076f2b557d9d1f2a3d9879a885f4384087",
+    "neural/baby/redis_client.py": "9f9ea45088b809eb8aa62fd2a91b5538aff5b43b33b8cc3909c85b334d2a4478",
+    "neural/baby/api_server.py": "3f594533ab7044497de80e6ae099e19a1aba3e98037e35d677c88426e888d49c",
+    "frontend/baby-dashboard/src/hooks/useIdleSleep.ts": "461af98f8e0c4fa5b8698dc26c7ecc8761b76416ff1e95095f8d79d56c95b35e"
+  },
+  "local_adapter": {
+    "present": true,
+    "file_count": 3,
+    "bytes": 4356697,
+    "copied_or_loaded": false
+  },
+  "actions": {
+    "database_write": false,
+    "api_start": false,
+    "docker_start": false,
+    "image_download": false,
+    "model_download": false,
+    "model_api_call": false,
+    "paid_resource_creation": false
+  },
+  "limits": [
+    "Counts are an inventory, not a consistent backup or proof of full data integrity.",
+    "TCP reachability is not an application-level health check.",
+    "Neo4j store-format and target restore compatibility remain unverified.",
+    "Unattended operation and operation while the PC is off are not verified."
+  ]
+}

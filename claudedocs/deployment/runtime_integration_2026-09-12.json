@@ -1,0 +1,96 @@
+{
+  "captured_at_utc": "2026-09-12T02:01:06.206872+00:00",
+  "model_api_calls": 0,
+  "neo4j_write_calls": 0,
+  "sensor_capture": false,
+  "healthy": {
+    "status": "healthy",
+    "ready": true,
+    "version": "2.0.0",
+    "backend": "neo4j+redis",
+    "timeout_seconds": 2.0,
+    "checks": {
+      "neo4j": {
+        "healthy": true,
+        "status": "ready",
+        "reconnect_attempted": false
+      },
+      "schema": {
+        "healthy": true,
+        "status": "ready",
+        "missing_constraints": [],
+        "missing_indexes": [],
+        "offline_indexes": [],
+        "wrong_shape_indexes": [],
+        "resolved_indexes": {
+          "concept_category": "index_d54c82b6",
+          "concept_strength": "index_a5453a2",
+          "experience_created": "index_966d95a6",
+          "experience_stage": "index_c2439b97",
+          "pending_q_status": "index_4b11d800",
+          "emotion_log_created": "index_6642c76c",
+          "exp_hour": "index_1f7b4bb0",
+          "exp_speaker": "index_3deb3da8",
+          "tp_time_slot": "index_f6e5335e"
+        }
+      },
+      "vector_search": {
+        "required": true,
+        "name": "index_2bacf740",
+        "healthy": true,
+        "status": "ready",
+        "expected_labels_or_types": [
+          "Experience"
+        ],
+        "expected_properties": [
+          "embedding"
+        ],
+        "state": "ONLINE",
+        "type": "VECTOR",
+        "labels_or_types": [
+          "Experience"
+        ],
+        "properties": [
+          "embedding"
+        ]
+      },
+      "redis": {
+        "healthy": true,
+        "status": "ready"
+      }
+    },
+    "startup_initialization": {
+      "status": "not_requested",
+      "mutated": false,
+      "mode": "external_explicit_only"
+    },
+    "providers": {
+      "conversation": {
+        "required": false,
+        "configured": false,
+        "probed": false,
+        "status": "not_configured"
+      },
+      "embedding": {
+        "required": false,
+        "configured": false,
+        "probed": false,
+        "status": "not_configured"
+      }
+    },
+    "dependency_startup": {
+      "neo4j": "initialized",
+      "redis": "initialized"
+    },
+    "curiosity_external_outcome_eval_enabled": false,
+    "curiosity_external_sequence_contract_required": true,
+    "curiosity_pending_question_outcome_eval_enabled": false,
+    "curiosity_pending_question_outcome_contract_required": true
+  },
+  "unsupported_actions_truthful": 5,
+  "sse_first_delivery": true,
+  "redis_outage_readiness_503_liveness_200": true,
+  "redis_restart_same_api_recovered": true,
+  "redis_persistence": true,
+  "sse_reconnected_delivery": true
+}

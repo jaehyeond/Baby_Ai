@@ -1,5 +1,9 @@
 # Our A2A Project - 프로젝트 종합 정리
 
+> **2026-09-12**: 비비 실행 기반의 W1/W2와 E3·센서 계약을 별도 feature worktree에 통합했다. [구현/검증 기록](claudedocs/deployment/BIBI_FOUNDATION_IMPLEMENTATION_2026-09-12.md). 복원·HTTP/SSE 검증과 학습/실물 검증을 구분한다.
+
+> **2026-09-11 범위 안내**: 이 문서에는 A2A coder-agent와 과거 Baby 기능 기록이 섞여 있다. 현재 비비는 `neural/baby`의 FastAPI + Neo4j + Redis 경로이며, 현행 연구·개발 상태와 다음 작업은 [비비 상세 우선순위](claudedocs/deployment/BIBI_RD_PRIORITY_PLAN_2026-09-11.md)를 참조한다. 아래의 완료 표기는 현재 자기학습/실물 성능 검증을 뜻하지 않는다.
+
 **최종 업데이트**: 2025-01-20
 **버전**: 0.2.5 (Phase 2.5 Complete)
 **상태**: World Model 백엔드 연동 완료 - 예측/시뮬레이션/상상 기능 구현

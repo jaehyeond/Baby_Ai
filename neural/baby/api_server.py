@@ -31,7 +31,7 @@ from typing import Any, Optional, AsyncGenerator
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import base64
 import uvicorn
@@ -67,29 +67,66 @@ from .redis_client import (
     publish_binding_created, publish_concept_learned,
     publish_stage_transition,
 )
+from .runtime_outcomes import awaiting_evidence_response
+from .runtime_readiness import build_readiness_report, readiness_timeout
 
 logger = logging.getLogger(__name__)
+_neo4j_reconnect_lock = asyncio.Lock()
+_SSE_POLL_TIMEOUT_SECONDS = 1.0
+_SSE_HEARTBEAT_SECONDS = 15.0
+_SSE_CLEANUP_TIMEOUT_SECONDS = 1.0
+
+
+def _load_conversation_handler():
+    """Load the protected handler before any endpoint-level DB access."""
+    from .conversation_handler import (
+        _extract_concepts_from_response,
+        handle_conversation,
+    )
+
+    return _extract_concepts_from_response, handle_conversation
+
+
+async def _reconnect_neo4j_for_readiness() -> None:
+    """Create the driver after a failed startup, with concurrent-call collapse."""
+    async with _neo4j_reconnect_lock:
+        try:
+            get_driver()
+        except RuntimeError:
+            await init_driver()
 
 
 # ── Lifespan ─────────────────────────────────────────────────────────────────
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """앱 시작/종료 시 Neo4j + Redis 초기화/정리"""
-    # 시작
-    logger.info("Starting up: initializing Neo4j and Redis...")
-    await init_driver()
-    init_redis()
-    # 스키마 + 시드 (멱등, 빈 DB 재시작 시 전체 재구축)
+    """Initialize clients while leaving schema and data unchanged."""
+    logger.info("Starting up: initializing Neo4j and Redis clients...")
+    app.state.dependency_startup = {}
+    app.state.startup_initialization = {
+        "status": "not_requested",
+        "mutated": False,
+        "mode": "external_explicit_only",
+    }
     try:
-        _db = get_brain_db()
-        await _db.ensure_indexes()
-        await _db.seed_brain_regions()
-        await _db.seed_region_connections()
-        await _db.seed_identity_concepts()
-    except Exception as e:
-        logger.warning(f"schema/seed warning: {e}")
-    logger.info("Neo4j + Redis ready")
+        await asyncio.wait_for(init_driver(), timeout=readiness_timeout())
+        app.state.dependency_startup["neo4j"] = "initialized"
+    except Exception as exc:
+        app.state.dependency_startup["neo4j"] = "failed"
+        logger.warning("Neo4j client initialization failed: %s", type(exc).__name__)
+        try:
+            await close_driver()
+        except Exception:
+            logger.warning("Neo4j client cleanup failed after initialization error")
+
+    try:
+        init_redis()
+        app.state.dependency_startup["redis"] = "initialized"
+    except Exception as exc:
+        app.state.dependency_startup["redis"] = "failed"
+        logger.warning("Redis client initialization failed: %s", type(exc).__name__)
+
+    logger.info("Runtime client initialization attempted; readiness is reported by /health")
 
     yield
 
@@ -261,11 +298,16 @@ class PendingQuestionAnswer(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    """서버 상태 확인"""
-    return {
-        "status": "healthy",
-        "version": "2.0.0",
-        "backend": "neo4j+redis",
+    """Readiness: probe required dependencies without mutating or paid calls."""
+    report = await build_readiness_report(
+        neo4j_getter=get_driver,
+        neo4j_reconnect=_reconnect_neo4j_for_readiness,
+        redis_getter=get_redis,
+        database=_DB_NAME,
+        startup=getattr(app.state, "startup_initialization", None),
+    )
+    report.update({
+        "dependency_startup": getattr(app.state, "dependency_startup", {}),
         "curiosity_external_outcome_eval_enabled": (
             os.getenv("CURIOSITY_EXTERNAL_OUTCOME_EVAL", "0") == "1"
         ),
@@ -274,7 +316,14 @@ async def health_check():
             os.getenv("CURIOSITY_QUESTION_OUTCOME_EVAL", "0") == "1"
         ),
         "curiosity_pending_question_outcome_contract_required": True,
-    }
+    })
+    return JSONResponse(status_code=200 if report["ready"] else 503, content=report)
+
+
+@app.get("/health/live")
+async def liveness_check():
+    """Process liveness only; dependency state belongs to readiness."""
+    return {"status": "alive", "alive": True, "version": "2.0.0"}
 
 
 # ── State ─────────────────────────────────────────────────────────────────────
@@ -497,11 +546,22 @@ async def conversation(request: ConversationRequest):
     내부 승급 로직은 그대로 두고 결과만 관찰.
     """
     try:
-        from .conversation_handler import (
-            _extract_concepts_from_response,
-            handle_conversation,
+        _extract_concepts_from_response, handle_conversation = (
+            _load_conversation_handler()
         )
+    except ImportError as exc:
+        logger.warning("Conversation handler unavailable: %s", type(exc).__name__)
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "success": False,
+                "status": "unavailable",
+                "component": "conversation_handler",
+                "message": "Conversation service is unavailable",
+            },
+        ) from exc
 
+    try:
         # M1 SSE: stage 전이 감지를 위해 호출 전 BabyState 스냅샷
         prev_stage: Optional[int] = None
         try:
@@ -694,26 +754,17 @@ async def conversation(request: ConversationRequest):
         return ConversationResponse(**result)
     except HTTPException:
         raise
-    except ImportError:
-        # conversation_handler 미구현 시 fallback
-        db = get_brain_db()
-        state = await db.get_baby_state() or {}
-        stage = state.get("development_stage", 0)
-        exp = await db.insert_experience(
-            task=request.message,
-            task_type="conversation",
-            output="[conversation_handler not yet implemented]",
-            success=True,
-            emotional_salience=0.5,
-            development_stage=stage,
-        )
-        return ConversationResponse(
-            output="대화 처리 중 (conversation_handler 구현 전)",
-            success=True,
-            emotional_state={},
-            development_stage=stage,
-            experience_id=exp.get("id"),
-        )
+    except ImportError as exc:
+        logger.warning("Conversation handler dependency unavailable: %s", type(exc).__name__)
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "success": False,
+                "status": "unavailable",
+                "component": "conversation_handler",
+                "message": "Conversation service is unavailable",
+            },
+        ) from exc
     except Exception as e:
         logger.error(f"conversation error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -978,43 +1029,96 @@ async def event_stream(request: Request):
     M3 예약 (helper 미구현, 채널만 구독):
       baby-ai:adgr    - pruning/concept.proposal/concept.spawned
     """
-    async def generator() -> AsyncGenerator[str, None]:
-        redis = get_redis()
-        # SSE용 별도 연결 (Pub/Sub은 전용 연결 필요)
-        pubsub_client = redis.pubsub()
-        try:
-            await pubsub_client.subscribe(
-                CHANNEL_BABY_STATE,
-                CHANNEL_NEURON_ACTIVATION,
-                CHANNEL_PENDING_QUESTION,
-                CHANNEL_IMAGINATION,
-                CHANNEL_EXPERIENCE,
-                # M1 신규 채널
-                CHANNEL_VLM,
-                CHANNEL_GEMINI,
-                CHANNEL_SLEEP,
-                CHANNEL_BINDING,
-                CHANNEL_CONCEPT,
-                CHANNEL_STAGE,
-                # M3 예약 채널 (M1에서는 구독만, publish는 M3에서 추가)
-                CHANNEL_ADGR,
-            )
-            last_ping = time.time()
+    channels = (
+        CHANNEL_BABY_STATE,
+        CHANNEL_NEURON_ACTIVATION,
+        CHANNEL_PENDING_QUESTION,
+        CHANNEL_IMAGINATION,
+        CHANNEL_EXPERIENCE,
+        CHANNEL_VLM,
+        CHANNEL_GEMINI,
+        CHANNEL_SLEEP,
+        CHANNEL_BINDING,
+        CHANNEL_CONCEPT,
+        CHANNEL_STAGE,
+        CHANNEL_ADGR,
+    )
 
-            async for msg in pubsub_client.listen():
+    async def close_pubsub(pubsub_client: Any) -> None:
+        try:
+            await asyncio.wait_for(
+                pubsub_client.unsubscribe(),
+                timeout=_SSE_CLEANUP_TIMEOUT_SECONDS,
+            )
+        except Exception as exc:
+            logger.warning("SSE unsubscribe failed: %s", type(exc).__name__)
+        try:
+            await asyncio.wait_for(
+                pubsub_client.aclose(),
+                timeout=_SSE_CLEANUP_TIMEOUT_SECONDS,
+            )
+        except Exception as exc:
+            logger.warning("SSE pubsub close failed: %s", type(exc).__name__)
+
+    pubsub_client = None
+    try:
+        redis = get_redis()
+        pubsub_client = redis.pubsub()
+        await asyncio.wait_for(
+            pubsub_client.subscribe(*channels),
+            timeout=readiness_timeout(),
+        )
+    except Exception as exc:
+        logger.warning("SSE Redis unavailable: %s", type(exc).__name__)
+        if pubsub_client is not None:
+            await close_pubsub(pubsub_client)
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "success": False,
+                "status": "unavailable",
+                "component": "redis",
+                "message": "Event stream is unavailable",
+            },
+        ) from exc
+
+    async def generator() -> AsyncGenerator[str, None]:
+        try:
+            yield ": connected\n\n"
+            last_ping = time.monotonic()
+
+            while True:
                 if await request.is_disconnected():
                     break
 
-                if msg["type"] == "message":
+                try:
+                    msg = await asyncio.wait_for(
+                        pubsub_client.get_message(
+                            ignore_subscribe_messages=True,
+                            timeout=_SSE_POLL_TIMEOUT_SECONDS,
+                        ),
+                        timeout=_SSE_POLL_TIMEOUT_SECONDS + 0.1,
+                    )
+                except TimeoutError:
+                    msg = None
+                except Exception as exc:
+                    logger.warning("SSE Redis polling failed: %s", type(exc).__name__)
+                    payload = json.dumps({
+                        "type": "stream_status",
+                        "status": "unavailable",
+                        "component": "redis",
+                    })
+                    yield f"event: unavailable\ndata: {payload}\n\n"
+                    break
+
+                if msg and msg.get("type") == "message":
                     yield f"data: {msg['data']}\n\n"
 
-                # 30초마다 keep-alive 전송 (proxy timeout 방지)
-                if time.time() - last_ping > 30:
+                if time.monotonic() - last_ping >= _SSE_HEARTBEAT_SECONDS:
                     yield ": ping\n\n"
-                    last_ping = time.time()
+                    last_ping = time.monotonic()
         finally:
-            await pubsub_client.unsubscribe()
-            await pubsub_client.aclose()
+            await close_pubsub(pubsub_client)
 
     return StreamingResponse(
         generator(),
@@ -1998,12 +2102,21 @@ async def post_curiosity(request: Request):
 
     action:
       generate      - 새 호기심 생성 (CuriosityLog 노드 생성)
-      explore_batch - 대기 중인 호기심 탐색 (status 업데이트)
-      explore       - 단일 호기심 탐색
+      explore_batch - 실행기/근거 준비 전 awaiting_evidence 반환 (DB 변경 없음)
+      explore       - 실행기/근거 준비 전 awaiting_evidence 반환 (DB 변경 없음)
     """
     try:
         body = await request.json()
         action = body.get("action", "generate")
+
+        if action in ("explore_batch", "explore"):
+            return awaiting_evidence_response(
+                action,
+                explored=[],
+                explorations_completed=0,
+                new_knowledge_acquired=0,
+            )
+
         drv = get_driver()
 
         if action == "generate":
@@ -2037,29 +2150,6 @@ async def post_curiosity(request: Request):
                     topics.append(topic)
 
             return {"success": True, "action": "generate", "generated": [{"query": t} for t in topics]}
-
-        elif action in ("explore_batch", "explore"):
-            batch_size = body.get("batch_size", 3)
-            async with drv.session(database=_DB_NAME) as s:
-                # 대기 중인 호기심 가져와 상태 업데이트
-                r = await s.run(
-                    "MATCH (cl:CuriosityLog) WHERE cl.status = 'pending' "
-                    "RETURN cl.id AS id, cl.query AS query "
-                    "ORDER BY cl.priority DESC LIMIT $limit",
-                    limit=batch_size,
-                )
-                records = await r.fetch(batch_size)
-                explored = []
-                for rec in records:
-                    await s.run(
-                        "MATCH (cl:CuriosityLog {id: $id}) "
-                        "SET cl.status = 'learned', cl.exploration_count = cl.exploration_count + 1, "
-                        "cl.satisfaction_after = 0.6",
-                        id=rec["id"],
-                    )
-                    explored.append({"query": rec["query"], "success": True})
-
-            return {"success": True, "action": action, "explored": explored}
 
         else:
             return {"success": False, "error": f"Unknown action: {action}"}
@@ -2353,86 +2443,55 @@ async def post_imagination(request: Request):
     상상/예측/시뮬레이션 처리 (useIdleSleep 수면 중 상상 단계)
 
     action:
-      imagine   - 상상 세션 시작 (topic 기반)
-      predict   - 예측 생성
-      simulate  - 목표 시뮬레이션
-      verify    - 예측 검증
+      imagine   - 실행기/근거 준비 전 awaiting_evidence 반환
+      predict   - 실행기/근거 준비 전 awaiting_evidence 반환
+      simulate  - 실행기/근거 준비 전 awaiting_evidence 반환
+      verify    - 외부 검증 계약 준비 전 awaiting_evidence 반환
       stats     - 통계 조회
     """
     try:
         body = await request.json()
         action = body.get("action", "imagine")
-        db = get_brain_db()
 
-        if action == "imagine":
-            topic = body.get("topic", "자유 연상")
-            trigger = body.get("trigger", "idle_sleep")
-            state = await db.get_baby_state()
-            curiosity_level = state.get("curiosity", 0.5)
-            session = await db.start_imagination_session(
-                topic=topic,
-                imagination_type="free_association",
-                curiosity_level=curiosity_level,
-                trigger=trigger,
-            )
-            if session:
-                await db.end_imagination_session(
-                    session_id=session.get("id", ""),
-                    insights=["내재적 탐색 완료"],
-                    curiosity_satisfied=curiosity_level + 0.1,
-                )
-            return {
-                "success": True,
-                "action": "imagine",
-                "session": session or {},
-                "imagination_sessions": 1,
-            }
+        unavailable_shapes = {
+            "imagine": {"session": {}, "imagination_sessions": 0},
+            "predict": {"prediction": {}},
+            "simulate": {"simulation": {}},
+            "verify": {
+                "prediction_id": body.get("prediction_id"),
+                "was_correct": None,
+            },
+        }
+        if action in unavailable_shapes:
+            return awaiting_evidence_response(action, **unavailable_shapes[action])
 
-        elif action == "predict":
-            scenario = body.get("scenario", "")
-            prediction_text = f"{scenario}에서 긍정적 결과 예측"
-            pred = await db.insert_prediction(
-                experience_id=None,
-                prediction=prediction_text,
-                confidence=0.6,
-                prediction_type="scenario",
-            )
-            return {"success": True, "action": "predict", "prediction": pred or {}}
-
-        elif action == "simulate":
-            goal = body.get("goal", "자유 탐색")
-            sim = await db.insert_simulation(
-                goal=goal,
-                simulation_type="planning",
-            )
-            if sim:
-                await db.complete_simulation(
-                    simulation_id=sim.get("id", ""),
-                    outcome="completed",
-                    reward_signal=0.6,
-                )
-            return {"success": True, "action": "simulate", "simulation": sim or {}}
-
-        elif action == "verify":
-            prediction_id = body.get("prediction_id")
-            actual_outcome = body.get("actual_outcome", "")
-            if prediction_id:
-                await db.verify_prediction(
-                    prediction_id=prediction_id,
-                    actual_outcome=actual_outcome,
-                    was_correct=True,
-                )
-            return {"success": True, "action": "verify"}
-
-        elif action == "stats":
+        if action == "stats":
+            db = get_brain_db()
             preds = await db.get_recent_predictions(limit=20)
-            correct = sum(1 for p in preds if p.get("was_correct"))
+            legacy_true = sum(
+                1 for prediction in preds
+                if prediction.get("was_correct") is True
+            )
+            legacy_false = sum(
+                1 for prediction in preds
+                if prediction.get("was_correct") is False
+            )
             return {
                 "success": True,
                 "action": "stats",
                 "total_predictions": len(preds),
-                "correct_predictions": correct,
-                "accuracy": correct / len(preds) if preds else 0,
+                "verified_prediction_count": 0,
+                "correct_predictions": None,
+                "accuracy": None,
+                "measured_accuracy": None,
+                "performance_claim_allowed": False,
+                "legacy_unverified_diagnostics": {
+                    "status": "unverified",
+                    "source_field": "was_correct",
+                    "flagged_prediction_count": legacy_true + legacy_false,
+                    "true_flag_count": legacy_true,
+                    "false_flag_count": legacy_false,
+                },
             }
 
         else:

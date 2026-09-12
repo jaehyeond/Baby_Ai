@@ -1,0 +1,74 @@
+{
+  "base_branch": "DB_Renewal",
+  "base_commit": "1a2d0d7",
+  "integration_branch": "feature/bibi-foundation-20260912",
+  "original_checkout": "E:\\A2A\\our-a2a-project",
+  "integration_checkout": "E:\\A2A\\our-a2a-project\\.worktrees\\bibi-foundation-20260912",
+  "commit_performed": false,
+  "push_performed": false,
+  "original_shared_docs_preserved": {
+    "AGENTS.md": true,
+    "CHANGELOG.md": true,
+    "Task.md": true,
+    "ROADMAP.md": true,
+    "PROJECT_SUMMARY.md": true
+  },
+  "protected_handler_sha256": "c87a223e6a50ccc5ea9066df558b7b7f69173cf0d9ceaf940303e4eb4c55e838",
+  "runtime_artifact_bytes": 350417407,
+  "disks": {
+    "C:/": 0.25,
+    "D:/": 1580.849,
+    "E:/": 1034.181
+  },
+  "backup_files": [
+    {
+      "name": "neo4j-2026-09-12T01-23-26.backup",
+      "bytes": 6018822,
+      "sha256": "3302be972e70da18e72d80b27f42ac6be8a98239dc66e0b9ea06011beadbcbb7"
+    },
+    {
+      "name": "system-2026-09-12T01-27-41.backup",
+      "bytes": 15287,
+      "sha256": "f68e99daf7e81aa9669658168c1ea5ff0c671634c3648ff7d5a429af5d507fc9"
+    },
+    {
+      "name": "system-2026-09-12T01-52-39.backup",
+      "bytes": 15147,
+      "sha256": "7c7890bd0ef84339f33cd0c1076b60b31d327824ada9069e0cda97ab51d6b03d"
+    },
+    {
+      "name": "system-2026-09-12T01-52-39.server_id",
+      "bytes": 17,
+      "sha256": "c4707feafb34a83140cd8ff3eaeab0b9d3c369ad594968c9f8fa5608b2c93b10"
+    }
+  ],
+  "installed_wheel": {
+    "name": "our_a2a_project-0.1.0-py3-none-any.whl",
+    "bytes": 424837,
+    "sha256": "51e80371ff480b36e1445659a96a9a5e0b79fbb5eb9fde09fef4dd147b020fb0"
+  },
+  "dependency_lock_sha256": "61c19531fb098430e53fa6ef9ff35f44f80184948b6a08d138aa5418ed857b82",
+  "final_ports_open": {
+    "7687": true,
+    "17687": false,
+    "16379": false,
+    "18000": false
+  },
+  "canonical_tests": {
+    "passed": 473,
+    "skipped": 1,
+    "seconds": 10.52,
+    "command": "python -B -m pytest tests -q -p no:cacheprovider --basetemp .test-tmp/integrated-final"
+  },
+  "original_shared_doc_sha256": {
+    "AGENTS.md": "d1477dd48d0b5dd9b587d38c0666afc8047c912fc046615d18297fbc03d6af55",
+    "CHANGELOG.md": "7b808105719512b2bce41c74613de7195250a214ce188e41937d1f919ddb34ed",
+    "Task.md": "06ddf29547a51616e40fcb3fd4855305960e82b761513d47b8da7723a92587ee",
+    "ROADMAP.md": "4b2fa251ece42e7de12593f772f19ecd6213e8a9b7c010c9e41736c16881bafe",
+    "PROJECT_SUMMARY.md": "faf722b7f9c4d586b24260baad13cbe9f14e93b35813f1b30f4817f4922c4c35"
+  },
+  "protected_handler_raw_matches_original": false,
+  "protected_handler_lf_normalized_matches_original": true,
+  "protected_handler_git_blob": "c1922cc61240c75b7446306ed2b57e70d813f27d",
+  "protected_handler_git_blob_matches_head": true
+}

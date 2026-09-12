@@ -1,0 +1,1249 @@
+{
+  "captured_at_utc": "2026-09-11T05:16:48.670687+00:00",
+  "head": "1a2d0d7",
+  "scope": "read-only R&D aggregate audit; no user content",
+  "queries": {
+    "labels": "MATCH (n) UNWIND labels(n) AS label RETURN label,count(*) AS count ORDER BY label",
+    "relationship_types": "MATCH ()-[r]->() RETURN type(r) AS type,count(*) AS count ORDER BY type",
+    "experience_types": "MATCH (e:Experience) RETURN e.task_type AS type,count(*) AS count,count(e.embedding) AS embedded,max(toString(e.created_at)) AS latest ORDER BY count DESC",
+    "experience_fields": "MATCH (e:Experience) RETURN count(e) AS total,count(e.speaker_id) AS speaker_id,count(e.recalled_ids) AS recalled_ids,count(e.recall_conf) AS recall_conf,count(e.surprise_z) AS surprise_z,count(e.head_pose) AS head_pose,count(e.depth_bins) AS depth_bins,count(e.channel) AS channel,count(e.valid_from) AS valid_from,count(e.valid_to) AS valid_to",
+    "vision_fields": "MATCH (e:Experience {task_type:'vision'}) RETURN count(e) AS total,count(e.head_pose) AS head_pose,count(e.depth_bins) AS depth_bins,count(e.prediction_snapshot) AS prediction_snapshot,max(toString(e.created_at)) AS latest",
+    "concept_embeddings": "MATCH (c:Concept) RETURN count(c) AS total,count(c.embedding) AS embedded",
+    "embedding_dimensions": "MATCH (e:Experience) WHERE e.embedding IS NOT NULL RETURN size(e.embedding) AS dimensions,count(*) AS count",
+    "experience_speaker_links": "MATCH (e:Experience) WHERE EXISTS { MATCH (e)-[:INTERACTED_WITH]->(:UserModel) } RETURN count(e) AS linked",
+    "prediction_fields": "MATCH (p:Prediction) RETURN count(p) AS total,count(p.was_correct) AS scored,count(CASE WHEN p.was_correct = true THEN 1 END) AS marked_correct,count(p.policy_action_id) AS policy_action_id,count(p.actual_outcome) AS actual_outcome",
+    "question_fields": "MATCH (q:PendingQuestion) RETURN count(q) AS total,count(q.policy_action_id) AS policy_action_id,count(q.prediction_snapshot) AS prediction_snapshot,count(q.answer) AS answer",
+    "relevant_property_keys": "MATCH (n) WHERE any(l IN labels(n) WHERE l IN ['Prediction','Procedure','PendingQuestion','BabyState']) UNWIND keys(n) AS property RETURN labels(n) AS labels,property,count(*) AS count ORDER BY labels,property",
+    "vector_indexes": "SHOW INDEXES YIELD name,type,labelsOrTypes,properties,options,state WHERE type='VECTOR' RETURN name,labelsOrTypes,properties,options,state",
+    "question_contract_fields": "MATCH (q:PendingQuestion) RETURN count(q) AS total,count(q.question_outcome_policy_action_key) AS action_key,count(q.predicted_concept_ids) AS predicted_concept_ids,count(q.prediction_captured_at) AS prediction_captured_at,count(q.external_outcome_concept_ids) AS external_outcome_concept_ids,count(q.question_outcome_split) AS split",
+    "speaker_link_distribution": "MATCH (u:UserModel) OPTIONAL MATCH (e:Experience)-[:INTERACTED_WITH]->(u) WITH u,count(DISTINCT e) AS n RETURN n AS linked_experiences ORDER BY n DESC",
+    "experience_index_probe": "MATCH (e:Experience) WHERE e.embedding IS NOT NULL WITH e.embedding AS emb LIMIT 1 CALL db.index.vector.queryNodes('experience_embeddings',1,emb) YIELD node,score RETURN count(node) AS hits",
+    "actual_index_probe": "MATCH (e:Experience) WHERE e.embedding IS NOT NULL WITH e.embedding AS emb LIMIT 1 CALL db.index.vector.queryNodes('index_2bacf740',1,emb) YIELD node,score RETURN count(node) AS hits",
+    "next_frame_fields": "MATCH ()-[r:NEXT_FRAME]->() RETURN count(r) AS total,count(r.pose_delta) AS pose_delta",
+    "question_relations": "MATCH (:PendingQuestion)-[r]->() RETURN type(r) AS type,count(r) AS count"
+  },
+  "graph": {
+    "labels": [
+      {
+        "label": "AblationRun",
+        "count": 20
+      },
+      {
+        "label": "AutonomousGoal",
+        "count": 146
+      },
+      {
+        "label": "BabyState",
+        "count": 1
+      },
+      {
+        "label": "BrainRegion",
+        "count": 11
+      },
+      {
+        "label": "Concept",
+        "count": 1122
+      },
+      {
+        "label": "CuriosityLog",
+        "count": 812
+      },
+      {
+        "label": "EmotionLog",
+        "count": 1574
+      },
+      {
+        "label": "Experience",
+        "count": 3157
+      },
+      {
+        "label": "Imagination",
+        "count": 15
+      },
+      {
+        "label": "PendingQuestion",
+        "count": 24
+      },
+      {
+        "label": "Person",
+        "count": 5
+      },
+      {
+        "label": "Prediction",
+        "count": 23
+      },
+      {
+        "label": "Procedure",
+        "count": 102
+      },
+      {
+        "label": "SleepLog",
+        "count": 2719
+      },
+      {
+        "label": "UserModel",
+        "count": 6
+      },
+      {
+        "label": "VisualExperience",
+        "count": 16
+      }
+    ],
+    "relationship_types": [
+      {
+        "type": "ALIAS_OF",
+        "count": 4
+      },
+      {
+        "type": "ALSO_REPRESENTED_IN",
+        "count": 960
+      },
+      {
+        "type": "CAUSES",
+        "count": 3
+      },
+      {
+        "type": "CONNECTS_TO",
+        "count": 12
+      },
+      {
+        "type": "FEELS_ABOUT",
+        "count": 16
+      },
+      {
+        "type": "GENERATED",
+        "count": 6
+      },
+      {
+        "type": "IDENTIFIED_BY",
+        "count": 6
+      },
+      {
+        "type": "INTERACTED_WITH",
+        "count": 56
+      },
+      {
+        "type": "INTERESTED_IN",
+        "count": 258
+      },
+      {
+        "type": "INVOLVES",
+        "count": 1794
+      },
+      {
+        "type": "MAPPED_TO",
+        "count": 1081
+      },
+      {
+        "type": "NEXT_EXTERNAL_TURN",
+        "count": 6
+      },
+      {
+        "type": "NEXT_FRAME",
+        "count": 36
+      },
+      {
+        "type": "RELATES_TO",
+        "count": 6613
+      },
+      {
+        "type": "TRIGGERED_BY",
+        "count": 1
+      }
+    ],
+    "experience_types": [
+      {
+        "type": "conversation",
+        "count": 1508,
+        "embedded": 0,
+        "latest": "2026-09-07T08:29:04.874806+00:00"
+      },
+      {
+        "type": "exploration",
+        "count": 1450,
+        "embedded": 0,
+        "latest": "2026-03-19T10:00:04.289179+00:00"
+      },
+      {
+        "type": "function",
+        "count": 57,
+        "embedded": 55,
+        "latest": "2026-01-20T07:20:31.518503+00:00"
+      },
+      {
+        "type": "vision",
+        "count": 45,
+        "embedded": 0,
+        "latest": "2026-05-12T13:03:38.547463+00:00"
+      },
+      {
+        "type": "tool_use",
+        "count": 30,
+        "embedded": 0,
+        "latest": "2026-02-19T08:51:11.192354+00:00"
+      },
+      {
+        "type": "algorithm",
+        "count": 25,
+        "embedded": 25,
+        "latest": "2026-01-19T15:29:38.977179+00:00"
+      },
+      {
+        "type": "general",
+        "count": 13,
+        "embedded": 13,
+        "latest": "2026-01-19T15:48:04.896785+00:00"
+      },
+      {
+        "type": "class",
+        "count": 11,
+        "embedded": 11,
+        "latest": "2026-01-19T15:45:04.37662+00:00"
+      },
+      {
+        "type": "learning",
+        "count": 10,
+        "embedded": 0,
+        "latest": "2026-02-14T12:53:05.697908+00:00"
+      },
+      {
+        "type": "test",
+        "count": 4,
+        "embedded": 1,
+        "latest": "2026-04-10T06:29:50.259654+00:00"
+      },
+      {
+        "type": "visual_observation",
+        "count": 3,
+        "embedded": 0,
+        "latest": "2026-02-23T08:57:00.547548+00:00"
+      },
+      {
+        "type": "coding",
+        "count": 1,
+        "embedded": 1,
+        "latest": "2025-12-31T05:16:53.236586+00:00"
+      }
+    ],
+    "experience_fields": [
+      {
+        "total": 3157,
+        "speaker_id": 0,
+        "recalled_ids": 5,
+        "recall_conf": 5,
+        "surprise_z": 5,
+        "head_pose": 0,
+        "depth_bins": 0,
+        "channel": 5,
+        "valid_from": 0,
+        "valid_to": 0
+      }
+    ],
+    "vision_fields": [
+      {
+        "total": 45,
+        "head_pose": 0,
+        "depth_bins": 0,
+        "prediction_snapshot": 0,
+        "latest": "2026-05-12T13:03:38.547463+00:00"
+      }
+    ],
+    "concept_embeddings": [
+      {
+        "total": 1122,
+        "embedded": 148
+      }
+    ],
+    "embedding_dimensions": [
+      {
+        "dimensions": 1536,
+        "count": 106
+      }
+    ],
+    "experience_speaker_links": [
+      {
+        "linked": 56
+      }
+    ],
+    "prediction_fields": [
+      {
+        "total": 23,
+        "scored": 5,
+        "marked_correct": 5,
+        "policy_action_id": 0,
+        "actual_outcome": 5
+      }
+    ],
+    "question_fields": [
+      {
+        "total": 24,
+        "policy_action_id": 0,
+        "prediction_snapshot": 0,
+        "answer": 21
+      }
+    ],
+    "relevant_property_keys": [
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "boredom",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "capabilities",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "created_at",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "curiosity",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "development_stage",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "dominant_emotion",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "emotion_snapshot",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "experience_count",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "extras",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "fear",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "frustration",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "id",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "joy",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "limitations",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "milestones",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "preferences",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "progress",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "success_count",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "surprise",
+        "count": 1
+      },
+      {
+        "labels": [
+          "BabyState"
+        ],
+        "property": "updated_at",
+        "count": 1
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "answer",
+        "count": 21
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "answer_confidence",
+        "count": 21
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "answered_at",
+        "count": 21
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "asked_at",
+        "count": 7
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "context",
+        "count": 17
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "context_concept_ids",
+        "count": 17
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "created_at",
+        "count": 17
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "curiosity_cue_ids",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "curiosity_input_terms_json",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "external_outcome_concept_ids",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "external_outcome_terms_json",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "id",
+        "count": 24
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "learned_concept_id",
+        "count": 14
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "predicted_concept_ids",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "prediction_captured_at",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "priority",
+        "count": 17
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question",
+        "count": 24
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_contract_sha256",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_evaluation",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_policy_action_key",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_recorded_at",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_scoring_mode",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_outcome_split",
+        "count": 6
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "question_type",
+        "count": 17
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "source",
+        "count": 7
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "status",
+        "count": 24
+      },
+      {
+        "labels": [
+          "PendingQuestion"
+        ],
+        "property": "updated_at",
+        "count": 17
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "actual_outcome",
+        "count": 5
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "auto_verified",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "based_on_concepts",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "based_on_experiences",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "confidence",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "created_at",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "development_stage",
+        "count": 22
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "domain",
+        "count": 1
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "emotional_impact",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "id",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "prediction",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "prediction_error",
+        "count": 5
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "prediction_type",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "reasoning",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "scenario",
+        "count": 23
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "updated_at",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "verifiable_after",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "verification_context",
+        "count": 8
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "verified_at",
+        "count": 5
+      },
+      {
+        "labels": [
+          "Prediction"
+        ],
+        "property": "was_correct",
+        "count": 5
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "approach",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "created_at",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "effective_contexts",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "extras",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "failure_count",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "id",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "last_used",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "min_stage_required",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "success_count",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "success_rate",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "task_type",
+        "count": 102
+      },
+      {
+        "labels": [
+          "Procedure"
+        ],
+        "property": "total_uses",
+        "count": 102
+      }
+    ],
+    "vector_indexes": [
+      {
+        "name": "index_2bacf740",
+        "labelsOrTypes": [
+          "Experience"
+        ],
+        "properties": [
+          "embedding"
+        ],
+        "options": {
+          "indexConfig": {
+            "vector.hnsw.m": 16,
+            "vector.quantization.enabled": true,
+            "vector.similarity_function": "COSINE",
+            "vector.hnsw.ef_construction": 100
+          }
+        },
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_87d9959b",
+        "labelsOrTypes": [
+          "Concept"
+        ],
+        "properties": [
+          "embedding"
+        ],
+        "options": {
+          "indexConfig": {
+            "vector.hnsw.m": 16,
+            "vector.quantization.enabled": true,
+            "vector.similarity_function": "COSINE",
+            "vector.hnsw.ef_construction": 100
+          }
+        },
+        "state": "ONLINE"
+      },
+      {
+        "name": "index_975cce3a",
+        "labelsOrTypes": [
+          "VisualExperience"
+        ],
+        "properties": [
+          "embedding"
+        ],
+        "options": {
+          "indexConfig": {
+            "vector.hnsw.m": 16,
+            "vector.quantization.enabled": true,
+            "vector.similarity_function": "COSINE",
+            "vector.hnsw.ef_construction": 100
+          }
+        },
+        "state": "ONLINE"
+      }
+    ],
+    "question_contract_fields": [
+      {
+        "total": 24,
+        "action_key": 6,
+        "predicted_concept_ids": 6,
+        "prediction_captured_at": 6,
+        "external_outcome_concept_ids": 6,
+        "split": 6
+      }
+    ],
+    "speaker_link_distribution": [
+      {
+        "linked_experiences": 20
+      },
+      {
+        "linked_experiences": 14
+      },
+      {
+        "linked_experiences": 9
+      },
+      {
+        "linked_experiences": 7
+      },
+      {
+        "linked_experiences": 5
+      },
+      {
+        "linked_experiences": 1
+      }
+    ],
+    "actual_index_probe": [
+      {
+        "hits": 1
+      }
+    ],
+    "next_frame_fields": [
+      {
+        "total": 36,
+        "pose_delta": 0
+      }
+    ],
+    "question_relations": []
+  },
+  "errors": {
+    "experience_index_probe": {
+      "type": "ClientError",
+      "code": "Neo.ClientError.Procedure.ProcedureCallFailed"
+    }
+  },
+  "feature_flags": {
+    "MEMORY_GATEWAY": {
+      "configured": false,
+      "effective_enabled": false,
+      "default": "off",
+      "process_checked": "audit process plus .env; application is down"
+    },
+    "LOCAL_CORE_DISTILL": {
+      "configured": false,
+      "effective_enabled": false,
+      "default": "off",
+      "process_checked": "audit process plus .env; application is down"
+    },
+    "CURIOSITY_EXTERNAL_OUTCOME_EVAL": {
+      "configured": false,
+      "effective_enabled": false,
+      "default": "off",
+      "process_checked": "audit process plus .env; application is down"
+    },
+    "CURIOSITY_QUESTION_OUTCOME_EVAL": {
+      "configured": false,
+      "effective_enabled": false,
+      "default": "off",
+      "process_checked": "audit process plus .env; application is down"
+    }
+  },
+  "source_sha256": {
+    "neural/baby/api_server.py": "3f594533ab7044497de80e6ae099e19a1aba3e98037e35d677c88426e888d49c",
+    "neural/baby/neo4j_db.py": "602dfe3a0e2a654509914bed7d026dd0cb1ce4bd43fb5d0e86892737e4ba9109",
+    "neural/baby/memory_gateway.py": "36a3abc364816962bfd6c8f1c8626cec4f323a88a973a26e583ae45889c913a1",
+    "neural/baby/conversation_handler.py": "da28ea90325168f2d7776f38b1ecec076f2b557d9d1f2a3d9879a885f4384087",
+    "neural/baby/redis_client.py": "9f9ea45088b809eb8aa62fd2a91b5538aff5b43b33b8cc3909c85b334d2a4478",
+    "neural/baby/llm_client.py": "cf555074c0182d608e145a6ce0313d3805cbe2d590b2c6cda37ceb728fcdbe25",
+    "neural/baby/embeddings.py": "7f65b13243eda253db2f0b9709211b1d050d7511551a9686b39e29e02e2aab3d",
+    "neural/baby/live_curiosity.py": "d03c7c393e678f8820dadef9fb7f00b22c2074ba78aa90f8eb7959b1a22bf97b",
+    "scripts/research/sleep_distill_job.py": "ed1e646dfc95499d62c2d47a49f640ef44fea41e00637985eaea359daf8ef561",
+    "scripts/research/llm_core_distill.py": "bde3a3898f114217edb06fbc2050d36b2ac4cefba33deb24a5f9efebeeddfae0",
+    "frontend/baby-dashboard/src/hooks/useIdleSleep.ts": "461af98f8e0c4fa5b8698dc26c7ecc8761b76416ff1e95095f8d79d56c95b35e",
+    "pyproject.toml": "7e16145cfdb788cd145ba54e406f9c564544e53f62ceae50a7c348f936179cd0"
+  },
+  "actions": {
+    "db_write": false,
+    "api_start": false,
+    "model_load": false,
+    "model_api_call": false,
+    "training": false,
+    "tests_run": false
+  },
+  "packaging": {
+    "wheel_packages": [
+      "agents",
+      "hosts",
+      "common"
+    ],
+    "fastapi_declared": false,
+    "python_requires": ">=3.9",
+    "root_python_lockfile_present": false
+  },
+  "interpretation_limits": [
+    "No raw user messages exported.",
+    "Zero generic PendingQuestion.policy_action_id or prediction_snapshot is not absence of the research pilot: actual prefixed contract fields are queried separately.",
+    "Prediction marked_correct counts do not establish correctness or identify which API created historical rows.",
+    "Feature flags describe this audit process plus .env; another launcher could override them.",
+    "Vector probes use an existing stored vector and return only hit counts; no embeddings generated."
+  ],
+  "sealed_source_byte_checks": [
+    {
+      "file": "neural/baby/relevance_cohort_generator.py",
+      "spec": "scripts/research/specs/j1_r2_rolling_development_generator_spec_draft_20260723.json",
+      "expected_sha256": "69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488",
+      "raw_sha256": "69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488",
+      "lf_normalized_sha256": "69b6e28805c5bd3bf443e3bdcd664cb7f5eca44a9d1ba4c5a3bc1e1bec3f3488",
+      "raw_matches": true,
+      "lf_matches": true,
+      "test_suite_executed": false
+    },
+    {
+      "file": "neural/baby/relevance_lockbox_generator.py",
+      "spec": "scripts/research/specs/j1_r2_one_time_lockbox_generator_spec_draft_20260723.json",
+      "expected_sha256": "0feb151c93095d54af83700a57248cf2b592d81fb510c2d0e782867b3db360b9",
+      "raw_sha256": "0feb151c93095d54af83700a57248cf2b592d81fb510c2d0e782867b3db360b9",
+      "lf_normalized_sha256": "0feb151c93095d54af83700a57248cf2b592d81fb510c2d0e782867b3db360b9",
+      "raw_matches": true,
+      "lf_matches": true,
+      "test_suite_executed": false
+    }
+  ],
+  "existing_e5_snapshot": {
+    "path": "E:\\A2A\\model_cache\\huggingface\\intfloat--multilingual-e5-small--614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "checks": [
+      {
+        "relative_path": "1_Pooling/config.json",
+        "exists": true,
+        "bytes": 200,
+        "expected_bytes": 200,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "config.json",
+        "exists": true,
+        "bytes": 655,
+        "expected_bytes": 655,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "model.safetensors",
+        "exists": true,
+        "bytes": 470641600,
+        "expected_bytes": 470641600,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "modules.json",
+        "exists": true,
+        "bytes": 387,
+        "expected_bytes": 387,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "sentence_bert_config.json",
+        "exists": true,
+        "bytes": 57,
+        "expected_bytes": 57,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "sentencepiece.bpe.model",
+        "exists": true,
+        "bytes": 5069051,
+        "expected_bytes": 5069051,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "special_tokens_map.json",
+        "exists": true,
+        "bytes": 167,
+        "expected_bytes": 167,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "tokenizer.json",
+        "exists": true,
+        "bytes": 17082730,
+        "expected_bytes": 17082730,
+        "digest_matches": true
+      },
+      {
+        "relative_path": "tokenizer_config.json",
+        "exists": true,
+        "bytes": 443,
+        "expected_bytes": 443,
+        "digest_matches": true
+      }
+    ],
+    "all_matched": true,
+    "new_download": false,
+    "model_loaded": false
+  },
+  "artifact_summaries": {
+    "claudedocs/baseline/prequential_phase1_20260712.json": {
+      "file_sha256": "eb27f8cca7b54f9515612ceff73bc93b052cf3c6cfcf26e21845627f1d0cd310",
+      "experiment_rerun": false,
+      "n_events": 256,
+      "metrics": {
+        "edgebank": {
+          "MRR": 0.4255,
+          "ECE": null,
+          "n_scored": 1710
+        },
+        "additive": {
+          "MRR": 0.4938,
+          "ECE": null,
+          "n_scored": 1710
+        },
+        "rw": {
+          "MRR": 0.5107,
+          "ECE": 0.0425,
+          "n_scored": 1710
+        },
+        "rw_recency": {
+          "MRR": 0.5142,
+          "ECE": 0.0239,
+          "n_scored": 1710
+        }
+      }
+    },
+    "claudedocs/baseline/prequential_phase1_shuffle_20260712.json": {
+      "file_sha256": "5c998143b0e0de9eb05fd35f78be51f32d4d16d54d6bb2f25997ae85a8021a99",
+      "experiment_rerun": false,
+      "n_events": 256,
+      "metrics": {
+        "edgebank": {
+          "MRR": 0.3006,
+          "ECE": null,
+          "n_scored": 1724
+        },
+        "additive": {
+          "MRR": 0.4585,
+          "ECE": null,
+          "n_scored": 1724
+        },
+        "rw": {
+          "MRR": 0.4587,
+          "ECE": 0.0454,
+          "n_scored": 1724
+        },
+        "rw_recency": {
+          "MRR": 0.4562,
+          "ECE": 0.0503,
+          "n_scored": 1724
+        }
+      }
+    },
+    "claudedocs/research/j1_r2_embedding_baseline_development_20260728.json": {
+      "file_sha256": "cc0d432da410e1cbf6ac5a34e71f36069dc406e563c7d9f5e808e49e6e4f4aad",
+      "experiment_rerun": false,
+      "status": "development_frozen_embedding_baseline_completed_not_for_claim",
+      "phase": "J1-R2-E2",
+      "aggregate_metrics": {
+        "macro_mrr": 0.238188745977,
+        "macro_ndcg_at_8": 0.291023572476,
+        "macro_recall_at_8": 0.5,
+        "macro_reviewed_pool_average_precision": 1.0
+      },
+      "question_count": 12,
+      "candidate_count": 1069,
+      "heldout_gate": false,
+      "production_promotion_gate": false,
+      "performance_claim_gate": false,
+      "database_writes": false,
+      "learning_enabled": false
+    },
+    "claudedocs/research/j1_r2_lexical_baseline_development_20260728.json": {
+      "file_sha256": "3c7f3490c2190f33847bf2298fa4d904d96c96503206c2631c11741fad2a4f5e",
+      "experiment_rerun": false,
+      "status": "development_lexical_baseline_completed_not_for_claim",
+      "phase": "J1-R2",
+      "aggregate_metrics": {
+        "macro_mrr": 0.012469448422,
+        "macro_ndcg_at_8": 0.0,
+        "macro_recall_at_8": 0.0,
+        "macro_reviewed_pool_average_precision": 0.576388888889
+      },
+      "question_count": 12,
+      "candidate_count": 1069,
+      "heldout_gate": false,
+      "production_promotion_gate": false,
+      "performance_claim_gate": false,
+      "database_writes": false,
+      "learning_enabled": false
+    },
+    "claudedocs/research/j1_r2_embedding_hard_negative_vocabulary_audit_20260728.json": {
+      "file_sha256": "e49d44fdb4f06f19b35d72922b941eaf66f2f7413cd7ed491130319823ea605a",
+      "experiment_rerun": false,
+      "status": "development_diagnostic_generated_review_pending_not_training_data",
+      "phase": "J1-R2-E3",
+      "selection_summary": {
+        "auto_assigned_context_count": 0,
+        "auto_assigned_hard_negative_count": 0,
+        "auto_assigned_positive_count": 0,
+        "auto_assigned_unrelated_negative_count": 0,
+        "question_count": 12,
+        "review_row_count": 84,
+        "selected_machine_surface_flag_counts": {
+          "boundary_punctuation": 12,
+          "boundary_punctuation_variant": 10
+        },
+        "selection_reason_counts": {
+          "positive_rank_neighbor_for_top8_miss": 24,
+          "top_unjudged": 60
+        },
+        "unique_selected_concept_count": 67
+      },
+      "review_complete_gate": false,
+      "heldout_gate": false,
+      "production_promotion_gate": false,
+      "performance_claim_gate": false,
+      "learning_enabled": false,
+      "flagged_concept_count": 41
+    },
+    "claudedocs/research/b5_9_semantic_outcome_contract_20260716.json": {
+      "file_sha256": "fdbf62e0a6975ab007536b9f54316e548419bd45fdcc5be6e71b5f60dfc8448c",
+      "experiment_rerun": false,
+      "status": "completed",
+      "phase": "B5.9",
+      "question_count": 6,
+      "heldout_gate": false,
+      "production_promotion_gate": false,
+      "database_writes": false
+    },
+    "claudedocs/research/j1_local_core_adapter_comparison_b_20260722.json": {
+      "file_sha256": "749a5fc969fe10fbb47278f80cf3faa108235833f4585d67ecb10bf0eefb46ab",
+      "experiment_rerun": false,
+      "status": "local_core_adapter_disabled_comparison_completed_not_for_claim",
+      "phase": "J1-EXP-1",
+      "question_count": 6,
+      "heldout_gate": false,
+      "production_promotion_gate": false,
+      "performance_claim_gate": false,
+      "database_writes": false,
+      "learning_enabled": false
+    }
+  }
+}

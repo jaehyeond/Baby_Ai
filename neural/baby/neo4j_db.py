@@ -677,11 +677,12 @@ class BrainDatabase:
         """벡터 유사도로 경험 검색"""
         async with self.driver.session(database=_DB_NAME) as s:
             result = await s.run(
-                "CALL db.index.vector.queryNodes('experience_embeddings', $limit, $emb) "
+                "CALL db.index.vector.queryNodes($index_name, $limit, $emb) "
                 "YIELD node, score "
                 "WHERE score >= $threshold "
                 "RETURN node, score",
                 emb=embedding,
+                index_name=os.getenv("BABY_EXPERIENCE_VECTOR_INDEX", "experience_embeddings").strip() or "experience_embeddings",
                 limit=limit * 2,  # threshold 필터 후 limit 맞추기 위해 여유분
                 threshold=threshold,
             )
@@ -932,9 +933,10 @@ class BrainDatabase:
         """벡터 유사도로 개념 검색 (Memory Recall용)"""
         async with self.driver.session(database=_DB_NAME) as s:
             result = await s.run(
-                "CALL db.index.vector.queryNodes('concept_embeddings', $limit, $emb) "
+                "CALL db.index.vector.queryNodes($index_name, $limit, $emb) "
                 "YIELD node, score "
                 "RETURN node, score",
+                index_name=os.getenv("BABY_CONCEPT_VECTOR_INDEX", "concept_embeddings").strip() or "concept_embeddings",
                 emb=embedding,
                 limit=limit,
             )
@@ -1493,11 +1495,12 @@ class BrainDatabase:
         """벡터 검색 + 뇌 영역 조인 (Memory Recall Pipeline용)"""
         async with self.driver.session(database=_DB_NAME) as s:
             result = await s.run(
-                "CALL db.index.vector.queryNodes('concept_embeddings', $limit, $emb) "
+                "CALL db.index.vector.queryNodes($index_name, $limit, $emb) "
                 "YIELD node AS concept, score "
                 "OPTIONAL MATCH (concept)-[:MAPPED_TO]->(br:BrainRegion) "
                 "RETURN concept, score, br.name AS region "
                 "ORDER BY score DESC",
+                index_name=os.getenv("BABY_CONCEPT_VECTOR_INDEX", "concept_embeddings").strip() or "concept_embeddings",
                 emb=embedding,
                 limit=limit,
             )

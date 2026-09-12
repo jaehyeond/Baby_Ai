@@ -1,5 +1,7 @@
 # Task.md - 작업 추적
 
+> **2026-09-12 구현**: 별도 feature worktree에서 W1 복원/설치, W2 readiness/Redis/실행 결과 구분, E3·센서 offline 계약을 통합·검증했다. tests 473 passed/1 skipped. [구현 결과와 재실행](claudedocs/deployment/BIBI_FOUNDATION_IMPLEMENTATION_2026-09-12.md). 다음은 W3 세션 밖 회상 복구. E3 사용자 라벨, 실물 수집, 상시 host, 학습 승격은 아직 남아 있다.
+
 **최종 업데이트**: 2026-02-23 (본문) · **2026-07-28 배너 갱신**
 
 ---
@@ -7,6 +9,9 @@
 ## ⚡ 2026-07-28 상태 배너 (아래 본문 상세는 2026-02 Supabase/Edge Function 시절 — STALE)
 
 > **현 시스템 = FastAPI + Neo4j + Redis** (Edge Function 아님, 2026-03 마이그레이션 완료). 아래 "Edge Functions" 표 등은 역사 참고용.
+> **2026-09-11 상세 R&D 우선순위(현행)**: `claudedocs/deployment/BIBI_RD_PRIORITY_PLAN_2026-09-11.md` W0 감사 완료. 다음 구현=W1 실제 백업·복원/설치 재현 + W2 local/TLS Redis·readiness·고정 성공 판정 제거, 이후 W3 새 프로세스의 오래된 개인 경험 회상. 대화 1,508건 벡터 0, gateway 기본 OFF, 벡터 인덱스 이름 불일치·최근 20건 후보 제한을 각각 해결한다. E5는 기존 E-cache 파일 검증 완료이며 아직 운영 연결 안 됨. W5 E3 사용자 review와 W6 몸/센서 계약은 독립 준비한다. 새 학습·DB write·전체 tests 실행은 이번 감사에서 0이다.
+> **2026-09-11 실행 계획·worktree 배정**: `claudedocs/deployment/BIBI_HARDWARE_BRAIN_PLAN_2026-09-11.md`의 P0–P6을 따른다. 첫 구현은 백업·복원 준비와 UI 독립 runtime 최소 경계이며 기존 J1/B5 학습 제한을 유지한다. 영상 `u98cx_ZtPoY`는 별도 E worktree의 `gpt-5.6-sol/high` worker가 실제 파일·화면을 검토 완료했다. 원 실험 출처와 정확한 음성 내용은 미확인이다. 결과·해시는 계획 문서의 영상 수신 기록에 있다. 9월 16일까지 임시 worker 모델 규칙은 AGENTS R3가 정본이다. 계획·배정·영상 검토는 완료했지만 실제 runtime 구현·배포는 미완료다.
+> **2026-09-11 상시 운영·이전 요구(하드웨어 목표 반영)**: 최종 목표는 로봇에 탑재하는 Physical AI의 뇌다. 현 PC 종료 중 활동에는 별도로 켜진 연산 장치가 필요하지만 소유 PC·로봇 내부 컴퓨터도 가능하며 외부 서버/유료 API를 필수로 두지 않는다. 현재 대화는 Gemini, 임베딩은 OpenAI 의존이 남아 있다. C 여유 2.46 GiB를 고려해 대형 빌드는 여유 공간을 확인한 장치·E/D에서만 수행한다. 2027년 2월 집 PC 이전을 위해 코드/비밀/기억/실행 상태/백업을 분리한다. Neo4j 인증·조회 정상(Experience 3,157 / Concept 1,122 / 관계 10,852), Redis DNS 실패. `claudedocs/deployment/ALWAYS_ON_2026-09-11.md`와 `GATES.md` 참고. 실제 배포·DB 이전·무인 활동·오프라인 모델 대체는 미실행. `LOCAL_CORE_DISTILL` OFF 유지.
 > **2026-09-07 추가**: 브랜치 `feature/memory-gateway`(DB_Renewal 에 merge)에 답하기 전 회상+놀람 게이트(`MEMORY_GATEWAY=1` 옵트인)와 A0 :Person 시드. DB 실측 2026-09-07: Concept 1,111 / Experience 3,157 / UserModel 6 / Person 5. Upstash Redis 인스턴스 소멸(DNS 실패), OpenAI 크레딧 0. 상세는 CHANGELOG 최상단과 `claudedocs/research/MEMORY_GATEWAY_A0_A_2026-09-06.md`.
 > **최신 세션 작업**: `CHANGELOG.md` 최상단. **전략·로드맵**: Claude auto-memory `program_roadmap_2026-07`(최상위 프로그램: 자기성장 아기 뇌 Phase 0~5, ~1.5~3년) + `self_learning_architecture_2026-07`(북극성: 진짜 자기학습 = 경험이 코어를 바꿈).
 > **현재 진입점: [J1-R2-E3] primary 60행 agent 제안표 완료·사용자 review 대기** — 봉인 E2 결과에서 primary top-unjudged `60행`과 diagnostic-only positive-rank 이웃 `24행`을 분리해 packet `aec20a9d…`, audit `696fe080…`로 생성·재감사했다. 총 `84행/67 unique concepts`; 자동 label 지정은 0이다. agent 제안은 relevance `positive=1/context=52/hard_negative=4/unrelated=3`, vocabulary `canonical=36/alias=1/fragment=16/malformed=7`이며 아직 사용자 reviewed label/training data가 아니다. 24 deep-rank 이웃은 score-band 진단 전용으로 학습 negative에 넣지 않는다. 다음은 `claudedocs/research/J1_R2_E3_PRIMARY_REVIEW_AGENT_RECOMMENDATIONS_2026-07-28.md`의 승인·수정→별도 decision artifact→context를 binary negative에서 제외하는 학습 계약 순서다. learned head, graph cleanup, exact lockbox question, DB write, held-out/performance/production은 계속 false이며 `LOCAL_CORE_DISTILL`도 OFF다.

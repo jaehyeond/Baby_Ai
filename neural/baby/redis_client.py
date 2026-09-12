@@ -18,7 +18,7 @@ Phase 2: Pub/Sub + 캐시 래퍼
   baby-ai:stage              - development_stage 전이
   baby-ai:adgr               - ADGR pruning/proposal/spawned (M3 예약, helper는 M3에서 추가)
 
-연결: Upstash Redis (TLS, rediss://)
+연결: local Redis (redis://) 또는 인증서 검증 TLS Redis (rediss://)
 드라이버: redis.asyncio (hiredis 백엔드)
 """
 
@@ -26,6 +26,7 @@ import os
 import json
 import logging
 from typing import Any, Optional
+from urllib.parse import parse_qsl, urlsplit
 
 import redis.asyncio as aioredis
 from dotenv import load_dotenv
@@ -33,8 +34,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-
-_REDIS_URL = os.getenv("REDIS_URL")  # rediss://default:...@clean-polecat-38197.upstash.io:6379
 
 # 채널 상수
 CHANNEL_BABY_STATE       = "baby-ai:baby_state"
@@ -56,15 +55,44 @@ CHANNEL_ADGR    = "baby-ai:adgr"  # M3 예약 (helper 미구현)
 _redis_client: Optional[aioredis.Redis] = None
 
 
-def init_redis() -> aioredis.Redis:
-    """Redis 클라이언트 초기화 (앱 lifespan에서 1회 호출)"""
+def redis_connection_options(redis_url: str) -> dict[str, Any]:
+    """Build scheme-appropriate options without weakening TLS validation."""
+    parsed = urlsplit(redis_url)
+    scheme = parsed.scheme.lower()
+    query: dict[str, list[str]] = {}
+    for key, value in parse_qsl(parsed.query, keep_blank_values=True):
+        query.setdefault(key.lower(), []).append(value.strip().lower())
+
+    tls_query_keys = sorted(key for key in query if key.startswith("ssl"))
+    if scheme == "redis" and tls_query_keys:
+        raise ValueError("redis:// must not include TLS query options")
+
+    options: dict[str, Any] = {"decode_responses": True}
+    if scheme == "rediss":
+        cert_reqs = query.get("ssl_cert_reqs", [])
+        if any(value != "required" for value in cert_reqs):
+            raise ValueError("rediss:// must require certificate validation")
+        hostname_checks = query.get("ssl_check_hostname", [])
+        if any(value not in {"1", "true", "yes", "on"} for value in hostname_checks):
+            raise ValueError("rediss:// must require hostname validation")
+        options.update({
+            "ssl_cert_reqs": "required",
+            "ssl_check_hostname": True,
+        })
+    elif scheme != "redis":
+        raise ValueError("REDIS_URL must use redis:// or rediss://")
+    return options
+
+
+def init_redis(redis_url: Optional[str] = None) -> aioredis.Redis:
+    """Redis 클라이언트 초기화 (연결 확인은 readiness ping에서 수행)."""
     global _redis_client
-    if _REDIS_URL is None:
+    resolved_url = redis_url or os.getenv("REDIS_URL")
+    if resolved_url is None:
         raise RuntimeError("REDIS_URL not set in environment")
     _redis_client = aioredis.from_url(
-        _REDIS_URL,
-        ssl_cert_reqs=None,       # Upstash self-signed cert 허용
-        decode_responses=True,    # bytes → str 자동 변환
+        resolved_url,
+        **redis_connection_options(resolved_url),
     )
     logger.info("Redis client initialized")
     return _redis_client

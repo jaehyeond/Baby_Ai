@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-09-12 (W1·W2 구현 + E3·센서 계약 병렬 작업)
+
+- `DB_Renewal` 1a2d0d7에서 feature worktree를 분리하고 Sol/high worker에 runtime/E3/sensor를 위임했다. 부모는 백업·복원·패키징·실제 통합 검증, 다른 worker는 읽기 전용 독립 검토를 수행했다. Claude 호출·commit·push·branch merge 없음.
+- 온라인 Neo4j backup과 system/server_id를 E:에 보존해 별도 인스턴스에 복원했다. 최종 및 runtime 검증 후 원본/복원본 노드 9,753·관계 10,852·속성·스키마 fingerprint가 일치했다. 원본 DB stop/write 없음.
+- hash-locked Python 3.12 dependency 80개와 `neural` 포함 wheel을 빈 환경에 설치했다. FastAPI/multipart 누락, eager legacy Claude SDK import, Windows redirector 자식 종료, 시작 중복·PID 재사용, 설치 코드 경로 우회를 수정했다.
+- readiness는 실제 DB/Redis/schema/vector를 확인한다. 자동 인덱스 이름과 TLS URL 우회 문제를 해결했고 실제 Redis 중단 503/liveness 200, 재기동·AOF 유지·SSE 재연결을 검증했다. 상상/호기심 및 handler ImportError의 가짜 성공을 막았고 과거 accuracy는 미검증으로 구분했다.
+- E3 60개 primary 판단은 pending/fit0으로 유지하고 24 diagnostic을 제외한다. 생성 CLI는 기존 review를 덮어쓰지 않는다. 센서 계약은 단위·출처·순서·인과·방향/회전축 오차를 검증하며 합성 fixture만 사용했다.
+- 통합 canonical **473 passed, 1 skipped**. 보호 handler Git blob은 동일하다. C 여유 약 0.25 GiB를 고려해 검증 API/복원 DB/Redis는 종료했다. 상시 host·세션 밖 대화 회상·실물 capture·학습은 후속이다. 상세: `claudedocs/deployment/BIBI_FOUNDATION_IMPLEMENTATION_2026-09-12.md`.
+
+## 2026-09-11 (상시 운영·2027년 2월 집 PC 이전 준비 — 배포 미실행)
+
+- **전체 연구·개발 감사와 상세 실행 계획**: `BIBI_RD_PRIORITY_PLAN_2026-09-11.md`에 영역별 증거 등급, W0–W9 우선순위·선행 조건·변경 파일·완료/중단 기준을 정리했다. 다음은 W1 백업/복원·패키징 재현→W2 Redis/readiness·고정 성공 판정 교정→W3 재시작 회상이며, W5 E3 review·W6 센서 계약은 독립 준비한다. Neo4j 읽기 실측에서 conversation 1,508 embedding 0, NEXT_FRAME 36 pose_delta 0, 연구 question contract 6개를 확인했다. gateway 현재 설정 기본 OFF, 코드가 찾는 index probe 실패/실제 index probe 성공, 최근 20건 후보 제한을 확인했다. E5 E-cache 9파일/492,795,290 bytes 해시 일치. pyproject의 FastAPI 직접 의존성·neural wheel 포함·Python lockfile 누락도 발견했다. `preflight_rd_audit_2026-09-11.json`, `rd_state_audit_2026-09-11.json`에 근거를 저장했다. 이번에는 runtime 변경·DB write·모델 로드/호출·학습·전체 test 실행이 없었다.
+- **영상 검토 완료**: 별도 worktree의 Sol/high worker가 `u98cx_ZtPoY` 실제 19.521초 파일·화면 자막·metadata를 확인했다. 원 실험 출처가 없는 현미경 클립 몽타주여서 인간의 실시간 학습 영상인지는 미확인이다. 음성 ASR은 품질 검증 실패로 제외했다. 부모는 보고서와 manifest를 검토하고 원천 파일 4개 해시를 재확인했다. 계획에 경험→지속 변화→미래 행동 개선 검증 원칙을 반영했으며 기존 학습 gate·runtime은 변경하지 않았다. 새 영상/산출물은 E에만 저장했고 새 모델 다운로드·설치는 없다. 계획·배정·영상 검토 gate는 3/3 완료, 실제 배포 gate는 여전히 2/6이다.
+- **실행 계획·영상 분리 위임**: `BIBI_HARDWARE_BRAIN_PLAN_2026-09-11.md`에 기존 다섯 저장소·두 층·세 신호와 실제 구현을 대조하고, P0 백업→P1 독립 runtime→P2 제한 무인 활동→P3 local provider→P4 action/outcome→P5 학습 검증→P6 탑재·이전을 정의했다. 첫 구현 범위는 P0 준비와 P1 최소 경계다. 영상 `u98cx_ZtPoY`는 E의 `.worktrees/video-brain-20260911`에 `gpt-5.6-sol/high` native worker로 위임했다. `/watch` 로컬 명령은 찾지 못해 근거 기반 영상 확인 절차를 맡겼다. 9월 16일 23:59 KST까지 Codex worker는 Sol/high, Claude 필요 시 사용자 요청 `opus5`를 쓰는 규칙을 AGENTS R3에 기록했다. Claude 호출은 0이다. 영상 검토 결과는 위 완료 항목에 별도 기록했다.
+- **사용자 추가 설명에 따른 현행 방향**: 최종 목표는 하드웨어에 탑재하는 Physical AI의 뇌다. 외부 서버 임대와 유료 API를 필수로 제시한 초기 프레이밍을 교정했다. 상시 연산 장치는 소유한 별도 PC·로봇 내부 컴퓨터·선택적인 클라우드 중 결정한다. 현재 대화의 Gemini 의존성과 임베딩의 OpenAI 의존성은 코드로 확인했으며 로컬 대체·오프라인 동작은 아직 미구현이다. 실행 장치 독립성과 모델 제공자 독립성, 자기학습 검증은 서로 다른 완료 조건이다.
+- 사용자 요구: 현 PC 종료 중에도 비비 활동, C 용량 제약, 2027년 2월 집 컴퓨터로 프로젝트·비비 이전. 배포 계획 `claudedocs/deployment/ALWAYS_ON_2026-09-11.md`, 완료 조건 `claudedocs/deployment/GATES.md`에 기록했다.
+- 읽기 점검 `scripts/deployment/preflight.py`와 결과 JSON을 추가했다. C 여유 2.46 GiB / E 1,037.20 GiB, Neo4j `2026.03.1 Enterprise` 인증·조회 정상, Experience 3,157 / Concept 1,122 / 관계 10,852. Redis DNS 실패. 집계는 백업·완전성 증명이 아니다.
+- 현 자동 수면은 `/sleep` 화면의 브라우저 훅에 의존한다. `explore_batch`는 학습 없이 `learned` 상태만 설정하며, replay는 같은 고감정 기억을 반복 강화할 수 있어 그대로 무인 루프로 연결하지 않는다. `LOCAL_CORE_DISTILL`은 계속 OFF다.
+- 코드/비밀/기억/실행 이력/백업을 분리한다. 빌드 위치는 여유 공간을 확인한 별도 장치 또는 E/D로 제한한다. 로컬 대형 다운로드·Docker 기동·DB write·데이터 이전·유료 서버 개설은 0이다. 보호 handler와 기존 실행 코드는 수정하지 않았다.
+- preflight 실측, 잘못된 URL·누락 설정·비밀값 숨김 negative control, 산출물 비밀값 검사 통과. 준비 gate 2개 완료 / 장치·배포·복원·PC-off 검증 4개 대기. 현재 PC 외에 켜 둘 수 있는 장치와 활동 범위는 미정이며 클라우드/API 예산을 필수 입력으로 요구하지 않는다.
+
 ## 2026-09-07 (memory_gateway 실행 검증 — Neo4j 가동, A0 apply, 시나리오 PASS/부분)
 
 - Neo4j Desktop 인스턴스를 `neo4j.bat console`(번들 JDK 21)로 기동. A0 `person_hub_seed.py --apply`: owner Person 속성 6개 채움 + stranger 4명 생성(기존 owner 별칭 mom·brother 는 그대로).

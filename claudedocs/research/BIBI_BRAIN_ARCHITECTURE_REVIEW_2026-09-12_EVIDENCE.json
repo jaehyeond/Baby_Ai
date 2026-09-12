@@ -1,0 +1,85 @@
+{
+  "review_date_kst": "2026-09-12",
+  "scope": "read_only_research_and_new_report_files_only",
+  "model_assignment": {
+    "model": "gpt-5.6-sol",
+    "reasoning": "high",
+    "status": "assigned_by_parent"
+  },
+  "decision": "hybrid_inspectable_memory_plus_action_conditioned_world_model_plus_skill_controller",
+  "claims_not_made": [
+    "universal_best_architecture",
+    "human_level_or_superhuman_general_intelligence",
+    "verified_closed_loop_self_improvement",
+    "verified_onboard_offline_operation",
+    "SNN_energy_advantage_on_RTX4070",
+    "VLA_as_complete_brain"
+  ],
+  "project_evidence": {
+    "memory_gateway_same_process": "pass_recorded",
+    "memory_gateway_new_process": "below_criterion",
+    "conversation_experience_count_2026_09_11": 1508,
+    "conversation_embedding_count_2026_09_11": 0,
+    "retrieval_recent_candidate_limit": 20,
+    "phase2_pair_overlap": {"overlap": 18, "total": 250, "rate": 0.072},
+    "j1_adapter_exact_target_hit": 1,
+    "j1_base_exact_target_hit": 1,
+    "e2_development": {"questions": 12, "recall_at_8": 0.5, "ndcg_at_8": 0.291024, "mrr": 0.238189, "held_out": false},
+    "e3_pending_primary_rows": 60,
+    "e3_user_reviewed_labels_current": 0,
+    "local_core_distill_enabled_recommendation": false,
+    "embodiment_actual_quest_data": false
+  },
+  "academic_tool_status": {
+    "arxiv_mcp_initial_search": "timeout_or_no_response",
+    "primary_arxiv_pages": "verified_via_web_search",
+    "semantic_scholar_get_paper": "success_on_retry_11_sources",
+    "semantic_scholar_deep_dive": "DayDreamer_references_and_citations_success",
+    "citation_snapshot_date": "2026-09-12",
+    "citation_sort": "descending_in_report",
+    "invented_metrics": false
+  },
+  "sources": [
+    {"id":"spaun-2012","title":"A Large-Scale Model of the Functioning Brain","url":"https://www.science.org/doi/10.1126/science.1225266","method":"large integrated spiking cognitive model","relevance":"tests scope of biological/SNN mimicry","limit_for_bibi":"not physical robot lifelong learning","year":2012,"venue":"Science","citationCount":388,"influentialCitationCount":26,"credibility":"peer_reviewed_journal"},
+    {"id":"dreamerv3-2301.04104","title":"Mastering Diverse Domains through World Models","url":"https://arxiv.org/abs/2301.04104","method":"actor critic learning from imagined trajectories in a learned world model","relevance":"shared action-conditioned dynamics learner","limit_for_bibi":"does not supply source-aware memory or safe lifelong promotion","year":2023,"venue":"arXiv.org in Semantic Scholar; Nature publication separately verified","citationCount":1386,"influentialCitationCount":182,"credibility":"citation metadata cross_verified"},
+    {"id":"daydreamer-2206.14176","title":"DayDreamer: World Models for Physical Robot Learning","url":"https://arxiv.org/abs/2206.14176","method":"Dreamer-family online learning on physical robots","relevance":"direct embodied world-model evidence","limit_for_bibi":"bounded robot tasks, not general continual self-improvement","year":2022,"venue":"Conference on Robot Learning","citationCount":570,"influentialCitationCount":26,"credibility":"peer_reviewed_conference"},
+    {"id":"emllm-2407.09450","title":"Human-inspired Episodic Memory for Infinite Context LLMs","url":"https://arxiv.org/abs/2407.09450","method":"event segmentation plus hierarchical episodic retrieval","relevance":"episodic memory organization","limit_for_bibi":"language-context evaluation is not robot skill learning","year":2024,"venue":"International Conference on Learning Representations","citationCount":67,"influentialCitationCount":6,"credibility":"peer_reviewed_top_tier"},
+    {"id":"saycan-2204.01691","title":"Do As I Can, Not As I Say: Grounding Language in Robotic Affordances","url":"https://arxiv.org/abs/2204.01691","method":"language-model skill prior multiplied by learned affordance or value","relevance":"separates high-level proposal from executable skill","limit_for_bibi":"fixed skill library and task setting do not solve continual learning","year":2022,"venue":"Conference on Robot Learning","citationCount":3640,"influentialCitationCount":213,"credibility":"peer_reviewed_conference"},
+    {"id":"rt2-2307.15818","title":"RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control","url":"https://arxiv.org/abs/2307.15818","method":"co-fine-tunes vision-language model with robot action tokens","relevance":"VLA comparison","limit_for_bibi":"opaque weights do not replace episodic provenance, verifier, or fast safety loop","year":2023,"venue":"Conference on Robot Learning","citationCount":4117,"influentialCitationCount":233,"credibility":"peer_reviewed_conference"},
+    {"id":"openvla-2406.09246","title":"OpenVLA: An Open-Source Vision-Language-Action Model","url":"https://arxiv.org/abs/2406.09246","method":"7B open VLA pretrained on 970k real-world robot demonstrations","relevance":"open downstream skill candidate","limit_for_bibi":"resource and embodiment fit require measurement; not a complete brain","year":2024,"venue":"Conference on Robot Learning","citationCount":3256,"influentialCitationCount":499,"credibility":"peer_reviewed_conference"},
+    {"id":"vjepa2-2506.09985","title":"V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning","url":"https://arxiv.org/abs/2506.09985","method":"self-supervised video representation with action-conditioned planning model","relevance":"physical prediction and planning comparison","limit_for_bibi":"recent large-model result; 12GB and Bibi hardware not verified","year":2025,"venue":"arXiv.org","citationCount":679,"influentialCitationCount":99,"credibility":"venue_unconfirmed"},
+    {"id":"ewc-2017","title":"Overcoming Catastrophic Forgetting in Neural Networks","url":"https://www.pnas.org/doi/10.1073/pnas.1611835114","method":"Fisher-weighted quadratic penalty protects task-relevant parameters","relevance":"continual-learning baseline and regression concern","limit_for_bibi":"regularizer does not solve data validity, task boundaries, or policy safety","year":2016,"venue":"PNAS","citationCount":10846,"influentialCitationCount":1458,"credibility":"peer_reviewed_journal"},
+    {"id":"cls-1995","title":"Why There Are Complementary Learning Systems in the Hippocampus and Neocortex","url":"https://doi.org/10.1037/0033-295X.102.3.419","method":"fast episodic and slow statistical learning systems","relevance":"functional biological design principle","limit_for_bibi":"theory does not specify robot implementation or thresholds","year":1995,"venue":"Psychological Review (primary title); Semantic Scholar raw venue: Psychology Review","citationCount":5530,"influentialCitationCount":350,"credibility":"peer_reviewed_journal"},
+    {"id":"sleep-consolidation-2019","title":"Mechanisms of Systems Memory Consolidation during Sleep","url":"https://doi.org/10.1038/s41593-019-0467-3","method":"review of hippocampal-neocortical replay and systems consolidation","relevance":"bounds sleep-inspired consolidation claims","limit_for_bibi":"biological mechanism does not validate a software batch job","year":2019,"venue":"Nature Neuroscience","citationCount":958,"influentialCitationCount":52,"credibility":"peer_reviewed_journal"}
+  ],
+  "semantic_scholar_raw_snapshot": {
+    "query_note": "get_paper with explicit camelCase fields omitted counts; retry with fields omitted returned snake_case citation_count and influential_citation_count. Values below preserve that successful normalized response.",
+    "retrieved_at_date_kst": "2026-09-12",
+    "records": [
+      {"query_id":"ARXIV:2301.04104","paper_id":"f2d952a183dfb0a1e031b8a3f535d9f8423d7a6e","title":"Mastering Diverse Domains through World Models","year":2023,"venue":"arXiv.org","citation_count":1386,"influential_citation_count":182,"external_ids":{"ArXiv":"2301.04104","DOI":"10.48550/arXiv.2301.04104"}},
+      {"query_id":"ARXIV:2206.14176","paper_id":"25bc06b508b2c63b9faf77881e528530b147b988","title":"DayDreamer: World Models for Physical Robot Learning","year":2022,"venue":"Conference on Robot Learning","citation_count":570,"influential_citation_count":26,"external_ids":{"ArXiv":"2206.14176"}},
+      {"query_id":"ARXIV:2407.09450","paper_id":"f6b033d856afb84d62ad399eba1764b99197484e","title":"Human-inspired Episodic Memory for Infinite Context LLMs","year":2024,"venue":"International Conference on Learning Representations","citation_count":67,"influential_citation_count":6,"external_ids":{"ArXiv":"2407.09450"}},
+      {"query_id":"ARXIV:2204.01691","paper_id":"cb5e3f085caefd1f3d5e08637ab55d39e61234fc","title":"Do As I Can, Not As I Say: Grounding Language in Robotic Affordances","year":2022,"venue":"Conference on Robot Learning","citation_count":3640,"influential_citation_count":213,"external_ids":{"ArXiv":"2204.01691"}},
+      {"query_id":"ARXIV:2307.15818","paper_id":"38939304bb760473141c2aca0305e44fbe04e6e8","title":"RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control","year":2023,"venue":"Conference on Robot Learning","citation_count":4117,"influential_citation_count":233,"external_ids":{"ArXiv":"2307.15818","DOI":"10.48550/arXiv.2307.15818"}},
+      {"query_id":"ARXIV:2406.09246","paper_id":"8f9ceb5ffad8e7a066dfc9d9aaa5153b714740ee","title":"OpenVLA: An Open-Source Vision-Language-Action Model","year":2024,"venue":"Conference on Robot Learning","citation_count":3256,"influential_citation_count":499,"external_ids":{"ArXiv":"2406.09246","DOI":"10.48550/arXiv.2406.09246"}},
+      {"query_id":"ARXIV:2506.09985","paper_id":"b202faf38efbffcb26470c702e1140b047d6f6e7","title":"V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning","year":2025,"venue":"arXiv.org","citation_count":679,"influential_citation_count":99,"external_ids":{"ArXiv":"2506.09985","DOI":"10.48550/arXiv.2506.09985"}},
+      {"query_id":"DOI:10.1126/science.1225266","paper_id":"38f97960be98c9b523befc21f8f1724715d4184c","title":"A Large-Scale Model of the Functioning Brain","year":2012,"venue":"Science","citation_count":388,"influential_citation_count":26,"external_ids":{"DOI":"10.1126/science.1225266","PubMed":"23197532"}},
+      {"query_id":"DOI:10.1073/pnas.1611835114","paper_id":"2e55ba6c97ce5eb55abd959909403fe8da7e9fe9","title":"Overcoming catastrophic forgetting in neural networks","year":2016,"venue":"Proceedings of the National Academy of Sciences of the United States of America","citation_count":10846,"influential_citation_count":1458,"external_ids":{"ArXiv":"1612.00796","DOI":"10.1073/pnas.1611835114","PubMed":"28292907"}},
+      {"query_id":"DOI:10.1037/0033-295X.102.3.419","paper_id":"2ebf18e7892e660a833152ddc6cf8f1d21a7b881","title":"Why there are complementary learning systems in the hippocampus and neocortex: insights from the successes and failures of connectionist models of learning and memory.","year":1995,"venue":"Psychology Review","citation_count":5530,"influential_citation_count":350,"external_ids":{"DOI":"10.1037/0033-295X.102.3.419","PubMed":"7624455"}},
+      {"query_id":"DOI:10.1038/s41593-019-0467-3","paper_id":"52343457c1dd7f8c2ff6927bb4e25791d9494a97","title":"Mechanisms of systems memory consolidation during sleep","year":2019,"venue":"Nature Neuroscience","citation_count":958,"influential_citation_count":52,"external_ids":{"DOI":"10.1038/s41593-019-0467-3","PubMed":"31451802"}}
+    ]
+  },
+  "deep_dive": {
+    "paper": "DayDreamer: World Models for Physical Robot Learning",
+    "paper_id": "ARXIV:2206.14176",
+    "references_call": {"status":"success","returned":10,"use":"foundational_and_contemporary_context_only"},
+    "citations_call": {"status":"success","returned":10,"use":"follow_up_context_only"},
+    "ranking_claim_from_samples": false
+  },
+  "videos": [
+    {"id":"u98cx_ZtPoY","url":"https://www.youtube.com/shorts/u98cx_ZtPoY","inspection":"actual_public_video_file_ffprobe_frames_metadata; ASR excluded","duration_seconds":19.521,"finding":"multi-clip microscopy montage; plasticity concept only; experiment provenance unknown"},
+    {"id":"daydreamer-project-media","url":"https://danijar.com/project/daydreamer/","inspection":"official_research_page_and_iframe_presence_only_not_full_video_watch","finding":"four-robot online world-model research context; not Bibi reproduction"},
+    {"id":"saycan-project-media","url":"https://say-can.github.io/","inspection":"official_research_page_approach_results_and_embedded_video_context_not_full_video_watch","finding":"LLM plus affordance skill-selection demo and author-stated closed-loop limitation"}
+  ],
+  "mutations_not_performed": ["runtime_code","database","training","model_download","API_write","vault_write","commit","push","merge"]
+}
